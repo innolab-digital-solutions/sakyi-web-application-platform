@@ -44,7 +44,7 @@ export function AdminSidebar() {
 
   return (
     <Sidebar className="border-border/40 border-r">
-      <SidebarHeader className="border-border/80 border-b py-3">
+      <SidebarHeader className="border-border/80 border-b py-[13px]">
         <SidebarMenu>
           <SidebarMenuItem>
             <div className="flex items-center gap-3 px-2">
@@ -61,7 +61,7 @@ export function AdminSidebar() {
                   SaKyi Health & Wellness
                 </h3>
                 <p className="text-muted-foreground text-xs font-medium">
-                  Platform-wide control panel
+                  Platform-Wide Control Panel
                 </p>
               </div>
             </div>

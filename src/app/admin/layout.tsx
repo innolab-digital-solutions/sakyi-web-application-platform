@@ -22,7 +22,7 @@ export default async function AdminLayout({
         <AdminSidebar />
         <SidebarInset>
           <AdminHeader />
-          <div className="p-5">{children}</div>
+          <div className="flex flex-1 flex-col p-5">{children}</div>
         </SidebarInset>
       </SidebarProvider>
     </div>
