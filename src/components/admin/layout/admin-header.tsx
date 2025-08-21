@@ -12,6 +12,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import Link from "next/link";
+import { ADMIN } from "@/lib/constants/routes";
 
 export function AdminHeader() {
   return (
@@ -39,7 +40,7 @@ export function AdminHeader() {
                 <BreadcrumbItem>
                   <BreadcrumbLink asChild>
                     <Link
-                      href="/"
+                      href={ADMIN.OVERVIEW}
                       className=" text-foreground hover:!text-accent"
                     >
                       Overview

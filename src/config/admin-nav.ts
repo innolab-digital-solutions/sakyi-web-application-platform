@@ -23,6 +23,7 @@ import {
   LucideIcon,
   UserCog,
 } from "lucide-react";
+import { ADMIN } from "@/lib/constants/routes";
 
 export interface SubItem {
   name: string;
@@ -54,7 +55,7 @@ export const adminNavigation: NavGroup[] = [
       {
         name: "Overview",
         icon: LayoutDashboard,
-        path: "/admin/overview",
+        path: ADMIN.OVERVIEW,
         params: {},
         active: false,
         allow: true,
@@ -203,9 +204,9 @@ export const adminNavigation: NavGroup[] = [
         subitems: [],
       },
       {
-        name: "Enrollment",
+        name: "Enrollments",
         icon: ClipboardCheck,
-        path: "/admin/enrollment",
+        path: "/admin/enrollments",
         params: {},
         active: false,
         allow: true,
