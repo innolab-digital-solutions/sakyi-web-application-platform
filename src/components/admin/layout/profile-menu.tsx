@@ -15,7 +15,7 @@ const admin = {
   email: "admin@sakyi.health",
 };
 
-export function AdminMenu() {
+export function ProfileMenu() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -52,5 +52,3 @@ export function AdminMenu() {
     </DropdownMenu>
   );
 }
-
-export default AdminMenu;

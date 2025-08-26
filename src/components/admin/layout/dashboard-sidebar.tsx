@@ -15,10 +15,10 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
-import { adminNavigation } from "@/config/admin-nav";
+import { adminNavigation } from "@/lib/config/admin-nav";
 import Image from "next/image";
 
-export function AdminSidebar() {
+export function DashboardSidebar() {
   const pathname = usePathname();
 
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({});

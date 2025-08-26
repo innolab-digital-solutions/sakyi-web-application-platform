@@ -1,5 +1,5 @@
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { AdminSidebar, AdminHeader } from "@/components/admin/layout";
+import { DashboardHeader, DashboardSidebar } from "@/components/admin/layout";
 import { Inter } from "next/font/google";
 import { cookies } from "next/headers";
 
@@ -19,9 +19,9 @@ export default async function AdminLayout({
   return (
     <div className={`${inter.className} min-h-screen`}>
       <SidebarProvider defaultOpen={defaultOpen}>
-        <AdminSidebar />
+        <DashboardSidebar />
         <SidebarInset>
-          <AdminHeader />
+          <DashboardHeader />
           <div className="flex flex-1 flex-col p-5">{children}</div>
         </SidebarInset>
       </SidebarProvider>
