@@ -1,2 +1,3 @@
-export * from "./admin-header";
-export * from "./admin-sidebar";
+export * from "./dashboard-header";
+export * from "./dashboard-sidebar";
+export * from "./profile-menu";

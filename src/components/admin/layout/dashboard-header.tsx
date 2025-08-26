@@ -2,19 +2,10 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Bell, Search } from "lucide-react";
-import AdminMenu from "./admin-menu";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import Link from "next/link";
-import { ADMIN } from "@/lib/constants/routes";
+import { DynamicBreadcrumb } from "@/components/admin/shared/dynamic-breadcrumb";
+import { ProfileMenu } from "@/components/admin/layout";
 
-export function AdminHeader() {
+export function DashboardHeader() {
   return (
     <header className="bg-background/95 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 w-full backdrop-blur border-b border-border/80">
       <div className="flex h-16 items-center justify-between px-5">
@@ -27,28 +18,7 @@ export function AdminHeader() {
           <Separator orientation="vertical" className="mx-3 hidden sm:block" />
 
           <div className="hidden sm:block">
-            <Breadcrumb>
-              <BreadcrumbList>
-                <BreadcrumbItem>
-                  <BreadcrumbPage>Admin Control Panel</BreadcrumbPage>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator />
-                <BreadcrumbItem>
-                  <BreadcrumbPage>Dashboard & Insights</BreadcrumbPage>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator />
-                <BreadcrumbItem>
-                  <BreadcrumbLink asChild>
-                    <Link
-                      href={ADMIN.OVERVIEW}
-                      className=" text-foreground hover:!text-accent"
-                    >
-                      Overview
-                    </Link>
-                  </BreadcrumbLink>
-                </BreadcrumbItem>
-              </BreadcrumbList>
-            </Breadcrumb>
+            <DynamicBreadcrumb />
           </div>
         </div>
 
@@ -67,11 +37,9 @@ export function AdminHeader() {
             </div>
           </div>
 
-          <AdminMenu />
+          <ProfileMenu />
         </div>
       </div>
     </header>
   );
 }
-
-export default AdminHeader;

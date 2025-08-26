@@ -8,7 +8,7 @@ import { PageHeader } from "@/components/admin/shared/page-header";
 import { EnrollmentTable } from "@/components/admin/features/enrollments/enrollment-table";
 import { mockEnrollments } from "@/lib/mock/enrollments";
 
-export default function EnrollmentList() {
+export default function EnrollmentListPage() {
   return (
     <div>
       <PageHeader
