@@ -112,11 +112,34 @@ export default function AuthGuard({
 
     if (shouldShowLoading) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-gray-50">
-                <div className="flex flex-col items-center space-y-4">
-                    <Loader2 className="h-8 w-8 animate-spin text-primary" />
-                    <p className="text-sm text-gray-600">Checking authentication...</p>
+            <div className="min-h-screen w-full bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center p-6">
+                <div className="relative">
+                    <div className="absolute -inset-16 animate-pulse bg-gradient-to-tr from-primary/10 via-accent/10 to-blue-300/10 rounded-full blur-xl" />
+                    <div className="relative z-10 rounded-2xl border border-white/40 bg-white/80 backdrop-blur-xl shadow-xl px-8 py-7 flex flex-col items-center text-center">
+                        <div className="relative mb-4">
+                            <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-primary/20 via-accent/20 to-blue-300/20 blur-lg" />
+                            <div className="relative rounded-full p-3 bg-white shadow-sm ring-1 ring-gray-200">
+                                <Loader2 className="h-7 w-7 animate-spin text-primary" />
+                            </div>
+                        </div>
+
+                        <h2 className="text-base font-semibold text-gray-800 tracking-tight">Verifying access</h2>
+                        <p className="mt-1.5 text-xs text-gray-500 max-w-xs">
+                            Please wait a moment while we confirm your session and route permissions.
+                        </p>
+
+                        <div className="mt-5 h-1 w-40 rounded-full bg-gray-200 overflow-hidden">
+                            <div className="h-full w-1/3 rounded-full bg-gradient-to-r from-primary via-accent to-blue-400 animate-[shimmer_1.2s_ease_infinite]" />
+                        </div>
+                    </div>
                 </div>
+                <style jsx>{`
+                    @keyframes shimmer {
+                        0% { transform: translateX(-150%); }
+                        50% { transform: translateX(50%); }
+                        100% { transform: translateX(150%); }
+                    }
+                `}</style>
             </div>
         );
     }
