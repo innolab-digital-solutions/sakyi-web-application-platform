@@ -2,10 +2,11 @@
 
 import { ClipboardCheck, Plus } from "lucide-react";
 import Link from "next/link";
+
+import { EnrollmentTable } from "@/components/admin/features/enrollments/enrollment-table";
+import { PageHeader } from "@/components/admin/shared/page-header";
 import { Button } from "@/components/ui/button";
 import { ADMIN } from "@/config/routes";
-import { PageHeader } from "@/components/admin/shared/page-header";
-import { EnrollmentTable } from "@/components/admin/features/enrollments/enrollment-table";
 import { mockEnrollments } from "@/lib/mock/enrollments";
 
 export default function EnrollmentListPage() {
@@ -20,13 +21,13 @@ export default function EnrollmentListPage() {
             <Button
               asChild
               variant="default"
-              className="flex items-center gap-2 font-medium text-sm w-full sm:w-auto"
+              className="flex w-full items-center gap-2 text-sm font-medium sm:w-auto"
             >
               <Link
                 href={ADMIN.ENROLLMENTS.CREATE}
-                className="w-full flex items-center justify-center"
+                className="flex w-full items-center justify-center"
               >
-                <Plus className="w-4 h-4" />
+                <Plus className="h-4 w-4" />
                 <span>Add Enrollment</span>
               </Link>
             </Button>

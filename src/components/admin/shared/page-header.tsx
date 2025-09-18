@@ -8,27 +8,20 @@ interface PageHeaderProps {
   actions?: ReactNode;
 }
 
-export function PageHeader({
-  icon: Icon,
-  title,
-  description,
-  actions,
-}: PageHeaderProps) {
+export function PageHeader({ icon: Icon, title, description, actions }: PageHeaderProps) {
   return (
-    <div className="flex items-center justify-between mb-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between w-full">
+    <div className="mb-6 flex items-center justify-between">
+      <div className="flex w-full flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-lg font-bold flex items-center gap-2 mb-1 text-foreground">
-            {Icon && <Icon className="w-5 h-5" />}
+          <h1 className="text-foreground mb-1 flex items-center gap-2 text-lg font-bold">
+            {Icon && <Icon className="h-5 w-5" />}
             {title}
           </h1>
-          <p className="text-sm font-medium text-muted-foreground">
-            {description}
-          </p>
+          <p className="text-muted-foreground text-sm font-medium">{description}</p>
         </div>
 
         {actions && (
-          <div className="flex flex-col sm:flex-row items-center gap-2 w-full sm:w-auto">
+          <div className="flex w-full flex-col items-center gap-2 sm:w-auto sm:flex-row">
             {actions}
           </div>
         )}

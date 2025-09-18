@@ -1,12 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 // Route patterns
-const PUBLIC_ROUTES = [
-  "/admin/login",
-  "/api/auth/login",
-  "/api/auth/refresh",
-  "/api/auth/logout",
-];
+const PUBLIC_ROUTES = ["/admin/login", "/api/auth/login", "/api/auth/refresh", "/api/auth/logout"];
 
 const PROTECTED_ROUTES = [
   "/admin",
@@ -45,7 +40,7 @@ const isTokenValid = (token: string, expiresAt: number): boolean => {
 
 // Get token from request headers (for server-side validation)
 const getTokenFromRequest = (
-  request: NextRequest
+  request: NextRequest,
 ): { token: string | null; expiresAt: number | null } => {
   // Try to get token from Authorization header first
   const authHeader = request.headers.get("authorization");
@@ -72,16 +67,12 @@ const getTokenFromRequest = (
 
 // Check if route is public
 const isPublicRoute = (pathname: string): boolean => {
-  return PUBLIC_ROUTES.some(
-    (route) => pathname === route || pathname.startsWith(route + "/")
-  );
+  return PUBLIC_ROUTES.some((route) => pathname === route || pathname.startsWith(route + "/"));
 };
 
 // Check if route is protected
 const isProtectedRoute = (pathname: string): boolean => {
-  return PROTECTED_ROUTES.some(
-    (route) => pathname === route || pathname.startsWith(route + "/")
-  );
+  return PROTECTED_ROUTES.some((route) => pathname === route || pathname.startsWith(route + "/"));
 };
 
 // Check if user is authenticated (for client-side routes)
@@ -134,9 +125,7 @@ export function middleware(request: NextRequest) {
   // Handle login page
   if (pathname === "/admin/login") {
     if (authenticated) {
-      console.log(
-        "🚫 Authenticated user trying to access login, redirecting to overview"
-      );
+      console.log("🚫 Authenticated user trying to access login, redirecting to overview");
       return NextResponse.redirect(new URL("/admin/overview", request.url));
     }
     return NextResponse.next();
@@ -145,9 +134,7 @@ export function middleware(request: NextRequest) {
   // Handle protected admin routes
   if (isProtectedRoute(pathname)) {
     if (!authenticated) {
-      console.log(
-        "🔒 Unauthenticated user trying to access protected route, redirecting to login"
-      );
+      console.log("🔒 Unauthenticated user trying to access protected route, redirecting to login");
       // Store the intended destination for redirect after login
       const loginUrl = new URL("/admin/login", request.url);
       loginUrl.searchParams.set("redirect", pathname);
@@ -159,9 +146,7 @@ export function middleware(request: NextRequest) {
   // Handle root admin route
   if (pathname === "/admin") {
     if (authenticated) {
-      console.log(
-        "🏠 Redirecting authenticated user from /admin to /admin/overview"
-      );
+      console.log("🏠 Redirecting authenticated user from /admin to /admin/overview");
       return NextResponse.redirect(new URL("/admin/overview", request.url));
     } else {
       console.log("🔒 Redirecting unauthenticated user from /admin to login");

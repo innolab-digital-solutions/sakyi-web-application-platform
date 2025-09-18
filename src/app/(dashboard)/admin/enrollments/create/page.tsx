@@ -1,9 +1,10 @@
+import { ArrowLeft, ClipboardCheck } from "lucide-react";
+import Link from "next/link";
+
 import { EnrollmentForm } from "@/components/admin/features/enrollments/enrollment-form";
 import { PageHeader } from "@/components/admin/shared/page-header";
 import { Button } from "@/components/ui/button";
 import { ADMIN } from "@/config/routes";
-import { ArrowLeft, ClipboardCheck } from "lucide-react";
-import Link from "next/link";
 
 export default function EnrollmentCreatePage() {
   return (
@@ -17,13 +18,13 @@ export default function EnrollmentCreatePage() {
             <Button
               asChild
               variant="default"
-              className="flex items-center gap-2 font-medium text-sm w-full sm:w-auto"
+              className="flex w-full items-center gap-2 text-sm font-medium sm:w-auto"
             >
               <Link
                 href={ADMIN.ENROLLMENTS.LIST}
-                className="w-full flex items-center justify-center"
+                className="flex w-full items-center justify-center"
               >
-                <ArrowLeft className="w-4 h-4" />
+                <ArrowLeft className="h-4 w-4" />
                 <span>Back</span>
               </Link>
             </Button>

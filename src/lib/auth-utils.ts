@@ -133,25 +133,16 @@ export const isProtectedRoute = (pathname: string): boolean => {
     "/admin/settings",
   ];
 
-  return protectedRoutes.some(
-    (route) => pathname === route || pathname.startsWith(route + "/")
-  );
+  return protectedRoutes.some((route) => pathname === route || pathname.startsWith(route + "/"));
 };
 
 /**
  * Check if a route is public (doesn't require authentication)
  */
 export const isPublicRoute = (pathname: string): boolean => {
-  const publicRoutes = [
-    "/admin/login",
-    "/api/auth/login",
-    "/api/auth/refresh",
-    "/api/auth/logout",
-  ];
+  const publicRoutes = ["/admin/login", "/api/auth/login", "/api/auth/refresh", "/api/auth/logout"];
 
-  return publicRoutes.some(
-    (route) => pathname === route || pathname.startsWith(route + "/")
-  );
+  return publicRoutes.some((route) => pathname === route || pathname.startsWith(route + "/"));
 };
 
 /**

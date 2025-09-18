@@ -1,5 +1,5 @@
 import { ADMIN } from "@/config/routes";
-import { ApiResponse, ApiError, HttpMethod, FetchOptions } from "@/types/api";
+import { ApiError, ApiResponse, FetchOptions, HttpMethod } from "@/types/api";
 
 const DEFAULT_BASE_URL = "https://api.sakyi.com/v1";
 
@@ -36,7 +36,7 @@ const handleAuthError = (status: number) => {
  */
 export async function fetcher<T>(
   endpoint: string,
-  options: FetchOptions & { method?: HttpMethod } = {}
+  options: FetchOptions & { method?: HttpMethod } = {},
 ): Promise<ApiResponse<T>> {
   const {
     method = "GET",
@@ -66,11 +66,7 @@ export async function fetcher<T>(
   // Handle body and content-type
   let requestBody: BodyInit | undefined;
   if (body !== undefined) {
-    if (
-      typeof body === "string" ||
-      body instanceof FormData ||
-      body instanceof URLSearchParams
-    ) {
+    if (typeof body === "string" || body instanceof FormData || body instanceof URLSearchParams) {
       requestBody = body;
     } else {
       requestBody = JSON.stringify(body);
@@ -151,29 +147,20 @@ export const http = {
   /**
    * POST request
    */
-  post: <T>(
-    endpoint: string,
-    body?: FetchOptions["body"],
-    options?: FetchOptions
-  ) => fetcher<T>(endpoint, { ...options, method: "POST", body }),
+  post: <T>(endpoint: string, body?: FetchOptions["body"], options?: FetchOptions) =>
+    fetcher<T>(endpoint, { ...options, method: "POST", body }),
 
   /**
    * PUT request
    */
-  put: <T>(
-    endpoint: string,
-    body?: FetchOptions["body"],
-    options?: FetchOptions
-  ) => fetcher<T>(endpoint, { ...options, method: "PUT", body }),
+  put: <T>(endpoint: string, body?: FetchOptions["body"], options?: FetchOptions) =>
+    fetcher<T>(endpoint, { ...options, method: "PUT", body }),
 
   /**
    * PATCH request
    */
-  patch: <T>(
-    endpoint: string,
-    body?: FetchOptions["body"],
-    options?: FetchOptions
-  ) => fetcher<T>(endpoint, { ...options, method: "PATCH", body }),
+  patch: <T>(endpoint: string, body?: FetchOptions["body"], options?: FetchOptions) =>
+    fetcher<T>(endpoint, { ...options, method: "PATCH", body }),
 
   /**
    * DELETE request

@@ -1,5 +1,11 @@
 "use client";
 
+import { ChevronDown } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useState } from "react";
+
 import {
   Sidebar,
   SidebarContent,
@@ -10,13 +16,8 @@ import {
   SidebarMenu,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { ChevronDown } from "lucide-react";
-import { usePathname } from "next/navigation";
-import Link from "next/link";
-import { useState } from "react";
-import { cn } from "@/lib/utils";
 import { adminNavigation } from "@/lib/config/admin-nav";
-import Image from "next/image";
+import { cn } from "@/lib/utils";
 
 export function DashboardSidebar() {
   const pathname = usePathname();
@@ -57,9 +58,7 @@ export function DashboardSidebar() {
                 />
               </div>
               <div className="flex flex-col gap-0.5">
-                <h3 className="text-sm font-semibold tracking-tight">
-                  SaKyi Health & Wellness
-                </h3>
+                <h3 className="text-sm font-semibold tracking-tight">SaKyi Health & Wellness</h3>
                 <p className="text-muted-foreground text-xs font-medium">
                   Platform-Wide Control Panel
                 </p>
@@ -82,18 +81,16 @@ export function DashboardSidebar() {
                         <SidebarMenuItem>
                           <button
                             onClick={() => toggleGroup(item.name)}
-                            className="hover:bg-accent hover:text-accent-foreground flex w-full items-center justify-between px-3 py-2 transition-colors rounded-sm"
+                            className="hover:bg-accent hover:text-accent-foreground flex w-full items-center justify-between rounded-sm px-3 py-2 transition-colors"
                           >
                             <div className="flex items-center">
                               <item.icon className="mr-2 h-4 w-4" />
-                              <span className="text-[12.8px] font-medium">
-                                {item.name}
-                              </span>
+                              <span className="text-[12.8px] font-medium">{item.name}</span>
                             </div>
                             <ChevronDown
                               className={cn(
                                 "h-4 w-4 transition-transform duration-200",
-                                openGroups[item.name] && "rotate-180"
+                                openGroups[item.name] && "rotate-180",
                               )}
                             />
                           </button>
@@ -103,7 +100,7 @@ export function DashboardSidebar() {
                             "grid transition-all duration-200 ease-in-out",
                             openGroups[item.name]
                               ? "grid-rows-[1fr] opacity-100"
-                              : "grid-rows-[0fr] opacity-0"
+                              : "grid-rows-[0fr] opacity-0",
                           )}
                         >
                           <div className="overflow-hidden">
@@ -113,9 +110,8 @@ export function DashboardSidebar() {
                                   <Link
                                     href={subitem.path}
                                     className={cn(
-                                      "hover:bg-accent hover:text-accent-foreground flex items-center px-3 py-2 text-sm transition-colors rounded-sm",
-                                      subitem.active &&
-                                        "bg-accent text-accent-foreground"
+                                      "hover:bg-accent hover:text-accent-foreground flex items-center rounded-sm px-3 py-2 text-sm transition-colors",
+                                      subitem.active && "bg-accent text-accent-foreground",
                                     )}
                                   >
                                     <span className="text-[12.8px] font-medium">
@@ -133,14 +129,12 @@ export function DashboardSidebar() {
                         <Link
                           href={item.path}
                           className={cn(
-                            "hover:bg-accent hover:text-accent-foreground flex items-center px-3 py-2 transition-colors rounded-sm",
-                            item.active && "bg-accent text-accent-foreground"
+                            "hover:bg-accent hover:text-accent-foreground flex items-center rounded-sm px-3 py-2 transition-colors",
+                            item.active && "bg-accent text-accent-foreground",
                           )}
                         >
                           <item.icon className="mr-2 h-4 w-4" />
-                          <span className="text-[12.8px] font-medium">
-                            {item.name}
-                          </span>
+                          <span className="text-[12.8px] font-medium">{item.name}</span>
                         </Link>
                       </SidebarMenuItem>
                     )}

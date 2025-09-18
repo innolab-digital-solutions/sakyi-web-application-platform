@@ -1,25 +1,28 @@
 "use client";
 
+import { usePathname, useRouter } from "next/navigation";
 import React, {
   createContext,
-  useContext,
-  useState,
   ReactNode,
-  useRef,
-  useEffect,
   useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
 } from "react";
-import { useRouter, usePathname } from "next/navigation";
-import { User, Token } from "@/types/auth";
-import { LoginFormData } from "@/features/auth/validations/login-schema";
+
 import { AUTH } from "@/config/endpoints";
-import { http } from "@/lib/fetcher";
 import { ADMIN } from "@/config/routes";
+import { LoginFormData } from "@/features/auth/validations/login-schema";
+import { http } from "@/lib/fetcher";
+import { Token, User } from "@/types/auth";
 
 interface AuthContextType {
   user: User | null;
   token: string | null;
-  login: (data: LoginFormData) => Promise<{ status: string; message?: string; errors?: unknown; data?: unknown }>;
+  login: (
+    data: LoginFormData,
+  ) => Promise<{ status: string; message?: string; errors?: unknown; data?: unknown }>;
   logout: () => Promise<void>;
   refresh: () => Promise<string | null>;
   handleApiError: (error: unknown) => Promise<string | null>;
@@ -30,21 +33,21 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 // ---- Secure Token Storage ----
-const STORAGE_KEY = 'access-token';
-const EXPIRY_KEY = 'token-expires-at';
+const STORAGE_KEY = "access-token";
+const EXPIRY_KEY = "token-expires-at";
 
 // Simple encryption for added security (you can use crypto-js for stronger encryption)
 const encryptToken = (token: string): string => {
-  if (typeof window === 'undefined') return token;
+  if (typeof window === "undefined") return token;
   // Use a static salt to prevent hydration mismatches
-  return btoa(token + '_sakyi_salt_v1');
+  return btoa(token + "_sakyi_salt_v1");
 };
 
 const decryptToken = (encryptedToken: string): string | null => {
-  if (typeof window === 'undefined') return null;
+  if (typeof window === "undefined") return null;
   try {
     const decoded = atob(encryptedToken);
-    const parts = decoded.split('_sakyi_salt_v1');
+    const parts = decoded.split("_sakyi_salt_v1");
     return parts[0] || null;
   } catch {
     return null;
@@ -53,8 +56,8 @@ const decryptToken = (encryptedToken: string): string | null => {
 
 // Storage helpers
 const getStoredToken = (): { token: string | null; expiresAt: number | null } => {
-  if (typeof window === 'undefined') {
-    console.log('🔍 SSR: Window undefined, returning null token');
+  if (typeof window === "undefined") {
+    console.log("🔍 SSR: Window undefined, returning null token");
     return { token: null, expiresAt: null };
   }
 
@@ -62,14 +65,14 @@ const getStoredToken = (): { token: string | null; expiresAt: number | null } =>
     const encryptedToken = localStorage.getItem(STORAGE_KEY);
     const storedExpiry = localStorage.getItem(EXPIRY_KEY);
 
-    console.log('🔍 Storage check:', {
+    console.log("🔍 Storage check:", {
       hasToken: !!encryptedToken,
       hasExpiry: !!storedExpiry,
-      tokenLength: encryptedToken?.length || 0
+      tokenLength: encryptedToken?.length || 0,
     });
 
     if (!encryptedToken || !storedExpiry) {
-      console.log('❌ No token in storage');
+      console.log("❌ No token in storage");
       return { token: null, expiresAt: null };
     }
 
@@ -77,29 +80,29 @@ const getStoredToken = (): { token: string | null; expiresAt: number | null } =>
     const now = Date.now();
     const timeLeft = expiresAt - now;
 
-    console.log('⏰ Token expiry check:', {
+    console.log("⏰ Token expiry check:", {
       expiresAt: new Date(expiresAt).toLocaleTimeString(),
       timeLeftMinutes: Math.round(timeLeft / 60000),
-      isExpired: timeLeft <= 0
+      isExpired: timeLeft <= 0,
     });
 
     // Check if token is expired
     if (timeLeft <= 0) {
-      console.log('🕐 Stored token expired, clearing...');
+      console.log("🕐 Stored token expired, clearing...");
       localStorage.removeItem(STORAGE_KEY);
       localStorage.removeItem(EXPIRY_KEY);
       return { token: null, expiresAt: null };
     }
 
     const token = decryptToken(encryptedToken);
-    console.log('🔓 Token retrieved:', {
+    console.log("🔓 Token retrieved:", {
       success: !!token,
-      tokenLength: token?.length || 0
+      tokenLength: token?.length || 0,
     });
 
     return { token, expiresAt };
   } catch (error) {
-    console.error('❌ Storage retrieval error:', error);
+    console.error("❌ Storage retrieval error:", error);
     // Clear corrupted storage
     localStorage.removeItem(STORAGE_KEY);
     localStorage.removeItem(EXPIRY_KEY);
@@ -108,8 +111,8 @@ const getStoredToken = (): { token: string | null; expiresAt: number | null } =>
 };
 
 const setStoredToken = (token: string | null, expiresAt: number | null): void => {
-  if (typeof window === 'undefined') {
-    console.log('🔍 SSR: Window undefined, cannot store token');
+  if (typeof window === "undefined") {
+    console.log("🔍 SSR: Window undefined, cannot store token");
     return;
   }
 
@@ -121,20 +124,20 @@ const setStoredToken = (token: string | null, expiresAt: number | null): void =>
 
       // Verify storage worked
       const verification = localStorage.getItem(STORAGE_KEY);
-      console.log('🔐 Token storage:', {
+      console.log("🔐 Token storage:", {
         tokenLength: token.length,
         encryptedLength: encryptedToken.length,
         expiresAt: new Date(expiresAt).toLocaleTimeString(),
         verified: !!verification,
-        verificationLength: verification?.length || 0
+        verificationLength: verification?.length || 0,
       });
     } else {
       localStorage.removeItem(STORAGE_KEY);
       localStorage.removeItem(EXPIRY_KEY);
-      console.log('🗑️ Token removed from storage');
+      console.log("🗑️ Token removed from storage");
     }
   } catch (error) {
-    console.error('❌ Storage write error:', error);
+    console.error("❌ Storage write error:", error);
   }
 };
 
@@ -176,7 +179,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   // ---- Token Management ----
   const setTokenWithExpiry = useCallback((newToken: string, expiresInSeconds: number) => {
-    const expiresAt = Date.now() + (expiresInSeconds * 1000);
+    const expiresAt = Date.now() + expiresInSeconds * 1000;
 
     // Update state
     setToken(newToken);
@@ -189,11 +192,14 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }, []);
 
   // ---- Check if token needs refresh ----
-  const isTokenExpiringSoon = useCallback((bufferMinutes: number = 2): boolean => {
-    if (!tokenExpiresAt) return true;
-    const bufferMs = bufferMinutes * 60 * 1000;
-    return Date.now() >= (tokenExpiresAt - bufferMs);
-  }, [tokenExpiresAt]);
+  const isTokenExpiringSoon = useCallback(
+    (bufferMinutes: number = 2): boolean => {
+      if (!tokenExpiresAt) return true;
+      const bufferMs = bufferMinutes * 60 * 1000;
+      return Date.now() >= tokenExpiresAt - bufferMs;
+    },
+    [tokenExpiresAt],
+  );
 
   // ---- Check if token is completely expired ----
   const isTokenExpired = useCallback((): boolean => {
@@ -212,48 +218,57 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setLoading(true);
 
     try {
-      console.log('🔄 Attempting token refresh...');
+      console.log("🔄 Attempting token refresh...");
 
       const res = await http.post<{ tokens: Token; user: User }>(
         AUTH.REFRESH,
         {},
-        { requireAuth: false }
+        { requireAuth: false },
       );
 
       if (res.status === "success" && res.data) {
-        console.log('✅ Token refreshed successfully, expires in:', res.data.tokens.access.expires_in_seconds, 'seconds');
+        console.log(
+          "✅ Token refreshed successfully, expires in:",
+          res.data.tokens.access.expires_in_seconds,
+          "seconds",
+        );
 
         setTokenWithExpiry(res.data.tokens.access.token, res.data.tokens.access.expires_in_seconds);
         setUser(res.data.user);
         retryCount.current = 0;
 
         // Schedule next refresh - 2 minutes before expiry
-        const refreshDelay = Math.max((res.data.tokens.access.expires_in_seconds - 120) * 1000, 30000);
+        const refreshDelay = Math.max(
+          (res.data.tokens.access.expires_in_seconds - 120) * 1000,
+          30000,
+        );
         console.log(`⏰ Next refresh scheduled in ${refreshDelay / 1000} seconds`);
 
         if (refreshTimeout.current) clearTimeout(refreshTimeout.current);
         refreshTimeout.current = setTimeout(() => {
-          console.log('⏰ Auto-refresh timer triggered');
+          console.log("⏰ Auto-refresh timer triggered");
           refresh();
         }, refreshDelay);
 
         return res.data.tokens.access.token;
       } else {
-        console.error('❌ Refresh failed:', res.message);
-        throw new Error(res.message || 'Token refresh failed');
+        console.error("❌ Refresh failed:", res.message);
+        throw new Error(res.message || "Token refresh failed");
       }
     } catch (error: unknown) {
-      console.error('❌ Refresh error:', error);
+      console.error("❌ Refresh error:", error);
 
       retryCount.current++;
       if (retryCount.current >= maxRetries) {
-        console.error('❌ Max retries exceeded, clearing auth data');
+        console.error("❌ Max retries exceeded, clearing auth data");
         clearAuthData();
         if (pathname !== AUTH.LOGIN) router.push(AUTH.LOGIN);
       } else {
         // Retry with exponential backoff
         const retryDelay = Math.min(5000 * retryCount.current, 30000);
-        console.log(`🔄 Retrying in ${retryDelay / 1000}s (attempt ${retryCount.current}/${maxRetries})`);
+        console.log(
+          `🔄 Retrying in ${retryDelay / 1000}s (attempt ${retryCount.current}/${maxRetries})`,
+        );
 
         setTimeout(() => {
           refresh();
@@ -272,7 +287,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
     // Check cooldown to prevent excessive refreshes
     if (now - lastRefreshTime.current < refreshCooldown) {
-      console.log('🔄 Refresh cooldown active, skipping...');
+      console.log("🔄 Refresh cooldown active, skipping...");
       return token; // Return current token if in cooldown
     }
 
@@ -281,47 +296,58 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }, [token, refresh]);
 
   // ---- Global API Error Handler (for 401s) ----
-  const handleApiError = useCallback(async (error: unknown) => {
-    const errorObj = error as { status?: number; response?: { status?: number } };
-    if (errorObj?.status === 401 || errorObj?.response?.status === 401) {
-      console.log('🔒 401 detected, attempting smart refresh...');
-      setLoading(true);
-      try {
-        return await smartRefresh();
-      } finally {
-        setLoading(false);
+  const handleApiError = useCallback(
+    async (error: unknown) => {
+      const errorObj = error as { status?: number; response?: { status?: number } };
+      if (errorObj?.status === 401 || errorObj?.response?.status === 401) {
+        console.log("🔒 401 detected, attempting smart refresh...");
+        setLoading(true);
+        try {
+          return await smartRefresh();
+        } finally {
+          setLoading(false);
+        }
       }
-    }
-    return null;
-  }, [smartRefresh]);
+      return null;
+    },
+    [smartRefresh],
+  );
 
   // ---- Login ----
   const login = useCallback(
     async (payload: LoginFormData) => {
       setLoading(true);
       try {
-        console.log('🔐 Attempting login...');
+        console.log("🔐 Attempting login...");
 
-        const res = await http.post<{ tokens: Token; user: User }>(
-          AUTH.LOGIN,
-          payload,
-          { requireAuth: false }
-        );
+        const res = await http.post<{ tokens: Token; user: User }>(AUTH.LOGIN, payload, {
+          requireAuth: false,
+        });
 
         if (res.status === "success" && res.data) {
-          console.log('✅ Login successful, expires in:', res.data.tokens.access.expires_in_seconds, 'seconds');
+          console.log(
+            "✅ Login successful, expires in:",
+            res.data.tokens.access.expires_in_seconds,
+            "seconds",
+          );
 
-          setTokenWithExpiry(res.data.tokens.access.token, res.data.tokens.access.expires_in_seconds);
+          setTokenWithExpiry(
+            res.data.tokens.access.token,
+            res.data.tokens.access.expires_in_seconds,
+          );
           setUser(res.data.user);
           retryCount.current = 0;
 
           // Schedule first refresh - 2 minutes before expiry
-          const refreshDelay = Math.max((res.data.tokens.access.expires_in_seconds - 120) * 1000, 30000);
+          const refreshDelay = Math.max(
+            (res.data.tokens.access.expires_in_seconds - 120) * 1000,
+            30000,
+          );
           console.log(`⏰ First refresh scheduled in ${refreshDelay / 1000} seconds`);
 
           if (refreshTimeout.current) clearTimeout(refreshTimeout.current);
           refreshTimeout.current = setTimeout(() => {
-            console.log('⏰ Auto-refresh timer triggered after login');
+            console.log("⏰ Auto-refresh timer triggered after login");
             refresh();
           }, refreshDelay);
 
@@ -337,18 +363,18 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         return {
           status: "error" as const,
           message: "Network error. Please check your connection.",
-          errors: { system: [errorMessage] }
+          errors: { system: [errorMessage] },
         };
       } finally {
         setLoading(false);
       }
     },
-    [refresh, setTokenWithExpiry]
+    [refresh, setTokenWithExpiry],
   );
 
   // ---- Logout ----
   const logout = useCallback(async () => {
-    console.log('🚪 Logging out...');
+    console.log("🚪 Logging out...");
     setLoading(true);
     try {
       if (token) {
@@ -360,9 +386,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       clearAuthData();
 
       // Signal cross-tab logout
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('logout-signal', Date.now().toString());
-        localStorage.removeItem('logout-signal');
+      if (typeof window !== "undefined") {
+        localStorage.setItem("logout-signal", Date.now().toString());
+        localStorage.removeItem("logout-signal");
       }
 
       if (pathname !== ADMIN.LOGIN) router.push(ADMIN.LOGIN);
@@ -393,19 +419,22 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       // Prevent multiple initialization calls
       if (refreshing.current || !mounted) return;
 
-      console.log('🚀 Initializing session...');
+      console.log("🚀 Initializing session...");
 
       try {
         // CASE 1: We have a valid stored token
         if (token && tokenExpiresAt) {
           const timeUntilExpiry = tokenExpiresAt - Date.now();
 
-          if (timeUntilExpiry > 120000) { // More than 2 minutes left
-            console.log(`🎫 Token valid for ${Math.round(timeUntilExpiry / 60000)} minutes, validating...`);
+          if (timeUntilExpiry > 120000) {
+            // More than 2 minutes left
+            console.log(
+              `🎫 Token valid for ${Math.round(timeUntilExpiry / 60000)} minutes, validating...`,
+            );
 
             // If we already have user data, skip the /me call
             if (user) {
-              console.log('✅ User data already available, skipping /me call');
+              console.log("✅ User data already available, skipping /me call");
 
               // Schedule refresh 2 minutes before expiry
               const refreshDelay = Math.max(timeUntilExpiry - 120000, 30000);
@@ -422,7 +451,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
               const meRes = await http.get<User>(AUTH.ME, { requireAuth: true, token });
 
               if (meRes.status === "success" && meRes.data && mounted) {
-                console.log('✅ Token validation successful');
+                console.log("✅ Token validation successful");
                 setUser(meRes.data);
 
                 // Schedule refresh 2 minutes before expiry
@@ -435,7 +464,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
                 return;
               }
             } catch {
-              console.log('🔒 Token validation failed, clearing token');
+              console.log("🔒 Token validation failed, clearing token");
               if (mounted) {
                 clearAuthData();
                 setLoading(false);
@@ -443,7 +472,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
               return;
             }
           } else {
-            console.log('🕐 Token expires soon, clearing and will try refresh');
+            console.log("🕐 Token expires soon, clearing and will try refresh");
             if (mounted) clearAuthData();
           }
         }
@@ -451,24 +480,23 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         // CASE 2: No token or token invalid, try refresh from httpOnly cookie
         // Skip refresh attempt if we're on login page or if localStorage is completely empty
         if (pathname === ADMIN.LOGIN) {
-          console.log('🚫 On login page, skipping refresh attempt');
+          console.log("🚫 On login page, skipping refresh attempt");
           if (mounted) clearAuthData();
           return;
         }
 
         // Check if localStorage has any auth data at all
-        const hasAnyAuthData = typeof window !== 'undefined' && (
-          localStorage.getItem(STORAGE_KEY) ||
-          localStorage.getItem(EXPIRY_KEY)
-        );
+        const hasAnyAuthData =
+          typeof window !== "undefined" &&
+          (localStorage.getItem(STORAGE_KEY) || localStorage.getItem(EXPIRY_KEY));
 
         if (!hasAnyAuthData) {
-          console.log('🚫 No auth data in localStorage, skipping refresh attempt');
+          console.log("🚫 No auth data in localStorage, skipping refresh attempt");
           if (mounted) clearAuthData();
           return;
         }
 
-        console.log('👤 No valid token, attempting refresh from cookie...');
+        console.log("👤 No valid token, attempting refresh from cookie...");
 
         if (refreshing.current || !mounted) return;
         refreshing.current = true;
@@ -478,29 +506,32 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           const refreshRes = await http.post<{ tokens: Token; user: User }>(
             AUTH.REFRESH,
             {},
-            { requireAuth: false }
+            { requireAuth: false },
           );
 
           if (refreshRes.status === "success" && refreshRes.data && mounted) {
-            console.log('✅ Session restored via refresh');
+            console.log("✅ Session restored via refresh");
 
             setTokenWithExpiry(
               refreshRes.data.tokens.access.token,
-              refreshRes.data.tokens.access.expires_in_seconds
+              refreshRes.data.tokens.access.expires_in_seconds,
             );
             setUser(refreshRes.data.user);
 
             // Schedule next refresh
-            const refreshDelay = Math.max((refreshRes.data.tokens.access.expires_in_seconds - 120) * 1000, 30000);
+            const refreshDelay = Math.max(
+              (refreshRes.data.tokens.access.expires_in_seconds - 120) * 1000,
+              30000,
+            );
             refreshTimeout.current = setTimeout(() => {
               if (mounted) refresh();
             }, refreshDelay);
           } else {
-            console.log('👤 No valid refresh token found');
+            console.log("👤 No valid refresh token found");
             if (mounted) clearAuthData();
           }
         } catch {
-          console.log('👤 Refresh failed');
+          console.log("👤 Refresh failed");
           if (mounted) clearAuthData();
         } finally {
           refreshing.current = false;
@@ -520,19 +551,28 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         refreshTimeout.current = null;
       }
     };
-  }, [isHydrated, token, tokenExpiresAt, user, clearAuthData, setTokenWithExpiry, refresh, pathname]);
+  }, [
+    isHydrated,
+    token,
+    tokenExpiresAt,
+    user,
+    clearAuthData,
+    setTokenWithExpiry,
+    refresh,
+    pathname,
+  ]);
 
   // ---- Cross-tab Logout Sync ----
   useEffect(() => {
     const handleStorageChange = (e: StorageEvent) => {
       if (e.key === "logout-signal") {
-        console.log('🔄 Cross-tab logout detected');
+        console.log("🔄 Cross-tab logout detected");
         clearAuthData();
         if (pathname !== AUTH.LOGIN) router.push(AUTH.LOGIN);
       }
     };
 
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       window.addEventListener("storage", handleStorageChange);
       return () => window.removeEventListener("storage", handleStorageChange);
     }

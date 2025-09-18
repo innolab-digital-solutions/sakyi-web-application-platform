@@ -56,9 +56,7 @@ export function getBreadcrumbsForPath(pathname: string): BreadcrumbItem[] {
   }
 
   // Handle dynamic routes (with IDs)
-  const dynamicRoutes = Object.keys(breadcrumbConfig).filter((route) =>
-    route.includes(":id")
-  );
+  const dynamicRoutes = Object.keys(breadcrumbConfig).filter((route) => route.includes(":id"));
 
   for (const route of dynamicRoutes) {
     const routePattern = route.replace(":id", "[^/]+");
@@ -81,10 +79,7 @@ export function getBreadcrumbsForPath(pathname: string): BreadcrumbItem[] {
 }
 
 // Utility function to add new breadcrumb configurations
-export function addBreadcrumbConfig(
-  path: string,
-  breadcrumbs: BreadcrumbItem[]
-) {
+export function addBreadcrumbConfig(path: string, breadcrumbs: BreadcrumbItem[]) {
   breadcrumbConfig[path] = breadcrumbs;
 }
 

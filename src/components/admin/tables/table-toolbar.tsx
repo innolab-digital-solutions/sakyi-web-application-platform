@@ -1,5 +1,6 @@
 import { Table } from "@tanstack/react-table";
 import { ChevronDown, Columns3, Filter } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -25,30 +26,26 @@ export function TableToolbar<TData>({
   showFilters = true,
 }: TableToolbarProps<TData>) {
   return (
-    <div className="flex items-center px-4 py-6 space-x-4">
+    <div className="flex items-center space-x-4 px-4 py-6">
       {searchColumn && (
         <Input
           type="search"
           placeholder={searchPlaceholder}
-          value={
-            (table.getColumn(searchColumn)?.getFilterValue() as string) ?? ""
-          }
-          onChange={(event) =>
-            table.getColumn(searchColumn)?.setFilterValue(event.target.value)
-          }
+          value={(table.getColumn(searchColumn)?.getFilterValue() as string) ?? ""}
+          onChange={(event) => table.getColumn(searchColumn)?.setFilterValue(event.target.value)}
           className="max-w-sm"
         />
       )}
 
-      <div className="flex items-center gap-2 ml-auto">
+      <div className="ml-auto flex items-center gap-2">
         {showColumnVisibility && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
                 variant="outline"
-                className="ml-auto hover:!bg-gray-200 hover:!text-foreground font-medium"
+                className="hover:!text-foreground ml-auto font-medium hover:!bg-gray-200"
               >
-                <Columns3 className="w-4 h-4 mr-0 sm:mr-1.5" />
+                <Columns3 className="mr-0 h-4 w-4 sm:mr-1.5" />
                 <span className="hidden sm:block">Columns</span>
                 <ChevronDown />
               </Button>
@@ -62,9 +59,7 @@ export function TableToolbar<TData>({
                     key={column.id}
                     className="capitalize"
                     checked={column.getIsVisible()}
-                    onCheckedChange={(value) =>
-                      column.toggleVisibility(!!value)
-                    }
+                    onCheckedChange={(value) => column.toggleVisibility(!!value)}
                   >
                     {column.id}
                   </DropdownMenuCheckboxItem>
@@ -78,9 +73,9 @@ export function TableToolbar<TData>({
             <DropdownMenuTrigger asChild>
               <Button
                 variant="outline"
-                className="ml-auto hover:!bg-gray-200 hover:!text-foreground font-medium"
+                className="hover:!text-foreground ml-auto font-medium hover:!bg-gray-200"
               >
-                <Filter className="w-4 h-4 mr-0 sm:mr-1.5" />
+                <Filter className="mr-0 h-4 w-4 sm:mr-1.5" />
                 <span className="hidden sm:block">Filters</span>
               </Button>
             </DropdownMenuTrigger>
@@ -93,9 +88,7 @@ export function TableToolbar<TData>({
                     key={column.id}
                     className="capitalize"
                     checked={column.getIsVisible()}
-                    onCheckedChange={(value) =>
-                      column.toggleVisibility(!!value)
-                    }
+                    onCheckedChange={(value) => column.toggleVisibility(!!value)}
                   >
                     {column.id}
                   </DropdownMenuCheckboxItem>

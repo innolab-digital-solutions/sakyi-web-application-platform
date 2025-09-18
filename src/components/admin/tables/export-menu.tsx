@@ -1,4 +1,5 @@
 import { ChevronDown, FileDown } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -24,10 +25,7 @@ const defaultOptions: ExportOption[] = [
   { label: "XLSX Format", format: "xlsx" },
 ];
 
-export function ExportMenu({
-  options = defaultOptions,
-  onExport,
-}: ExportMenuProps) {
+export function ExportMenu({ options = defaultOptions, onExport }: ExportMenuProps) {
   const handleExport = (option: ExportOption) => {
     if (option.onClick) {
       option.onClick();
@@ -41,19 +39,16 @@ export function ExportMenu({
       <DropdownMenuTrigger asChild>
         <Button
           variant="outline"
-          className="ml-auto hover:!bg-gray-200 hover:!text-foreground font-medium w-full sm:w-auto"
+          className="hover:!text-foreground ml-auto w-full font-medium hover:!bg-gray-200 sm:w-auto"
         >
-          <FileDown className="w-4 h-4 mr-0 sm:mr-1.5" />
+          <FileDown className="mr-0 h-4 w-4 sm:mr-1.5" />
           <span>Export As</span>
           <ChevronDown />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start">
         {options.map((option) => (
-          <DropdownMenuItem
-            key={option.format}
-            onClick={() => handleExport(option)}
-          >
+          <DropdownMenuItem key={option.format} onClick={() => handleExport(option)}>
             {option.label}
           </DropdownMenuItem>
         ))}

@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useCallback, useRef } from "react";
+import { useCallback, useRef, useState } from "react";
 import { z, ZodType } from "zod";
+
+import { useAuth } from "@/context/auth-context";
 import { http } from "@/lib/fetcher";
 import { ApiError, ApiResponse } from "@/types/api";
-import { useAuth } from "@/context/auth-context";
 
 type FormOptions<TSchema extends ZodType> = {
   validate?: TSchema;
@@ -22,7 +23,7 @@ type Errors<T> = Partial<Record<keyof T | string, string>>;
 
 export function useForm<TSchema extends ZodType>(
   initial: z.infer<TSchema>,
-  options: FormOptions<TSchema> = {}
+  options: FormOptions<TSchema> = {},
 ) {
   type T = z.infer<TSchema> & Record<string, unknown>;
 
@@ -47,7 +48,7 @@ export function useForm<TSchema extends ZodType>(
         return next;
       });
     },
-    [defaults]
+    [defaults],
   );
 
   const reset = useCallback(
@@ -64,7 +65,7 @@ export function useForm<TSchema extends ZodType>(
       }
       setErrors({});
     },
-    [defaults]
+    [defaults],
   );
 
   const clearErrors = useCallback((...fields: (keyof T | string)[]) => {
@@ -79,16 +80,13 @@ export function useForm<TSchema extends ZodType>(
     }
   }, []);
 
-  const setError = useCallback(
-    (field: keyof T | string | Errors<T>, message?: string) => {
-      if (typeof field === "string" && message) {
-        setErrors((prev) => ({ ...prev, [field]: message }));
-      } else {
-        setErrors((prev) => ({ ...prev, ...(field as Errors<T>) }));
-      }
-    },
-    []
-  );
+  const setError = useCallback((field: keyof T | string | Errors<T>, message?: string) => {
+    if (typeof field === "string" && message) {
+      setErrors((prev) => ({ ...prev, [field]: message }));
+    } else {
+      setErrors((prev) => ({ ...prev, ...(field as Errors<T>) }));
+    }
+  }, []);
 
   const cancel = useCallback(() => {
     abortController.current?.abort();
@@ -100,14 +98,12 @@ export function useForm<TSchema extends ZodType>(
       if (!field) {
         setDefaultsState(data);
       } else if (typeof field === "string") {
-        setDefaultsState((prev) => ({ ...prev, [field]: value } as T));
+        setDefaultsState((prev) => ({ ...prev, [field]: value }) as T);
       } else {
-        setDefaultsState(
-          (prev) => ({ ...prev, ...(field as Partial<T>) } as T)
-        );
+        setDefaultsState((prev) => ({ ...prev, ...(field as Partial<T>) }) as T);
       }
     },
-    [data]
+    [data],
   );
 
   // ---------------------------
@@ -134,7 +130,7 @@ export function useForm<TSchema extends ZodType>(
     async (
       method: "get" | "post" | "put" | "patch" | "delete",
       url: string,
-      submitOptions: SubmitOptions<T> = {}
+      submitOptions: SubmitOptions<T> = {},
     ) => {
       clearErrors();
 
@@ -146,8 +142,7 @@ export function useForm<TSchema extends ZodType>(
       try {
         let response: ApiResponse<T>;
 
-        const needsAuth =
-          submitOptions.requireAuth ?? options.requireAuth ?? true;
+        const needsAuth = submitOptions.requireAuth ?? options.requireAuth ?? true;
         const shouldAuth = needsAuth && token;
 
         const requestOptions = {
@@ -174,7 +169,7 @@ export function useForm<TSchema extends ZodType>(
         setProcessing(false);
       }
     },
-    [data, runValidation, clearErrors, options.requireAuth, token]
+    [data, runValidation, clearErrors, options.requireAuth, token],
   );
 
   return {
@@ -194,7 +189,6 @@ export function useForm<TSchema extends ZodType>(
     post: (url: string, opts?: SubmitOptions<T>) => submit("post", url, opts),
     put: (url: string, opts?: SubmitOptions<T>) => submit("put", url, opts),
     patch: (url: string, opts?: SubmitOptions<T>) => submit("patch", url, opts),
-    delete: (url: string, opts?: SubmitOptions<T>) =>
-      submit("delete", url, opts),
+    delete: (url: string, opts?: SubmitOptions<T>) => submit("delete", url, opts),
   };
 }

@@ -1,7 +1,8 @@
-import { DataTable } from "@/components/admin/tables/data-table";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, MoreHorizontal, Users } from "lucide-react";
-import { ADMIN } from "@/config/routes";
+
+import { DataTable } from "@/components/admin/tables/data-table";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -12,7 +13,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Badge } from "@/components/ui/badge";
+import { ADMIN } from "@/config/routes";
 
 type Enrollment = {
   id: string;
@@ -31,8 +32,7 @@ export const enrollmentColumns: ColumnDef<Enrollment>[] = [
     header: ({ table }) => (
       <Checkbox
         checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
+          table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")
         }
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
         aria-label="Select all"
@@ -56,25 +56,17 @@ export const enrollmentColumns: ColumnDef<Enrollment>[] = [
   {
     accessorKey: "studentName",
     header: ({ column }) => (
-      <Button
-        variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-      >
+      <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
         Student Name
         <ArrowUpDown />
       </Button>
     ),
-    cell: ({ row }) => (
-      <div className="font-medium">{row.getValue("studentName")}</div>
-    ),
+    cell: ({ row }) => <div className="font-medium">{row.getValue("studentName")}</div>,
   },
   {
     accessorKey: "email",
     header: ({ column }) => (
-      <Button
-        variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-      >
+      <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
         Email
         <ArrowUpDown />
       </Button>
@@ -84,17 +76,12 @@ export const enrollmentColumns: ColumnDef<Enrollment>[] = [
   {
     accessorKey: "program",
     header: "Program",
-    cell: ({ row }) => (
-      <div className="font-medium">{row.getValue("program")}</div>
-    ),
+    cell: ({ row }) => <div className="font-medium">{row.getValue("program")}</div>,
   },
   {
     accessorKey: "enrollmentDate",
     header: ({ column }) => (
-      <Button
-        variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-      >
+      <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
         Enrollment Date
         <ArrowUpDown />
       </Button>
@@ -121,11 +108,7 @@ export const enrollmentColumns: ColumnDef<Enrollment>[] = [
         cancelled: "bg-red-100 text-red-800",
       };
 
-      return (
-        <Badge className={statusColors[status as keyof typeof statusColors]}>
-          {status}
-        </Badge>
-      );
+      return <Badge className={statusColors[status as keyof typeof statusColors]}>{status}</Badge>;
     },
   },
   {
@@ -140,9 +123,7 @@ export const enrollmentColumns: ColumnDef<Enrollment>[] = [
       };
 
       return (
-        <Badge
-          className={paymentColors[paymentStatus as keyof typeof paymentColors]}
-        >
+        <Badge className={paymentColors[paymentStatus as keyof typeof paymentColors]}>
           {paymentStatus}
         </Badge>
       );
@@ -177,9 +158,7 @@ export const enrollmentColumns: ColumnDef<Enrollment>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(enrollment.id)}
-            >
+            <DropdownMenuItem onClick={() => navigator.clipboard.writeText(enrollment.id)}>
               Copy enrollment ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
@@ -187,9 +166,7 @@ export const enrollmentColumns: ColumnDef<Enrollment>[] = [
             <DropdownMenuItem>Edit enrollment</DropdownMenuItem>
             <DropdownMenuItem>Send notification</DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-red-600">
-              Cancel enrollment
-            </DropdownMenuItem>
+            <DropdownMenuItem className="text-red-600">Cancel enrollment</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );

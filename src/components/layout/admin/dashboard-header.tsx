@@ -1,19 +1,17 @@
+import { Bell, Search } from "lucide-react";
+
+import DynamicBreadcrumb from "@/components/dynamic-breadcrumb";
+import UserMenu from "@/components/layout/admin/user-menu";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import { Bell, Search } from "lucide-react";
-import DynamicBreadcrumb from "@/components/dynamic-breadcrumb";
-import UserMenu from "@/components/layout/admin/user-menu";
 
 export default function DashboardHeader() {
   return (
-    <header className="bg-background/95 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 w-full backdrop-blur border-b border-border/80">
+    <header className="bg-background/95 supports-[backdrop-filter]:bg-background/60 border-border/80 sticky top-0 z-50 w-full border-b backdrop-blur">
       <div className="flex h-16 items-center justify-between px-5">
         <div className="flex h-5 items-center">
-          <SidebarTrigger
-            variant="outline"
-            className="h-9 w-9 hover:!border-primary"
-          />
+          <SidebarTrigger variant="outline" className="hover:!border-primary h-9 w-9" />
 
           <Separator orientation="vertical" className="mx-3 hidden sm:block" />
 

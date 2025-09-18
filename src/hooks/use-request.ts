@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useCallback, useRef } from "react";
+import { useCallback, useRef, useState } from "react";
+
+import { useAuth } from "@/context/auth-context";
 import { http } from "@/lib/fetcher";
 import { ApiError, ApiResponse } from "@/types/api";
-import { useAuth } from "@/context/auth-context";
 
 type RequestOptions<T = unknown> = {
   data?: Record<string, unknown>;
@@ -66,7 +67,7 @@ export function useRequest() {
       url: string,
       options: RequestOptions<T> & {
         method?: "get" | "post" | "put" | "patch" | "delete";
-      } = {}
+      } = {},
     ): Promise<ApiResponse<T> | null> => {
       const {
         method = "get",
@@ -157,8 +158,7 @@ export function useRequest() {
           const apiError: ApiError = {
             status: "error",
             message: error instanceof Error ? error.message : "Request failed",
-            errors:
-              (error as { errors?: Record<string, unknown> })?.errors || {},
+            errors: (error as { errors?: Record<string, unknown> })?.errors || {},
           };
           setState((prev) => ({ ...prev, error: apiError }));
           await onError?.(apiError);
@@ -168,7 +168,7 @@ export function useRequest() {
         return null;
       }
     },
-    [token, state, resetState]
+    [token, state, resetState],
   );
 
   // HTTP method shortcuts (similar to Inertia.js router shortcuts)
@@ -176,51 +176,49 @@ export function useRequest() {
     <T = unknown>(
       url: string,
       data?: Record<string, unknown>,
-      options?: Omit<RequestOptions<T>, "data">
+      options?: Omit<RequestOptions<T>, "data">,
     ) => visit<T>(url, { ...options, method: "get", data }),
-    [visit]
+    [visit],
   );
 
   const post = useCallback(
     <T = unknown>(
       url: string,
       data?: Record<string, unknown>,
-      options?: Omit<RequestOptions<T>, "data">
+      options?: Omit<RequestOptions<T>, "data">,
     ) => visit<T>(url, { ...options, method: "post", data }),
-    [visit]
+    [visit],
   );
 
   const put = useCallback(
     <T = unknown>(
       url: string,
       data?: Record<string, unknown>,
-      options?: Omit<RequestOptions<T>, "data">
+      options?: Omit<RequestOptions<T>, "data">,
     ) => visit<T>(url, { ...options, method: "put", data }),
-    [visit]
+    [visit],
   );
 
   const patch = useCallback(
     <T = unknown>(
       url: string,
       data?: Record<string, unknown>,
-      options?: Omit<RequestOptions<T>, "data">
+      options?: Omit<RequestOptions<T>, "data">,
     ) => visit<T>(url, { ...options, method: "patch", data }),
-    [visit]
+    [visit],
   );
 
   const del = useCallback(
     <T = unknown>(url: string, options?: RequestOptions<T>) =>
       visit<T>(url, { ...options, method: "delete" }),
-    [visit]
+    [visit],
   );
 
   // Reload current request (if you want to implement this)
   const reload = useCallback(() => {
     // This would require storing the last request config
     // For now, it's a placeholder
-    console.warn(
-      "reload() method needs implementation based on your requirements"
-    );
+    console.warn("reload() method needs implementation based on your requirements");
     return Promise.resolve(null);
   }, []);
 
@@ -249,4 +247,4 @@ export function useRequest() {
 }
 
 // Export types for external usage
-export type { RequestOptions, RequestConfig };
+export type { RequestConfig, RequestOptions };

@@ -1,5 +1,8 @@
 "use client";
 
+import { LogOut } from "lucide-react";
+import { useState } from "react";
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,11 +13,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { LogOut } from "lucide-react";
-import { useAuth } from "@/context/auth-context";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useAuth } from "@/context/auth-context";
 import LogoutConfirmationDialog from "@/features/auth/components/logout-confirmation-dialog";
-import { useState } from "react";
 
 export default function UserMenu() {
   const { user, logout, loading, isAuthenticated } = useAuth();
@@ -40,16 +41,14 @@ export default function UserMenu() {
 
   // Only show skeleton during initial loading, not during logout
   if (loading && !isAuthenticated) {
-    return <Skeleton className="h-8 w-8 rounded-full bg-muted" />;
+    return <Skeleton className="bg-muted h-8 w-8 rounded-full" />;
   }
 
   if (!isAuthenticated || !user) {
     return null;
   }
 
-  const userInitials = user.username
-    ? user.username.substring(0, 2).toUpperCase()
-    : "U";
+  const userInitials = user.username ? user.username.substring(0, 2).toUpperCase() : "U";
 
   return (
     <>
@@ -65,9 +64,7 @@ export default function UserMenu() {
         <DropdownMenuContent className="w-56" align="end" forceMount>
           <DropdownMenuLabel className="font-normal">
             <div className="flex flex-col space-y-1">
-              <p className="text-sm leading-none font-medium">
-                {user.username || "User"}
-              </p>
+              <p className="text-sm leading-none font-medium">{user.username || "User"}</p>
               <p className="text-muted-foreground text-xs leading-none">
                 {user.email || "No email"}
               </p>
@@ -76,7 +73,7 @@ export default function UserMenu() {
           <DropdownMenuSeparator />
           <DropdownMenuItem
             onClick={openLogoutDialog}
-            className="cursor-pointer text-white !bg-destructive hover:!bg-destructive hover:!text-white"
+            className="!bg-destructive hover:!bg-destructive cursor-pointer text-white hover:!text-white"
           >
             <LogOut className="mr-2 h-4 w-4 text-white" />
             <span>Sign Out</span>

@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 
 interface NoSSRProps {
-    children: React.ReactNode;
-    fallback?: React.ReactNode;
+  children: React.ReactNode;
+  fallback?: React.ReactNode;
 }
 
 /**
@@ -12,15 +12,15 @@ interface NoSSRProps {
  * This is useful for components that rely on browser APIs or have different server/client behavior
  */
 export default function NoSSR({ children, fallback = null }: NoSSRProps) {
-    const [isClient, setIsClient] = useState(false);
+  const [isClient, setIsClient] = useState(false);
 
-    useEffect(() => {
-        setIsClient(true);
-    }, []);
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
-    if (!isClient) {
-        return <>{fallback}</>;
-    }
+  if (!isClient) {
+    return <>{fallback}</>;
+  }
 
-    return <>{children}</>;
+  return <>{children}</>;
 }

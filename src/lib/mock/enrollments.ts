@@ -7,7 +7,7 @@ type Enrollment = {
   status: "active" | "pending" | "completed" | "cancelled";
   paymentStatus: "paid" | "pending" | "failed";
   amount: number;
-}
+};
 
 export const mockEnrollments: Enrollment[] = [
   {

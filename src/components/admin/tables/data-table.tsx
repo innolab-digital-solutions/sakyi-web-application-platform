@@ -1,4 +1,3 @@
-import * as React from "react";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -11,6 +10,8 @@ import {
   useReactTable,
   VisibilityState,
 } from "@tanstack/react-table";
+import * as React from "react";
+
 import {
   Table,
   TableBody,
@@ -19,9 +20,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { TableToolbar } from "./table-toolbar";
-import { Pagination } from "./pagination";
+
 import { EmptyState } from "./empty-state";
+import { Pagination } from "./pagination";
+import { TableToolbar } from "./table-toolbar";
 
 type EmptyStateProps = React.ComponentProps<typeof EmptyState>;
 
@@ -49,11 +51,8 @@ export function DataTable<TData, TValue>({
   emptyStateProps,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  );
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({});
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
+  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
 
   const table = useReactTable({
@@ -76,7 +75,7 @@ export function DataTable<TData, TValue>({
   });
 
   return (
-    <div className="w-full border border-border rounded-md">
+    <div className="border-border w-full rounded-md border">
       {showToolbar && (
         <TableToolbar
           table={table}
@@ -87,22 +86,16 @@ export function DataTable<TData, TValue>({
         />
       )}
 
-      <div className="overflow-hidden border-border border-x-0">
+      <div className="border-border overflow-hidden border-x-0">
         <Table>
-          <TableHeader className="border-y border-border">
+          <TableHeader className="border-border border-y">
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow
-                key={headerGroup.id}
-                className="bg-gray-100 hover:!bg-gray-100"
-              >
+              <TableRow key={headerGroup.id} className="bg-gray-100 hover:!bg-gray-100">
                 {headerGroup.headers.map((header) => (
                   <TableHead key={header.id}>
                     {header.isPlaceholder
                       ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
+                      : flexRender(header.column.columnDef.header, header.getContext())}
                   </TableHead>
                 ))}
               </TableRow>
@@ -111,16 +104,10 @@ export function DataTable<TData, TValue>({
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
+                <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </TableCell>
                   ))}
                 </TableRow>
@@ -129,8 +116,7 @@ export function DataTable<TData, TValue>({
               <EmptyState
                 colSpan={columns.length}
                 showSearchTip={
-                  table.getState().columnFilters.length > 0 ||
-                  table.getState().globalFilter
+                  table.getState().columnFilters.length > 0 || table.getState().globalFilter
                 }
                 {...emptyStateProps}
               />

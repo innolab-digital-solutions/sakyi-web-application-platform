@@ -1,5 +1,6 @@
-import { cookies } from "next/headers";
 import { Inter } from "next/font/google";
+import { cookies } from "next/headers";
+
 import DashboardLayout from "@/components/layout/admin/dashboard-layout";
 
 const inter = Inter({
@@ -7,11 +8,7 @@ const inter = Inter({
   subsets: ["latin"],
 });
 
-export default async function AdminLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const cookieStore = await cookies();
   const defaultOpen = cookieStore.get("sidebar_state")?.value === "true";
 
