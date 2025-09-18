@@ -1,7 +1,7 @@
 import { EnrollmentForm } from "@/components/admin/features/enrollments/enrollment-form";
 import { PageHeader } from "@/components/admin/shared/page-header";
 import { Button } from "@/components/ui/button";
-import { ADMIN } from "@/lib/constants/routes/admin";
+import { ADMIN } from "@/config/routes";
 import { ArrowLeft, ClipboardCheck } from "lucide-react";
 import Link from "next/link";
 

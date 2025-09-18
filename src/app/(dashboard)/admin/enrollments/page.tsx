@@ -3,7 +3,7 @@
 import { ClipboardCheck, Plus } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { ADMIN } from "@/lib/constants/routes";
+import { ADMIN } from "@/config/routes";
 import { PageHeader } from "@/components/admin/shared/page-header";
 import { EnrollmentTable } from "@/components/admin/features/enrollments/enrollment-table";
 import { mockEnrollments } from "@/lib/mock/enrollments";

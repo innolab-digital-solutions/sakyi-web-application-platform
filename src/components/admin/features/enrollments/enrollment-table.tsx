@@ -1,7 +1,7 @@
 import { DataTable } from "@/components/admin/tables/data-table";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, MoreHorizontal, Users } from "lucide-react";
-import { ADMIN } from "@/lib/constants/routes";
+import { ADMIN } from "@/config/routes";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {

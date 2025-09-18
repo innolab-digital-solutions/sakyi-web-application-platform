@@ -3,7 +3,7 @@ import { useMemo } from "react";
 import {
   getBreadcrumbsForPath,
   type BreadcrumbItem,
-} from "@/lib/config/breadcrumbs";
+} from "@/config/breadcrumbs";
 
 export function useBreadcrumbs(): BreadcrumbItem[] {
   const pathname = usePathname();
