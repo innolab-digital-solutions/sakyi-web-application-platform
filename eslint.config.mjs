@@ -1,6 +1,7 @@
 import { FlatCompat } from "@eslint/eslintrc";
 import noCommentedCode from "eslint-plugin-no-commented-code";
 import simpleImportSort from "eslint-plugin-simple-import-sort";
+import unicorn from "eslint-plugin-unicorn";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
 
@@ -14,7 +15,10 @@ const compat = new FlatCompat({
 const eslintConfig = [
   ...compat.extends("next/core-web-vitals", "next/typescript"),
 
-  // Import sorting
+  // Modern JS best practices & consistency
+  unicorn.configs.recommended,
+
+  // Import sorting & formatting
   {
     plugins: {
       "simple-import-sort": simpleImportSort,
