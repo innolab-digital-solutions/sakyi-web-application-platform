@@ -1,7 +1,9 @@
 export default function Home() {
+  // It should be passed
   function handleClick() {
-    console.log("clicked");
+    alert("hello world");
   }
+
   return (
     <div>
       Home page <button onClick={handleClick}>Click me</button>
