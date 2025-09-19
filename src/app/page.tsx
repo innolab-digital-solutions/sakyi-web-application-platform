@@ -1,4 +1,10 @@
 export default function Home() {
-
-  return <div>Home page</div>;
+  function handleClick() {
+    console.log("clicked");
+  }
+  return (
+    <div>
+      Home page <button onClick={handleClick}>Click me</button>
+    </div>
+  );
 }
