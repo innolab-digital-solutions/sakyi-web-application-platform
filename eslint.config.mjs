@@ -1,10 +1,11 @@
+import { dirname } from "node:path";
+import { fileURLToPath } from "node:url";
+
 import { FlatCompat } from "@eslint/eslintrc";
 import noCommentedCode from "eslint-plugin-no-commented-code";
+import security from "eslint-plugin-security";
 import simpleImportSort from "eslint-plugin-simple-import-sort";
 import unicorn from "eslint-plugin-unicorn";
-import security from "eslint-plugin-security";
-import { dirname } from "path";
-import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
