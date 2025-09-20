@@ -18,11 +18,11 @@ export type ChartConfig = {
   );
 };
 
-type ChartContextProps = {
+type ChartContextProperties = {
   config: ChartConfig;
 };
 
-const ChartContext = React.createContext<ChartContextProps | null>(null);
+const ChartContext = React.createContext<ChartContextProperties | null>(null);
 
 function useChart() {
   const context = React.useContext(ChartContext);
@@ -39,13 +39,13 @@ function ChartContainer({
   className,
   children,
   config,
-  ...props
+  ...properties
 }: React.ComponentProps<"div"> & {
   config: ChartConfig;
   children: React.ComponentProps<typeof RechartsPrimitive.ResponsiveContainer>["children"];
 }) {
   const uniqueId = React.useId();
-  const chartId = `chart-${id || uniqueId.replace(/:/g, "")}`;
+  const chartId = `chart-${id || uniqueId.replaceAll(":", "")}`;
 
   return (
     <ChartContext.Provider value={{ config }}>
@@ -56,7 +56,7 @@ function ChartContainer({
           "[&_.recharts-cartesian-axis-tick_text]:fill-muted-foreground [&_.recharts-cartesian-grid_line[stroke='#ccc']]:stroke-border/50 [&_.recharts-curve.recharts-tooltip-cursor]:stroke-border [&_.recharts-polar-grid_[stroke='#ccc']]:stroke-border [&_.recharts-radial-bar-background-sector]:fill-muted [&_.recharts-rectangle.recharts-tooltip-cursor]:fill-muted [&_.recharts-reference-line_[stroke='#ccc']]:stroke-border flex aspect-video justify-center text-xs [&_.recharts-dot[stroke='#fff']]:stroke-transparent [&_.recharts-layer]:outline-hidden [&_.recharts-sector]:outline-hidden [&_.recharts-sector[stroke='#fff']]:stroke-transparent [&_.recharts-surface]:outline-hidden",
           className,
         )}
-        {...props}
+        {...properties}
       >
         <ChartStyle id={chartId} config={config} />
         <RechartsPrimitive.ResponsiveContainer>{children}</RechartsPrimitive.ResponsiveContainer>
@@ -68,7 +68,7 @@ function ChartContainer({
 const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
   const colorConfig = Object.entries(config).filter(([, config]) => config.theme || config.color);
 
-  if (!colorConfig.length) {
+  if (colorConfig.length === 0) {
     return null;
   }
 
@@ -159,7 +159,7 @@ function ChartTooltipContent({
         className,
       )}
     >
-      {!nestLabel ? tooltipLabel : null}
+      {nestLabel ? null : tooltipLabel}
       <div className="grid gap-1.5">
         {payload.map((item, index) => {
           const key = `${nameKey || item.name || item.dataKey || "value"}`;
@@ -289,7 +289,7 @@ function ChartLegendContent({
 // Helper to extract item config from a payload.
 function getPayloadConfigFromPayload(config: ChartConfig, payload: unknown, key: string) {
   if (typeof payload !== "object" || payload === null) {
-    return undefined;
+    return;
   }
 
   const payloadPayload =

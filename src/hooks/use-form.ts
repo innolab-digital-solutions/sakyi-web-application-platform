@@ -42,8 +42,8 @@ export function useForm<TSchema extends ZodType>(
   // ---------------------------
   const setData = useCallback(
     <K extends keyof T>(key: K, value: T[K]) => {
-      setDataState((prev) => {
-        const next = { ...prev, [key]: value } as T;
+      setDataState((previous) => {
+        const next = { ...previous, [key]: value } as T;
         setIsDirty(JSON.stringify(next) !== JSON.stringify(defaults));
         return next;
       });
@@ -57,9 +57,9 @@ export function useForm<TSchema extends ZodType>(
         setDataState(defaults);
         setIsDirty(false);
       } else {
-        setDataState((prev) => {
-          const next = { ...prev } as T;
-          fields.forEach((f) => (next[f] = defaults[f]));
+        setDataState((previous) => {
+          const next = { ...previous } as T;
+          for (const f of fields) next[f] = defaults[f];
           return next;
         });
       }
@@ -72,9 +72,9 @@ export function useForm<TSchema extends ZodType>(
     if (fields.length === 0) {
       setErrors({});
     } else {
-      setErrors((prev) => {
-        const next = { ...prev };
-        fields.forEach((f) => delete next[f]);
+      setErrors((previous) => {
+        const next = { ...previous };
+        for (const f of fields) delete next[f];
         return next;
       });
     }
@@ -82,9 +82,9 @@ export function useForm<TSchema extends ZodType>(
 
   const setError = useCallback((field: keyof T | string | Errors<T>, message?: string) => {
     if (typeof field === "string" && message) {
-      setErrors((prev) => ({ ...prev, [field]: message }));
+      setErrors((previous) => ({ ...previous, [field]: message }));
     } else {
-      setErrors((prev) => ({ ...prev, ...(field as Errors<T>) }));
+      setErrors((previous) => ({ ...previous, ...(field as Errors<T>) }));
     }
   }, []);
 
@@ -98,9 +98,9 @@ export function useForm<TSchema extends ZodType>(
       if (!field) {
         setDefaultsState(data);
       } else if (typeof field === "string") {
-        setDefaultsState((prev) => ({ ...prev, [field]: value }) as T);
+        setDefaultsState((previous) => ({ ...previous, [field]: value }) as T);
       } else {
-        setDefaultsState((prev) => ({ ...prev, ...(field as Partial<T>) }) as T);
+        setDefaultsState((previous) => ({ ...previous, ...(field as Partial<T>) }) as T);
       }
     },
     [data],
@@ -115,9 +115,9 @@ export function useForm<TSchema extends ZodType>(
     const result = options.validate.safeParse(data);
     if (!result.success) {
       const zodErrors: Errors<T> = {};
-      result.error.issues.forEach((err: z.ZodIssue) => {
-        const path = err.path.join(".") as keyof T;
-        zodErrors[path] = err.message;
+      result.error.issues.forEach((error: z.ZodIssue) => {
+        const path = error.path.join(".") as keyof T;
+        zodErrors[path] = error.message;
       });
       setErrors(zodErrors);
       return false;
@@ -151,11 +151,9 @@ export function useForm<TSchema extends ZodType>(
           requireAuth: needsAuth,
         };
 
-        if (method === "get" || method === "delete") {
-          response = await http[method]<T>(url, requestOptions);
-        } else {
-          response = await http[method]<T>(url, data, requestOptions);
-        }
+        response = await (method === "get" || method === "delete"
+          ? http[method]<T>(url, requestOptions)
+          : http[method]<T>(url, data, requestOptions));
 
         if (response.status === "error") {
           setErrors((response.errors || {}) as Errors<T>);
@@ -185,10 +183,10 @@ export function useForm<TSchema extends ZodType>(
     cancel,
 
     submit,
-    get: (url: string, opts?: SubmitOptions<T>) => submit("get", url, opts),
-    post: (url: string, opts?: SubmitOptions<T>) => submit("post", url, opts),
-    put: (url: string, opts?: SubmitOptions<T>) => submit("put", url, opts),
-    patch: (url: string, opts?: SubmitOptions<T>) => submit("patch", url, opts),
-    delete: (url: string, opts?: SubmitOptions<T>) => submit("delete", url, opts),
+    get: (url: string, options_?: SubmitOptions<T>) => submit("get", url, options_),
+    post: (url: string, options_?: SubmitOptions<T>) => submit("post", url, options_),
+    put: (url: string, options_?: SubmitOptions<T>) => submit("put", url, options_),
+    patch: (url: string, options_?: SubmitOptions<T>) => submit("patch", url, options_),
+    delete: (url: string, options_?: SubmitOptions<T>) => submit("delete", url, options_),
   };
 }

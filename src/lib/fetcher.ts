@@ -6,27 +6,27 @@ const DEFAULT_BASE_URL = "https://api.sakyi.com/v1";
 // Global auth error handler
 const handleAuthError = (status: number) => {
   // 419 = Token expired/invalid, 401 = Unauthorized
-  if (status === 419 || status === 401) {
-    // Only handle on client-side
-    if (typeof window !== "undefined") {
-      console.warn(`🔒 Authentication error (${status}): Redirecting to login`);
+  if (
+    (status === 419 || status === 401) && // Only handle on client-side
+    globalThis.window !== undefined
+  ) {
+    console.warn(`🔒 Authentication error (${status}): Redirecting to login`);
 
-      // Clear any stored auth data
-      localStorage.removeItem("access-token");
-      localStorage.removeItem("token-expires-at");
+    // Clear any stored auth data
+    localStorage.removeItem("access-token");
+    localStorage.removeItem("token-expires-at");
 
-      // Signal cross-tab logout for consistency
-      localStorage.setItem("logout-signal", Date.now().toString());
-      localStorage.removeItem("logout-signal");
+    // Signal cross-tab logout for consistency
+    localStorage.setItem("logout-signal", Date.now().toString());
+    localStorage.removeItem("logout-signal");
 
-      // Redirect to login page
-      const redirectToLogin = () => {
-        window.location.href = ADMIN.LOGIN;
-      };
+    // Redirect to login page
+    const redirectToLogin = () => {
+      globalThis.location.href = ADMIN.LOGIN;
+    };
 
-      // Small delay to allow any pending state updates to complete
-      setTimeout(redirectToLogin, 100);
-    }
+    // Small delay to allow any pending state updates to complete
+    setTimeout(redirectToLogin, 100);
   }
 };
 

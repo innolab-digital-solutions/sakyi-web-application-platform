@@ -9,7 +9,7 @@ const EXPIRY_KEY = "token-expires-at";
 
 // Simple decryption function (matching auth-context.tsx)
 const decryptToken = (encryptedToken: string): string | null => {
-  if (typeof window === "undefined") return null;
+  if (globalThis.window === undefined) return null;
   try {
     const decoded = atob(encryptedToken);
     const parts = decoded.split("_sakyi_salt_v1");
@@ -35,7 +35,7 @@ export const getStoredToken = (): {
   expiresAt: number | null;
   isValid: boolean;
 } => {
-  if (typeof window === "undefined") {
+  if (globalThis.window === undefined) {
     return { token: null, expiresAt: null, isValid: false };
   }
 
@@ -47,7 +47,7 @@ export const getStoredToken = (): {
       return { token: null, expiresAt: null, isValid: false };
     }
 
-    const expiresAt = parseInt(storedExpiry, 10);
+    const expiresAt = Number.parseInt(storedExpiry, 10);
     const token = decryptToken(encryptedToken);
 
     if (!token) {
@@ -101,7 +101,7 @@ export const getAuthHeaders = (): Record<string, string> => {
  * Clear stored authentication data
  */
 export const clearAuthData = (): void => {
-  if (typeof window === "undefined") return;
+  if (globalThis.window === undefined) return;
 
   try {
     localStorage.removeItem(STORAGE_KEY);

@@ -38,13 +38,13 @@ const EXPIRY_KEY = "token-expires-at";
 
 // Simple encryption for added security (you can use crypto-js for stronger encryption)
 const encryptToken = (token: string): string => {
-  if (typeof window === "undefined") return token;
+  if (globalThis.window === undefined) return token;
   // Use a static salt to prevent hydration mismatches
   return btoa(token + "_sakyi_salt_v1");
 };
 
 const decryptToken = (encryptedToken: string): string | null => {
-  if (typeof window === "undefined") return null;
+  if (globalThis.window === undefined) return null;
   try {
     const decoded = atob(encryptedToken);
     const parts = decoded.split("_sakyi_salt_v1");
@@ -56,7 +56,7 @@ const decryptToken = (encryptedToken: string): string | null => {
 
 // Storage helpers
 const getStoredToken = (): { token: string | null; expiresAt: number | null } => {
-  if (typeof window === "undefined") {
+  if (globalThis.window === undefined) {
     console.log("🔍 SSR: Window undefined, returning null token");
     return { token: null, expiresAt: null };
   }
@@ -76,13 +76,13 @@ const getStoredToken = (): { token: string | null; expiresAt: number | null } =>
       return { token: null, expiresAt: null };
     }
 
-    const expiresAt = parseInt(storedExpiry, 10);
+    const expiresAt = Number.parseInt(storedExpiry, 10);
     const now = Date.now();
     const timeLeft = expiresAt - now;
 
     console.log("⏰ Token expiry check:", {
       expiresAt: new Date(expiresAt).toLocaleTimeString(),
-      timeLeftMinutes: Math.round(timeLeft / 60000),
+      timeLeftMinutes: Math.round(timeLeft / 60_000),
       isExpired: timeLeft <= 0,
     });
 
@@ -111,7 +111,7 @@ const getStoredToken = (): { token: string | null; expiresAt: number | null } =>
 };
 
 const setStoredToken = (token: string | null, expiresAt: number | null): void => {
-  if (typeof window === "undefined") {
+  if (globalThis.window === undefined) {
     console.log("🔍 SSR: Window undefined, cannot store token");
     return;
   }
@@ -158,7 +158,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const retryCount = useRef(0);
   const maxRetries = 3;
   const lastRefreshTime = useRef<number>(0);
-  const refreshCooldown = 30000; // 30 seconds cooldown between refreshes
+  const refreshCooldown = 30_000; // 30 seconds cooldown between refreshes
 
   // ---- Helpers ----
   const clearAuthData = useCallback(() => {
@@ -240,7 +240,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         // Schedule next refresh - 2 minutes before expiry
         const refreshDelay = Math.max(
           (res.data.tokens.access.expires_in_seconds - 120) * 1000,
-          30000,
+          30_000,
         );
         console.log(`⏰ Next refresh scheduled in ${refreshDelay / 1000} seconds`);
 
@@ -265,7 +265,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         if (pathname !== AUTH.LOGIN) router.push(AUTH.LOGIN);
       } else {
         // Retry with exponential backoff
-        const retryDelay = Math.min(5000 * retryCount.current, 30000);
+        const retryDelay = Math.min(5000 * retryCount.current, 30_000);
         console.log(
           `🔄 Retrying in ${retryDelay / 1000}s (attempt ${retryCount.current}/${maxRetries})`,
         );
@@ -298,8 +298,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   // ---- Global API Error Handler (for 401s) ----
   const handleApiError = useCallback(
     async (error: unknown) => {
-      const errorObj = error as { status?: number; response?: { status?: number } };
-      if (errorObj?.status === 401 || errorObj?.response?.status === 401) {
+      const errorObject = error as { status?: number; response?: { status?: number } };
+      if (errorObject?.status === 401 || errorObject?.response?.status === 401) {
         console.log("🔒 401 detected, attempting smart refresh...");
         setLoading(true);
         try {
@@ -341,7 +341,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           // Schedule first refresh - 2 minutes before expiry
           const refreshDelay = Math.max(
             (res.data.tokens.access.expires_in_seconds - 120) * 1000,
-            30000,
+            30_000,
           );
           console.log(`⏰ First refresh scheduled in ${refreshDelay / 1000} seconds`);
 
@@ -380,13 +380,13 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       if (token) {
         await http.post(AUTH.LOGOUT, {}, { requireAuth: true, token });
       }
-    } catch (err) {
-      console.warn("⚠️ Logout request failed:", err);
+    } catch (error) {
+      console.warn("⚠️ Logout request failed:", error);
     } finally {
       clearAuthData();
 
       // Signal cross-tab logout
-      if (typeof window !== "undefined") {
+      if (globalThis.window !== undefined) {
         localStorage.setItem("logout-signal", Date.now().toString());
         localStorage.removeItem("logout-signal");
       }
@@ -426,10 +426,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         if (token && tokenExpiresAt) {
           const timeUntilExpiry = tokenExpiresAt - Date.now();
 
-          if (timeUntilExpiry > 120000) {
+          if (timeUntilExpiry > 120_000) {
             // More than 2 minutes left
             console.log(
-              `🎫 Token valid for ${Math.round(timeUntilExpiry / 60000)} minutes, validating...`,
+              `🎫 Token valid for ${Math.round(timeUntilExpiry / 60_000)} minutes, validating...`,
             );
 
             // If we already have user data, skip the /me call
@@ -437,7 +437,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
               console.log("✅ User data already available, skipping /me call");
 
               // Schedule refresh 2 minutes before expiry
-              const refreshDelay = Math.max(timeUntilExpiry - 120000, 30000);
+              const refreshDelay = Math.max(timeUntilExpiry - 120_000, 30_000);
               refreshTimeout.current = setTimeout(() => {
                 if (mounted) refresh();
               }, refreshDelay);
@@ -455,7 +455,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
                 setUser(meRes.data);
 
                 // Schedule refresh 2 minutes before expiry
-                const refreshDelay = Math.max(timeUntilExpiry - 120000, 30000);
+                const refreshDelay = Math.max(timeUntilExpiry - 120_000, 30_000);
                 refreshTimeout.current = setTimeout(() => {
                   if (mounted) refresh();
                 }, refreshDelay);
@@ -487,7 +487,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
         // Check if localStorage has any auth data at all
         const hasAnyAuthData =
-          typeof window !== "undefined" &&
+          globalThis.window !== undefined &&
           (localStorage.getItem(STORAGE_KEY) || localStorage.getItem(EXPIRY_KEY));
 
         if (!hasAnyAuthData) {
@@ -521,7 +521,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             // Schedule next refresh
             const refreshDelay = Math.max(
               (refreshRes.data.tokens.access.expires_in_seconds - 120) * 1000,
-              30000,
+              30_000,
             );
             refreshTimeout.current = setTimeout(() => {
               if (mounted) refresh();
@@ -572,9 +572,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       }
     };
 
-    if (typeof window !== "undefined") {
-      window.addEventListener("storage", handleStorageChange);
-      return () => window.removeEventListener("storage", handleStorageChange);
+    if (globalThis.window !== undefined) {
+      globalThis.addEventListener("storage", handleStorageChange);
+      return () => globalThis.removeEventListener("storage", handleStorageChange);
     }
   }, [router, clearAuthData, pathname]);
 
@@ -597,7 +597,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 };
 
 export const useAuth = (): AuthContextType => {
-  const ctx = useContext(AuthContext);
-  if (!ctx) throw new Error("useAuth must be used inside AuthProvider");
-  return ctx;
+  const context = useContext(AuthContext);
+  if (!context) throw new Error("useAuth must be used inside AuthProvider");
+  return context;
 };

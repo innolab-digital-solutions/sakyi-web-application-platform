@@ -57,7 +57,7 @@ export function useRequest() {
   const cancel = useCallback(() => {
     if (abortController.current) {
       abortController.current.abort();
-      setState((prev) => ({ ...prev, cancelled: true, loading: false }));
+      setState((previous) => ({ ...previous, cancelled: true, loading: false }));
     }
   }, []);
 
@@ -103,8 +103,8 @@ export function useRequest() {
         resetState();
       }
 
-      setState((prev) => ({
-        ...prev,
+      setState((previous) => ({
+        ...previous,
         loading: true,
         cancelled: false,
         error: null,
@@ -130,29 +130,27 @@ export function useRequest() {
         let response: ApiResponse<T>;
 
         // Make the actual request based on method
-        if (method === "get" || method === "delete") {
-          response = await http[method]<T>(url, requestOptions);
-        } else {
-          response = await http[method]<T>(url, data, requestOptions);
-        }
+        response = await (method === "get" || method === "delete"
+          ? http[method]<T>(url, requestOptions)
+          : http[method]<T>(url, data, requestOptions));
 
-        setState((prev) => ({ ...prev, progress: 100, loading: false }));
+        setState((previous) => ({ ...previous, progress: 100, loading: false }));
 
         if (response.status === "error") {
-          setState((prev) => ({ ...prev, error: response as ApiError }));
+          setState((previous) => ({ ...previous, error: response as ApiError }));
           await onError?.(response as ApiError);
         } else {
-          setState((prev) => ({ ...prev, error: null }));
+          setState((previous) => ({ ...previous, error: null }));
           await onSuccess?.(response);
         }
 
         await onFinish?.(config);
         return response;
       } catch (error: unknown) {
-        setState((prev) => ({ ...prev, loading: false }));
+        setState((previous) => ({ ...previous, loading: false }));
 
         if (error instanceof Error && error.name === "AbortError") {
-          setState((prev) => ({ ...prev, cancelled: true }));
+          setState((previous) => ({ ...previous, cancelled: true }));
           onCancel?.();
         } else {
           const apiError: ApiError = {
@@ -160,7 +158,7 @@ export function useRequest() {
             message: error instanceof Error ? error.message : "Request failed",
             errors: (error as { errors?: Record<string, unknown> })?.errors || {},
           };
-          setState((prev) => ({ ...prev, error: apiError }));
+          setState((previous) => ({ ...previous, error: apiError }));
           await onError?.(apiError);
         }
 
