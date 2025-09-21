@@ -29,6 +29,7 @@ import { NavGroup } from "./types";
 
 /**
  * Admin sidebar navigation configuration
+ * Defines the sidebar navigation structure for all admin routes.
  *
  * @returns The admin sidebar navigation
  */
@@ -480,27 +481,3 @@ export const adminNavigation: NavGroup[] = [
     ],
   },
 ];
-
-/**
- * Get the active admin navigation
- *
- * @param currentPath - The current path
- * @param navigation - The navigation
- * @returns The active admin navigation
- */
-export const getActiveAdminNav = (currentPath: string, navigation: NavGroup[]) => {
-  return navigation.map((group) => ({
-    ...group,
-    items: group.items.map((item) => ({
-      ...item,
-      active:
-        currentPath === item.path ||
-        item.subitems?.some((sub) => currentPath === sub.path) ||
-        false,
-      subitems: item.subitems?.map((sub) => ({
-        ...sub,
-        active: currentPath === sub.path,
-      })),
-    })),
-  }));
-};

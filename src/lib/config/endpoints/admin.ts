@@ -1,9 +1,10 @@
 /**
  * Administrative API endpoints
- *
  * Protected endpoints requiring authentication and admin privileges
+ *
+ * @returns The administrative API endpoints
  */
-export const ADMIN_API = {
+export const ADMIN_ENDPOINTS = {
   OVERVIEW: "/admin/overview",
 
   PROGRAMS: {

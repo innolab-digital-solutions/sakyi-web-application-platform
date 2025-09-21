@@ -1,7 +1,8 @@
 /**
  * Administrative dashboard routes
- *
  * Protected routes requiring authentication and admin privileges
+ *
+ * @returns The administrative dashboard route paths
  */
 export const ADMIN_PATHS = {
   LOGIN: "/admin/login",
