@@ -15,10 +15,3 @@ export type ApiError = {
 };
 
 export type ApiResponse<T> = ApiSuccess<T> | ApiError;
-
-export interface FetchOptions extends Omit<RequestInit, "body"> {
-  body?: BodyInit | Record<string, unknown> | unknown[];
-  requireAuth?: boolean;
-  token?: string;
-  parseJson?: boolean;
-}
