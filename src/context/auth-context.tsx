@@ -7,40 +7,50 @@ import {
   type AuthContextType,
   authService,
   clearStoredToken,
-  createTokenHelpers,
   getStoredToken,
   type LoginCredentials,
   RetryManager,
   setStoredToken,
   type User,
-  AuthenticatedResponse,
 } from "@/lib/auth";
 import { PATHS } from "@/lib/config/paths";
-import { ApiResponse } from "@/types/api";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // State management
   const [token, setToken] = useState<string | undefined>();
   const [user, setUser] = useState<User | undefined>();
   const [loading, setLoading] = useState(true);
   const [tokenExpiresAt, setTokenExpiresAt] = useState<number | undefined>();
   const [isHydrated, setIsHydrated] = useState(false);
 
-  // Navigation
   const router = useRouter();
   const pathname = usePathname();
 
-  // Refs for managing state
+  /**
+   * Redirect to the login route when not already there.
+   * Wrapped in a callback to centralize navigation logic.
+   */
+  const redirectToLoginIfNeeded = useCallback(() => {
+    if (pathname !== PATHS.ADMIN.LOGIN) router.push(PATHS.ADMIN.LOGIN);
+  }, [pathname, router]);
+
   const refreshing = useRef(false);
   const refreshTimeout = useRef<NodeJS.Timeout | undefined>(undefined);
   const retryManager = useRef(new RetryManager());
+  // Stable reference to the latest refresh implementation to avoid circular deps in timers
+  const refreshFunctionReference = useRef<() => Promise<string | undefined>>(() =>
+    Promise.resolve("" as unknown as string | undefined),
+  );
 
-  // Token helper functions
-  const tokenHelpers = createTokenHelpers(tokenExpiresAt || 0);
-
-  // Clear all authentication data
+  /**
+   * Clear all client-side authentication data and cancel any scheduled work.
+   *
+   * - Resets in-memory token, user, and expiry
+   * - Clears persisted token from storage
+   * - Resets retry backoff state
+   * - Cancels any scheduled token refresh timer
+   */
   const clearAuthData = useCallback(() => {
     setToken(undefined);
     setUser(undefined);
@@ -54,7 +64,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, []);
 
-  // Set token with expiry and persistence
+  /**
+   * Persist the access token along with its expiry and update in-memory state.
+   *
+   * @param newToken - Sanctum access token
+   * @param expiresInSeconds - Number of seconds until the token expires
+   */
   const setTokenWithExpiry = useCallback((newToken: string, expiresInSeconds: number) => {
     const expiresAt = Date.now() + expiresInSeconds * 1000;
 
@@ -63,18 +78,28 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setStoredToken(newToken, expiresAt);
   }, []);
 
-  // Schedule automatic refresh
+  /**
+   * Schedule an automatic token refresh slightly before expiry.
+   * Uses a safety margin of 120s and enforces a minimum delay to avoid thrashing.
+   *
+   * @param expiresInSeconds - Seconds until the current token expires
+   */
   const scheduleRefresh = useCallback((expiresInSeconds: number) => {
     const refreshDelay = Math.max((expiresInSeconds - 120) * 1000, 30_000);
 
     if (refreshTimeout.current) clearTimeout(refreshTimeout.current);
 
     refreshTimeout.current = setTimeout(() => {
-      refresh();
+      void refreshFunctionReference.current();
     }, refreshDelay);
   }, []);
 
-  // Refresh token with full retry logic
+  /**
+   * Attempt to refresh the access token using the server-side session (httpOnly cookie).
+   * Includes retry with exponential backoff. On permanent failure, clears auth and redirects to login.
+   *
+   * @returns The new access token when successful, otherwise undefined
+   */
   const refresh = useCallback(async (): Promise<string | undefined> => {
     if (refreshing.current) return undefined;
 
@@ -96,17 +121,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       } else {
         throw new Error(response.message || "Token refresh failed");
       }
-    } catch (error) {
+    } catch {
       const { shouldRetry, delay } = retryManager.current.shouldRetryWithDelay();
 
       if (shouldRetry) {
         setTimeout(() => {
-          refresh();
+          void refreshFunctionReference.current();
         }, delay);
       } else {
         clearAuthData();
-
-        if (pathname !== PATHS.ADMIN.LOGIN) router.push(PATHS.ADMIN.LOGIN);
+        redirectToLoginIfNeeded();
       }
 
       return undefined;
@@ -114,9 +138,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       refreshing.current = false;
       setLoading(false);
     }
-  }, [clearAuthData, router, pathname, setTokenWithExpiry, scheduleRefresh]);
+  }, [clearAuthData, setTokenWithExpiry, scheduleRefresh, redirectToLoginIfNeeded]);
 
-  // Smart refresh with cooldown protection
+  // Sync the refresh ref with the latest implementation
+  useEffect(() => {
+    refreshFunctionReference.current = refresh;
+  }, [refresh]);
+
+  /**
+   * Perform a refresh only if allowed by the refresh cool down.
+   * Prevents rapid consecutive refresh attempts under failure conditions.
+   *
+   * @returns The refreshed access token when successful, otherwise the current token or undefined
+   */
   const smartRefresh = useCallback(async (): Promise<string | undefined> => {
     if (!retryManager.current.canRefresh()) {
       return token;
@@ -126,7 +160,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return await refresh();
   }, [token, refresh]);
 
-  // Global API error handler for 401/419 responses
+  /**
+   * Global API error handler for authentication-related responses.
+   * On 401/419, attempts a smart refresh; otherwise no-op.
+   *
+   * @param error - Error object from an HTTP client (e.g., client.ts)
+   * @returns The refreshed access token when a refresh is attempted and succeeds; otherwise undefined
+   */
   const handleApiError = useCallback(
     async (error: unknown) => {
       const errorObject = error as { status?: number; response?: { status?: number } };
@@ -145,7 +185,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     [smartRefresh],
   );
 
-  // Login method with full error handling
+  /**
+   * Authenticate with user credentials and bootstrap the session state on success.
+   * Schedules a token refresh and resets retry policy.
+   *
+   * @param credentials - Login credentials
+   * @returns Standardized API response
+   */
   const login = useCallback(
     async (credentials: LoginCredentials) => {
       setLoading(true);
@@ -176,15 +222,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     [setTokenWithExpiry, scheduleRefresh],
   );
 
-  // Logout with cleanup
+  /**
+   * Terminate the session on the server (best-effort) and clear all local state.
+   * Also propagates a cross-tab logout signal and redirects to the login page.
+   */
   const logout = useCallback(async () => {
     setLoading(true);
     try {
       if (token) {
         await authService.logout(token);
       }
-    } catch (error) {
-      console.warn("⚠️ Logout request failed:", error);
+    } catch {
+      // Ignore network errors on logout; local cleanup still proceeds
     } finally {
       clearAuthData();
 
@@ -193,11 +242,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         localStorage.removeItem("logout-signal");
       }
 
-      if (pathname !== PATHS.ADMIN.LOGIN) router.push(PATHS.ADMIN.LOGIN);
+      redirectToLoginIfNeeded();
 
       setLoading(false);
     }
-  }, [token, router, clearAuthData, pathname]);
+  }, [token, clearAuthData, redirectToLoginIfNeeded]);
 
   // Hydration effect - prevent SSR mismatches
   useEffect(() => {
@@ -218,21 +267,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const initSession = async () => {
       if (refreshing.current || !mounted) return;
 
-
       try {
         // CASE 1: We have a valid stored token
         if (token && tokenExpiresAt) {
           const timeUntilExpiry = tokenExpiresAt - Date.now();
 
           if (timeUntilExpiry > 120_000) {
-            // More than 2 minutes left
-            console.log(
-              `🎫 Token valid for ${Math.round(timeUntilExpiry / 60_000)} minutes, validating...`
-            );
+            // More than 2 minutes left: validate token by calling /me unless user is already present
 
             // If we already have user data, skip the /me call
             if (user) {
-              console.log("✅ User data already available, skipping /me call");
               scheduleRefresh(Math.floor(timeUntilExpiry / 1000));
               setLoading(false);
               return;
@@ -240,17 +284,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
             try {
               setLoading(true);
-              const meRes = await authService.me(token);
+              const meResponse = await authService.me(token);
 
-              if (meRes.status === "success" && meRes.data && mounted) {
-                console.log("✅ Token validation successful");
-                setUser(meRes.data);
+              if (meResponse.status === "success" && meResponse.data && mounted) {
+                setUser(meResponse.data);
                 scheduleRefresh(Math.floor(timeUntilExpiry / 1000));
                 setLoading(false);
                 return;
               }
             } catch {
-              console.log("🔒 Token validation failed, clearing token");
               if (mounted) {
                 clearAuthData();
                 setLoading(false);
@@ -258,14 +300,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
               return;
             }
           } else {
-            console.log("🕐 Token expires soon, clearing and will try refresh");
+            // Token expires in <= 2 minutes: clear so we can try refresh from cookie
             if (mounted) clearAuthData();
           }
         }
 
         // CASE 2: No token or token invalid, try refresh from httpOnly cookie
         if (pathname === PATHS.ADMIN.LOGIN) {
-          console.log("🚫 On login page, skipping refresh attempt");
           if (mounted) clearAuthData();
           return;
         }
@@ -276,33 +317,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           (localStorage.getItem("access-token") || localStorage.getItem("token-expires-at"));
 
         if (!hasAnyAuthData) {
-          console.log("🚫 No auth data in localStorage, skipping refresh attempt");
           if (mounted) clearAuthData();
           return;
         }
-
-        console.log("👤 No valid token, attempting refresh from cookie...");
 
         if (refreshing.current || !mounted) return;
         refreshing.current = true;
         setLoading(true);
 
         try {
-          const refreshRes = await authService.refresh();
+          const refreshResponse = await authService.refresh();
 
-          if (refreshRes.status === "success" && refreshRes.data && mounted) {
-            console.log("✅ Session restored via refresh");
-
-            const { tokens, user: userData } = refreshRes.data;
+          if (refreshResponse.status === "success" && refreshResponse.data && mounted) {
+            const { tokens, user: userData } = refreshResponse.data.data;
             setTokenWithExpiry(tokens.access.token, tokens.access.expires_in_seconds);
             setUser(userData);
             scheduleRefresh(tokens.access.expires_in_seconds);
           } else {
-            console.log("👤 No valid refresh token found");
             if (mounted) clearAuthData();
           }
         } catch {
-          console.log("👤 Refresh failed");
           if (mounted) clearAuthData();
         } finally {
           refreshing.current = false;
@@ -319,7 +353,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       mounted = false;
       if (refreshTimeout.current) {
         clearTimeout(refreshTimeout.current);
-        refreshTimeout.current = null;
+        refreshTimeout.current = undefined;
       }
     };
   }, [
@@ -335,13 +369,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   // Cross-tab logout synchronization
   useEffect(() => {
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === "logout-signal") {
-        console.log("🔄 Cross-tab logout detected");
+    const handleStorageChange = (event_: StorageEvent) => {
+      if (event_.key === "logout-signal") {
         clearAuthData();
-        if (pathname !== PATHS.ADMIN.LOGIN) {
-          router.push(PATHS.ADMIN.LOGIN);
-        }
+        redirectToLoginIfNeeded();
       }
     };
 
@@ -349,10 +380,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       globalThis.addEventListener("storage", handleStorageChange);
       return () => globalThis.removeEventListener("storage", handleStorageChange);
     }
-  }, [router, clearAuthData, pathname]);
-
-  // Export token helpers for potential future use (maintaining your original structure)
-  const _tokenHelpers = tokenHelpers;
+  }, [clearAuthData, redirectToLoginIfNeeded]);
 
   return (
     <AuthContext.Provider
@@ -372,6 +400,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   );
 };
 
+/**
+ * React hook to access the authentication context.
+ *
+ * @throws When used outside of `AuthProvider`
+ */
 export const useAuth = (): AuthContextType => {
   const context = useContext(AuthContext);
   if (!context) throw new Error("useAuth must be used inside AuthProvider");

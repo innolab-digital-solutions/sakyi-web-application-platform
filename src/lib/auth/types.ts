@@ -1,3 +1,4 @@
+import { ApiResponse } from "@/types/api";
 export interface LoginCredentials {
   email: string;
   password: string;
@@ -44,7 +45,8 @@ export interface AuthState {
 }
 
 export interface AuthContextType extends AuthState {
-  login: (credentials: LoginCredentials) => Promise<AuthenticatedResponse>;
+  login: (credentials: LoginCredentials) => Promise<ApiResponse<AuthenticatedResponse>>;
   logout: () => Promise<void>;
   refresh: () => Promise<string | undefined>;
+  handleApiError: (error: unknown) => Promise<string | undefined> | undefined;
 }
