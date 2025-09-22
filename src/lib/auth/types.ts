@@ -1,3 +1,9 @@
+export interface LoginCredentials {
+  email: string;
+  password: string;
+  device_type?: string;
+}
+
 export interface User {
   id: number;
   avatar: string;
@@ -28,4 +34,17 @@ export interface AuthenticatedResponse {
     tokens: Token;
     user: User;
   };
+}
+
+export interface AuthState {
+  user: User | undefined;
+  token: string | undefined;
+  loading: boolean;
+  isAuthenticated: boolean;
+}
+
+export interface AuthContextType extends AuthState {
+  login: (credentials: LoginCredentials) => Promise<AuthenticatedResponse>;
+  logout: () => Promise<void>;
+  refresh: () => Promise<string | undefined>;
 }
