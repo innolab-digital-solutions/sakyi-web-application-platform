@@ -1,8 +1,8 @@
 import Image from "next/image";
 import React from "react";
 
+import LoginForm from "@/components/admin/auth/login-form";
 import { Card } from "@/components/ui/card";
-import LoginForm from "@/features/auth/components/login-form";
 
 export default function LoginPage() {
   return (

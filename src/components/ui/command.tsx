@@ -11,7 +11,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { cn } from "@/utils/cn";
+import { cn } from "@/utils/shared/cn";
 
 function Command({ className, ...properties }: React.ComponentProps<typeof CommandPrimitive>) {
   return (

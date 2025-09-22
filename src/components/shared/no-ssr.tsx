@@ -11,7 +11,7 @@ interface NoSRProperties {
  * NoSSR component that prevents hydration mismatches by only rendering children on the client
  * This is useful for components that rely on browser APIs or have different server/client behavior
  */
-export default function NoSSR({ children, fallback = null }: NoSRProperties) {
+export default function NoSSR({ children, fallback }: NoSRProperties) {
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {

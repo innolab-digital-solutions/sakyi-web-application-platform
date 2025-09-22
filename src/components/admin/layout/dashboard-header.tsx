@@ -1,7 +1,7 @@
 import { Bell, Search } from "lucide-react";
 
-import DynamicBreadcrumb from "@/components/dynamic-breadcrumb";
-import UserMenu from "@/components/layout/admin/user-menu";
+import DashboardMenu from "@/components/admin/dashboard-menu";
+import DynamicBreadcrumb from "@/components/shared/dynamic-breadcrumb";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
@@ -35,7 +35,7 @@ export default function DashboardHeader() {
             </div>
           </div>
 
-          <UserMenu />
+          <DashboardMenu />
         </div>
       </div>
     </header>

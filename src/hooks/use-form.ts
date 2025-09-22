@@ -6,7 +6,7 @@ import { z, ZodType } from "zod";
 
 import { useAuth } from "@/context/auth-context";
 import { http } from "@/lib/api/client";
-import { ApiError, ApiResponse } from "@/types/api";
+import { ApiError, ApiResponse } from "@/types/shared/api";
 
 /**
  * Form configuration options

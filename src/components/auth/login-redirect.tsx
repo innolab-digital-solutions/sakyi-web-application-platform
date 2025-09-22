@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { useAuth } from "@/context/auth-context";
-import { isAuthenticated } from "@/lib/auth-utils";
+import { isAuthenticated } from "@/utils/auth/storage";
 
 interface LoginRedirectProperties {
   children: React.ReactNode;

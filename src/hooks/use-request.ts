@@ -5,7 +5,7 @@ import { useCallback, useRef, useState } from "react";
 
 import { useAuth } from "@/context/auth-context";
 import { http } from "@/lib/api/client";
-import { ApiError, ApiResponse } from "@/types/api";
+import { ApiError, ApiResponse } from "@/types/shared/api";
 
 /**
  * Configuration options for HTTP requests

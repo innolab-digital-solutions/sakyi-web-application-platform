@@ -3,17 +3,12 @@
 import { usePathname, useRouter } from "next/navigation";
 import React, { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 
-import {
-  type AuthContextType,
-  authService,
-  clearStoredToken,
-  getStoredToken,
-  type LoginCredentials,
-  RetryManager,
-  setStoredToken,
-  type User,
-} from "@/lib/auth";
-import { PATHS } from "@/lib/config/paths";
+import { PATHS } from "@/config/paths";
+import { authService } from "@/lib/api/services/shared/auth";
+import { LoginCredentials, User } from "@/types/admin/auth";
+import { AuthContextType } from "@/types/admin/auth";
+import { RetryManager } from "@/utils/auth/retry";
+import { clearStoredToken, getStoredToken, setStoredToken } from "@/utils/auth/storage";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 

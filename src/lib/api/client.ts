@@ -1,7 +1,12 @@
-import { PATHS } from "@/lib/config/paths";
-import { ApiError, ApiResponse, HttpMethod } from "@/types/api";
+import { PATHS } from "@/config/paths";
+import { ApiError, ApiResponse, HttpMethod } from "@/types/shared/api";
 
-import { FetchOptions } from "./types";
+export interface FetchOptions extends Omit<RequestInit, "body"> {
+  body?: BodyInit | Record<string, unknown> | unknown[];
+  requireAuth?: boolean;
+  token?: string;
+  parseJson?: boolean;
+}
 
 const DEFAULT_BASE_URL = "https://api.sakyi.com/v1";
 

@@ -5,8 +5,8 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { useAuth } from "@/context/auth-context";
-import { handleAuthRedirect, isAuthenticated } from "@/lib/auth-utils";
-
+import { getRedirectUrl } from "@/utils/auth/guards";
+import { isAuthenticated } from "@/utils/auth/storage";
 interface AuthGuardProperties {
   children: React.ReactNode;
   requireAuth?: boolean;
@@ -76,7 +76,7 @@ export default function AuthGuard({
       // Auth context finished loading or no token
       if (!authLoading || !hasToken) {
         const authenticated = contextAuthenticated || hasToken;
-        const redirectUrl = handleAuthRedirect(pathname);
+        const redirectUrl = getRedirectUrl(pathname, authenticated);
 
         console.log("🔍 AuthGuard check:", {
           pathname,
@@ -194,7 +194,7 @@ export function useAuthGuard() {
     const checkAuth = async () => {
       if (authLoading) return;
 
-      const redirectUrl = handleAuthRedirect(pathname);
+      const redirectUrl = getRedirectUrl(pathname, contextAuthenticated || isAuthenticated());
 
       if (redirectUrl) {
         router.replace(redirectUrl);

@@ -1,26 +1,21 @@
 "use client";
 
-import { ArrowRight, Eye, EyeClosed, Loader2, Lock, Mail } from "lucide-react";
+import { ArrowRight, Loader2, Lock, Mail } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useState } from "react";
 
+import InputField from "@/components/shared/forms/input-field";
 import { Button } from "@/components/ui/button";
 import { CardDescription, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { ADMIN } from "@/config/routes";
+import { PATHS } from "@/config/paths";
 import { useAuth } from "@/context/auth-context";
 import { useForm } from "@/hooks/use-form";
-import { getRedirectUrl } from "@/lib/auth-utils";
-import { ApiError } from "@/types/api";
-
-import { LoginSchema } from "../validations/login-schema";
+import { LoginSchema } from "@/lib/validations/admin/login-schema";
+import { ApiError } from "@/types/shared/api";
+import { getRedirectUrl } from "@/utils/auth/guards";
 
 export default function LoginForm() {
-  const [showPassword, setShowPassword] = useState(false);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
-
-  const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
   const router = useRouter();
   const searchParameters = useSearchParams();
@@ -38,8 +33,8 @@ export default function LoginForm() {
     },
   );
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
 
     // Clear any existing errors
     form.clearErrors();
@@ -66,8 +61,8 @@ export default function LoginForm() {
         // Check for redirect parameter or use default
         const redirectParameter = searchParameters.get("redirect");
         const redirectUrl =
-          redirectParameter || getRedirectUrl(redirectParameter || ADMIN.OVERVIEW);
-        router.push(redirectUrl);
+          redirectParameter || getRedirectUrl(redirectParameter || PATHS.ADMIN.OVERVIEW, true);
+        router.push(redirectUrl || PATHS.ADMIN.OVERVIEW);
       } else {
         // Handle validation/backend errors
         const errorResponse = response as ApiError;
@@ -84,7 +79,7 @@ export default function LoginForm() {
 
         // Handle system errors with smart field assignment
         const errorMessage = errorResponse.errors?.system as string;
-        if (errorMessage) {
+        if (errorMessage && errorMessage.length > 0) {
           if (errorMessage.toLowerCase().includes("email")) {
             form.setError("email", errorMessage);
           } else if (errorMessage.toLowerCase().includes("password")) {
@@ -122,81 +117,43 @@ export default function LoginForm() {
       </div>
 
       {/* Form */}
-      <form onSubmit={handleSubmit} className="space-y-3">
+      <form onSubmit={handleSubmit} className="space-y-4">
         {/* Email Field */}
-        <div className="space-y-2.5">
-          <Label htmlFor="email">
-            <Mail className="text-muted-foreground h-4 w-4" />
-            Email Address
-          </Label>
-
-          <Input
-            id="email"
-            name="text"
-            value={form.data.email}
-            type="text"
-            placeholder="admin@sakyihealth.com"
-            onChange={(e) => form.setData("email", e.target.value)}
-            disabled={isLoggingIn}
-          />
-
-          <div className="overflow-hidden transition-all duration-300 ease-out">
-            {form.errors.email ? (
-              <p className="animate-in slide-in-from-top-1 text-sm font-medium text-red-600 duration-300 ease-out">
-                {form.errors.email}
-              </p>
-            ) : (
-              <div className="animate-out slide-out-to-top-1 duration-300 ease-out" />
-            )}
-          </div>
-        </div>
+        <InputField
+          id="email"
+          name="email"
+          type="text"
+          value={form.data.email}
+          onChange={(event) => form.setData("email", event.target.value)}
+          placeholder="admin@sakyihealth.com"
+          disabled={isLoggingIn}
+          error={form.errors.email}
+          label={
+            <>
+              <Mail className="text-muted-foreground h-4 w-4" />
+              Email Address
+            </>
+          }
+        />
 
         {/* Password Field */}
-        <div className="space-y-2.5">
-          <Label htmlFor="password">
-            <Lock className="text-muted-foreground h-4 w-4" />
-            Password
-          </Label>
-
-          <div className="relative">
-            <Input
-              id="password"
-              name="password"
-              type={showPassword ? "text" : "password"}
-              value={form.data.password}
-              onChange={(e) => form.setData("password", e.target.value)}
-              placeholder="Enter your password"
-              autoComplete="current-password"
-              className="pr-10"
-              disabled={isLoggingIn}
-            />
-
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              onClick={togglePasswordVisibility}
-              className="absolute top-0 right-0 h-full cursor-pointer px-3 py-2 hover:bg-transparent"
-            >
-              {showPassword ? (
-                <EyeClosed className="text-muted-foreground h-4 w-4" />
-              ) : (
-                <Eye className="text-muted-foreground h-4 w-4" />
-              )}
-              <span className="sr-only">{showPassword ? "Hide password" : "Show password"}</span>
-            </Button>
-          </div>
-
-          <div className="overflow-hidden transition-all duration-300 ease-out">
-            {form.errors.password ? (
-              <p className="animate-in slide-in-from-top-1 text-sm font-medium text-red-600 duration-300 ease-out">
-                {form.errors.password}
-              </p>
-            ) : (
-              <div className="animate-out slide-out-to-top-1 duration-300 ease-out" />
-            )}
-          </div>
-        </div>
+        <InputField
+          id="password"
+          name="password"
+          type="password"
+          value={form.data.password}
+          onChange={(event) => form.setData("password", event.target.value)}
+          placeholder="Enter your password"
+          autoComplete="current-password"
+          disabled={isLoggingIn}
+          error={form.errors.password}
+          label={
+            <>
+              <Lock className="text-muted-foreground h-4 w-4" />
+              Password
+            </>
+          }
+        />
 
         {/* Sign In Button */}
         <Button

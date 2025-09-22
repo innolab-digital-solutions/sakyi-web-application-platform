@@ -3,7 +3,7 @@
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 
-import { getStoredToken } from "@/lib/auth";
+import { getStoredToken } from "@/utils/auth/storage";
 
 export default function AuthHeadersProvider() {
   const pathname = usePathname();
@@ -23,5 +23,5 @@ export default function AuthHeadersProvider() {
     }
   }, [pathname]);
 
-  return null;
+  return;
 }
