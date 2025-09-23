@@ -1,3 +1,4 @@
+/* eslint-disable unicorn/no-document-cookie */
 "use client";
 
 import { Slot } from "@radix-ui/react-slot";
@@ -37,6 +38,7 @@ type SidebarContextProperties = {
   toggleSidebar: () => void;
 };
 
+// eslint-disable-next-line unicorn/no-null
 const SidebarContext = React.createContext<SidebarContextProperties | null>(null);
 
 function useSidebar() {
@@ -101,6 +103,7 @@ function SidebarProvider({
     return () => globalThis.removeEventListener("keydown", handleKeyDown);
   }, [toggleSidebar]);
 
+  // eslint-disable-next-line no-commented-code/no-commented-code
   // We add a state so that we can do data-state="expanded" or "collapsed".
   // This makes it easier to style the sidebar with Tailwind classes.
   const state = open ? "expanded" : "collapsed";

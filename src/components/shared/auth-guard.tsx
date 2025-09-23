@@ -1,3 +1,4 @@
+/* eslint-disable unicorn/no-document-cookie */
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
