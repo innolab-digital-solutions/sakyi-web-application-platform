@@ -1,5 +1,6 @@
 import { PATHS } from "@/config/paths";
 import { ApiError, ApiResponse, HttpMethod } from "@/types/shared/api";
+import { clearStoredToken } from "@/utils/auth/storage";
 
 export interface FetchOptions extends Omit<RequestInit, "body"> {
   body?: BodyInit | Record<string, unknown> | unknown[];
@@ -16,12 +17,8 @@ const DEFAULT_BASE_URL = "https://api.sakyi.com/v1";
  * @param status - The status code of the error
  */
 const handleAuthError = (status: number) => {
-  if ((status === 419 || status === 401) && globalThis.window !== undefined) {
-    localStorage.removeItem("access-token");
-    localStorage.removeItem("token-expires-at");
-
-    localStorage.setItem("logout-signal", Date.now().toString());
-    localStorage.removeItem("logout-signal");
+  if (status === 419 || status === 401) {
+    clearStoredToken();
 
     setTimeout(() => {
       globalThis.location.href = PATHS.ADMIN.LOGIN;

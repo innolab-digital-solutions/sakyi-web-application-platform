@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 
-interface LogoutConfirmationDialogProperties {
+interface ConfirmationDialogProperties {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: () => void | Promise<void>;
@@ -23,7 +23,7 @@ export default function LogoutConfirmationDialog({
   onClose,
   onConfirm,
   isLoading = false,
-}: LogoutConfirmationDialogProperties) {
+}: ConfirmationDialogProperties) {
   const handleOpenChange = (open: boolean) => {
     if (!open && !isLoading) {
       onClose();

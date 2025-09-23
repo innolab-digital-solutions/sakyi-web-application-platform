@@ -1,6 +1,6 @@
 import { Bell, Search } from "lucide-react";
 
-import DashboardMenu from "@/components/admin/dashboard-menu";
+import DashboardMenu from "@/components/admin/layout/dashboard-menu";
 import DynamicBreadcrumb from "@/components/shared/dynamic-breadcrumb";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";

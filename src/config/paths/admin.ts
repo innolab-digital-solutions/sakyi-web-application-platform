@@ -5,6 +5,8 @@
  * @returns The administrative dashboard route paths
  */
 export const ADMIN_PATHS = {
+  ROOT: "/admin",
+
   LOGIN: "/admin/login",
 
   OVERVIEW: "/admin/overview",

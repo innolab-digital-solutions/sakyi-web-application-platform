@@ -5,7 +5,7 @@ import React, { createContext, useCallback, useContext, useEffect, useRef, useSt
 
 import { PATHS } from "@/config/paths";
 import { authService } from "@/lib/api/services/shared/auth";
-import { LoginCredentials, User } from "@/types/admin/auth";
+import { AuthenticatedResponse, LoginCredentials, User } from "@/types/admin/auth";
 import { AuthContextType } from "@/types/admin/auth";
 import { RetryManager } from "@/utils/auth/retry";
 import { clearStoredToken, getStoredToken, setStoredToken } from "@/utils/auth/storage";
@@ -105,7 +105,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const response = await authService.refresh();
 
       if (response.status === "success" && response.data) {
-        const { tokens, user: userData } = response.data.data;
+        const { tokens, user: userData } =
+          response.data as unknown as AuthenticatedResponse["data"];
 
         setTokenWithExpiry(tokens.access.token, tokens.access.expires_in_seconds);
         setUser(userData);
@@ -194,7 +195,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         const response = await authService.login(credentials);
 
         if (response.status === "success" && response.data) {
-          const { tokens, user: userData } = response.data.data;
+          const { tokens, user: userData } =
+            response.data as unknown as AuthenticatedResponse["data"];
 
           setTokenWithExpiry(tokens.access.token, tokens.access.expires_in_seconds);
           setUser(userData);
@@ -231,11 +233,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       // Ignore network errors on logout; local cleanup still proceeds
     } finally {
       clearAuthData();
-
-      if (globalThis.window !== undefined) {
-        localStorage.setItem("logout-signal", Date.now().toString());
-        localStorage.removeItem("logout-signal");
-      }
 
       redirectToLoginIfNeeded();
 
@@ -324,7 +321,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           const refreshResponse = await authService.refresh();
 
           if (refreshResponse.status === "success" && refreshResponse.data && mounted) {
-            const { tokens, user: userData } = refreshResponse.data.data;
+            const { tokens, user: userData } =
+              refreshResponse.data as unknown as AuthenticatedResponse["data"];
+
             setTokenWithExpiry(tokens.access.token, tokens.access.expires_in_seconds);
             setUser(userData);
             scheduleRefresh(tokens.access.expires_in_seconds);

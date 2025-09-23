@@ -33,43 +33,40 @@ export default function LoginForm() {
     },
   );
 
+  /**
+   * Handles the login form submission process
+   * Validates user input, authenticates with backend, and manages error states
+   *
+   * @param event - The form submission event
+   */
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    // Clear any existing errors
     form.clearErrors();
 
-    // Run Zod validation first
     const validationResult = LoginSchema.safeParse(form.data);
     if (!validationResult.success) {
-      // Set validation errors
       for (const error of validationResult.error.issues) {
         const path = error.path.join(".") as string;
         form.setError(path, error.message);
       }
-      return; // Validation failed
+      return;
     }
 
     setIsLoggingIn(true);
 
     try {
-      // Use auth-context login method
       const response = await login(form.data);
 
       if (response.status === "success") {
-        // Success - auth-context already handled token storage and navigation
-        // Check for redirect parameter or use default
         const redirectParameter = searchParameters.get("redirect");
         const redirectUrl =
           redirectParameter || getRedirectUrl(redirectParameter || PATHS.ADMIN.OVERVIEW, true);
         router.push(redirectUrl || PATHS.ADMIN.OVERVIEW);
       } else {
-        // Handle validation/backend errors
         const errorResponse = response as ApiError;
 
-        // Set backend validation errors on form fields
         if (errorResponse.errors && typeof errorResponse.errors === "object") {
-          // Handle field-specific errors
           for (const [field, error] of Object.entries(errorResponse.errors)) {
             if (field !== "system" && typeof error === "string") {
               form.setError(field, error);
@@ -77,7 +74,7 @@ export default function LoginForm() {
           }
         }
 
-        // Handle system errors with smart field assignment
+        // Intelligently assign system errors to appropriate form fields
         const errorMessage = errorResponse.errors?.system as string;
         if (errorMessage && errorMessage.length > 0) {
           if (errorMessage.toLowerCase().includes("email")) {
@@ -90,13 +87,11 @@ export default function LoginForm() {
           ) {
             form.setError("email", errorMessage);
           } else {
-            // Default to password field for generic errors
             form.setError("password", errorMessage);
           }
         }
       }
     } catch (error) {
-      // Handle unexpected errors
       const errorMessage = error instanceof Error ? error.message : "An unexpected error occurred";
       form.setError("password", errorMessage);
     } finally {

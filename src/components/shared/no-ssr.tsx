@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-interface NoSRProperties {
+interface NoSSRProperties {
   children: React.ReactNode;
   fallback?: React.ReactNode;
 }
@@ -11,7 +11,7 @@ interface NoSRProperties {
  * NoSSR component that prevents hydration mismatches by only rendering children on the client
  * This is useful for components that rely on browser APIs or have different server/client behavior
  */
-export default function NoSSR({ children, fallback }: NoSRProperties) {
+export default function NoSSR({ children, fallback }: NoSSRProperties) {
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {

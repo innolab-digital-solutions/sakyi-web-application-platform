@@ -1,5 +1,5 @@
-import { Breadcrumbs } from "@/components/shared/breadcrumb/type";
 import { PATHS } from "@/config/paths";
+import { Breadcrumbs } from "@/types/shared/breadcrumb";
 
 /**
  * Admin breadcrumb configuration
@@ -15,32 +15,32 @@ export const adminBreadcrumbs: Breadcrumbs = {
     { label: "Overview", href: PATHS.ADMIN.OVERVIEW },
   ],
 
-  // Enrollments
-  "/admin/enrollments": [
+  // Programs
+  "/admin/programs": [
     { label: "Admin Control Panel" },
     { label: "Programs & Clients" },
-    { label: "Enrollments", href: "" },
+    { label: "Programs", href: "" },
     { label: "List" },
   ],
 
-  "/admin/enrollments/create": [
+  "/admin/programs/create": [
     { label: "Admin Control Panel" },
     { label: "Programs & Clients" },
-    { label: "Enrollments", href: "" },
+    { label: "Programs", href: "" },
     { label: "Create" },
   ],
 
-  "/admin/enrollments/:id": [
+  "/admin/programs/:id": [
     { label: "Admin Control Panel" },
     { label: "Programs & Clients" },
-    { label: "Enrollments", href: "" },
+    { label: "Programs", href: "" },
     { label: "View Details" },
   ],
 
-  "/admin/enrollments/:id/edit": [
+  "/admin/programs/:id/edit": [
     { label: "Admin Control Panel" },
     { label: "Programs & Clients" },
-    { label: "Enrollments", href: "" },
+    { label: "Programs", href: "" },
     { label: "Edit" },
   ],
 };

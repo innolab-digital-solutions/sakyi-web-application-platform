@@ -3,7 +3,7 @@
 import { LogOut } from "lucide-react";
 import { useState } from "react";
 
-import LogoutConfirmationDialog from "@/components/admin/auth/logout-confirmation-dialog";
+import LogoutConfirmationDialog from "@/components/shared/confirmation-dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -31,15 +31,12 @@ export default function DashboardMenu() {
 
   const handleLogoutConfirm = async () => {
     try {
-      // Wait for the complete logout process including API call
       await logout();
-      // Dialog will close after logout completes (user gets redirected)
     } catch (error) {
       console.error("Logout failed:", error);
     }
   };
 
-  // Only show skeleton during initial loading, not during logout
   if (loading && !isAuthenticated) {
     return <Skeleton className="bg-muted h-8 w-8 rounded-full" />;
   }

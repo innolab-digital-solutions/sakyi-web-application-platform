@@ -91,7 +91,7 @@ export const updateBreadcrumbLabel = (
  * @returns Breadcrumb items array if found, undefined otherwise
  */
 const getBreadcrumbs = (path: string): BreadcrumbItem[] | undefined => {
-  return breadcrumbMap.get(path);
+  return breadcrumbMap.get(path) as BreadcrumbItem[] | undefined;
 };
 
 /**

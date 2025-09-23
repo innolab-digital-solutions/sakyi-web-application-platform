@@ -15,11 +15,11 @@ import { PATHS } from "@/config/paths";
  * @returns True if the route requires authentication, false otherwise
  */
 export const isProtectedRoute = (pathname: string): boolean => {
-  const protectedRoutes = ["/admin/overview"];
+  const protectedRoutes = [PATHS.ADMIN.OVERVIEW];
 
   return (
     protectedRoutes.some((route) => pathname === route || pathname.startsWith(route + "/")) ||
-    pathname === "/admin"
+    pathname === PATHS.ADMIN.ROOT
   );
 };
 
@@ -30,8 +30,9 @@ export const isProtectedRoute = (pathname: string): boolean => {
  * @returns True if the route is public, false otherwise
  */
 export const isPublicRoute = (pathname: string): boolean => {
-  const publicRoutes = ["/admin/login"];
-  return publicRoutes.includes(pathname);
+  const publicRoutes = [PATHS.ADMIN.LOGIN];
+
+  return publicRoutes.some((route) => pathname === route || pathname.startsWith(route + "/"));
 };
 
 /**
@@ -55,7 +56,7 @@ export const getRedirectUrl = (pathname: string, isAuthenticated: boolean): stri
     return PATHS.ADMIN.LOGIN;
   }
 
-  if (pathname === "/admin") {
+  if (pathname === PATHS.ADMIN.ROOT) {
     return isAuthenticated ? PATHS.ADMIN.OVERVIEW : PATHS.ADMIN.LOGIN;
   }
 

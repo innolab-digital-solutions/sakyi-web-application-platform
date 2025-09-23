@@ -127,7 +127,6 @@ export const clearStoredToken = (): void => {
     localStorage.removeItem(STORAGE_KEY);
     localStorage.removeItem(EXPIRY_KEY);
 
-    // Signal cross-tab logout
     localStorage.setItem("logout-signal", Date.now().toString());
     localStorage.removeItem("logout-signal");
   } catch (error) {
