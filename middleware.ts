@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { PATHS } from "@/config/paths";
 import { isProtectedRoute } from "@/utils/auth/guards";
-import { EXPIRY_KEY, STORAGE_KEY } from "@/utils/auth/storage";
 
 /**
  * Checks if the user is authenticated based on request cookies or authorization header
@@ -11,25 +10,15 @@ import { EXPIRY_KEY, STORAGE_KEY } from "@/utils/auth/storage";
  * @returns True if user has valid authentication credentials, false otherwise
  */
 const isAuthenticated = (request: NextRequest): boolean => {
-  const tokenCookie = request.cookies.get(STORAGE_KEY);
-  const expiryCookie = request.cookies.get(EXPIRY_KEY);
+  const tokenCookie = request.cookies.get("access_token");
+  const expiryCookie = request.cookies.get("access_expires_at");
 
-  if (tokenCookie && expiryCookie) {
-    const expiresAt = Number.parseInt(expiryCookie.value, 10);
-    const token = tokenCookie.value;
-    const now = Date.now();
-    return now < expiresAt && token.length > 0;
-  }
+  if (!tokenCookie || !expiryCookie) return false;
 
-  // Fallback to Authorization header if cookies are not available
-  const authHeader = request.headers.get("authorization");
-  if (authHeader && authHeader.startsWith("Bearer ")) {
-    const token = authHeader.slice(7);
-    // Assume token is valid if present - full validation occurs in API layer
-    return token.length > 0;
-  }
+  const expiresAt = Number.parseInt(expiryCookie.value, 10);
+  if (Number.isNaN(expiresAt)) return false;
 
-  return false;
+  return Date.now() < expiresAt && tokenCookie.value.length > 0;
 };
 
 /**
