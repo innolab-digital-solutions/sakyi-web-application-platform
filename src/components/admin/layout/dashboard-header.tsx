@@ -1,12 +1,12 @@
 import { Bell, Search } from "lucide-react";
 
-import { ProfileMenu } from "@/components/admin/layout";
-import { DynamicBreadcrumb } from "@/components/admin/shared/dynamic-breadcrumb";
+import DashboardMenu from "@/components/admin/layout/dashboard-menu";
+import DynamicBreadcrumb from "@/components/shared/dynamic-breadcrumb";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 
-export function DashboardHeader() {
+export default function DashboardHeader() {
   return (
     <header className="bg-background/95 supports-[backdrop-filter]:bg-background/60 border-border/80 sticky top-0 z-50 w-full border-b backdrop-blur">
       <div className="flex h-16 items-center justify-between px-5">
@@ -35,7 +35,7 @@ export function DashboardHeader() {
             </div>
           </div>
 
-          <ProfileMenu />
+          <DashboardMenu />
         </div>
       </div>
     </header>

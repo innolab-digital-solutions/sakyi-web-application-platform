@@ -16,32 +16,24 @@ import {
   SidebarMenu,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { adminNavigation } from "@/lib/config/admin-nav";
-import { cn } from "@/lib/utils";
+import { adminNavigation } from "@/config/navigation";
+import { getActiveAdminNav } from "@/utils/admin/navigation";
+import { cn } from "@/utils/shared/cn";
 
-export function DashboardSidebar() {
+export default function DashboardSidebar() {
   const pathname = usePathname();
 
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({});
 
   const toggleGroup = (name: string) => {
-    setOpenGroups((prev) => ({
-      ...prev,
-      [name]: !prev[name],
+    setOpenGroups((previous) => ({
+      ...previous,
+      // eslint-disable-next-line security/detect-object-injection
+      [name]: !previous[name],
     }));
   };
 
-  const items = adminNavigation.map((group) => ({
-    ...group,
-    items: group.items.map((item) => ({
-      ...item,
-      active: pathname.startsWith(item.path),
-      subitems: item.subitems.map((subitem) => ({
-        ...subitem,
-        active: pathname === subitem.path,
-      })),
-    })),
-  }));
+  const items = getActiveAdminNav(pathname, adminNavigation);
 
   return (
     <Sidebar className="border-border/40 border-r">
@@ -51,10 +43,11 @@ export function DashboardSidebar() {
             <div className="flex items-center gap-3 px-2">
               <div className="border-border/40 relative h-9 w-9 overflow-hidden rounded-sm border shadow">
                 <Image
-                  src="/logo.jpg"
+                  src="/images/logo.jpg"
                   alt="logo"
                   fill
                   className="object-cover transition-transform duration-200 hover:scale-110"
+                  sizes="100px"
                 />
               </div>
               <div className="flex flex-col gap-0.5">
@@ -76,7 +69,7 @@ export function DashboardSidebar() {
               <SidebarMenu>
                 {group.items.map((item) => (
                   <div key={item.name} className="space-y-1">
-                    {item.subitems.length > 0 ? (
+                    {item.subitems && item.subitems.length > 0 ? (
                       <>
                         <SidebarMenuItem>
                           <button
@@ -84,7 +77,7 @@ export function DashboardSidebar() {
                             className="hover:bg-accent hover:text-accent-foreground flex w-full items-center justify-between rounded-sm px-3 py-2 transition-colors"
                           >
                             <div className="flex items-center">
-                              <item.icon className="mr-2 h-4 w-4" />
+                              {item.icon && <item.icon className="mr-2 h-4 w-4" />}
                               <span className="text-[12.8px] font-medium">{item.name}</span>
                             </div>
                             <ChevronDown
@@ -105,21 +98,22 @@ export function DashboardSidebar() {
                         >
                           <div className="overflow-hidden">
                             <div className="ml-4 space-y-1 border-l py-1 pl-2">
-                              {item.subitems.map((subitem) => (
-                                <SidebarMenuItem key={subitem.name}>
-                                  <Link
-                                    href={subitem.path}
-                                    className={cn(
-                                      "hover:bg-accent hover:text-accent-foreground flex items-center rounded-sm px-3 py-2 text-sm transition-colors",
-                                      subitem.active && "bg-accent text-accent-foreground",
-                                    )}
-                                  >
-                                    <span className="text-[12.8px] font-medium">
-                                      {subitem.name}
-                                    </span>
-                                  </Link>
-                                </SidebarMenuItem>
-                              ))}
+                              {item.subitems &&
+                                item.subitems.map((subitem) => (
+                                  <SidebarMenuItem key={subitem.name}>
+                                    <Link
+                                      href={subitem.path}
+                                      className={cn(
+                                        "hover:bg-accent hover:text-accent-foreground flex items-center rounded-sm px-3 py-2 text-sm transition-colors",
+                                        subitem.active && "bg-accent text-accent-foreground",
+                                      )}
+                                    >
+                                      <span className="text-[12.8px] font-medium">
+                                        {subitem.name}
+                                      </span>
+                                    </Link>
+                                  </SidebarMenuItem>
+                                ))}
                             </div>
                           </div>
                         </div>
@@ -133,7 +127,7 @@ export function DashboardSidebar() {
                             item.active && "bg-accent text-accent-foreground",
                           )}
                         >
-                          <item.icon className="mr-2 h-4 w-4" />
+                          {item.icon && <item.icon className="mr-2 h-4 w-4" />}
                           <span className="text-[12.8px] font-medium">{item.name}</span>
                         </Link>
                       </SidebarMenuItem>

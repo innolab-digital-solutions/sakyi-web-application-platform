@@ -1,7 +1,7 @@
 import { Inter } from "next/font/google";
 import { cookies } from "next/headers";
 
-import DashboardLayout from "@/components/layout/admin/dashboard-layout";
+import DashboardLayout from "@/components/admin/layout/dashboard-layout";
 
 const inter = Inter({
   weight: ["400", "500", "600", "700", "800", "900"],

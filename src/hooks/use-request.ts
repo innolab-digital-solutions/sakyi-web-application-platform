@@ -1,11 +1,17 @@
+/* eslint-disable security/detect-object-injection */
 "use client";
 
 import { useCallback, useRef, useState } from "react";
 
 import { useAuth } from "@/context/auth-context";
-import { http } from "@/lib/fetcher";
-import { ApiError, ApiResponse } from "@/types/api";
+import { http } from "@/lib/api/client";
+import { ApiError, ApiResponse } from "@/types/shared/api";
 
+/**
+ * Configuration options for HTTP requests
+ *
+ * @template T - Expected response data type
+ */
 type RequestOptions<T = unknown> = {
   data?: Record<string, unknown>;
   headers?: Record<string, string>;
@@ -19,6 +25,9 @@ type RequestOptions<T = unknown> = {
   onCancel?: () => void;
 };
 
+/**
+ * Internal request configuration object
+ */
 type RequestConfig = {
   method: "get" | "post" | "put" | "patch" | "delete";
   url: string;
@@ -26,49 +35,73 @@ type RequestConfig = {
   headers?: Record<string, string>;
 };
 
+/**
+ * Request state tracking
+ */
 type RequestState = {
   loading: boolean;
-  error: ApiError | null;
+  error: ApiError | null | undefined;
   cancelled: boolean;
 };
 
-export function useRequest() {
+/**
+ * Advanced React hook for HTTP request management with authentication, cancellation, and lifecycle callbacks
+ *
+ * Provides a complete solution for making HTTP requests with proper state management,
+ * error handling, and request cancellation capabilities.
+ *
+ * @returns Object containing request state, methods, and convenience shortcuts
+ */
+export const useRequest = () => {
   const { token } = useAuth();
 
   const [state, setState] = useState<RequestState>({
     loading: false,
-    error: null,
+    error: undefined,
     cancelled: false,
   });
 
+  // Track active request for cancellation
   const abortController = useRef<AbortController | null>(null);
+  // Store previous state when preserveState is enabled
   const preservedState = useRef<RequestState | null>(null);
 
-  // Reset state
+  /**
+   * Resets request state to initial values
+   */
   const resetState = useCallback(() => {
     setState({
       loading: false,
-      error: null,
+      error: undefined,
       cancelled: false,
     });
   }, []);
 
-  // Cancel current request
+  /**
+   * Cancels the currently active request
+   */
   const cancel = useCallback(() => {
     if (abortController.current) {
       abortController.current.abort();
-      setState((prev) => ({ ...prev, cancelled: true, loading: false }));
+      setState((previous) => ({ ...previous, cancelled: true, loading: false }));
     }
   }, []);
 
-  // Main visit method (similar to router.visit)
+  /**
+   * Core request method that handles all HTTP operations
+   *
+   * @template T - Expected response data type
+   * @param url - Target endpoint URL
+   * @param options - Request configuration and lifecycle callbacks
+   * @returns Promise resolving to API response or undefined if cancelled/failed
+   */
   const visit = useCallback(
     async <T = unknown>(
       url: string,
       options: RequestOptions<T> & {
         method?: "get" | "post" | "put" | "patch" | "delete";
       } = {},
-    ): Promise<ApiResponse<T> | null> => {
+    ): Promise<ApiResponse<T> | undefined> => {
       const {
         method = "get",
         data = {},
@@ -83,41 +116,40 @@ export function useRequest() {
         onCancel,
       } = options;
 
-      // Preserve state if needed
+      // Store current state before potential reset
       if (preserveState && !preservedState.current) {
         preservedState.current = { ...state };
       }
 
       const config: RequestConfig = { method, url, data, headers };
 
-      // onBefore callback - can cancel request
+      // Early cancellation check via onBefore callback
       if (onBefore) {
         const shouldContinue = onBefore(config);
         if (shouldContinue === false) {
-          return null;
+          return undefined;
         }
       }
 
-      // Reset state if not preserving
+      // Clear state unless explicitly preserving
       if (!preserveState) {
         resetState();
       }
 
-      setState((prev) => ({
-        ...prev,
+      setState((previous) => ({
+        ...previous,
         loading: true,
         cancelled: false,
-        error: null,
+        error: undefined,
       }));
 
-      // Create new abort controller
+      // Setup request cancellation mechanism
       abortController.current = new AbortController();
 
-      // onStart callback
       onStart?.(config);
 
       try {
-        // Determine auth requirements
+        // Apply authentication only when both required and available
         const needsAuth = requireAuth && token;
 
         const requestOptions = {
@@ -127,124 +159,158 @@ export function useRequest() {
           ...headers,
         };
 
-        let response: ApiResponse<T>;
+        // Execute request based on HTTP method (GET/DELETE vs POST/PUT/PATCH)
+        const response: ApiResponse<T> = await (method === "get" || method === "delete"
+          ? http[method]<T>(url, requestOptions)
+          : http[method]<T>(url, data, requestOptions));
 
-        // Make the actual request based on method
-        if (method === "get" || method === "delete") {
-          response = await http[method]<T>(url, requestOptions);
-        } else {
-          response = await http[method]<T>(url, data, requestOptions);
-        }
+        setState((previous) => ({ ...previous, progress: 100, loading: false }));
 
-        setState((prev) => ({ ...prev, progress: 100, loading: false }));
-
+        // Handle API-level errors vs successful responses
         if (response.status === "error") {
-          setState((prev) => ({ ...prev, error: response as ApiError }));
+          setState((previous) => ({ ...previous, error: response as ApiError }));
           await onError?.(response as ApiError);
         } else {
-          setState((prev) => ({ ...prev, error: null }));
+          setState((previous) => ({ ...previous, error: undefined }));
           await onSuccess?.(response);
         }
 
         await onFinish?.(config);
         return response;
       } catch (error: unknown) {
-        setState((prev) => ({ ...prev, loading: false }));
+        setState((previous) => ({ ...previous, loading: false }));
 
+        // Distinguish between cancellation and actual errors
         if (error instanceof Error && error.name === "AbortError") {
-          setState((prev) => ({ ...prev, cancelled: true }));
+          setState((previous) => ({ ...previous, cancelled: true }));
           onCancel?.();
         } else {
+          // Convert any error to standardized API error format
           const apiError: ApiError = {
             status: "error",
             message: error instanceof Error ? error.message : "Request failed",
             errors: (error as { errors?: Record<string, unknown> })?.errors || {},
           };
-          setState((prev) => ({ ...prev, error: apiError }));
+          setState((previous) => ({ ...previous, error: apiError }));
           await onError?.(apiError);
         }
 
         await onFinish?.(config);
-        return null;
+        return undefined;
       }
     },
     [token, state, resetState],
   );
 
-  // HTTP method shortcuts (similar to Inertia.js router shortcuts)
+  /**
+   * Performs a GET request with query parameters
+   *
+   * @template T - Expected response data type
+   * @param url - Target endpoint URL
+   * @param data - Query parameters
+   * @param options - Additional request options
+   */
   const get = useCallback(
     <T = unknown>(
       url: string,
       data?: Record<string, unknown>,
       options?: Omit<RequestOptions<T>, "data">,
-    ) => visit<T>(url, { ...options, method: "get", data }),
+    ) => {
+      return visit<T>(url, { ...options, method: "get", data });
+    },
     [visit],
   );
 
+  /**
+   * Performs a POST request with request body data
+   *
+   * @template T - Expected response data type
+   * @param url - Target endpoint URL
+   * @param data - Request body data
+   * @param options - Additional request options
+   */
   const post = useCallback(
     <T = unknown>(
       url: string,
       data?: Record<string, unknown>,
       options?: Omit<RequestOptions<T>, "data">,
-    ) => visit<T>(url, { ...options, method: "post", data }),
+    ) => {
+      return visit<T>(url, { ...options, method: "post", data });
+    },
     [visit],
   );
 
+  /**
+   * Performs a PUT request with request body data
+   *
+   * @template T - Expected response data type
+   * @param url - Target endpoint URL
+   * @param data - Request body data
+   * @param options - Additional request options
+   */
   const put = useCallback(
     <T = unknown>(
       url: string,
       data?: Record<string, unknown>,
       options?: Omit<RequestOptions<T>, "data">,
-    ) => visit<T>(url, { ...options, method: "put", data }),
+    ) => {
+      return visit<T>(url, { ...options, method: "put", data });
+    },
     [visit],
   );
 
+  /**
+   * Performs a PATCH request with request body data
+   *
+   * @template T - Expected response data type
+   * @param url - Target endpoint URL
+   * @param data - Request body data
+   * @param options - Additional request options
+   */
   const patch = useCallback(
     <T = unknown>(
       url: string,
       data?: Record<string, unknown>,
       options?: Omit<RequestOptions<T>, "data">,
-    ) => visit<T>(url, { ...options, method: "patch", data }),
+    ) => {
+      return visit<T>(url, { ...options, method: "patch", data });
+    },
     [visit],
   );
 
+  /**
+   * Performs a DELETE request
+   *
+   * @template T - Expected response data type
+   * @param url - Target endpoint URL
+   * @param options - Additional request options
+   */
   const del = useCallback(
-    <T = unknown>(url: string, options?: RequestOptions<T>) =>
-      visit<T>(url, { ...options, method: "delete" }),
+    <T = unknown>(url: string, options?: RequestOptions<T>) => {
+      return visit<T>(url, { ...options, method: "delete" });
+    },
     [visit],
   );
-
-  // Reload current request (if you want to implement this)
-  const reload = useCallback(() => {
-    // This would require storing the last request config
-    // For now, it's a placeholder
-    console.warn("reload() method needs implementation based on your requirements");
-    return Promise.resolve(null);
-  }, []);
 
   return {
-    // State
+    // Core request state
     loading: state.loading,
     error: state.error,
     cancelled: state.cancelled,
 
-    // Methods
+    // Request methods
     visit,
     get,
     post,
     put,
     patch,
-    delete: del,
-    reload,
+    del,
     cancel,
     resetState,
 
-    // Utilities
+    // Convenience state checks
     isLoading: state.loading,
     hasError: !!state.error,
     isCancelled: state.cancelled,
   };
-}
-
-// Export types for external usage
-export type { RequestConfig, RequestOptions };
+};

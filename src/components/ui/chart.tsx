@@ -1,11 +1,11 @@
+/* eslint-disable security/detect-object-injection */
 "use client";
 
 import * as React from "react";
 import * as RechartsPrimitive from "recharts";
 
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/shared/cn";
 
-// Format: { THEME_NAME: CSS_SELECTOR }
 const THEMES = { light: "", dark: ".dark" } as const;
 
 export type ChartConfig = {
@@ -18,11 +18,11 @@ export type ChartConfig = {
   );
 };
 
-type ChartContextProps = {
+type ChartContextProperties = {
   config: ChartConfig;
 };
 
-const ChartContext = React.createContext<ChartContextProps | null>(null);
+const ChartContext = React.createContext<ChartContextProperties | undefined>(undefined);
 
 function useChart() {
   const context = React.useContext(ChartContext);
@@ -39,13 +39,13 @@ function ChartContainer({
   className,
   children,
   config,
-  ...props
+  ...properties
 }: React.ComponentProps<"div"> & {
   config: ChartConfig;
   children: React.ComponentProps<typeof RechartsPrimitive.ResponsiveContainer>["children"];
 }) {
   const uniqueId = React.useId();
-  const chartId = `chart-${id || uniqueId.replace(/:/g, "")}`;
+  const chartId = `chart-${id || uniqueId.replaceAll(":", "")}`;
 
   return (
     <ChartContext.Provider value={{ config }}>
@@ -56,7 +56,7 @@ function ChartContainer({
           "[&_.recharts-cartesian-axis-tick_text]:fill-muted-foreground [&_.recharts-cartesian-grid_line[stroke='#ccc']]:stroke-border/50 [&_.recharts-curve.recharts-tooltip-cursor]:stroke-border [&_.recharts-polar-grid_[stroke='#ccc']]:stroke-border [&_.recharts-radial-bar-background-sector]:fill-muted [&_.recharts-rectangle.recharts-tooltip-cursor]:fill-muted [&_.recharts-reference-line_[stroke='#ccc']]:stroke-border flex aspect-video justify-center text-xs [&_.recharts-dot[stroke='#fff']]:stroke-transparent [&_.recharts-layer]:outline-hidden [&_.recharts-sector]:outline-hidden [&_.recharts-sector[stroke='#fff']]:stroke-transparent [&_.recharts-surface]:outline-hidden",
           className,
         )}
-        {...props}
+        {...properties}
       >
         <ChartStyle id={chartId} config={config} />
         <RechartsPrimitive.ResponsiveContainer>{children}</RechartsPrimitive.ResponsiveContainer>
@@ -68,8 +68,8 @@ function ChartContainer({
 const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
   const colorConfig = Object.entries(config).filter(([, config]) => config.theme || config.color);
 
-  if (!colorConfig.length) {
-    return null;
+  if (colorConfig.length === 0) {
+    return;
   }
 
   return (
@@ -82,7 +82,7 @@ ${prefix} [data-chart=${id}] {
 ${colorConfig
   .map(([key, itemConfig]) => {
     const color = itemConfig.theme?.[theme as keyof typeof itemConfig.theme] || itemConfig.color;
-    return color ? `  --color-${key}: ${color};` : null;
+    return color ? `  --color-${key}: ${color};` : undefined;
   })
   .join("\n")}
 }
@@ -122,7 +122,7 @@ function ChartTooltipContent({
 
   const tooltipLabel = React.useMemo(() => {
     if (hideLabel || !payload?.length) {
-      return null;
+      return;
     }
 
     const [item] = payload;
@@ -140,14 +140,14 @@ function ChartTooltipContent({
     }
 
     if (!value) {
-      return null;
+      return;
     }
 
     return <div className={cn("font-medium", labelClassName)}>{value}</div>;
   }, [label, labelFormatter, payload, hideLabel, labelClassName, config, labelKey]);
 
   if (!active || !payload?.length) {
-    return null;
+    return;
   }
 
   const nestLabel = payload.length === 1 && indicator !== "dot";
@@ -159,7 +159,7 @@ function ChartTooltipContent({
         className,
       )}
     >
-      {!nestLabel ? tooltipLabel : null}
+      {nestLabel ? undefined : tooltipLabel}
       <div className="grid gap-1.5">
         {payload.map((item, index) => {
           const key = `${nameKey || item.name || item.dataKey || "value"}`;
@@ -209,7 +209,7 @@ function ChartTooltipContent({
                     )}
                   >
                     <div className="grid gap-1.5">
-                      {nestLabel ? tooltipLabel : null}
+                      {nestLabel ? tooltipLabel : undefined}
                       <span className="text-muted-foreground">
                         {itemConfig?.label || item.name}
                       </span>
@@ -246,7 +246,7 @@ function ChartLegendContent({
   const { config } = useChart();
 
   if (!payload?.length) {
-    return null;
+    return;
   }
 
   return (
@@ -286,10 +286,12 @@ function ChartLegendContent({
   );
 }
 
-// Helper to extract item config from a payload.
+/**
+ * Helper to extract item config from a payload.
+ */
 function getPayloadConfigFromPayload(config: ChartConfig, payload: unknown, key: string) {
   if (typeof payload !== "object" || payload === null) {
-    return undefined;
+    return;
   }
 
   const payloadPayload =

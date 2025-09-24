@@ -1,9 +1,10 @@
 import { usePathname } from "next/navigation";
 import { useMemo } from "react";
 
-import { type BreadcrumbItem, getBreadcrumbsForPath } from "@/config/breadcrumbs";
+import { BreadcrumbItem } from "@/types/shared/breadcrumb";
+import { getBreadcrumbsForPath } from "@/utils/shared/breadcrumb";
 
-export function useBreadcrumbs(): BreadcrumbItem[] {
+export const useBreadcrumbs = (): BreadcrumbItem[] => {
   const pathname = usePathname();
 
   const breadcrumbs = useMemo(() => {
@@ -11,4 +12,4 @@ export function useBreadcrumbs(): BreadcrumbItem[] {
   }, [pathname]);
 
   return breadcrumbs;
-}
+};
