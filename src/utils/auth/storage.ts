@@ -7,9 +7,9 @@
  */
 
 /** Storage keys for token persistence */
-const STORAGE_KEY = "access-token";
-const EXPIRY_KEY = "token-expires-at";
-const SALT = "_sakyi_salt_v1";
+export const STORAGE_KEY = "access-token";
+export const EXPIRY_KEY = "token-expires-at";
+export const SALT = "_sakyi_salt_v1";
 
 /**
  * Encrypts a token using base64 encoding with salt

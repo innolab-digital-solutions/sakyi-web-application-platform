@@ -1,173 +1,88 @@
 import { NextRequest, NextResponse } from "next/server";
 
-// Route patterns
-const PUBLIC_ROUTES = ["/admin/login", "/api/auth/login", "/api/auth/refresh", "/api/auth/logout"];
+import { PATHS } from "@/config/paths";
+import { isProtectedRoute } from "@/utils/auth/guards";
+import { EXPIRY_KEY, STORAGE_KEY } from "@/utils/auth/storage";
 
-const PROTECTED_ROUTES = [
-  "/admin",
-  "/admin/overview",
-  "/admin/enrollments",
-  "/admin/reports",
-  "/admin/audit-logs",
-  "/admin/team-management",
-  "/admin/staff",
-  "/admin/roles",
-  "/admin/programs",
-  "/admin/clients",
-  "/admin/settings",
-];
-
-// Token storage keys (matching auth-context.tsx)
-const STORAGE_KEY = "access-token";
-const EXPIRY_KEY = "token-expires-at";
-
-// Simple decryption function (matching auth-context.tsx)
-const decryptToken = (encryptedToken: string): string | null => {
-  try {
-    const decoded = atob(encryptedToken);
-    const parts = decoded.split("_sakyi_salt_v1");
-    return parts[0] || null;
-  } catch {
-    return null;
-  }
-};
-
-// Check if token is valid and not expired
-const isTokenValid = (token: string, expiresAt: number): boolean => {
-  const now = Date.now();
-  return now < expiresAt && token.length > 0;
-};
-
-// Get token from request headers (for server-side validation)
-const getTokenFromRequest = (
-  request: NextRequest,
-): { token: string | null; expiresAt: number | null } => {
-  // Try to get token from Authorization header first
-  const authHeader = request.headers.get("authorization");
-  if (authHeader && authHeader.startsWith("Bearer ")) {
-    const token = authHeader.substring(7);
-    // For middleware, we'll assume token is valid if it exists
-    // The actual validation will happen in the API calls
-    return { token, expiresAt: Date.now() + 3600000 }; // 1 hour default
-  }
-
-  // Try to get from cookies (if using httpOnly cookies)
-  const tokenCookie = request.cookies.get("access-token");
-  const expiryCookie = request.cookies.get("token-expires-at");
-
-  if (tokenCookie && expiryCookie) {
-    const expiresAt = parseInt(expiryCookie.value, 10);
-    if (isTokenValid(tokenCookie.value, expiresAt)) {
-      return { token: tokenCookie.value, expiresAt };
-    }
-  }
-
-  return { token: null, expiresAt: null };
-};
-
-// Check if route is public
-const isPublicRoute = (pathname: string): boolean => {
-  return PUBLIC_ROUTES.some((route) => pathname === route || pathname.startsWith(route + "/"));
-};
-
-// Check if route is protected
-const isProtectedRoute = (pathname: string): boolean => {
-  return PROTECTED_ROUTES.some((route) => pathname === route || pathname.startsWith(route + "/"));
-};
-
-// Check if user is authenticated (for client-side routes)
+/**
+ * Checks if the user is authenticated based on request cookies or authorization header
+ *
+ * @param request - The incoming Next.js request object
+ * @returns True if user has valid authentication credentials, false otherwise
+ */
 const isAuthenticated = (request: NextRequest): boolean => {
-  // Check cookies (set by AuthHeadersProvider)
-  const tokenCookie = request.cookies.get("access-token");
-  const expiryCookie = request.cookies.get("token-expires-at");
+  const tokenCookie = request.cookies.get(STORAGE_KEY);
+  const expiryCookie = request.cookies.get(EXPIRY_KEY);
 
   if (tokenCookie && expiryCookie) {
-    const expiresAt = parseInt(expiryCookie.value, 10);
-    return isTokenValid(tokenCookie.value, expiresAt);
+    const expiresAt = Number.parseInt(expiryCookie.value, 10);
+    const token = tokenCookie.value;
+    const now = Date.now();
+    return now < expiresAt && token.length > 0;
   }
 
-  // Fallback: check Authorization header
+  // Fallback to Authorization header if cookies are not available
   const authHeader = request.headers.get("authorization");
   if (authHeader && authHeader.startsWith("Bearer ")) {
-    const token = authHeader.substring(7);
-    // For middleware, we'll assume token is valid if it exists
-    // The actual validation will happen in the API calls
+    const token = authHeader.slice(7);
+    // Assume token is valid if present - full validation occurs in API layer
     return token.length > 0;
   }
 
   return false;
 };
 
+/**
+ * Next.js middleware for handling authentication and route protection
+ *
+ * Manages access control for admin routes by:
+ * - Redirecting authenticated users away from login page
+ * - Protecting admin routes requiring authentication
+ * - Handling root admin path redirects based on auth state
+ *
+ * @param request - The incoming Next.js request object
+ * @returns NextResponse with appropriate redirect or continuation
+ */
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  console.log(`🔍 Middleware: ${request.method} ${pathname}`);
-
-  // Skip middleware for static files, API routes (except auth), and Next.js internals
-  if (
-    pathname.startsWith("/_next") ||
-    (pathname.startsWith("/api/") && !pathname.startsWith("/api/auth")) ||
-    pathname.includes(".") ||
-    pathname.startsWith("/favicon")
-  ) {
-    return NextResponse.next();
-  }
-
-  // Handle API auth routes
-  if (pathname.startsWith("/api/auth")) {
-    // Allow all auth API routes to pass through
-    return NextResponse.next();
-  }
-
-  // Check if user is authenticated
   const authenticated = isAuthenticated(request);
 
-  // Handle login page
-  if (pathname === "/admin/login") {
+  if (pathname === PATHS.ADMIN.LOGIN) {
     if (authenticated) {
-      console.log("🚫 Authenticated user trying to access login, redirecting to overview");
-      return NextResponse.redirect(new URL("/admin/overview", request.url));
+      return NextResponse.redirect(new URL(PATHS.ADMIN.OVERVIEW, request.url));
     }
     return NextResponse.next();
   }
 
-  // Handle protected admin routes
   if (isProtectedRoute(pathname)) {
     if (!authenticated) {
-      console.log("🔒 Unauthenticated user trying to access protected route, redirecting to login");
-      // Store the intended destination for redirect after login
-      const loginUrl = new URL("/admin/login", request.url);
+      const loginUrl = new URL(PATHS.ADMIN.LOGIN, request.url);
+      // Preserve original destination for post-login redirect
       loginUrl.searchParams.set("redirect", pathname);
+
       return NextResponse.redirect(loginUrl);
     }
     return NextResponse.next();
   }
 
-  // Handle root admin route
-  if (pathname === "/admin") {
-    if (authenticated) {
-      console.log("🏠 Redirecting authenticated user from /admin to /admin/overview");
-      return NextResponse.redirect(new URL("/admin/overview", request.url));
-    } else {
-      console.log("🔒 Redirecting unauthenticated user from /admin to login");
-      return NextResponse.redirect(new URL("/admin/login", request.url));
-    }
+  if (pathname === PATHS.ADMIN.ROOT) {
+    return authenticated
+      ? NextResponse.redirect(new URL(PATHS.ADMIN.OVERVIEW, request.url))
+      : NextResponse.redirect(new URL(PATHS.ADMIN.LOGIN, request.url));
   }
 
-  // Allow all other routes to pass through
   return NextResponse.next();
 }
 
-// Configure which routes the middleware should run on
+/**
+ * Middleware configuration specifying which routes to intercept
+ *
+ * Excludes static assets, images, and Next.js internal files from middleware processing
+ * to optimize performance and prevent unnecessary authentication checks.
+ */
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * - public folder files
-     */
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+    String.raw`/((?!_next/static|_next/image|favicon.ico|.*\.(?:svg|png|jpg|jpeg|gif|webp)$).*)`,
   ],
 };
