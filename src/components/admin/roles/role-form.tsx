@@ -26,7 +26,7 @@ type Role = {
   description?: string | null;
 };
 
-type RoleFormDialogProperties = {
+type RoleFormProperties = {
   mode: "create" | "edit";
   trigger?: React.ReactNode;
   defaultValues?: Partial<Role>;
@@ -37,7 +37,7 @@ type RoleFormDialogProperties = {
   description?: string;
 };
 
-export function RoleFormDialog({
+export default function RoleForm({
   mode,
   trigger,
   defaultValues,
@@ -46,7 +46,7 @@ export function RoleFormDialog({
   onSuccess,
   title,
   description,
-}: RoleFormDialogProperties) {
+}: RoleFormProperties) {
   const [internalOpen, setInternalOpen] = React.useState(false);
   const isControlled = typeof open === "boolean" && typeof onOpenChange === "function";
 
@@ -85,30 +85,37 @@ export function RoleFormDialog({
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const request =
-      isEdit && defaultValues?.id
-        ? form.put(ENDPOINTS.ADMIN.ROLES.UPDATE(defaultValues.id), {
-            onSuccess: (response) => {
-              onSuccess?.(response);
-              setDialogOpen(false);
-            },
-          })
-        : form.post(ENDPOINTS.ADMIN.ROLES.STORE, {
-            onSuccess: (response) => {
-              onSuccess?.(response);
-              setDialogOpen(false);
-            },
-          });
-
-    return request;
+    if (isEdit && defaultValues?.id) {
+      form.put(ENDPOINTS.ADMIN.ROLES.UPDATE(defaultValues.id), {
+        onSuccess: (response) => {
+          onSuccess?.(response);
+          setDialogOpen(false);
+        },
+        onError: (error) => {
+          console.error("Error updating role:", error);
+        },
+      });
+    } else {
+      form.post(ENDPOINTS.ADMIN.ROLES.STORE, {
+        onSuccess: (response) => {
+          onSuccess?.(response);
+          setDialogOpen(false);
+          // Reset form after successful create
+          form.setData("name", "");
+          form.setData("description", "");
+        },
+        onError: (error) => {
+          console.error("Error creating role:", error);
+        },
+      });
+    }
   };
 
   return (
     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
       {trigger ? <DialogTrigger asChild>{trigger}</DialogTrigger> : undefined}
-
-      <form onSubmit={handleSubmit} className="w-full">
-        <DialogContent className="w-[95vw] max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl">
+      <DialogContent className="w-[95vw] max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl">
+        <form onSubmit={handleSubmit} className="w-full">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <ShieldCheck className="h-5 w-5" />
@@ -122,7 +129,7 @@ export function RoleFormDialog({
             </DialogDescription>
           </DialogHeader>
 
-          <div className="space-y-4 py-2">
+          <div className="space-y-4 py-5">
             <InputField
               id="name"
               name="name"
@@ -131,7 +138,7 @@ export function RoleFormDialog({
               onChange={(event) => form.setData("name", event.target.value)}
               error={form.errors.name as string}
               label="Name"
-              placeholder="e.g., Administrator, Moderator, Viewer"
+              placeholder="e.g., Administrator, Moderator, etc."
               required
             />
 
@@ -147,12 +154,13 @@ export function RoleFormDialog({
             />
           </div>
 
-          <DialogFooter className="gap-2 sm:gap-0">
+          <DialogFooter className="flex items-center space-x-3">
             <DialogClose asChild>
               <Button type="button" variant="outline" disabled={form.processing}>
                 Cancel
               </Button>
             </DialogClose>
+
             <Button type="submit" disabled={form.processing}>
               {form.processing
                 ? isEdit
@@ -163,10 +171,8 @@ export function RoleFormDialog({
                   : "Create role"}
             </Button>
           </DialogFooter>
-        </DialogContent>
-      </form>
+        </form>
+      </DialogContent>
     </Dialog>
   );
 }
-
-export default RoleFormDialog;

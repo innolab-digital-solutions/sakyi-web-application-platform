@@ -3,7 +3,7 @@
 import { Plus, ShieldCheck } from "lucide-react";
 import React from "react";
 
-import RoleFormDialog from "@/components/admin/roles/role-form-dialog";
+import RoleForm from "@/components/admin/roles/role-form";
 import { Button } from "@/components/ui/button";
 
 export default function RoleListPage() {
@@ -22,7 +22,7 @@ export default function RoleListPage() {
           </div>
 
           <div className="flex w-full flex-col items-center gap-2 sm:w-auto sm:flex-row">
-            <RoleFormDialog
+            <RoleForm
               mode="create"
               trigger={
                 <Button
@@ -33,15 +33,13 @@ export default function RoleListPage() {
                   <span>Add Role</span>
                 </Button>
               }
-              onSuccess={() => {
-                // refresh roles list here when list is implemented
-              }}
+              onSuccess={() => {}}
             />
           </div>
         </div>
       </div>
 
-      <div>{/* Roles list will be rendered here */}</div>
+      <div></div>
     </>
   );
 }
