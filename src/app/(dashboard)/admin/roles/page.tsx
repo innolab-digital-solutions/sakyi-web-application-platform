@@ -1,12 +1,30 @@
 "use client";
 
 import { Plus, ShieldCheck } from "lucide-react";
-import React from "react";
+import { useEffect, useRef, useState } from "react";
 
 import RoleForm from "@/components/admin/roles/role-form";
 import { Button } from "@/components/ui/button";
+import { ENDPOINTS } from "@/config/endpoints";
+import { useRequest } from "@/hooks/use-request";
+import { RoleApiResponse } from "@/types/admin/role";
 
 export default function RoleListPage() {
+  const [roles, setRoles] = useState<RoleApiResponse["data"]>([]);
+  const request = useRequest();
+  const hasFetched = useRef(false);
+
+  useEffect(() => {
+    if (hasFetched.current) return;
+
+    hasFetched.current = true;
+    request.get<RoleApiResponse>(ENDPOINTS.ADMIN.ROLES.INDEX, undefined, {
+      onSuccess: (response) => {
+        setRoles(response.data || []);
+      },
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   return (
     <>
       <div className="mb-6 flex items-center justify-between">
@@ -33,13 +51,18 @@ export default function RoleListPage() {
                   <span>Add Role</span>
                 </Button>
               }
-              onSuccess={() => {}}
             />
           </div>
         </div>
       </div>
 
-      <div></div>
+      {/* Tanstack Table  */}
+      <div>
+        <h1>Roles</h1>
+        {roles.map((role) => (
+          <div key={role.id}>{role.name}</div>
+        ))}
+      </div>
     </>
   );
 }

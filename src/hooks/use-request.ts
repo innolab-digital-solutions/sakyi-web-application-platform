@@ -1,7 +1,7 @@
 /* eslint-disable security/detect-object-injection */
 "use client";
 
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 
 import { useAuth } from "@/context/auth-context";
 import { http } from "@/lib/api/client";
@@ -292,25 +292,28 @@ export const useRequest = () => {
     [visit],
   );
 
-  return {
-    // Core request state
-    loading: state.loading,
-    error: state.error,
-    cancelled: state.cancelled,
+  return useMemo(
+    () => ({
+      // Core request state
+      loading: state.loading,
+      error: state.error,
+      cancelled: state.cancelled,
 
-    // Request methods
-    visit,
-    get,
-    post,
-    put,
-    patch,
-    del,
-    cancel,
-    resetState,
+      // Request methods
+      visit,
+      get,
+      post,
+      put,
+      patch,
+      del,
+      cancel,
+      resetState,
 
-    // Convenience state checks
-    isLoading: state.loading,
-    hasError: !!state.error,
-    isCancelled: state.cancelled,
-  };
+      // Convenience state checks
+      isLoading: state.loading,
+      hasError: !!state.error,
+      isCancelled: state.cancelled,
+    }),
+    [state, visit, get, post, put, patch, del, cancel, resetState],
+  );
 };
