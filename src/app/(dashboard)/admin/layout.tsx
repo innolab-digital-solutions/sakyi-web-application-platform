@@ -2,6 +2,7 @@ import { Inter } from "next/font/google";
 import { cookies } from "next/headers";
 
 import DashboardLayout from "@/components/admin/layout/dashboard-layout";
+import { Toaster } from "@/components/ui/sonner";
 
 const inter = Inter({
   weight: ["400", "500", "600", "700", "800", "900"],
@@ -15,6 +16,8 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   return (
     <div className={`${inter.className} min-h-screen`}>
       <DashboardLayout defaultOpen={defaultOpen}>{children}</DashboardLayout>
+
+      <Toaster />
     </div>
   );
 }

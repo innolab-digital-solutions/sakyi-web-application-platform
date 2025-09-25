@@ -17,4 +17,8 @@ export const ADMIN_PATHS = {
     EDIT: (id: string | number) => `/admin/programs/${id}/edit`,
     DETAIL: (id: string | number) => `/admin/programs/${id}`,
   },
+
+  ROLES: {
+    LIST: "/admin/roles",
+  },
 } as const;

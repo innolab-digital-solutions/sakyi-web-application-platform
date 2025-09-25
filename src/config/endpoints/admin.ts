@@ -14,4 +14,12 @@ export const ADMIN_ENDPOINTS = {
     UPDATE: (id: string | number) => `/admin/programs/${id}`,
     DESTROY: (id: string | number) => `/admin/programs/${id}`,
   },
+
+  ROLES: {
+    INDEX: "/admin/roles",
+    SHOW: (id: string | number) => `/admin/roles/${id}`,
+    STORE: "/admin/roles",
+    UPDATE: (id: string | number) => `/admin/roles/${id}`,
+    DESTROY: (id: string | number) => `/admin/roles/${id}`,
+  },
 } as const;
