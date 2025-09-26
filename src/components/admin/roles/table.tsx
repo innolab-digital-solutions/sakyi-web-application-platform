@@ -9,14 +9,14 @@ import DataTable from "@/components/shared/table/data-table";
 import { ADMIN_ENDPOINTS } from "@/config/endpoints/admin";
 import { http } from "@/lib/api/client";
 import { Role } from "@/types/admin/role";
+import { ListQueryParameters } from "@/types/shared/parameters";
 import { getStoredToken } from "@/utils/auth/storage";
 import {
   DEFAULT_LIST_PARAMS,
-  type ListQueryParams,
-  mergeParams,
-  parseListParams,
-  serializeParams,
-} from "@/utils/url/params";
+  mergeParameters,
+  parseListParameters,
+  serializeParameters,
+} from "@/utils/shared/parameters";
 
 import { rolesColumns } from "./columns";
 
@@ -28,7 +28,7 @@ export function RolesTable() {
 
   // server-side controls
   const initialFromUrl = useMemo(
-    () => parseListParams(searchParameters ?? undefined, DEFAULT_LIST_PARAMS),
+    () => parseListParameters(searchParameters ?? undefined, DEFAULT_LIST_PARAMS),
     [searchParameters],
   );
   const [pageIndex, setPageIndex] = useState(Math.max(0, (initialFromUrl.page ?? 1) - 1)); // 0-based
@@ -54,9 +54,9 @@ export function RolesTable() {
     } as { sortField?: string; sortDirection?: "asc" | "desc" };
   }, [sorting]);
 
-  const apiParameters: ListQueryParams = useMemo(() => {
-    const urlParameters = parseListParams(undefined, DEFAULT_LIST_PARAMS);
-    const merged = mergeParams(urlParameters, {
+  const apiParameters: ListQueryParameters = useMemo(() => {
+    const urlParameters = parseListParameters(undefined, DEFAULT_LIST_PARAMS);
+    const merged = mergeParameters(urlParameters, {
       page: pageIndex + 1,
       per_page: pageSize,
       search: debouncedSearch,
@@ -66,7 +66,7 @@ export function RolesTable() {
     return merged;
   }, [pageIndex, pageSize, debouncedSearch, sortField, sortDirection]);
 
-  const queryString = useMemo(() => serializeParams(apiParameters), [apiParameters]);
+  const queryString = useMemo(() => serializeParameters(apiParameters), [apiParameters]);
 
   const { data, isLoading } = useQuery<import("@/types/shared/api").ApiSuccess<Role[]>>({
     queryKey: ["admin-roles", apiParameters],
