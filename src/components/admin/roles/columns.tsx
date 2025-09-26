@@ -45,7 +45,16 @@ export const rolesColumns: ColumnDef<Role>[] = [
       const moduleCount = Object.keys(combinedModules).length;
 
       if (moduleCount === 0) {
-        return <span className="text-muted-foreground text-xs">No permissions</span>;
+        return (
+          <div className="flex items-center justify-start">
+            <Badge
+              variant="outline"
+              className="text-muted-foreground border-dashed text-[13px] font-medium"
+            >
+              No permissions
+            </Badge>
+          </div>
+        );
       }
 
       const moduleNames = Object.keys(combinedModules);

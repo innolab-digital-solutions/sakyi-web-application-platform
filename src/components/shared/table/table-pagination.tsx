@@ -22,9 +22,17 @@ import {
 
 interface TablePaginationProperties<TData> {
   table: Table<TData>;
+  totalItems?: number;
+  onPageChange?: (pageIndex: number) => void;
+  onPageSizeChange?: (pageSize: number) => void;
 }
 
-export default function TablePagination<TData>({ table }: TablePaginationProperties<TData>) {
+export default function TablePagination<TData>({
+  table,
+  totalItems,
+  onPageChange,
+  onPageSizeChange,
+}: TablePaginationProperties<TData>) {
   const pageItems = useMemo(() => {
     const total = table.getPageCount();
     const current = table.getState().pagination.pageIndex + 1;
@@ -56,13 +64,17 @@ export default function TablePagination<TData>({ table }: TablePaginationPropert
       <div className="flex items-center space-x-2">
         <Select
           value={String(table.getState().pagination.pageSize)}
-          onValueChange={(value) => table.setPageSize(Number(value))}
+          onValueChange={(value) => {
+            const size = Number(value);
+            if (onPageSizeChange) onPageSizeChange(size);
+            else table.setPageSize(size);
+          }}
         >
           <SelectTrigger className="h-8 w-[70px]">
             <SelectValue placeholder={table.getState().pagination.pageSize} />
           </SelectTrigger>
           <SelectContent side="top">
-            {[10, 20, 30, 40, 50].map((pageSize) => (
+            {[5, 10, 20, 30, 40, 50].map((pageSize) => (
               <SelectItem key={pageSize} value={String(pageSize)}>
                 {pageSize}
               </SelectItem>
@@ -80,7 +92,8 @@ export default function TablePagination<TData>({ table }: TablePaginationPropert
                 href="#"
                 onClick={(event) => {
                   event.preventDefault();
-                  table.previousPage();
+                  if (onPageChange) onPageChange(table.getState().pagination.pageIndex - 1);
+                  else table.previousPage();
                 }}
                 aria-disabled={!table.getCanPreviousPage()}
                 className={table.getCanPreviousPage() ? "" : "pointer-events-none opacity-50"}
@@ -97,7 +110,8 @@ export default function TablePagination<TData>({ table }: TablePaginationPropert
                     isActive={table.getState().pagination.pageIndex + 1 === item}
                     onClick={(event) => {
                       event.preventDefault();
-                      table.setPageIndex(item - 1);
+                      if (onPageChange) onPageChange(item - 1);
+                      else table.setPageIndex(item - 1);
                     }}
                   >
                     {item}
@@ -111,7 +125,8 @@ export default function TablePagination<TData>({ table }: TablePaginationPropert
                 href="#"
                 onClick={(event) => {
                   event.preventDefault();
-                  table.nextPage();
+                  if (onPageChange) onPageChange(table.getState().pagination.pageIndex + 1);
+                  else table.nextPage();
                 }}
                 aria-disabled={!table.getCanNextPage()}
                 className={table.getCanNextPage() ? "" : "pointer-events-none opacity-50"}

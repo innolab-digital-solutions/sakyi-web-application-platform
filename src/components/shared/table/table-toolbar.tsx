@@ -12,6 +12,8 @@ interface TableToolbarProperties<TData> {
   searchPlaceholder?: string;
   showColumnVisibility?: boolean;
   toolbarActions?: React.ReactNode;
+  value?: string;
+  onChange?: (value: string) => void;
 }
 
 export default function TableToolbar<TData>({
@@ -20,12 +22,18 @@ export default function TableToolbar<TData>({
   searchPlaceholder = "Search...",
   showColumnVisibility = true,
   toolbarActions,
+  value,
+  onChange,
 }: TableToolbarProperties<TData>) {
   const handleGlobalSearch = (value: string) => {
-    table.setGlobalFilter(value);
+    if (onChange) {
+      onChange(value);
+    } else {
+      table.setGlobalFilter(value);
+    }
   };
 
-  const globalFilterValue = table.getState().globalFilter ?? "";
+  const globalFilterValue = value ?? table.getState().globalFilter ?? "";
   return (
     <div className="flex w-full items-center justify-between">
       {searchKeys && searchKeys.length > 0 && (

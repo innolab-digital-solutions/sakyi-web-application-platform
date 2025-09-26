@@ -69,6 +69,16 @@ interface DataTableProperties<TData, TValue> {
   emptyMessage?: string;
   toolbarActions?: React.ReactNode;
   showToolbar?: boolean;
+  // server mode controls
+  manual?: boolean;
+  pageCount?: number;
+  totalItems?: number;
+  onPageChange?: (pageIndex: number) => void;
+  onPageSizeChange?: (pageSize: number) => void;
+  searchValue?: string;
+  onSearchChange?: (value: string) => void;
+  sortingValue?: SortingState;
+  onSortingChange?: (sorting: SortingState) => void;
 }
 
 export default function DataTable<TData, TValue>({
@@ -84,6 +94,15 @@ export default function DataTable<TData, TValue>({
   emptyMessage = "No results found.",
   toolbarActions,
   showToolbar = true,
+  manual = false,
+  pageCount,
+  totalItems,
+  onPageChange,
+  onPageSizeChange,
+  searchValue,
+  onSearchChange,
+  sortingValue,
+  onSortingChange,
 }: DataTableProperties<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -94,11 +113,18 @@ export default function DataTable<TData, TValue>({
   const table = useReactTable({
     data,
     columns,
-    onSortingChange: setSorting,
+    onSortingChange: (updater) => {
+      const next =
+        typeof updater === "function"
+          ? (updater as (old: SortingState) => SortingState)(sorting)
+          : updater;
+      setSorting(next);
+      if (onSortingChange) onSortingChange(next);
+    },
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
+    ...(manual ? {} : { getSortedRowModel: getSortedRowModel() }),
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
@@ -107,17 +133,20 @@ export default function DataTable<TData, TValue>({
       searchKeys.length > 0 ? createGlobalFilterFunction(searchKeys) : "includesString",
     enableRowSelection: showRowSelection,
     enableGlobalFilter: searchKeys.length > 0,
+    manualPagination: manual,
+    manualSorting: manual,
+    pageCount: manual ? pageCount : undefined,
     initialState: {
       pagination: {
         pageSize: initialPageSize,
       },
     },
     state: {
-      sorting,
+      sorting: sortingValue ?? sorting,
       columnFilters,
       columnVisibility,
       rowSelection,
-      globalFilter,
+      globalFilter: searchValue ?? globalFilter,
     },
   });
 
@@ -136,6 +165,8 @@ export default function DataTable<TData, TValue>({
             searchPlaceholder={searchPlaceholder}
             showColumnVisibility={showColumnVisibility}
             toolbarActions={toolbarActions}
+            value={searchValue}
+            onChange={onSearchChange}
           />
         </div>
       )}
@@ -192,7 +223,12 @@ export default function DataTable<TData, TValue>({
       {/* Pagination */}
       {showPagination && (
         <div className="px-4 py-2">
-          <TablePagination table={table} />
+          <TablePagination
+            table={table}
+            totalItems={totalItems}
+            onPageChange={onPageChange}
+            onPageSizeChange={onPageSizeChange}
+          />
         </div>
       )}
     </div>
