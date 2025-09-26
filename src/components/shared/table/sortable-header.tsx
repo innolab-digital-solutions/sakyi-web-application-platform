@@ -1,7 +1,7 @@
 "use client";
 
 import { Column } from "@tanstack/react-table";
-import { MoveUp, MoveDown } from "lucide-react";
+import { MoveDown, MoveUp } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/utils/shared/cn";
@@ -26,15 +26,25 @@ export default function SortableHeader<TData, TValue>({
       variant="ghost"
       onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       className={cn(
-        "flex cursor-pointer items-center justify-center border-none bg-transparent !px-0 !py-2 text-xs font-semibold tracking-wide text-gray-600 !uppercase hover:bg-transparent hover:text-gray-500",
+        "flex cursor-pointer items-center justify-center !gap-x-1 border-none bg-transparent !px-0 !py-2 text-xs font-semibold tracking-wide text-gray-600 !uppercase hover:bg-transparent hover:text-gray-500",
         className,
       )}
     >
-      {children}
+      <div>{children}</div>
 
-      <div className="flex items-center justify-center -space-x-2.5">
-        <MoveUp className={column.getIsSorted() === "asc" ? "text-primary" : "text-gray-400"} />
-        <MoveDown className={column.getIsSorted() === "desc" ? "text-primary" : "text-gray-400"} />
+      <div className="flex items-center justify-center -space-x-2">
+        <MoveUp
+          className={cn(
+            column.getIsSorted() === "asc" ? "text-primary" : "text-gray-400",
+            "!h-3.5 !w-3.5",
+          )}
+        />
+        <MoveDown
+          className={cn(
+            column.getIsSorted() === "desc" ? "text-primary" : "text-gray-400",
+            "!h-3.5 !w-3.5",
+          )}
+        />
       </div>
     </Button>
   );

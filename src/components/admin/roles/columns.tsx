@@ -68,8 +68,8 @@ export const rolesColumns: ColumnDef<Role>[] = [
                 </TooltipTrigger>
                 <TooltipContent side="top" align="start">
                   <div className="text-xs">
-                    <div className="font-medium">{moduleKey}</div>
-                    <div className="text-zinc-600">{actions.join(", ") || "-"}</div>
+                    <div className="font-semibold">{moduleKey}</div>
+                    <div className="font-medium text-zinc-800">{actions.join(", ") || "-"}</div>
                   </div>
                 </TooltipContent>
               </Tooltip>
@@ -89,8 +89,8 @@ export const rolesColumns: ColumnDef<Role>[] = [
                     const actions = Object.keys(combinedModules[moduleKey] ?? {});
                     return (
                       <div key={moduleKey} className="text-xs">
-                        <div className="font-medium">{moduleKey}</div>
-                        <div className="text-zinc-600">{actions.join(", ") || "-"}</div>
+                        <div className="font-semibold">{moduleKey}</div>
+                        <div className="font-medium text-zinc-800">{actions.join(", ") || "-"}</div>
                       </div>
                     );
                   })}

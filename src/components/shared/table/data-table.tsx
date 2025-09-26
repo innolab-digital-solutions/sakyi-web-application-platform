@@ -3,11 +3,13 @@
 import {
   type ColumnDef,
   type ColumnFiltersState,
+  type FilterMeta,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
+  type Row,
   type SortingState,
   useReactTable,
   type VisibilityState,
@@ -25,6 +27,34 @@ import {
 
 import TablePagination from "./table-pagination";
 import TableToolbar from "./table-toolbar";
+
+// Global filter function for multi-column search
+function createGlobalFilterFunction<TData>(searchKeys: string[]) {
+  return (
+    row: Row<TData>,
+    columnId: string,
+    filterValue: string,
+    _addMeta: (meta: FilterMeta) => void,
+  ) => {
+    if (!filterValue || searchKeys.length === 0) return true;
+
+    const searchValue = filterValue.toLowerCase();
+
+    return searchKeys.some((key) => {
+      // Get value from original data to avoid column existence issues
+      const cellValue = (row.original as Record<string, unknown>)[key];
+      const matches = cellValue ? String(cellValue).toLowerCase().includes(searchValue) : false;
+
+      // Debug logging (remove in production)
+      if (process.env.NODE_ENV === "development" && filterValue) {
+        // eslint-disable-next-line no-console
+        console.log(`Searching ${key}: "${cellValue}" includes "${searchValue}"? ${matches}`);
+      }
+
+      return matches;
+    });
+  };
+}
 
 interface DataTableProperties<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -44,7 +74,7 @@ interface DataTableProperties<TData, TValue> {
 export default function DataTable<TData, TValue>({
   columns,
   data,
-  searchKeys,
+  searchKeys = [],
   searchPlaceholder = "Search...",
   showPagination = true,
   showColumnVisibility = true,
@@ -59,6 +89,7 @@ export default function DataTable<TData, TValue>({
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
+  const [globalFilter, setGlobalFilter] = useState(""); // Add global filter state
 
   const table = useReactTable({
     data,
@@ -71,6 +102,11 @@ export default function DataTable<TData, TValue>({
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
+    onGlobalFilterChange: setGlobalFilter,
+    globalFilterFn:
+      searchKeys.length > 0 ? createGlobalFilterFunction(searchKeys) : "includesString",
+    enableRowSelection: showRowSelection,
+    enableGlobalFilter: searchKeys.length > 0,
     initialState: {
       pagination: {
         pageSize: initialPageSize,
@@ -81,6 +117,7 @@ export default function DataTable<TData, TValue>({
       columnFilters,
       columnVisibility,
       rowSelection,
+      globalFilter,
     },
   });
 

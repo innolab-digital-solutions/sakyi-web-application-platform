@@ -19,6 +19,7 @@ export function RolesTable({ data, isLoading = false }: RolesTableProperties) {
       searchPlaceholder="Search roles by name or description..."
       showPagination={true}
       showColumnVisibility={true}
+      showRowSelection={true}
       initialPageSize={10}
       isLoading={isLoading}
       emptyMessage="No roles found. Create your first role to get started."
