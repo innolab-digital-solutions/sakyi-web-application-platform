@@ -5,7 +5,7 @@ import RoleTable from "@/components/admin/roles/role-table";
 import PageHeader from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
 
-export default function RoleListPage() {
+export default function RolesListPage() {
   return (
     <>
       <PageHeader

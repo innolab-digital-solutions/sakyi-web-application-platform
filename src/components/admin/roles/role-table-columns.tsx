@@ -122,10 +122,11 @@ export const rolesTableColumns: ColumnDef<Role>[] = [
             asChild
             variant="default"
             size="sm"
-            className={`flex items-center gap-1.5 text-[13px] font-medium text-white ${hasPermissions
+            className={`flex items-center gap-1.5 text-[13px] font-medium text-white ${
+              hasPermissions
                 ? "bg-emerald-600 hover:bg-emerald-700"
                 : "bg-gray-600 hover:bg-gray-700"
-              }`}
+            }`}
           >
             <Link href="#">
               <Key className="h-2 w-2" />
