@@ -17,7 +17,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     <div className={`${inter.className} min-h-screen`}>
       <DashboardLayout defaultOpen={defaultOpen}>{children}</DashboardLayout>
 
-      <Toaster />
+      <Toaster position="top-right" richColors />
     </div>
   );
 }

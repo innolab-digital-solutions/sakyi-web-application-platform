@@ -11,7 +11,7 @@ export interface Role {
   id: number;
   name: string;
   description: string | null;
-  // API may return permissions as a single object (map) or an array of maps
+  has_permissions: boolean;
   permissions: Permission | Permission[];
   created_at?: string;
   updated_at?: string;

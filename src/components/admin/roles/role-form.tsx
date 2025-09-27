@@ -1,7 +1,9 @@
 "use client";
 
+import { useQueryClient } from "@tanstack/react-query";
 import { ShieldCheck } from "lucide-react";
 import React from "react";
+import { toast } from "sonner";
 
 import { InputField } from "@/components/shared/forms/input-field";
 import { TextareaField } from "@/components/shared/forms/textarea-field";
@@ -32,7 +34,6 @@ type RoleFormProperties = {
   defaultValues?: Partial<Role>;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
-  onSuccess?: (response: unknown) => void;
   title?: string;
   description?: string;
 };
@@ -43,10 +44,10 @@ export default function RoleForm({
   defaultValues,
   open,
   onOpenChange,
-  onSuccess,
   title,
   description,
 }: RoleFormProperties) {
+  const queryClient = useQueryClient();
   const [internalOpen, setInternalOpen] = React.useState(false);
   const isControlled = typeof open === "boolean" && typeof onOpenChange === "function";
 
@@ -54,6 +55,10 @@ export default function RoleForm({
   const setDialogOpen = (value: boolean) => {
     if (isControlled) onOpenChange?.(value);
     else setInternalOpen(value);
+  };
+
+  const invalidateQueries = () => {
+    queryClient.invalidateQueries({ queryKey: ["admin-roles"] });
   };
 
   const form = useForm(
@@ -88,18 +93,23 @@ export default function RoleForm({
     if (isEdit && defaultValues?.id) {
       form.put(ENDPOINTS.ADMIN.ROLES.UPDATE(defaultValues.id), {
         onSuccess: (response) => {
-          onSuccess?.(response);
+          invalidateQueries();
+
           setDialogOpen(false);
+
+          toast.success(response.message);
         },
       });
     } else {
       form.post(ENDPOINTS.ADMIN.ROLES.STORE, {
         onSuccess: (response) => {
-          onSuccess?.(response);
+          invalidateQueries();
+
           setDialogOpen(false);
 
-          form.setData("name", "");
-          form.setData("description", "");
+          toast.success(response.message);
+
+          form.reset();
         },
       });
     }

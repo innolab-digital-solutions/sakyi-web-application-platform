@@ -1,8 +1,8 @@
-/* eslint-disable security/detect-object-injection */
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { SquarePen, Trash } from "lucide-react";
+import { Key, SquarePen, Trash } from "lucide-react";
+import Link from "next/link";
 
 import RoleForm from "@/components/admin/roles/role-form";
 import SortableHeader from "@/components/shared/table/sortable-header";
@@ -10,6 +10,11 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Role } from "@/types/admin/role";
+import {
+  getModuleActions,
+  getPermissionModuleCount,
+  getPermissionModuleNames,
+} from "@/utils/admin/permissions";
 
 export const rolesTableColumns: ColumnDef<Role>[] = [
   {
@@ -31,18 +36,8 @@ export const rolesTableColumns: ColumnDef<Role>[] = [
     accessorKey: "permissions",
     header: "Permissions",
     cell: ({ row }) => {
-      const raw = row.getValue("permissions") as Role["permissions"];
-      const permissionMaps = Array.isArray(raw) ? raw : raw ? [raw] : [];
-
-      const combinedModules: Record<string, Record<string, string>> = {};
-      for (const map of permissionMaps) {
-        for (const [moduleKey, actions] of Object.entries(map)) {
-          const existingActions = combinedModules[moduleKey] ?? {};
-          combinedModules[moduleKey] = { ...existingActions, ...actions };
-        }
-      }
-
-      const moduleCount = Object.keys(combinedModules).length;
+      const permissions = row.getValue("permissions") as Role["permissions"];
+      const moduleCount = getPermissionModuleCount(permissions);
 
       if (moduleCount === 0) {
         return (
@@ -57,14 +52,14 @@ export const rolesTableColumns: ColumnDef<Role>[] = [
         );
       }
 
-      const moduleNames = Object.keys(combinedModules);
+      const moduleNames = getPermissionModuleNames(permissions);
       const previewModules = moduleNames.slice(0, 2);
       const remainingCount = moduleNames.length - previewModules.length;
 
       return (
         <div className="flex items-center gap-2">
           {previewModules.map((moduleKey) => {
-            const actions = Object.keys(combinedModules[moduleKey] ?? {});
+            const actions = getModuleActions(permissions, moduleKey);
             return (
               <Tooltip key={moduleKey}>
                 <TooltipTrigger asChild>
@@ -95,7 +90,7 @@ export const rolesTableColumns: ColumnDef<Role>[] = [
               <TooltipContent side="top" align="start" className="max-w-xs">
                 <div className="space-y-2">
                   {moduleNames.slice(2).map((moduleKey) => {
-                    const actions = Object.keys(combinedModules[moduleKey] ?? {});
+                    const actions = getModuleActions(permissions, moduleKey);
                     return (
                       <div key={moduleKey} className="text-xs">
                         <div className="font-semibold">{moduleKey}</div>
@@ -118,32 +113,52 @@ export const rolesTableColumns: ColumnDef<Role>[] = [
     header: "Actions",
     cell: ({ row }) => {
       const role = row.original;
+      const hasPermissions = role.has_permissions;
 
       return (
-        <div className="flex items-center space-x-5">
+        <div className="flex items-center space-x-2">
+          {/* Permissions Management Button */}
+          <Button
+            asChild
+            variant="default"
+            size="sm"
+            className={`flex items-center gap-1.5 text-[13px] font-medium text-white ${hasPermissions
+                ? "bg-emerald-600 hover:bg-emerald-700"
+                : "bg-gray-600 hover:bg-gray-700"
+              }`}
+          >
+            <Link href="#">
+              <Key className="h-2 w-2" />
+              <span>{hasPermissions ? "Manage" : "Assign"}</span>
+            </Link>
+          </Button>
+
+          {/* Edit Role Button */}
           <RoleForm
             mode="edit"
-            defaultValues={{
-              id: role.id,
-              name: role.name,
-              description: role.description,
-            }}
+            defaultValues={role}
             trigger={
               <Button
-                variant="link"
-                className="text-primary hover:text-primary/80 flex cursor-pointer items-center justify-center !p-0 text-sm font-semibold hover:underline"
+                variant="default"
+                size="sm"
+                className="!bg-primary hover:!bg-primary/90 flex cursor-pointer items-center gap-1.5 text-[13px] font-medium"
               >
-                <SquarePen className="h-3 w-3" />
+                <SquarePen className="h-2 w-2" />
                 <span>Edit</span>
               </Button>
             }
           />
 
+          {/* Delete Role Button */}
           <Button
-            variant="link"
-            className="text-destructive hover:text-destructive/80 flex cursor-pointer items-center justify-center !p-0 text-sm font-semibold hover:underline"
+            variant="destructive"
+            size="sm"
+            className="flex cursor-pointer items-center gap-1.5 text-[13px] font-medium"
+            onClick={() => {
+              alert(`Delete role: ${role.id}`);
+            }}
           >
-            <Trash className="h-3 w-3" />
+            <Trash className="h-2 w-2" />
             <span>Delete</span>
           </Button>
         </div>
