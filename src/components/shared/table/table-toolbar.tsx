@@ -36,13 +36,13 @@ export default function TableToolbar<TData>({
   return (
     <div className="flex w-full items-center justify-between">
       <div className="flex flex-1 items-center space-x-2">
-        <div className="relative">
+        <div className="relative w-full sm:w-80">
           <Input
             type="search"
             placeholder={search.placeholder}
             value={searchValue}
             onChange={(event) => handleSearch(event.target.value)}
-            className="h-10 max-w-xs pr-8 font-medium"
+            className="h-10 w-full font-medium"
             disabled={isLoading}
           />
           {isLoading && (
