@@ -73,7 +73,6 @@ export const TextareaField = forwardRef<HTMLTextAreaElement, TextareaFieldProper
           id={id}
           className={cn(hasError && "border-red-500 focus-visible:ring-red-500", inputClassName)}
           disabled={disabled}
-          required={required}
           aria-invalid={hasError}
           aria-describedby={cn(error && `${id}-error`, description && `${id}-description`)}
           {...properties}

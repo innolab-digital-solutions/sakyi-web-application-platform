@@ -91,21 +91,15 @@ export default function RoleForm({
           onSuccess?.(response);
           setDialogOpen(false);
         },
-        onError: (error) => {
-          console.error("Error updating role:", error);
-        },
       });
     } else {
       form.post(ENDPOINTS.ADMIN.ROLES.STORE, {
         onSuccess: (response) => {
           onSuccess?.(response);
           setDialogOpen(false);
-          // Reset form after successful create
+
           form.setData("name", "");
           form.setData("description", "");
-        },
-        onError: (error) => {
-          console.error("Error creating role:", error);
         },
       });
     }
@@ -129,7 +123,7 @@ export default function RoleForm({
             </DialogDescription>
           </DialogHeader>
 
-          <div className="space-y-4 py-5">
+          <div className="space-y-5 py-5">
             <InputField
               id="name"
               name="name"
