@@ -2,7 +2,6 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import dayjs from "dayjs";
 import { SquarePen, Trash } from "lucide-react";
 
 import RoleForm from "@/components/admin/roles/form";
@@ -112,18 +111,6 @@ export const rolesColumns: ColumnDef<Role>[] = [
       );
     },
     enableSorting: false,
-  },
-  {
-    accessorKey: "created_at",
-    header: ({ column }) => <SortableHeader column={column}>Created</SortableHeader>,
-    cell: ({ row }) => {
-      const date = row.getValue("created_at") as string;
-      return (
-        <div className="text-sm font-medium">
-          {date ? dayjs(date).format("DD-MMMM-YYYY") : "N/A"}
-        </div>
-      );
-    },
   },
   {
     id: "actions",

@@ -3,7 +3,6 @@
 import {
   type ColumnDef,
   type ColumnFiltersState,
-  type FilterMeta,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
@@ -14,8 +13,10 @@ import {
   useReactTable,
   type VisibilityState,
 } from "@tanstack/react-table";
+import { FileSearch2 } from "lucide-react";
 import { useState } from "react";
 
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
   TableBody,
@@ -24,156 +25,201 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  TablePaginationConfig,
+  TableSearchConfig,
+  TableServerConfig,
+  TableSortingConfig,
+  TableUIConfig,
+} from "@/types/shared/table";
 
 import TablePagination from "./table-pagination";
 import TableToolbar from "./table-toolbar";
 
-// Global filter function for multi-column search
+/**
+ * Creates a global filter function for searching across multiple columns
+ *
+ * @template TData - The type of data in each row
+ * @param searchKeys - Array of object keys to search within
+ * @returns A filter function that searches the specified keys for the filter value
+ */
 function createGlobalFilterFunction<TData>(searchKeys: string[]) {
-  return (
-    row: Row<TData>,
-    columnId: string,
-    filterValue: string,
-    _addMeta: (meta: FilterMeta) => void,
-  ) => {
+  return (row: Row<TData>, columnId: string, filterValue: string) => {
     if (!filterValue || searchKeys.length === 0) return true;
 
     const searchValue = filterValue.toLowerCase();
 
+    // Check if any of the specified keys contain the search value
     return searchKeys.some((key) => {
-      // Get value from original data to avoid column existence issues
+      // eslint-disable-next-line security/detect-object-injection
       const cellValue = (row.original as Record<string, unknown>)[key];
-      const matches = cellValue ? String(cellValue).toLowerCase().includes(searchValue) : false;
-
-      // Debug logging (remove in production)
-      if (process.env.NODE_ENV === "development" && filterValue) {
-        // eslint-disable-next-line no-console
-        console.log(`Searching ${key}: "${cellValue}" includes "${searchValue}"? ${matches}`);
-      }
-
-      return matches;
+      return cellValue ? String(cellValue).toLowerCase().includes(searchValue) : false;
     });
   };
 }
 
+/**
+ * Props interface for the DataTable component
+ *
+ * @template TData - The type of data in each row
+ * @template TValue - The type of values in the cells
+ */
 interface DataTableProperties<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-  searchKeys?: string[];
-  searchPlaceholder?: string;
-  showPagination?: boolean;
-  showColumnVisibility?: boolean;
-  showRowSelection?: boolean;
-  initialPageSize?: number;
-  isLoading?: boolean;
-  emptyMessage?: string;
-  toolbarActions?: React.ReactNode;
-  showToolbar?: boolean;
-  // server mode controls
-  manual?: boolean;
-  pageCount?: number;
-  totalItems?: number;
-  onPageChange?: (pageIndex: number) => void;
-  onPageSizeChange?: (pageSize: number) => void;
-  searchValue?: string;
-  onSearchChange?: (value: string) => void;
-  sortingValue?: SortingState;
-  onSortingChange?: (sorting: SortingState) => void;
+  search?: TableSearchConfig;
+  pagination?: TablePaginationConfig;
+  sorting?: TableSortingConfig;
+  ui?: TableUIConfig;
+  server?: TableServerConfig;
 }
 
+/**
+ * A flexible and feature-rich data table component built with TanStack Table
+ *
+ * This component provides:
+ * - Client-side and server-side pagination
+ * - Global search across multiple columns
+ * - Column sorting with custom handlers
+ * - Column visibility controls
+ * - Row selection functionality
+ * - Customizable toolbar and actions
+ * - Loading states and empty states
+ * - Responsive design with proper styling
+ *
+ * @template TData - The type of data in each row
+ * @template TValue - The type of values in the cells
+ * @param props - Component properties
+ * @returns A rendered data table with all configured features
+ */
 export default function DataTable<TData, TValue>({
   columns,
   data,
-  searchKeys = [],
-  searchPlaceholder = "Search...",
-  showPagination = true,
-  showColumnVisibility = true,
-  showRowSelection = true,
-  initialPageSize = 10,
-  isLoading = false,
-  emptyMessage = "No results found.",
-  toolbarActions,
-  showToolbar = true,
-  manual = false,
-  pageCount,
-  totalItems,
-  onPageChange,
-  onPageSizeChange,
-  searchValue,
-  onSearchChange,
-  sortingValue,
-  onSortingChange,
+  search,
+  pagination,
+  sorting,
+  ui,
+  server,
 }: DataTableProperties<TData, TValue>) {
-  const [sorting, setSorting] = useState<SortingState>([]);
+  // Merge user-provided search config with sensible defaults
+  const searchConfig: Required<TableSearchConfig> = {
+    keys: [],
+    placeholder: "Search...",
+    value: "",
+    onChange: () => { },
+    ...search,
+  };
+
+  // Merge user-provided pagination config with sensible defaults
+  const paginationConfig: Required<TablePaginationConfig> = {
+    show: true,
+    pageSize: 10,
+    pageCount: 0,
+    totalItems: 0,
+    currentPage: 0,
+    onPageChange: () => { },
+    onPageSizeChange: () => { },
+    ...pagination,
+  };
+
+  // Merge user-provided UI config with sensible defaults
+  const uiConfig: Required<TableUIConfig> = {
+    showToolbar: true,
+    showColumnVisibility: true,
+    showRowSelection: true,
+    // eslint-disable-next-line unicorn/no-null
+    toolbarActions: null,
+    emptyMessage: "No results found.",
+    ...ui,
+  };
+
+  // Merge user-provided server config with sensible defaults
+  const serverConfig: Required<TableServerConfig> = {
+    enabled: false,
+    loading: false,
+    ...server,
+  };
+
+  // Internal state management for table features
+  const [internalSorting, setInternalSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
-  const [globalFilter, setGlobalFilter] = useState(""); // Add global filter state
+  const [globalFilter, setGlobalFilter] = useState("");
 
+  // Initialize TanStack Table with all configurations
   const table = useReactTable({
     data,
     columns,
+    // Handle sorting changes - use external handler if provided, otherwise use internal state
     onSortingChange: (updater) => {
       const next =
-        typeof updater === "function"
-          ? (updater as (old: SortingState) => SortingState)(sorting)
-          : updater;
-      setSorting(next);
-      if (onSortingChange) onSortingChange(next);
+        typeof updater === "function" ? updater(sorting?.value ?? internalSorting) : updater;
+
+      if (sorting?.onChange) {
+        sorting.onChange(next);
+      } else {
+        setInternalSorting(next);
+      }
     },
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    ...(manual ? {} : { getSortedRowModel: getSortedRowModel() }),
+    // Only enable client-side sorting if server-side is disabled
+    ...(!serverConfig.enabled && { getSortedRowModel: getSortedRowModel() }),
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
-    onGlobalFilterChange: setGlobalFilter,
+    // Use external search handler if provided, otherwise use internal state
+    onGlobalFilterChange: searchConfig.onChange || setGlobalFilter,
+    // Use custom filter function if search keys are provided
     globalFilterFn:
-      searchKeys.length > 0 ? createGlobalFilterFunction(searchKeys) : "includesString",
-    enableRowSelection: showRowSelection,
-    enableGlobalFilter: searchKeys.length > 0,
-    manualPagination: manual,
-    manualSorting: manual,
-    pageCount: manual ? pageCount : undefined,
+      searchConfig.keys.length > 0
+        ? createGlobalFilterFunction(searchConfig.keys)
+        : "includesString",
+    enableRowSelection: uiConfig.showRowSelection,
+    enableGlobalFilter: searchConfig.keys.length > 0,
+    // Enable server-side features if configured
+    manualPagination: serverConfig.enabled,
+    manualSorting: serverConfig.enabled,
+    pageCount: paginationConfig.pageCount,
     initialState: {
       pagination: {
-        pageSize: initialPageSize,
+        pageSize: paginationConfig.pageSize,
       },
     },
     state: {
-      sorting: sortingValue ?? sorting,
+      sorting: sorting?.value ?? internalSorting,
       columnFilters,
       columnVisibility,
       rowSelection,
-      globalFilter: searchValue ?? globalFilter,
+      globalFilter: searchConfig.value ?? globalFilter,
     },
   });
 
-  if (isLoading) {
+  // Show loading skeleton when server is processing
+  if (serverConfig.loading) {
     return <DataTableSkeleton />;
   }
 
   return (
-    <div className="border-border w-full rounded-lg border">
-      {/* Toolbar with search and column visibility */}
-      {showToolbar && (
+    <div className="border-border w-full overflow-hidden rounded-lg border">
+      {/* Render toolbar if enabled - contains search, filters, and custom actions */}
+      {uiConfig.showToolbar && (
         <div className="flex items-center space-x-4 px-4 py-6">
           <TableToolbar
             table={table}
-            searchKeys={searchKeys}
-            searchPlaceholder={searchPlaceholder}
-            showColumnVisibility={showColumnVisibility}
-            toolbarActions={toolbarActions}
-            value={searchValue}
-            onChange={onSearchChange}
+            search={searchConfig}
+            showColumnVisibility={uiConfig.showColumnVisibility}
+            toolbarActions={uiConfig.toolbarActions}
           />
         </div>
       )}
 
-      {/* Table */}
-      <div className="border-border overflow-hidden border-y">
+      {/* Main table container with proper styling and overflow handling */}
+      <div className="border-border overflow-hidden border-t">
         <Table>
+          {/* Table header with sortable columns */}
           <TableHeader className="border-border bg-muted/30 border-b">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id} className="hover:!bg-transparent">
@@ -193,6 +239,7 @@ export default function DataTable<TData, TValue>({
             ))}
           </TableHeader>
           <TableBody>
+            {/* Render data rows if available, otherwise show empty state */}
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
@@ -210,9 +257,25 @@ export default function DataTable<TData, TValue>({
                 </TableRow>
               ))
             ) : (
+              // Empty state with helpful messaging and icon
               <TableRow>
-                <TableCell colSpan={columns.length} className="h-24 text-center">
-                  {emptyMessage}
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-48 bg-gray-50 text-center hover:bg-gray-50"
+                >
+                  <div className="flex flex-col items-center justify-center space-y-3">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-200">
+                      <FileSearch2 className="text-muted-foreground h-5 w-5" />
+                    </div>
+                    <div className="text-center">
+                      <p className="text-muted-foreground text-sm font-medium">
+                        {uiConfig.emptyMessage || "No data available"}
+                      </p>
+                      <p className="text-muted-foreground/80 mt-1 text-xs">
+                        Try adjusting your search or filter criteria
+                      </p>
+                    </div>
+                  </div>
                 </TableCell>
               </TableRow>
             )}
@@ -220,40 +283,56 @@ export default function DataTable<TData, TValue>({
         </Table>
       </div>
 
-      {/* Pagination */}
-      {showPagination && (
-        <div className="px-4 py-2">
-          <TablePagination
-            table={table}
-            totalItems={totalItems}
-            onPageChange={onPageChange}
-            onPageSizeChange={onPageSizeChange}
-          />
-        </div>
-      )}
+      {/* Render pagination if enabled and there's data to paginate */}
+      {paginationConfig.show &&
+        paginationConfig.totalItems !== undefined &&
+        paginationConfig.totalItems > 0 && (
+          <div className="border-border border-t px-4 py-2">
+            <TablePagination
+              table={table}
+              totalItems={paginationConfig.totalItems}
+              onPageChange={paginationConfig.onPageChange}
+              onPageSizeChange={paginationConfig.onPageSizeChange}
+              currentPage={paginationConfig.currentPage}
+              pageCount={paginationConfig.pageCount}
+              pageSize={paginationConfig.pageSize}
+            />
+          </div>
+        )}
     </div>
   );
 }
 
+/**
+ * Loading skeleton component displayed while server data is being fetched
+ *
+ * Provides a realistic placeholder that matches the table structure
+ * with animated skeleton elements for better user experience
+ *
+ * @returns A skeleton loader component with table-like structure
+ */
 function DataTableSkeleton() {
   return (
     <div className="border-border w-full rounded-lg border">
+      {/* Skeleton for toolbar/search area */}
       <div className="p-4">
-        <div className="bg-muted h-8 w-[250px] animate-pulse rounded" />
+        <Skeleton className="bg-muted h-8 w-[250px]" />
       </div>
+      {/* Skeleton for table rows */}
       <div className="border-border border-y">
         {Array.from({ length: 5 }).map((_, index) => (
           <div
             key={index}
             className="border-border flex items-center space-x-4 border-b p-4 last:border-b-0"
           >
-            <div className="bg-muted h-4 w-4 animate-pulse rounded" />
-            <div className="bg-muted h-4 w-12 animate-pulse rounded" />
-            <div className="bg-muted h-4 w-32 animate-pulse rounded" />
-            <div className="bg-muted h-4 w-48 animate-pulse rounded" />
-            <div className="bg-muted h-4 w-24 animate-pulse rounded" />
-            <div className="bg-muted h-4 w-20 animate-pulse rounded" />
-            <div className="bg-muted h-4 w-8 animate-pulse rounded" />
+            {/* Various skeleton elements representing different column widths */}
+            <Skeleton className="bg-muted h-6 w-4" />
+            <Skeleton className="bg-muted h-6 w-12" />
+            <Skeleton className="bg-muted h-6 w-32" />
+            <Skeleton className="bg-muted h-6 w-48" />
+            <Skeleton className="bg-muted h-6 w-24" />
+            <Skeleton className="bg-muted h-6 w-20" />
+            <Skeleton className="bg-muted h-6 w-8" />
           </div>
         ))}
       </div>

@@ -19,12 +19,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { cn } from "@/utils/shared/cn";
 
 interface TablePaginationProperties<TData> {
   table: Table<TData>;
   totalItems?: number;
   onPageChange?: (pageIndex: number) => void;
   onPageSizeChange?: (pageSize: number) => void;
+
+  // Add server-side state props
+  currentPage?: number;
+  pageCount?: number;
+  pageSize?: number;
 }
 
 export default function TablePagination<TData>({
@@ -32,10 +38,22 @@ export default function TablePagination<TData>({
   totalItems,
   onPageChange,
   onPageSizeChange,
+  currentPage,
+  pageCount: serverPageCount,
+  pageSize: serverPageSize,
 }: TablePaginationProperties<TData>) {
+  // Use server state when available, fallback to table state
+  const actualCurrentPage =
+    currentPage === undefined
+      ? table.getState().pagination.pageIndex + 1 // Convert 0-based to 1-based
+      : currentPage + 1;
+
+  const actualPageCount = serverPageCount ?? table.getPageCount();
+  const actualPageSize = serverPageSize ?? table.getState().pagination.pageSize;
+
   const pageItems = useMemo(() => {
-    const total = table.getPageCount();
-    const current = table.getState().pagination.pageIndex + 1;
+    const total = actualPageCount;
+    const current = actualCurrentPage;
 
     if (total <= 7) {
       return Array.from({ length: total }, (_, index) => index + 1);
@@ -54,24 +72,30 @@ export default function TablePagination<TData>({
     showRange(start, end);
 
     if (current < total - 3) items.push("ellipsis");
-    items.push(total);
+    if (total > 1) items.push(total);
 
     return items;
-  }, [table]);
+  }, [actualCurrentPage, actualPageCount]);
+
+  const canPreviousPage = actualCurrentPage > 1;
+  const canNextPage = actualCurrentPage < actualPageCount;
 
   return (
-    <div className="flex w-full items-center justify-between space-x-6 lg:space-x-8">
+    <div className="flex w-full items-center justify-between space-x-6 py-3 lg:space-x-8">
       <div className="flex items-center space-x-2">
         <Select
-          value={String(table.getState().pagination.pageSize)}
+          value={String(actualPageSize)}
           onValueChange={(value) => {
             const size = Number(value);
-            if (onPageSizeChange) onPageSizeChange(size);
-            else table.setPageSize(size);
+            if (onPageSizeChange) {
+              onPageSizeChange(size);
+            } else {
+              table.setPageSize(size);
+            }
           }}
         >
           <SelectTrigger className="h-8 w-[70px]">
-            <SelectValue placeholder={table.getState().pagination.pageSize} />
+            <SelectValue placeholder={String(actualPageSize)} />
           </SelectTrigger>
           <SelectContent side="top">
             {[10, 20, 30, 40, 50].map((pageSize) => (
@@ -84,6 +108,14 @@ export default function TablePagination<TData>({
         <p className="text-sm font-medium">Rows per page</p>
       </div>
 
+      {/* Show total items if available */}
+      {totalItems && (
+        <div className="text-muted-foreground text-sm">
+          Showing {(actualCurrentPage - 1) * actualPageSize + 1} to{" "}
+          {Math.min(actualCurrentPage * actualPageSize, totalItems)} of {totalItems} results
+        </div>
+      )}
+
       <div>
         <Pagination>
           <PaginationContent>
@@ -92,11 +124,19 @@ export default function TablePagination<TData>({
                 href="#"
                 onClick={(event) => {
                   event.preventDefault();
-                  if (onPageChange) onPageChange(table.getState().pagination.pageIndex - 1);
-                  else table.previousPage();
+                  if (onPageChange) {
+                    onPageChange(actualCurrentPage - 2); // Convert back to 0-based
+                  } else {
+                    table.previousPage();
+                  }
                 }}
-                aria-disabled={!table.getCanPreviousPage()}
-                className={table.getCanPreviousPage() ? "" : "pointer-events-none opacity-50"}
+                aria-disabled={!canPreviousPage}
+                className={cn(
+                  "font-medium",
+                  canPreviousPage
+                    ? "hover:bg-gray-100 hover:text-gray-800"
+                    : "pointer-events-none opacity-50",
+                )}
               />
             </PaginationItem>
 
@@ -107,11 +147,18 @@ export default function TablePagination<TData>({
                 ) : (
                   <PaginationLink
                     href="#"
-                    isActive={table.getState().pagination.pageIndex + 1 === item}
+                    className={
+                      actualCurrentPage === item
+                        ? "bg-accent text-accent-foreground hover:bg-accent/90"
+                        : "bg-background border-border border hover:bg-gray-100 hover:text-gray-900"
+                    }
                     onClick={(event) => {
                       event.preventDefault();
-                      if (onPageChange) onPageChange(item - 1);
-                      else table.setPageIndex(item - 1);
+                      if (onPageChange) {
+                        onPageChange(item - 1); // Convert to 0-based
+                      } else {
+                        table.setPageIndex(item - 1);
+                      }
                     }}
                   >
                     {item}
@@ -125,11 +172,19 @@ export default function TablePagination<TData>({
                 href="#"
                 onClick={(event) => {
                   event.preventDefault();
-                  if (onPageChange) onPageChange(table.getState().pagination.pageIndex + 1);
-                  else table.nextPage();
+                  if (onPageChange) {
+                    onPageChange(actualCurrentPage); // Convert to 0-based (current + 1 - 1)
+                  } else {
+                    table.nextPage();
+                  }
                 }}
-                aria-disabled={!table.getCanNextPage()}
-                className={table.getCanNextPage() ? "" : "pointer-events-none opacity-50"}
+                aria-disabled={!canNextPage}
+                className={cn(
+                  "font-medium",
+                  canNextPage
+                    ? "hover:bg-gray-100 hover:text-gray-800"
+                    : "pointer-events-none opacity-50",
+                )}
               />
             </PaginationItem>
           </PaginationContent>
