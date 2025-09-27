@@ -5,9 +5,9 @@ import { ENDPOINTS } from "@/config/endpoints";
 import { useTable } from "@/hooks/use-table";
 import { Role } from "@/types/admin/role";
 
-import { rolesColumns } from "./columns";
+import { rolesTableColumns } from "./role-table-columns";
 
-export function RolesTable() {
+export default function RoleTable() {
   const { data, searchConfig, paginationConfig, sortingConfig, serverConfig } = useTable<Role>({
     endpoint: ENDPOINTS.ADMIN.ROLES.INDEX,
     queryKey: ["admin-roles"],
@@ -16,7 +16,7 @@ export function RolesTable() {
 
   return (
     <DataTable
-      columns={rolesColumns}
+      columns={rolesTableColumns}
       data={data}
       search={searchConfig}
       pagination={paginationConfig}

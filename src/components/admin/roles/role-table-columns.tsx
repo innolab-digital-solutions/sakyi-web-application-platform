@@ -4,14 +4,14 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { SquarePen, Trash } from "lucide-react";
 
-import RoleForm from "@/components/admin/roles/form";
+import RoleForm from "@/components/admin/roles/role-form";
 import SortableHeader from "@/components/shared/table/sortable-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Role } from "@/types/admin/role";
 
-export const rolesColumns: ColumnDef<Role>[] = [
+export const rolesTableColumns: ColumnDef<Role>[] = [
   {
     accessorKey: "name",
     header: ({ column }) => <SortableHeader column={column}>Role</SortableHeader>,

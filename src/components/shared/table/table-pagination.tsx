@@ -110,7 +110,7 @@ export default function TablePagination<TData>({
 
       {/* Show total items if available */}
       {totalItems && (
-        <div className="text-muted-foreground text-sm">
+        <div className="text-muted-foreground text-sm font-medium">
           Showing {(actualCurrentPage - 1) * actualPageSize + 1} to{" "}
           {Math.min(actualCurrentPage * actualPageSize, totalItems)} of {totalItems} results
         </div>

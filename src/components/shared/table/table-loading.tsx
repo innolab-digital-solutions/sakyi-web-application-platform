@@ -21,7 +21,7 @@ import TableToolbar from "./table-toolbar";
  * @template TData - The type of data in each row
  * @template TValue - The type of values in the cells
  */
-interface TableLoadingProps<TData, TValue> {
+interface TableLoadingProperties<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   searchConfig: Required<TableSearchConfig>;
   uiConfig: Required<TableUIConfig>;
@@ -44,7 +44,7 @@ export default function TableLoading<TData, TValue>({
   searchConfig,
   uiConfig,
   paginationConfig,
-}: TableLoadingProps<TData, TValue>) {
+}: TableLoadingProperties<TData, TValue>) {
   return (
     <div className="border-border w-full overflow-hidden rounded-lg border">
       {/* Render toolbar if enabled - keep search and filters visible */}

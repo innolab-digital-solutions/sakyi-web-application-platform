@@ -1,7 +1,7 @@
 import { ClipboardCheck, Plus } from "lucide-react";
 
-import RoleForm from "@/components/admin/roles/form";
-import { RolesTable } from "@/components/admin/roles/table";
+import RoleForm from "@/components/admin/roles/role-form";
+import RoleTable from "@/components/admin/roles/role-table";
 import PageHeader from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
 
@@ -30,7 +30,7 @@ export default function RoleListPage() {
         }
       />
 
-      <RolesTable />
+      <RoleTable />
     </>
   );
 }
