@@ -11,7 +11,6 @@ export function RolesTable() {
   const { data, searchConfig, paginationConfig, sortingConfig, serverConfig } = useTable<Role>({
     endpoint: ENDPOINTS.ADMIN.ROLES.INDEX,
     queryKey: ["admin-roles"],
-    searchKeys: ["name", "description"],
     defaultSort: { field: "id", direction: "desc" },
   });
 

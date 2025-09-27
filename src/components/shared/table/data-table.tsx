@@ -106,7 +106,7 @@ export default function DataTable<TData, TValue>({
     keys: [],
     placeholder: "Search...",
     value: "",
-    onChange: () => { },
+    onChange: () => {},
     ...search,
   };
 
@@ -117,8 +117,8 @@ export default function DataTable<TData, TValue>({
     pageCount: 0,
     totalItems: 0,
     currentPage: 0,
-    onPageChange: () => { },
-    onPageSizeChange: () => { },
+    onPageChange: () => {},
+    onPageSizeChange: () => {},
     ...pagination,
   };
 
@@ -319,7 +319,7 @@ function DataTableSkeleton() {
         <Skeleton className="bg-muted h-8 w-[250px]" />
       </div>
       {/* Skeleton for table rows */}
-      <div className="border-border border-y">
+      <div className="border-border border-t">
         {Array.from({ length: 5 }).map((_, index) => (
           <div
             key={index}

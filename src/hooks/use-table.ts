@@ -1,9 +1,9 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { SortingState } from "@tanstack/react-table";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { http } from "@/lib/api/client";
 import { Pagination } from "@/types/shared/common";
@@ -39,6 +39,7 @@ export function useTable<T>({ endpoint, queryKey, searchKeys = [], defaultSort }
   const searchParameters = useSearchParams();
   const pathname = usePathname();
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   // Parse initial URL parameters to set default state
   const initialParameters = useMemo(
@@ -100,7 +101,7 @@ export function useTable<T>({ endpoint, queryKey, searchKeys = [], defaultSort }
 
   const queryString = useMemo(() => serializeParameters(apiParameters), [apiParameters]);
 
-  const { data, isLoading, error } = useQuery({
+  const { data, isLoading, error, isFetching, isPlaceholderData } = useQuery({
     queryKey: [...queryKey, apiParameters],
     queryFn: async () => {
       const url = `${endpoint}?${queryString}`;
@@ -110,9 +111,12 @@ export function useTable<T>({ endpoint, queryKey, searchKeys = [], defaultSort }
       }
       return response;
     },
-    placeholderData: (previousData) => previousData,
     // Only fetch when authenticated and search term is empty or at least 2 characters
     enabled: !!token && (debouncedSearch.length === 0 || debouncedSearch.length >= 2),
+    // Prevent showing stale data during transitions
+    placeholderData: undefined,
+    // Ensure we always get fresh data for server-side operations
+    refetchOnMount: true,
   });
 
   // Debounce search input to avoid excessive API calls
@@ -138,10 +142,40 @@ export function useTable<T>({ endpoint, queryKey, searchKeys = [], defaultSort }
       : 0;
   const pageCount = Math.max(1, Math.ceil(total / (pageSize || 1)));
 
+  // Utility function to invalidate related queries
+  const invalidateQueries = useCallback(() => {
+    queryClient.invalidateQueries({ queryKey });
+  }, [queryClient, queryKey]);
+
+  // Track if we're in a transition state (parameters changed but data hasn't updated yet)
+  const [isTransitioning, setIsTransitioning] = useState(false);
+
+  // Track previous parameters to detect changes
+  const [previousParameters, setPreviousParameters] = useState(apiParameters);
+
+  // Detect parameter changes and set transition state
+  useEffect(() => {
+    const parametersChanged = JSON.stringify(previousParameters) !== JSON.stringify(apiParameters);
+    if (parametersChanged) {
+      setIsTransitioning(true);
+      setPreviousParameters(apiParameters);
+    }
+  }, [apiParameters, previousParameters]);
+
+  // Clear transition state when new data arrives
+  useEffect(() => {
+    if (data && !isLoading) {
+      setIsTransitioning(false);
+    }
+  }, [data, isLoading]);
+
+  // Determine the appropriate loading state
+  const isTableLoading = isLoading || isTransitioning || (isFetching && !data);
+
   return {
     // Table data
     data: items,
-    loading: isLoading,
+    loading: isTableLoading,
     error,
     total,
     pageCount,
@@ -183,7 +217,18 @@ export function useTable<T>({ endpoint, queryKey, searchKeys = [], defaultSort }
     // Server configuration
     serverConfig: {
       enabled: true,
-      loading: isLoading,
+      loading: isTableLoading,
     },
+
+    // Additional loading states for fine-grained control
+    loadingStates: {
+      initial: isLoading,
+      fetching: isFetching,
+      isPlaceholderData,
+      transitioning: isTransitioning,
+    },
+
+    // Utility functions
+    invalidateQueries,
   };
 }

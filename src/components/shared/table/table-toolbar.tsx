@@ -32,16 +32,15 @@ export default function TableToolbar<TData>({
 
   return (
     <div className="flex w-full items-center justify-between">
-      {search.keys.length > 0 && (
-        <div className="flex flex-1 items-center space-x-2">
-          <Input
-            placeholder={search.placeholder}
-            value={searchValue}
-            onChange={(event) => handleSearch(event.target.value)}
-            className="h-10 max-w-xs font-medium"
-          />
-        </div>
-      )}
+      <div className="flex flex-1 items-center space-x-2">
+        <Input
+          type="search"
+          placeholder={search.placeholder}
+          value={searchValue}
+          onChange={(event) => handleSearch(event.target.value)}
+          className="h-10 max-w-xs font-medium"
+        />
+      </div>
 
       <div className="flex items-center space-x-2">
         {toolbarActions && <div className="flex items-center space-x-2">{toolbarActions}</div>}
