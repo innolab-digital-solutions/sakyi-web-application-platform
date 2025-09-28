@@ -27,3 +27,13 @@ export interface RolesResponse {
 }
 
 export type RoleApiResponse = ApiResponse<RolesResponse>;
+
+export type RoleFormProperties = {
+  mode: "create" | "edit";
+  trigger?: React.ReactNode;
+  defaultValues?: Partial<Role>;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  title?: string;
+  description?: string;
+};

@@ -20,22 +20,7 @@ import {
 import { ENDPOINTS } from "@/config/endpoints";
 import { useForm } from "@/hooks/use-form";
 import { CreateRoleSchema } from "@/lib/validations/admin/role-schema";
-
-type Role = {
-  id?: string | number;
-  name: string;
-  description?: string | null;
-};
-
-type RoleFormProperties = {
-  mode: "create" | "edit";
-  trigger?: React.ReactNode;
-  defaultValues?: Partial<Role>;
-  open?: boolean;
-  onOpenChange?: (open: boolean) => void;
-  title?: string;
-  description?: string;
-};
+import { RoleFormProperties } from "@/types/admin/role";
 
 export default function RoleForm({
   mode,
@@ -50,6 +35,7 @@ export default function RoleForm({
   const isControlled = typeof open === "boolean" && typeof onOpenChange === "function";
 
   const dialogOpen = isControlled ? open : internalOpen;
+
   const setDialogOpen = (value: boolean) => {
     if (isControlled) onOpenChange?.(value);
     else setInternalOpen(value);
@@ -156,7 +142,12 @@ export default function RoleForm({
 
           <DialogFooter className="flex items-center space-x-3">
             <DialogClose asChild>
-              <Button type="button" variant="outline" disabled={form.processing}>
+              <Button
+                type="button"
+                variant="outline"
+                disabled={form.processing}
+                className="flex items-center gap-2 bg-gray-100 text-sm font-semibold text-gray-800 hover:bg-gray-200 hover:text-black"
+              >
                 Cancel
               </Button>
             </DialogClose>
