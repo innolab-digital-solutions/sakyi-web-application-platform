@@ -1,7 +1,7 @@
 /* eslint-disable security/detect-object-injection */
 "use client";
 
-import { LucideIcon } from "lucide-react";
+import { LucideIcon, X } from "lucide-react";
 import React from "react";
 
 import {
@@ -135,11 +135,11 @@ export default function ConfirmationDialog({
                 iconClassName,
               )}
             >
-              <Icon className={cn("h-6 w-6", styles.iconColor)} />
+              <Icon className={cn("h-5 w-5", styles.iconColor)} />
             </div>
           )}
 
-          <AlertDialogTitle className={cn("text-center text-xl font-semibold", titleClassName)}>
+          <AlertDialogTitle className={cn("text-center text-lg font-bold", titleClassName)}>
             {title}
           </AlertDialogTitle>
 
@@ -150,20 +150,23 @@ export default function ConfirmationDialog({
           </AlertDialogDescription>
         </AlertDialogHeader>
 
-        <AlertDialogFooter className="flex flex-col-reverse gap-2 py-2 sm:flex-row sm:justify-center">
+        <AlertDialogFooter className="flex flex-col-reverse gap-3 py-2 sm:flex-row sm:justify-center">
           <AlertDialogCancel
             onClick={onClose}
             disabled={isLoading}
-            className="w-full cursor-pointer bg-gray-100 hover:bg-gray-200 hover:text-gray-900 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
+            className="w-full cursor-pointer bg-gray-100 !font-medium hover:bg-gray-200 hover:text-gray-900 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
           >
-            {cancelText}
+            <div className="flex items-center">
+              <X className="mr-2 h-4 w-4" />
+              {cancelText}
+            </div>
           </AlertDialogCancel>
 
           <Button
             onClick={handleConfirm}
             disabled={isLoading}
             className={cn(
-              "w-full cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto",
+              "w-full cursor-pointer !font-medium disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto",
               styles.confirmButton,
             )}
           >

@@ -20,5 +20,6 @@ export const ADMIN_PATHS = {
 
   ROLES: {
     LIST: "/admin/roles",
+    ASSIGN_PERMISSIONS: (id: string | number) => `/admin/roles/${id}/assign-permissions`,
   },
 } as const;

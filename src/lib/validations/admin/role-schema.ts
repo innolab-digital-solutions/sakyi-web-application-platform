@@ -13,4 +13,9 @@ export const CreateRoleSchema = z.object({
     .transform((value) => value?.trim() || undefined),
 });
 
+export const AssignPermissionsSchema = z.object({
+  permissions: z.array(z.string()).optional().default([]),
+});
+
 export type CreateRoleFormData = z.infer<typeof CreateRoleSchema>;
+export type AssignPermissionsFormData = z.infer<typeof AssignPermissionsSchema>;

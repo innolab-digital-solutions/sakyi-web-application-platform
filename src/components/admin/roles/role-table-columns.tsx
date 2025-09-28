@@ -9,6 +9,7 @@ import SortableHeader from "@/components/shared/table/sortable-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { PATHS } from "@/config/paths";
 import { Role } from "@/types/admin/role";
 import {
   getModuleActions,
@@ -124,12 +125,13 @@ export const rolesTableColumns: ColumnDef<Role>[] = [
             asChild
             variant="default"
             size="sm"
-            className={`flex items-center gap-1.5 text-[13px] font-medium text-white ${hasPermissions
-              ? "bg-emerald-600 hover:bg-emerald-700"
-              : "bg-gray-600 hover:bg-gray-700"
-              }`}
+            className={`flex items-center gap-1.5 text-[13px] font-medium text-white ${
+              hasPermissions
+                ? "bg-emerald-600 hover:bg-emerald-700"
+                : "bg-gray-600 hover:bg-gray-700"
+            }`}
           >
-            <Link href="#">
+            <Link href={PATHS.ADMIN.ROLES.ASSIGN_PERMISSIONS(role.id)}>
               <Key className="h-2 w-2" />
               <span>{hasPermissions ? "Manage" : "Assign"}</span>
             </Link>
