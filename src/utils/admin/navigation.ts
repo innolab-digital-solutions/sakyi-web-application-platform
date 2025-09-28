@@ -14,11 +14,14 @@ export const getActiveAdminNav = (currentPath: string, navigation: NavGroup[]) =
       ...item,
       active:
         currentPath === item.path ||
-        item.subitems?.some((sub) => currentPath === sub.path) ||
+        currentPath.startsWith(item.path + "/") ||
+        item.subitems?.some(
+          (sub) => currentPath === sub.path || currentPath.startsWith(sub.path + "/"),
+        ) ||
         false,
       subitems: item.subitems?.map((sub) => ({
         ...sub,
-        active: currentPath === sub.path,
+        active: currentPath === sub.path || currentPath.startsWith(sub.path + "/"),
       })),
     })),
   }));

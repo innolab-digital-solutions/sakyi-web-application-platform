@@ -92,7 +92,6 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProperties>(
               inputClassName,
             )}
             disabled={disabled}
-            required={required}
             aria-invalid={hasError}
             aria-describedby={cn(error && `${id}-error`, description && `${id}-description`)}
             {...properties}

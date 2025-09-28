@@ -15,32 +15,17 @@ export const adminBreadcrumbs: Breadcrumbs = {
     { label: "Overview", href: PATHS.ADMIN.OVERVIEW },
   ],
 
-  // Programs
-  "/admin/programs": [
+  // Roles
+  "/admin/roles": [
     { label: "Admin Control Panel" },
-    { label: "Programs & Clients" },
-    { label: "Programs", href: "" },
-    { label: "List" },
+    { label: "Administration & Access Control" },
+    { label: "Roles & Permissions", href: PATHS.ADMIN.ROLES.LIST },
   ],
 
-  "/admin/programs/create": [
+  "/admin/roles/:id/assign-permissions": [
     { label: "Admin Control Panel" },
-    { label: "Programs & Clients" },
-    { label: "Programs", href: "" },
-    { label: "Create" },
-  ],
-
-  "/admin/programs/:id": [
-    { label: "Admin Control Panel" },
-    { label: "Programs & Clients" },
-    { label: "Programs", href: "" },
-    { label: "View Details" },
-  ],
-
-  "/admin/programs/:id/edit": [
-    { label: "Admin Control Panel" },
-    { label: "Programs & Clients" },
-    { label: "Programs", href: "" },
-    { label: "Edit" },
+    { label: "Administration & Access Control" },
+    { label: "Roles & Permissions", href: PATHS.ADMIN.ROLES.LIST },
+    { label: "Assign Permissions" },
   ],
 };

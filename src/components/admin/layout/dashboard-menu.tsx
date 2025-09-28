@@ -3,7 +3,7 @@
 import { LogOut } from "lucide-react";
 import { useState } from "react";
 
-import LogoutConfirmationDialog from "@/components/shared/confirmation-dialog";
+import ConfirmationDialog from "@/components/shared/confirmation-dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -19,10 +19,10 @@ import { useAuth } from "@/context/auth-context";
 
 export default function DashboardMenu() {
   const { user, logout, loading, isAuthenticated } = useAuth();
-
   const [showLogoutDialog, setShowLogoutDialog] = useState(false);
 
   const openLogoutDialog = () => setShowLogoutDialog(true);
+
   const closeLogoutDialog = () => {
     if (!loading) {
       setShowLogoutDialog(false);
@@ -78,7 +78,13 @@ export default function DashboardMenu() {
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <LogoutConfirmationDialog
+      <ConfirmationDialog
+        title="Sign Out Confirmation"
+        description="Are you sure you want to sign out of your account? You'll need to log in again to access the dashboard."
+        icon={LogOut}
+        variant="destructive"
+        confirmText="Sign Out"
+        cancelText="Stay Signed In"
         isOpen={showLogoutDialog}
         onClose={closeLogoutDialog}
         onConfirm={handleLogoutConfirm}

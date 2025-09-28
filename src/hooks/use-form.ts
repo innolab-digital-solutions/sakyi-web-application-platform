@@ -1,10 +1,12 @@
 /* eslint-disable security/detect-object-injection */
 "use client";
 
+import { useMutation } from "@tanstack/react-query";
 import { useCallback, useRef, useState } from "react";
 import { z, ZodType } from "zod";
 
 import { useAuth } from "@/context/auth-context";
+import { useQueryManager } from "@/hooks/use-query-manager";
 import { http } from "@/lib/api/client";
 import { ApiError, ApiResponse } from "@/types/shared/api";
 
@@ -16,6 +18,15 @@ type FormOptions<TSchema extends ZodType> = {
   validate?: TSchema;
   defaults?: Partial<z.infer<TSchema>>;
   requireAuth?: boolean;
+  tanstack?: {
+    queryKey?: string[];
+    invalidateQueries?: string[] | string[][];
+    mutationOptions?: {
+      onSuccess?: (data: ApiResponse<unknown>) => void;
+      onError?: (error: ApiError) => void;
+      onSettled?: () => void;
+    };
+  };
 };
 
 /**
@@ -50,6 +61,7 @@ export const useForm = <TSchema extends ZodType>(
   type T = z.infer<TSchema> & Record<string, unknown>;
 
   const { token } = useAuth();
+  const queryManager = useQueryManager();
 
   // Core form state
   const [data, setDataState] = useState<T>(initial as T);
@@ -60,6 +72,69 @@ export const useForm = <TSchema extends ZodType>(
 
   // Request cancellation controller
   const abortController = useRef<AbortController | null>(null);
+
+  /**
+   * TanStack Query mutation for form submissions
+   *
+   * Handles form submission with authentication, error handling, and query invalidation.
+   * Automatically manages request cancellation and state updates on success/error.
+   */
+  const formMutation = useMutation({
+    mutationFn: async ({
+      method,
+      url,
+      data: formData,
+    }: {
+      method: string;
+      url: string;
+      data: T;
+    }) => {
+      const needsAuth = options.requireAuth ?? true;
+      const shouldAuth = needsAuth && token;
+
+      const requestOptions = {
+        ...(shouldAuth && { token }),
+        requireAuth: needsAuth,
+      };
+
+      const response = await http[method as keyof typeof http]<T>(url, formData, requestOptions);
+
+      if (response.status === "error") {
+        throw new Error(response.message);
+      }
+
+      return response;
+    },
+    onSuccess: (response) => {
+      options.tanstack?.mutationOptions?.onSuccess?.(response);
+
+      // Invalidate specified queries
+      if (options.tanstack?.invalidateQueries) {
+        for (const queryKey of options.tanstack.invalidateQueries) {
+          if (Array.isArray(queryKey)) {
+            queryManager.invalidateQueries(queryKey);
+          } else {
+            queryManager.invalidateQueries([queryKey]);
+          }
+        }
+      }
+
+      setErrors({});
+      setIsDirty(false);
+    },
+    onError: (error: Error) => {
+      const apiError: ApiError = {
+        status: "error",
+        message: error.message,
+        errors: {},
+      };
+      setErrors((apiError.errors || {}) as Errors<T>);
+      options.tanstack?.mutationOptions?.onError?.(apiError);
+    },
+    onSettled: () => {
+      options.tanstack?.mutationOptions?.onSettled?.();
+    },
+  });
 
   /**
    * Updates a specific form field value
@@ -210,6 +285,26 @@ export const useForm = <TSchema extends ZodType>(
       // Validate form data before submission
       if (!runValidation()) return;
 
+      // If TanStack Query is configured and it's a mutation method, use TanStack Query
+      if (
+        options.tanstack &&
+        (method === "post" || method === "put" || method === "patch" || method === "delete")
+      ) {
+        formMutation.mutate(
+          { method, url, data },
+          {
+            onSuccess: (response) => {
+              submitOptions.onSuccess?.(response);
+            },
+            onError: (error) => {
+              submitOptions.onError?.(error as unknown as ApiError);
+            },
+          },
+        );
+        return;
+      }
+
+      // Fallback to manual request for GET/DELETE or when TanStack Query is not configured
       setProcessing(true);
       abortController.current = new AbortController();
 
@@ -243,7 +338,7 @@ export const useForm = <TSchema extends ZodType>(
         setProcessing(false);
       }
     },
-    [data, runValidation, clearErrors, options.requireAuth, token],
+    [data, runValidation, clearErrors, options, token, formMutation],
   );
 
   /**
@@ -321,7 +416,7 @@ export const useForm = <TSchema extends ZodType>(
     data,
     errors,
     isDirty,
-    processing,
+    processing: options.tanstack ? formMutation.isPending : processing,
 
     // Data manipulation methods
     setData,
@@ -335,6 +430,9 @@ export const useForm = <TSchema extends ZodType>(
     // Request control
     cancel,
     submit,
+
+    // Query management
+    queryManager,
 
     // HTTP method shortcuts
     get,
