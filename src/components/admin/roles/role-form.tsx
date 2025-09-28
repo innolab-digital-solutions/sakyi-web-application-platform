@@ -1,6 +1,5 @@
 "use client";
 
-import { useQueryClient } from "@tanstack/react-query";
 import { ShieldCheck } from "lucide-react";
 import React from "react";
 import { toast } from "sonner";
@@ -47,7 +46,6 @@ export default function RoleForm({
   title,
   description,
 }: RoleFormProperties) {
-  const queryClient = useQueryClient();
   const [internalOpen, setInternalOpen] = React.useState(false);
   const isControlled = typeof open === "boolean" && typeof onOpenChange === "function";
 
@@ -55,10 +53,6 @@ export default function RoleForm({
   const setDialogOpen = (value: boolean) => {
     if (isControlled) onOpenChange?.(value);
     else setInternalOpen(value);
-  };
-
-  const invalidateQueries = () => {
-    queryClient.invalidateQueries({ queryKey: ["admin-roles"] });
   };
 
   const form = useForm(
@@ -69,6 +63,17 @@ export default function RoleForm({
     {
       validate: CreateRoleSchema,
       requireAuth: true,
+      tanstack: {
+        invalidateQueries: ["admin-roles"],
+        mutationOptions: {
+          onSuccess: (response) => {
+            toast.success(response.message);
+          },
+          onError: (error) => {
+            toast.error(error.message);
+          },
+        },
+      },
     },
   );
 
@@ -91,24 +96,15 @@ export default function RoleForm({
     event.preventDefault();
 
     if (isEdit && defaultValues?.id) {
-      form.put(ENDPOINTS.ADMIN.ROLES.UPDATE(defaultValues.id), {
-        onSuccess: (response) => {
-          invalidateQueries();
-
+      form.submit("put", ENDPOINTS.ADMIN.ROLES.UPDATE(defaultValues.id), {
+        onSuccess: () => {
           setDialogOpen(false);
-
-          toast.success(response.message);
         },
       });
     } else {
-      form.post(ENDPOINTS.ADMIN.ROLES.STORE, {
-        onSuccess: (response) => {
-          invalidateQueries();
-
+      form.submit("post", ENDPOINTS.ADMIN.ROLES.STORE, {
+        onSuccess: () => {
           setDialogOpen(false);
-
-          toast.success(response.message);
-
           form.reset();
         },
       });
