@@ -20,6 +20,7 @@ export const ADMIN_ENDPOINTS = {
     SHOW: (id: string | number) => `/admin/roles/${id}`,
     STORE: "/admin/roles",
     UPDATE: (id: string | number) => `/admin/roles/${id}`,
+    ASSIGN_PERMISSIONS: (id: string | number) => `/admin/roles/${id}/assign-permissions`,
     DESTROY: (id: string | number) => `/admin/roles/${id}`,
   },
 } as const;

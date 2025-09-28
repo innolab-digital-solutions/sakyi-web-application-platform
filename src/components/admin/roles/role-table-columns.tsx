@@ -1,7 +1,7 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { Key, SquarePen, Trash } from "lucide-react";
+import { Key, SquarePen } from "lucide-react";
 import Link from "next/link";
 
 import RoleForm from "@/components/admin/roles/role-form";
@@ -15,6 +15,8 @@ import {
   getPermissionModuleCount,
   getPermissionModuleNames,
 } from "@/utils/admin/permissions";
+
+import RoleDeletionDialog from "./role-deletion-dialog";
 
 export const rolesTableColumns: ColumnDef<Role>[] = [
   {
@@ -122,11 +124,10 @@ export const rolesTableColumns: ColumnDef<Role>[] = [
             asChild
             variant="default"
             size="sm"
-            className={`flex items-center gap-1.5 text-[13px] font-medium text-white ${
-              hasPermissions
-                ? "bg-emerald-600 hover:bg-emerald-700"
-                : "bg-gray-600 hover:bg-gray-700"
-            }`}
+            className={`flex items-center gap-1.5 text-[13px] font-medium text-white ${hasPermissions
+              ? "bg-emerald-600 hover:bg-emerald-700"
+              : "bg-gray-600 hover:bg-gray-700"
+              }`}
           >
             <Link href="#">
               <Key className="h-2 w-2" />
@@ -151,17 +152,7 @@ export const rolesTableColumns: ColumnDef<Role>[] = [
           />
 
           {/* Delete Role Button */}
-          <Button
-            variant="destructive"
-            size="sm"
-            className="flex cursor-pointer items-center gap-1.5 text-[13px] font-medium"
-            onClick={() => {
-              alert(`Delete role: ${role.id}`);
-            }}
-          >
-            <Trash className="h-2 w-2" />
-            <span>Delete</span>
-          </Button>
+          <RoleDeletionDialog role={role} />
         </div>
       );
     },

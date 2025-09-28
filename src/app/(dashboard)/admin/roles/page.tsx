@@ -11,7 +11,7 @@ export default function RolesListPage() {
       <PageHeader
         icon={ClipboardCheck}
         title="Roles & Permissions"
-        description=" Manage roles and permissions for your application."
+        description="Manage user roles and permissions to control administrative access and user capabilities throughout the dashboard."
         actions={
           <>
             <RoleForm
