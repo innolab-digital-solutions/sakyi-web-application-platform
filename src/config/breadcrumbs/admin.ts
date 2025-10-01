@@ -28,4 +28,11 @@ export const adminBreadcrumbs: Breadcrumbs = {
     { label: "Roles & Permissions", href: PATHS.ADMIN.ROLES.LIST },
     { label: "Assign Permissions" },
   ],
+
+  // Units of Measurement
+  "/admin/units": [
+    { label: "Admin Control Panel" },
+    { label: "Master Data" },
+    { label: "Units of Measurement", href: PATHS.ADMIN.UNITS.LIST },
+  ],
 };

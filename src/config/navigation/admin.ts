@@ -15,6 +15,7 @@ import {
   MessageSquare,
   MonitorCog,
   Receipt,
+  RulerIcon,
   Settings,
   ShieldCheck,
   Stethoscope,
@@ -336,6 +337,21 @@ export const adminNavigation: NavGroup[] = [
             allow: true,
           },
         ],
+      },
+    ],
+  },
+
+  {
+    title: "Master Data",
+    items: [
+      {
+        name: "Units of Measurement",
+        icon: RulerIcon,
+        path: "/admin/units",
+        params: {},
+        active: false,
+        allow: true,
+        subitems: [],
       },
     ],
   },

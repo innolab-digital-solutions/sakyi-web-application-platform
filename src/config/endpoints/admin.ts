@@ -23,4 +23,12 @@ export const ADMIN_ENDPOINTS = {
     ASSIGN_PERMISSIONS: (id: string | number) => `/admin/roles/${id}/assign-permissions`,
     DESTROY: (id: string | number) => `/admin/roles/${id}`,
   },
+
+  UNITS: {
+    INDEX: "/admin/units",
+    SHOW: (id: string | number) => `/admin/units/${id}`,
+    STORE: "/admin/units",
+    UPDATE: (id: string | number) => `/admin/units/${id}`,
+    DESTROY: (id: string | number) => `/admin/units/${id}`,
+  },
 } as const;
