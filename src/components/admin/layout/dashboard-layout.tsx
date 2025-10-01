@@ -33,10 +33,13 @@ export default function DashboardLayout({ children, defaultOpen }: DashboardLayo
             ) : (
               <NoSSR fallback={<div className="min-h-screen bg-gray-50" />}>
                 <SidebarProvider defaultOpen={defaultOpen}>
+                  {/* Sidebar */}
                   <DashboardSidebar />
-                  <SidebarInset>
+
+                  {/* Main Content */}
+                  <SidebarInset className="flex min-w-0 flex-1 flex-col">
                     <DashboardHeader />
-                    <div className="flex flex-1 flex-col p-5">
+                    <div className="flex min-w-0 flex-1 flex-col overflow-x-hidden p-5">
                       <PageTransition transitionType="scale">{children}</PageTransition>
                     </div>
                   </SidebarInset>
