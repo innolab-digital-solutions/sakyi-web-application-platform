@@ -342,21 +342,6 @@ export const adminNavigation: NavGroup[] = [
   },
 
   {
-    title: "Master Data",
-    items: [
-      {
-        name: "Units of Measurement",
-        icon: RulerIcon,
-        path: "/admin/units",
-        params: {},
-        active: false,
-        allow: true,
-        subitems: [],
-      },
-    ],
-  },
-
-  {
     title: "Content & Community",
     items: [
       {

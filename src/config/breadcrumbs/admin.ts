@@ -30,9 +30,9 @@ export const adminBreadcrumbs: Breadcrumbs = {
   ],
 
   // Units of Measurement
-  "/admin/units": [
+  "/admin/nutrition/units": [
     { label: "Admin Control Panel" },
-    { label: "Master Data" },
+    { label: "Food & Nutrition" },
     { label: "Units of Measurement", href: PATHS.ADMIN.UNITS.LIST },
   ],
 };

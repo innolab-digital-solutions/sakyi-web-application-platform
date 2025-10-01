@@ -24,8 +24,8 @@ export const ADMIN_PATHS = {
   },
 
   UNITS: {
-    LIST: "/admin/units",
-    CREATE: "/admin/units/create",
+    LIST: "/admin/nutrition/units",
+    CREATE: "/admin/nutrition/units/create",
     EDIT: (id: string | number) => `/admin/units/${id}/edit`,
     DETAIL: (id: string | number) => `/admin/units/${id}`,
   },
