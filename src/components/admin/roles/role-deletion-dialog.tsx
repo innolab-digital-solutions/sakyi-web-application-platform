@@ -31,7 +31,7 @@ export default function RoleDeletionDialog({ role, className }: RoleDeletionDial
         aria-label="Delete role"
       >
         <Trash className="group-hover:text-destructive-900 text-destructive h-4 w-4 transition-colors duration-150" />
-        <span>Delete</span>
+        <span>Delete Role</span>
       </Button>
 
       <ConfirmationDialog
