@@ -19,10 +19,10 @@ import {
 } from "@/components/ui/dialog";
 import { ENDPOINTS } from "@/config/endpoints";
 import { useForm } from "@/hooks/use-form";
-import { RoleSchema } from "@/lib/validations/admin/role-schema";
-import { RoleFormProperties } from "@/types/admin/role";
+import { WorkoutCategorySchema } from "@/lib/validations/admin/workout-category-schema";
+import { WorkoutCategoryFormProperties } from "@/types/admin/workout-category";
 
-export default function RoleForm({
+export default function WorkoutCategoryForm({
   mode,
   trigger,
   defaultValues,
@@ -30,7 +30,7 @@ export default function RoleForm({
   onOpenChange,
   title,
   description,
-}: RoleFormProperties) {
+}: WorkoutCategoryFormProperties) {
   const [internalOpen, setInternalOpen] = React.useState(false);
   const isControlled = typeof open === "boolean" && typeof onOpenChange === "function";
 
@@ -47,10 +47,10 @@ export default function RoleForm({
       description: defaultValues?.description ?? "",
     },
     {
-      validate: RoleSchema,
+      validate: WorkoutCategorySchema,
       requireAuth: true,
       tanstack: {
-        invalidateQueries: ["admin-roles"],
+        invalidateQueries: ["admin-workout-categories"],
         mutationOptions: {
           onSuccess: (response) => {
             toast.success(response.message);
@@ -82,13 +82,13 @@ export default function RoleForm({
     event.preventDefault();
 
     if (isEdit && defaultValues?.id) {
-      form.submit("put", ENDPOINTS.ADMIN.ROLES.UPDATE(defaultValues.id), {
+      form.submit("put", ENDPOINTS.ADMIN.WORKOUT_CATEGORIES.UPDATE(defaultValues.id), {
         onSuccess: () => {
           setDialogOpen(false);
         },
       });
     } else {
-      form.submit("post", ENDPOINTS.ADMIN.ROLES.STORE, {
+      form.submit("post", ENDPOINTS.ADMIN.WORKOUT_CATEGORIES.STORE, {
         onSuccess: () => {
           setDialogOpen(false);
           form.reset();
@@ -105,13 +105,13 @@ export default function RoleForm({
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <ShieldCheck className="h-5 w-5" />
-              {title ?? (isEdit ? "Edit Role" : "Create Role")}
+              {title ?? (isEdit ? "Edit Workout Category" : "Create Workout Category")}
             </DialogTitle>
             <DialogDescription>
               {description ??
                 (isEdit
-                  ? "Update the role details and save your changes."
-                  : "Provide a name and description for the new role.")}
+                  ? "Update the workout category details and save your changes."
+                  : "Provide a name and description for the new workout category.")}
             </DialogDescription>
           </DialogHeader>
 
@@ -124,7 +124,7 @@ export default function RoleForm({
               onChange={(event) => form.setData("name", event.target.value)}
               error={form.errors.name as string}
               label="Name"
-              placeholder="e.g., Administrator, Moderator, etc."
+              placeholder="e.g., Upper Body, Lower Body, etc."
               required
             />
 
@@ -132,7 +132,7 @@ export default function RoleForm({
               id="description"
               name="description"
               className="min-h-[96px]"
-              placeholder="Describe the role's purpose and responsibilities..."
+              placeholder="Describe the workout category's purpose and responsibilities..."
               value={String(form.data.description ?? "")}
               onChange={(event) => form.setData("description", event.target.value)}
               error={form.errors.description as string}
@@ -159,7 +159,7 @@ export default function RoleForm({
                   : "Creating..."
                 : isEdit
                   ? "Save changes"
-                  : "Create role"}
+                  : "Create workout category"}
             </Button>
           </DialogFooter>
         </form>
