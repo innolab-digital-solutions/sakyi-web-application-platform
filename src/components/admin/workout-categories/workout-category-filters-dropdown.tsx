@@ -1,4 +1,3 @@
-/* eslint-disable unicorn/no-useless-undefined */
 "use client";
 
 import { Check, ChevronDown, Filter, RotateCcw } from "lucide-react";
@@ -13,6 +12,15 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+
+const CATEGORY_FILTERS: {
+  label: string;
+  value: "parent" | "child" | undefined;
+}[] = [
+  { label: "All categories", value: undefined },
+  { label: "Parent categories", value: "parent" },
+  { label: "Child categories", value: "child" },
+];
 
 export default function WorkoutCategoryFiltersDropdown() {
   const router = useRouter();
@@ -63,67 +71,32 @@ export default function WorkoutCategoryFiltersDropdown() {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-[240px]">
-          <DropdownMenuLabel>Workout Category Filters</DropdownMenuLabel>
+          <DropdownMenuLabel>Category Type</DropdownMenuLabel>
           <DropdownMenuSeparator />
-
-          <DropdownMenuLabel className="text-muted-foreground text-xs">
-            Category Type
-          </DropdownMenuLabel>
-
-          <DropdownMenuItem
-            onClick={() => setOnly(undefined)}
-            className={`group flex cursor-pointer items-center rounded-md px-2 py-2 transition-colors duration-150 ${
-              isActive(undefined)
-                ? "bg-primary/10 text-primary font-semibold"
-                : "hover:bg-primary/5 hover:text-primary"
-            } `}
-          >
-            {isActive(undefined) ? (
-              <Check className="text-primary mr-2 h-4 w-4 transition-colors duration-150" />
-            ) : (
-              <span className="mr-6" />
-            )}
-            All categories
-          </DropdownMenuItem>
-
-          <DropdownMenuItem
-            onClick={() => setOnly("parent")}
-            className={`group flex cursor-pointer items-center rounded-md px-2 py-2 transition-colors duration-150 ${
-              isActive("parent")
-                ? "bg-primary/10 text-primary font-semibold"
-                : "hover:bg-primary/5 hover:text-primary"
-            } `}
-          >
-            {isActive("parent") ? (
-              <Check className="text-primary mr-2 h-4 w-4 transition-colors duration-150" />
-            ) : (
-              <span className="mr-6" />
-            )}
-            Parent categories
-          </DropdownMenuItem>
-
-          <DropdownMenuItem
-            onClick={() => setOnly("child")}
-            className={`group flex cursor-pointer items-center rounded-md px-2 py-2 transition-colors duration-150 ${
-              isActive("child")
-                ? "bg-primary/10 text-primary font-semibold"
-                : "hover:bg-primary/5 hover:text-primary"
-            } `}
-          >
-            {isActive("child") ? (
-              <Check className="text-primary mr-2 h-4 w-4 transition-colors duration-150" />
-            ) : (
-              <span className="mr-6" />
-            )}
-            Child categories
-          </DropdownMenuItem>
-
+          {CATEGORY_FILTERS.map(({ label, value }) => (
+            <DropdownMenuItem
+              key={label}
+              onClick={() => setOnly(value)}
+              className={`group flex cursor-pointer items-center rounded-md px-2 py-2 transition-colors duration-150 ${
+                isActive(value)
+                  ? "!bg-accent/10 !text-accent"
+                  : "hover:!bg-accent/5 hover:!text-accent"
+              } `}
+            >
+              {isActive(value) ? (
+                <Check className="text-accent mr-2 h-4 w-4 transition-colors duration-150" />
+              ) : (
+                <span className="mr-6" />
+              )}
+              {label}
+            </DropdownMenuItem>
+          ))}
           <DropdownMenuSeparator />
           <DropdownMenuItem
             onClick={clearFilters}
-            className={`group text-destructive hover:bg-destructive/10 hover:text-destructive flex cursor-pointer items-center rounded-md px-2 py-2 font-semibold transition-colors duration-150`}
+            className="hover:!bg-destructive/10 hover:!text-destructive group text-destructive flex cursor-pointer items-center rounded-md px-2 py-2 font-semibold transition-colors duration-150"
           >
-            <RotateCcw className="text-destructive group-hover:text-destructive mr-2 h-4 w-4 transition-colors duration-150" />
+            <RotateCcw className="text-destructive group-hover:!text-destructive mr-2 h-4 w-4 transition-colors duration-150" />
             Reset filters
           </DropdownMenuItem>
         </DropdownMenuContent>
