@@ -7,6 +7,7 @@ import { ENDPOINTS } from "@/config/endpoints";
 import { useTable } from "@/hooks/use-table";
 import { WorkoutCategory } from "@/types/admin/workout-category";
 
+import WorkoutCategoryFiltersDropdown from "./workout-category-filters-dropdown";
 import { workoutCategoryTableColumns } from "./workout-category-table-columns";
 
 export default function WorkoutCategoryTable() {
@@ -29,6 +30,12 @@ export default function WorkoutCategoryTable() {
         emptyMessage:
           "No workout categories found. Create your first workout category to get started.",
         showColumnVisibility: false,
+        showToolbar: true,
+        toolbarActions: (
+          <>
+            <WorkoutCategoryFiltersDropdown />
+          </>
+        ),
       }}
     />
   );
