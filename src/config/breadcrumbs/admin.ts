@@ -28,4 +28,11 @@ export const adminBreadcrumbs: Breadcrumbs = {
     { label: "Roles & Permissions", href: PATHS.ADMIN.ROLES.LIST },
     { label: "Assign Permissions" },
   ],
+
+  // Food Categories
+  "/admin/nutrition/categories": [
+    { label: "Admin Control Panel" },
+    { label: "Nutrition & Food Management" },
+    { label: "Food Categories", href: PATHS.ADMIN.Food_CATEGORIES.LIST },
+  ],
 };

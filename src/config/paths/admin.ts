@@ -22,4 +22,11 @@ export const ADMIN_PATHS = {
     LIST: "/admin/roles",
     ASSIGN_PERMISSIONS: (id: string | number) => `/admin/roles/${id}/assign-permissions`,
   },
+
+  Food_CATEGORIES: {
+    LIST: "/admin/nutrition/categories",
+    CREATE: "/admin/nutrition/categories/create",
+    EDIT: (id: string | number) => `/admin/nutrition/categories/${id}/edit`,
+    DETAIL: (id: string | number) => `/admin/nutrition/categories/${id}`,
+  },
 } as const;
