@@ -18,7 +18,7 @@ export default function RolesListPage() {
               mode="create"
               trigger={
                 <Button
-                  variant="default"
+                  variant="outline"
                   className="flex h-10 w-full cursor-pointer items-center gap-2 text-sm font-medium sm:w-auto"
                 >
                   <Plus className="h-4 w-4" />
