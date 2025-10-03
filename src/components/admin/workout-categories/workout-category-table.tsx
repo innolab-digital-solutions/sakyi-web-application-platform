@@ -33,7 +33,7 @@ export default function WorkoutCategoryTable() {
         showToolbar: true,
         toolbarActions: (
           <>
-            <WorkoutCategoryFiltersDropdown />
+            <WorkoutCategoryFiltersDropdown isLoading={serverConfig.loading} />
           </>
         ),
       }}

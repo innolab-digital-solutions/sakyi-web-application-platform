@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, ChevronDown, Filter, RotateCcw } from "lucide-react";
+import { Check, ChevronDown, Filter, Loader2, RotateCcw } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
@@ -22,7 +22,13 @@ const CATEGORY_FILTERS: {
   { label: "Child categories", value: "child" },
 ];
 
-export default function WorkoutCategoryFiltersDropdown() {
+interface WorkoutCategoryFiltersDropdownProperties {
+  isLoading?: boolean;
+}
+
+export default function WorkoutCategoryFiltersDropdown({
+  isLoading = false,
+}: WorkoutCategoryFiltersDropdownProperties) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParameters = useSearchParams();
@@ -35,6 +41,7 @@ export default function WorkoutCategoryFiltersDropdown() {
   };
 
   const setParameter = (key: string, value: string | undefined) => {
+    if (isLoading) return;
     const next = new URLSearchParams(searchParameters.toString());
     if (value === undefined) next.delete(key);
     else next.set(key, value);
@@ -42,6 +49,7 @@ export default function WorkoutCategoryFiltersDropdown() {
   };
 
   const clearFilters = () => {
+    if (isLoading) return;
     const next = new URLSearchParams(searchParameters.toString());
     next.delete("only");
     replaceParameters(next);
@@ -63,11 +71,16 @@ export default function WorkoutCategoryFiltersDropdown() {
           <Button
             variant="outline"
             size="sm"
-            className="hover:!text-foreground ml-auto hidden h-10 font-medium hover:!bg-gray-100 lg:flex"
+            className="hover:!text-foreground ml-auto hidden h-10 font-medium hover:!bg-gray-100 disabled:cursor-not-allowed disabled:opacity-60 lg:flex"
+            disabled={isLoading}
           >
             <Filter className="mr-1 h-4 w-4" />
             <span className="hidden sm:block">Filters</span>
-            <ChevronDown className="h-4 w-4" />
+            {isLoading ? (
+              <Loader2 className="ml-1 h-4 w-4 animate-spin" />
+            ) : (
+              <ChevronDown className="h-4 w-4" />
+            )}
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-[240px]">
@@ -77,6 +90,8 @@ export default function WorkoutCategoryFiltersDropdown() {
             <DropdownMenuItem
               key={label}
               onClick={() => setOnly(value)}
+              onSelect={(event) => event.preventDefault()}
+              disabled={isLoading}
               className={`group flex cursor-pointer items-center rounded-md px-2 py-2 transition-colors duration-150 ${
                 isActive(value)
                   ? "!bg-accent/10 !text-accent"
@@ -94,6 +109,8 @@ export default function WorkoutCategoryFiltersDropdown() {
           <DropdownMenuSeparator />
           <DropdownMenuItem
             onClick={clearFilters}
+            onSelect={(event) => event.preventDefault()}
+            disabled={isLoading}
             className="hover:!bg-destructive/10 hover:!text-destructive group text-destructive flex cursor-pointer items-center rounded-md px-2 py-2 font-semibold transition-colors duration-150"
           >
             <RotateCcw className="text-destructive group-hover:!text-destructive mr-2 h-4 w-4 transition-colors duration-150" />
