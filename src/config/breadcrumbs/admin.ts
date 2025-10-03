@@ -28,4 +28,11 @@ export const adminBreadcrumbs: Breadcrumbs = {
     { label: "Roles & Permissions", href: PATHS.ADMIN.ROLES.LIST },
     { label: "Assign Permissions" },
   ],
+
+  "/admin/workout-categories": [
+    { label: "Admin Control Panel" },
+    { label: "Health Data & Plans" },
+    { label: "Workout Library" },
+    { label: "Workout Categories", href: PATHS.ADMIN.WORKOUT_CATEGORIES.LIST },
+  ],
 };
