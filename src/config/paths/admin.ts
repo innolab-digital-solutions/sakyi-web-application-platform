@@ -22,4 +22,8 @@ export const ADMIN_PATHS = {
     LIST: "/admin/roles",
     ASSIGN_PERMISSIONS: (id: string | number) => `/admin/roles/${id}/assign-permissions`,
   },
+
+  WORKOUT_CATEGORIES: {
+    LIST: "/admin/workout-categories",
+  },
 } as const;
