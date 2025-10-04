@@ -28,6 +28,7 @@ import {
   TablePaginationConfig,
   TableSearchConfig,
   TableServerConfig,
+  TableSkeletonConfig,
   TableSortingConfig,
   TableUIConfig,
 } from "@/types/shared/table";
@@ -72,6 +73,7 @@ interface DataTableProperties<TData, TValue> {
   sorting?: TableSortingConfig;
   ui?: TableUIConfig;
   server?: TableServerConfig;
+  skeleton?: TableSkeletonConfig;
 }
 
 /**
@@ -100,6 +102,7 @@ export default function DataTable<TData, TValue>({
   sorting,
   ui,
   server,
+  skeleton,
 }: DataTableProperties<TData, TValue>) {
   // Merge user-provided search config with sensible defaults
   const searchConfig: Required<TableSearchConfig> = {
@@ -138,6 +141,13 @@ export default function DataTable<TData, TValue>({
     enabled: false,
     loading: false,
     ...server,
+  };
+
+  // Merge user-provided skeleton config with sensible defaults
+  const skeletonConfig: Required<TableSkeletonConfig> = {
+    rows: 6,
+    customSkeletons: {},
+    ...skeleton,
   };
 
   // Internal state management for table features
@@ -205,6 +215,7 @@ export default function DataTable<TData, TValue>({
         searchConfig={searchConfig}
         uiConfig={uiConfig}
         paginationConfig={paginationConfig}
+        skeletonConfig={skeletonConfig}
       />
     );
   }

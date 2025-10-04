@@ -11,7 +11,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { TablePaginationConfig, TableSearchConfig, TableUIConfig } from "@/types/shared/table";
+import {
+  TablePaginationConfig,
+  TableSearchConfig,
+  TableSkeletonConfig,
+  TableUIConfig,
+} from "@/types/shared/table";
 
 import TableToolbar from "./table-toolbar";
 
@@ -26,6 +31,7 @@ interface TableLoadingProperties<TData, TValue> {
   searchConfig: Required<TableSearchConfig>;
   uiConfig: Required<TableUIConfig>;
   paginationConfig?: Required<TablePaginationConfig>;
+  skeletonConfig?: Required<TableSkeletonConfig>;
 }
 
 /**
@@ -44,6 +50,7 @@ export default function TableLoading<TData, TValue>({
   searchConfig,
   uiConfig,
   paginationConfig,
+  skeletonConfig,
 }: TableLoadingProperties<TData, TValue>) {
   return (
     <div className="border-border w-full overflow-hidden rounded-lg border">
@@ -79,15 +86,19 @@ export default function TableLoading<TData, TValue>({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {/* Dynamic skeleton rows based on page size or default */}
+            {/* Dynamic skeleton rows based on page size, with optional override */}
             {Array.from({
-              length: paginationConfig?.pageSize || 6,
+              length: paginationConfig?.pageSize || skeletonConfig?.rows || 6,
             }).map((_, rowIndex) => (
               <TableRow key={rowIndex} className="hover:bg-muted/40 transition-colors">
                 {columns.map((column, colIndex) => (
                   <TableCell key={colIndex}>
                     <div className="px-3.5 py-1.5">
-                      <SkeletonRowContent column={column} rowIndex={rowIndex} />
+                      <SkeletonRowContent
+                        column={column}
+                        rowIndex={rowIndex}
+                        customSkeletons={skeletonConfig?.customSkeletons}
+                      />
                     </div>
                   </TableCell>
                 ))}
@@ -106,9 +117,11 @@ export default function TableLoading<TData, TValue>({
 function SkeletonRowContent<TData, TValue>({
   column,
   rowIndex,
+  customSkeletons,
 }: {
   column: ColumnDef<TData, TValue>;
   rowIndex: number;
+  customSkeletons?: Record<string, React.ReactNode>;
 }) {
   // Add some variation to make it look more realistic
   const variations = [
@@ -121,35 +134,42 @@ function SkeletonRowContent<TData, TValue>({
   ];
 
   const variation = variations[rowIndex % variations.length];
-
-  // Get column header text for analysis
-  const headerText = typeof column.header === "string" ? column.header.toLowerCase() : "";
   const columnId = column.id?.toLowerCase() || "";
+  const accessorKey = column.accessorKey?.toString().toLowerCase() || "";
 
-  // 1. Actions column - typically has buttons/links
-  if (columnId.includes("action") || headerText.includes("action")) {
+  // Check for custom skeleton first
+  if (customSkeletons && customSkeletons[columnId]) {
+    return <>{customSkeletons[columnId]}</>;
+  }
+
+  if (customSkeletons && customSkeletons[accessorKey]) {
+    return <>{customSkeletons[accessorKey]}</>;
+  }
+
+  // Actions column - buttons and dropdowns
+  if (columnId.includes("action")) {
     return (
-      <div className="flex items-center space-x-3">
-        <Skeleton
-          className={`bg-muted/60 ${variation.width} ${variation.height} animate-pulse rounded`}
-        />
-        <Skeleton
-          className={`bg-muted/60 ${variation.width} ${variation.height} animate-pulse rounded`}
-        />
+      <div className="flex items-center space-x-1">
+        <Skeleton className="bg-muted/60 h-8 w-8 animate-pulse rounded" />
+        <Skeleton className="bg-muted/60 h-8 w-8 animate-pulse rounded" />
       </div>
     );
   }
 
-  // 2. Badge/Tag columns - permissions, status, categories, etc.
-  if (
-    headerText.includes("permission") ||
-    headerText.includes("status") ||
-    headerText.includes("category") ||
-    headerText.includes("tag") ||
-    headerText.includes("type") ||
-    columnId.includes("status") ||
-    columnId.includes("category")
-  ) {
+  // Name columns with descriptions (roles, categories, etc.)
+  if (accessorKey === "name") {
+    return (
+      <div className="space-y-2">
+        <Skeleton
+          className={`bg-muted/60 ${variation.width} ${variation.height} animate-pulse rounded`}
+        />
+        <Skeleton className="bg-muted/40 h-3 w-20 animate-pulse rounded" />
+      </div>
+    );
+  }
+
+  // Permissions column - badges
+  if (accessorKey === "permissions") {
     return (
       <div className="flex items-center gap-2">
         <Skeleton className="bg-muted/60 h-6 w-16 animate-pulse rounded-full" />
@@ -157,117 +177,6 @@ function SkeletonRowContent<TData, TValue>({
         <Skeleton className="bg-muted/60 h-6 w-12 animate-pulse rounded-full" />
       </div>
     );
-  }
-
-  // 3. Name/Title columns with descriptions - roles, posts, users, etc.
-  if (
-    headerText.includes("name") ||
-    headerText.includes("title") ||
-    headerText.includes("role") ||
-    headerText.includes("user") ||
-    headerText.includes("post") ||
-    headerText.includes("product") ||
-    columnId.includes("name") ||
-    columnId.includes("title")
-  ) {
-    return (
-      <div className="space-y-2">
-        <Skeleton
-          className={`bg-muted/60 ${variation.width} ${variation.height} animate-pulse rounded`}
-        />
-        <Skeleton className={`bg-muted/40 h-3 w-20 animate-pulse rounded`} />
-      </div>
-    );
-  }
-
-  // 4. Email columns
-  if (headerText.includes("email") || columnId.includes("email")) {
-    return (
-      <div className="space-y-1">
-        <Skeleton className="bg-muted/60 h-4 w-40 animate-pulse rounded" />
-        <Skeleton className="bg-muted/40 h-3 w-32 animate-pulse rounded" />
-      </div>
-    );
-  }
-
-  // 5. Date/Time columns
-  if (
-    headerText.includes("date") ||
-    headerText.includes("time") ||
-    headerText.includes("created") ||
-    headerText.includes("updated") ||
-    columnId.includes("date") ||
-    columnId.includes("time")
-  ) {
-    return (
-      <div className="space-y-1">
-        <Skeleton className="bg-muted/60 h-4 w-24 animate-pulse rounded" />
-        <Skeleton className="bg-muted/40 h-3 w-16 animate-pulse rounded" />
-      </div>
-    );
-  }
-
-  // 6. ID columns - usually shorter
-  if (headerText.includes("id") || columnId.includes("id")) {
-    return <Skeleton className="bg-muted/60 h-4 w-12 animate-pulse rounded" />;
-  }
-
-  // 7. Number/Count columns - price, count, etc.
-  if (
-    headerText.includes("price") ||
-    headerText.includes("count") ||
-    headerText.includes("amount") ||
-    headerText.includes("quantity") ||
-    columnId.includes("price") ||
-    columnId.includes("count")
-  ) {
-    return <Skeleton className="bg-muted/60 h-4 w-16 animate-pulse rounded" />;
-  }
-
-  // 8. Description/Content columns - longer text
-  if (
-    headerText.includes("description") ||
-    headerText.includes("content") ||
-    headerText.includes("message") ||
-    columnId.includes("description") ||
-    columnId.includes("content")
-  ) {
-    return (
-      <div className="space-y-2">
-        <Skeleton className="bg-muted/60 h-4 w-full animate-pulse rounded" />
-        <Skeleton className="bg-muted/60 h-4 w-3/4 animate-pulse rounded" />
-        <Skeleton className="bg-muted/40 h-4 w-1/2 animate-pulse rounded" />
-      </div>
-    );
-  }
-
-  // 9. Avatar/Image columns
-  if (
-    headerText.includes("avatar") ||
-    headerText.includes("image") ||
-    headerText.includes("photo") ||
-    columnId.includes("avatar") ||
-    columnId.includes("image")
-  ) {
-    return (
-      <div className="flex items-center space-x-3">
-        <Skeleton className="bg-muted/60 h-8 w-8 animate-pulse rounded-full" />
-        <Skeleton
-          className={`bg-muted/60 ${variation.width} ${variation.height} animate-pulse rounded`}
-        />
-      </div>
-    );
-  }
-
-  // 10. Boolean/Checkbox columns
-  if (
-    headerText.includes("active") ||
-    headerText.includes("enabled") ||
-    headerText.includes("verified") ||
-    columnId.includes("active") ||
-    columnId.includes("enabled")
-  ) {
-    return <Skeleton className="bg-muted/60 h-4 w-4 animate-pulse rounded" />;
   }
 
   // Default skeleton for unknown column types

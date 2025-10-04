@@ -2,7 +2,6 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import { Ellipsis, Key, SquarePen } from "lucide-react";
-import Link from "next/link";
 
 import RoleForm from "@/components/admin/roles/role-form";
 import SortableHeader from "@/components/shared/table/sortable-header";
@@ -17,7 +16,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { PATHS } from "@/config/paths";
 import { Role } from "@/types/admin/role";
 import {
   getModuleActions,
