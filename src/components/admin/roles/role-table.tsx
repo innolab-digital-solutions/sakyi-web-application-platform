@@ -28,7 +28,7 @@ export default function RoleTable() {
           name: (
             <div className="space-y-2">
               <Skeleton className="bg-muted/60 h-4 w-32 animate-pulse rounded" />
-              <Skeleton className="bg-muted/40 h-3 w-20 animate-pulse rounded" />
+              <Skeleton className="bg-muted/40 h-3 w-96 animate-pulse rounded" />
             </div>
           ),
           permissions: (

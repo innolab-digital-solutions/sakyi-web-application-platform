@@ -35,7 +35,7 @@ export default function WorkoutCategoryTable() {
                 <Skeleton className="bg-muted/60 h-4 w-32 animate-pulse rounded" />
                 <Skeleton className="bg-muted/60 h-5 w-20 animate-pulse rounded-full" />
               </div>
-              <Skeleton className="bg-muted/40 h-3 w-24 animate-pulse rounded" />
+              <Skeleton className="bg-muted/40 h-3 w-96 animate-pulse rounded" />
             </div>
           ),
           actions: (

@@ -135,7 +135,8 @@ function SkeletonRowContent<TData, TValue>({
 
   const variation = variations[rowIndex % variations.length];
   const columnId = column.id?.toLowerCase() || "";
-  const accessorKey = column.accessorKey?.toString().toLowerCase() || "";
+  const accessorKey =
+    (column as unknown as { accessorKey: string }).accessorKey?.toString().toLowerCase() || "";
 
   // Check for custom skeleton first
   if (customSkeletons && customSkeletons[columnId]) {
@@ -152,29 +153,6 @@ function SkeletonRowContent<TData, TValue>({
       <div className="flex items-center space-x-1">
         <Skeleton className="bg-muted/60 h-8 w-8 animate-pulse rounded" />
         <Skeleton className="bg-muted/60 h-8 w-8 animate-pulse rounded" />
-      </div>
-    );
-  }
-
-  // Name columns with descriptions (roles, categories, etc.)
-  if (accessorKey === "name") {
-    return (
-      <div className="space-y-2">
-        <Skeleton
-          className={`bg-muted/60 ${variation.width} ${variation.height} animate-pulse rounded`}
-        />
-        <Skeleton className="bg-muted/40 h-3 w-20 animate-pulse rounded" />
-      </div>
-    );
-  }
-
-  // Permissions column - badges
-  if (accessorKey === "permissions") {
-    return (
-      <div className="flex items-center gap-2">
-        <Skeleton className="bg-muted/60 h-6 w-16 animate-pulse rounded-full" />
-        <Skeleton className="bg-muted/60 h-6 w-20 animate-pulse rounded-full" />
-        <Skeleton className="bg-muted/60 h-6 w-12 animate-pulse rounded-full" />
       </div>
     );
   }
