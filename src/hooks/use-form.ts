@@ -137,17 +137,19 @@ export const useForm = <TSchema extends ZodType>(
   });
 
   /**
-   * Updates a specific form field value
+   * Updates form field values
    *
-   * @param key - Field name to update
-   * @param value - New field value
+   * @param keyOrData - Field name to update or partial data object
+   * @param value - New field value (when keyOrData is a string)
    */
   const setData = useCallback(
-    <K extends keyof T>(key: K, value: T[K]) => {
+    <K extends keyof T>(keyOrData: K | Partial<T>, value?: T[K]) => {
       setDataState((previous) => {
-        const next = { ...previous, [key]: value } as T;
+        const next: T =
+          typeof keyOrData === "string" && value !== undefined
+            ? ({ ...previous, [keyOrData]: value } as T)
+            : ({ ...previous, ...(keyOrData as Partial<T>) } as T);
 
-        // Track dirty state by comparing with defaults
         setIsDirty(JSON.stringify(next) !== JSON.stringify(defaults));
         return next;
       });

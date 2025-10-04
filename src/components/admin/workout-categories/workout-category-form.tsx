@@ -1,7 +1,7 @@
 "use client";
 
 import { Loader2, ShieldCheck } from "lucide-react";
-import React from "react";
+import React, { useEffect } from "react";
 import { toast } from "sonner";
 
 import { ComboBoxField } from "@/components/shared/forms/combo-box-field";
@@ -46,7 +46,9 @@ export default function WorkoutCategoryForm({
       setUncontrolledOpen(value);
     }
 
-    if (!isEdit) form.reset();
+    if (!value) {
+      form.reset();
+    }
   };
 
   const { data: workoutCategories } = useRequest({
@@ -59,9 +61,9 @@ export default function WorkoutCategoryForm({
 
   const form = useForm(
     {
-      parent_id: defaultValues?.parent?.id ?? "",
-      name: defaultValues?.name ?? "",
-      description: defaultValues?.description ?? "",
+      parent_id: "",
+      name: "",
+      description: "",
     },
     {
       validate: WorkoutCategorySchema,
@@ -80,6 +82,29 @@ export default function WorkoutCategoryForm({
       },
     },
   );
+
+  useEffect(() => {
+    if (isEdit && defaultValues) {
+      form.setData({
+        parent_id: defaultValues.parent?.id ?? "",
+        name: defaultValues.name ?? "",
+        description: defaultValues.description ?? "",
+      });
+    } else {
+      form.setData({
+        parent_id: "",
+        name: "",
+        description: "",
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    defaultValues?.id,
+    defaultValues?.parent?.id,
+    defaultValues?.name,
+    defaultValues?.description,
+    isEdit,
+  ]);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();

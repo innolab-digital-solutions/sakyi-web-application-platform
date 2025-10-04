@@ -1,7 +1,7 @@
 "use client";
 
 import { Loader2, ShieldCheck } from "lucide-react";
-import React from "react";
+import React, { useEffect } from "react";
 import { toast } from "sonner";
 
 import { InputField } from "@/components/shared/forms/input-field";
@@ -44,13 +44,15 @@ export default function RoleForm({
       setUncontrolledOpen(value);
     }
 
-    if (!isEdit) form.reset();
+    if (!value) {
+      form.reset();
+    }
   };
 
   const form = useForm(
     {
-      name: defaultValues?.name ?? "",
-      description: defaultValues?.description ?? "",
+      name: "",
+      description: "",
     },
     {
       validate: RoleSchema,
@@ -69,6 +71,21 @@ export default function RoleForm({
       },
     },
   );
+
+  useEffect(() => {
+    if (isEdit && defaultValues) {
+      form.setData({
+        name: defaultValues.name ?? "",
+        description: defaultValues.description ?? "",
+      });
+    } else {
+      form.setData({
+        name: "",
+        description: "",
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [defaultValues?.id, defaultValues?.name, defaultValues?.description, isEdit]);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
