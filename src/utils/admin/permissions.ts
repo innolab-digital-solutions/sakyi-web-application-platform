@@ -1,4 +1,3 @@
-/* eslint-disable security/detect-object-injection */
 import { Permission } from "@/types/admin/role";
 
 /**

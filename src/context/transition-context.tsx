@@ -52,7 +52,7 @@ export function TransitionProvider({
   const getTransitionConfig = useCallback(
     (type?: TransitionType): TransitionConfig => {
       const transitionType = type || currentTransition;
-      // eslint-disable-next-line security/detect-object-injection
+
       return TRANSITION_PRESETS[transitionType];
     },
     [currentTransition],

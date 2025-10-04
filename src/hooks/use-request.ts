@@ -1,4 +1,3 @@
-/* eslint-disable security/detect-object-injection */
 "use client";
 
 import { useMutation, useQuery } from "@tanstack/react-query";

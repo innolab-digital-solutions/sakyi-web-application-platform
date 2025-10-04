@@ -52,7 +52,6 @@ function createGlobalFilterFunction<TData>(searchKeys: string[]) {
 
     // Check if any of the specified keys contain the search value
     return searchKeys.some((key) => {
-      // eslint-disable-next-line security/detect-object-injection
       const cellValue = (row.original as Record<string, unknown>)[key];
       return cellValue ? String(cellValue).toLowerCase().includes(searchValue) : false;
     });

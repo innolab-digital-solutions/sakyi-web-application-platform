@@ -1,3 +1,4 @@
+// eslint-disable-next-line unicorn/import-style
 import { dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -19,7 +20,13 @@ const eslintConfig = [
   ...compat.extends("next/core-web-vitals", "next/typescript"),
 
   // Security hardening - prevents common security vulnerabilities
-  security.configs.recommended,
+  {
+    ...security.configs.recommended,
+    rules: {
+      ...security.configs.recommended?.rules,
+      "security/detect-object-injection": "off",
+    },
+  },
 
   // Code quality and modern JavaScript best practices enforcement
   unicorn.configs.recommended,

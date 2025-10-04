@@ -1,4 +1,3 @@
-/* eslint-disable security/detect-object-injection */
 "use client";
 
 import { LucideIcon } from "lucide-react";
