@@ -1,7 +1,7 @@
 /* eslint-disable security/detect-object-injection */
 "use client";
 
-import { LucideIcon, X } from "lucide-react";
+import { LucideIcon } from "lucide-react";
 import React from "react";
 
 import {
@@ -154,12 +154,9 @@ export default function ConfirmationDialog({
           <AlertDialogCancel
             onClick={onClose}
             disabled={isLoading}
-            className="w-full cursor-pointer bg-gray-100 !font-medium hover:bg-gray-200 hover:text-gray-900 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
+            className="w-full cursor-pointer bg-transparent !font-medium text-gray-800 hover:bg-gray-100 hover:text-gray-800 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
           >
-            <div className="flex items-center">
-              <X className="mr-2 h-4 w-4" />
-              {cancelText}
-            </div>
+            {cancelText}
           </AlertDialogCancel>
 
           <Button

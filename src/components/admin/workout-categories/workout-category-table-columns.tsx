@@ -1,7 +1,7 @@
 "use client";
 
 import type { ColumnDef } from "@tanstack/react-table";
-import { CornerDownRight, Network, SquarePen, Trash } from "lucide-react";
+import { CornerDownRight, Network, SquarePen } from "lucide-react";
 import React from "react";
 
 import SortableHeader from "@/components/shared/table/sortable-header";
@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { WorkoutCategory } from "@/types/admin/workout-category";
 
+import WorkoutCategoryDeletionDialog from "./workout-category-deletion-dialog";
 import WorkoutCategoryForm from "./workout-category-form";
 
 export const workoutCategoryTableColumns: ColumnDef<WorkoutCategory>[] = [
@@ -71,14 +72,7 @@ export const workoutCategoryTableColumns: ColumnDef<WorkoutCategory>[] = [
             }
           />
 
-          <Button
-            variant="ghost"
-            size="sm"
-            className="hover:bg-destructive/10 hover:text-destructive text-destructive flex cursor-pointer items-center justify-center text-sm font-semibold"
-          >
-            <Trash className="h-2 w-2" />
-            <span>Delete</span>
-          </Button>
+          <WorkoutCategoryDeletionDialog workoutCategory={workoutCategory} />
         </div>
       );
     },
