@@ -94,7 +94,7 @@ export default function RoleForm({
               {title ?? (isEdit ? "Edit Role Details" : "Create a New Role")}
             </DialogTitle>
 
-            <DialogDescription>
+            <DialogDescription className="text-muted-foreground text-sm font-medium">
               {description ??
                 (isEdit
                   ? "Modify the role’s name and description. Changes will update access and permissions for users assigned to this role."
@@ -150,7 +150,7 @@ export default function RoleForm({
               {form.processing ? (
                 <>
                   <Loader2 className="h-4 w-4 animate-spin text-white" />
-                  {isEdit ? "Saving..." : "Creating..."}
+                  {isEdit ? "Saving Changes..." : "Creating Role..."}
                 </>
               ) : (
                 <>

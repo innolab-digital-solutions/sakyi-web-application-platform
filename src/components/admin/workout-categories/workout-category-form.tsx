@@ -1,9 +1,10 @@
 "use client";
 
-import { ShieldCheck } from "lucide-react";
+import { Loader2, ShieldCheck } from "lucide-react";
 import React from "react";
 import { toast } from "sonner";
 
+import { ComboBoxField } from "@/components/shared/forms/combo-box-field";
 import { InputField } from "@/components/shared/forms/input-field";
 import { TextareaField } from "@/components/shared/forms/textarea-field";
 import { Button } from "@/components/ui/button";
@@ -19,8 +20,9 @@ import {
 } from "@/components/ui/dialog";
 import { ENDPOINTS } from "@/config/endpoints";
 import { useForm } from "@/hooks/use-form";
+import { useRequest } from "@/hooks/use-request";
 import { WorkoutCategorySchema } from "@/lib/validations/admin/workout-category-schema";
-import { WorkoutCategoryFormProperties } from "@/types/admin/workout-category";
+import { WorkoutCategory, WorkoutCategoryFormProperties } from "@/types/admin/workout-category";
 
 export default function WorkoutCategoryForm({
   mode,
@@ -31,18 +33,33 @@ export default function WorkoutCategoryForm({
   title,
   description,
 }: WorkoutCategoryFormProperties) {
-  const [internalOpen, setInternalOpen] = React.useState(false);
   const isControlled = typeof open === "boolean" && typeof onOpenChange === "function";
+  const [uncontrolledOpen, setUncontrolledOpen] = React.useState(false);
 
-  const dialogOpen = isControlled ? open : internalOpen;
+  const dialogOpen = isControlled ? open : uncontrolledOpen;
+  const isEdit = mode === "edit";
 
-  const setDialogOpen = (value: boolean) => {
-    if (isControlled) onOpenChange?.(value);
-    else setInternalOpen(value);
+  const handleDialogOpenChange = (value: boolean) => {
+    if (isControlled) {
+      onOpenChange?.(value);
+    } else {
+      setUncontrolledOpen(value);
+    }
+
+    if (!isEdit) form.reset();
   };
+
+  const { data: workoutCategories } = useRequest({
+    url: `${ENDPOINTS.META.WORKOUT_CATEGORIES}?only=parent`,
+    queryKey: ["workout-categories"],
+    data: { only: "parent" },
+    requireAuth: true,
+    staleTime: 1000 * 60 * 5,
+  });
 
   const form = useForm(
     {
+      parent_id: defaultValues?.parent?.id ?? "",
       name: defaultValues?.name ?? "",
       description: defaultValues?.description ?? "",
     },
@@ -53,6 +70,7 @@ export default function WorkoutCategoryForm({
         invalidateQueries: ["admin-workout-categories"],
         mutationOptions: {
           onSuccess: (response) => {
+            handleDialogOpenChange(false);
             toast.success(response.message);
           },
           onError: (error) => {
@@ -63,59 +81,69 @@ export default function WorkoutCategoryForm({
     },
   );
 
-  React.useEffect(() => {
-    if (dialogOpen) {
-      if (defaultValues?.name !== undefined) {
-        form.setData("name", defaultValues?.name ?? "");
-      }
-      if (defaultValues?.description !== undefined) {
-        form.setData("description", defaultValues?.description ?? "");
-      }
-      form.clearErrors();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dialogOpen, defaultValues?.name, defaultValues?.description]);
-
-  const isEdit = mode === "edit";
-
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     if (isEdit && defaultValues?.id) {
-      form.submit("put", ENDPOINTS.ADMIN.WORKOUT_CATEGORIES.UPDATE(defaultValues.id), {
-        onSuccess: () => {
-          setDialogOpen(false);
-        },
-      });
+      form.put(ENDPOINTS.ADMIN.WORKOUT_CATEGORIES.UPDATE(defaultValues.id));
     } else {
-      form.submit("post", ENDPOINTS.ADMIN.WORKOUT_CATEGORIES.STORE, {
-        onSuccess: () => {
-          setDialogOpen(false);
-          form.reset();
-        },
-      });
+      form.post(ENDPOINTS.ADMIN.WORKOUT_CATEGORIES.STORE);
     }
   };
 
   return (
-    <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+    <Dialog open={dialogOpen} onOpenChange={handleDialogOpenChange}>
       {trigger ? <DialogTrigger asChild>{trigger}</DialogTrigger> : undefined}
-      <DialogContent className="w-[95vw] max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl">
-        <form onSubmit={handleSubmit} className="w-full">
+      <DialogContent
+        showCloseButton={false}
+        className="w-[95vw] max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl"
+      >
+        <form onSubmit={handleSubmit} className="w-full p-2.5">
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
+            <DialogTitle className="mb-1 flex items-center gap-2">
               <ShieldCheck className="h-5 w-5" />
-              {title ?? (isEdit ? "Edit Workout Category" : "Create Workout Category")}
+              {title ??
+                (isEdit ? "Edit Workout Category Details" : "Create a New Workout Category")}
             </DialogTitle>
-            <DialogDescription>
+
+            <DialogDescription className="text-muted-foreground text-sm font-medium">
               {description ??
                 (isEdit
-                  ? "Update the workout category details and save your changes."
-                  : "Provide a name and description for the new workout category.")}
+                  ? "Modify the workout category’s name and description. Changes will update access and permissions for users assigned to this workout category."
+                  : "Enter a clear name and description to define the responsibilities and access level for this workout category.")}
             </DialogDescription>
           </DialogHeader>
-
           <div className="space-y-5 py-5">
+            <ComboBoxField
+              id="parent_id"
+              name="parent_id"
+              label="Parent Category"
+              description="Select a parent category if this is a subcategory"
+              placeholder="Select parent category..."
+              searchPlaceholder="Search categories..."
+              emptyMessage="No categories found."
+              options={[
+                { value: "", label: "No parent (Root category)" },
+                ...(Array.isArray(workoutCategories?.data) && workoutCategories !== undefined
+                  ? workoutCategories.data
+                      .filter(
+                        (category: WorkoutCategory) =>
+                          // In edit mode, exclude the current category from parent options
+                          !isEdit || category.id !== defaultValues?.id,
+                      )
+                      .map((category: WorkoutCategory) => ({
+                        value: String(category.id),
+                        label: category.name,
+                      }))
+                  : []),
+              ]}
+              value={String(form.data.parent_id ?? "")}
+              onChange={(value: string) => form.setData("parent_id", value)}
+              error={form.errors.parent_id as string}
+              disabled={form.processing}
+              allowClear
+            />
+
             <InputField
               id="name"
               name="name"
@@ -126,6 +154,7 @@ export default function WorkoutCategoryForm({
               label="Name"
               placeholder="e.g., Upper Body, Lower Body, etc."
               required
+              disabled={form.processing}
             />
 
             <TextareaField
@@ -137,29 +166,39 @@ export default function WorkoutCategoryForm({
               onChange={(event) => form.setData("description", event.target.value)}
               error={form.errors.description as string}
               label="Description"
+              disabled={form.processing}
             />
           </div>
 
-          <DialogFooter className="flex items-center space-x-3">
+          <DialogFooter className="flex items-center space-x-1">
             <DialogClose asChild>
               <Button
                 type="button"
                 variant="outline"
                 disabled={form.processing}
-                className="flex items-center gap-2 bg-gray-100 text-sm font-semibold text-gray-800 hover:bg-gray-200 hover:text-black"
+                className="cursor-pointer hover:bg-gray-100 hover:text-gray-800"
               >
                 Cancel
               </Button>
             </DialogClose>
 
-            <Button type="submit" disabled={form.processing}>
-              {form.processing
-                ? isEdit
-                  ? "Saving..."
-                  : "Creating..."
-                : isEdit
-                  ? "Save changes"
-                  : "Create workout category"}
+            <Button
+              type="submit"
+              variant="default"
+              disabled={form.processing}
+              className="flex cursor-pointer items-center gap-2 font-semibold"
+            >
+              {form.processing ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin text-white" />
+                  {isEdit ? "Saving Changes..." : "Creating Workout Category..."}
+                </>
+              ) : (
+                <>
+                  <ShieldCheck className="h-4 w-4" />
+                  {isEdit ? "Save Changes" : "Create Workout Category"}
+                </>
+              )}
             </Button>
           </DialogFooter>
         </form>

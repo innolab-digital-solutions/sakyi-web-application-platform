@@ -20,7 +20,7 @@ export default function WorkoutCategoriesListPage() {
               trigger={
                 <Button
                   variant="default"
-                  className="flex h-10 w-full cursor-pointer items-center gap-2 text-sm font-medium sm:w-auto"
+                  className="flex cursor-pointer items-center font-semibold"
                 >
                   <Plus className="h-4 w-4" />
                   <span>Add Workout Category</span>

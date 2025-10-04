@@ -9,6 +9,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { WorkoutCategory } from "@/types/admin/workout-category";
 
+import WorkoutCategoryForm from "./workout-category-form";
+
 export const workoutCategoryTableColumns: ColumnDef<WorkoutCategory>[] = [
   {
     accessorKey: "name",
@@ -49,22 +51,30 @@ export const workoutCategoryTableColumns: ColumnDef<WorkoutCategory>[] = [
     id: "actions",
     enableHiding: false,
     header: "Actions",
-    cell: () => {
+    cell: ({ row }) => {
+      const workoutCategory = row.original;
+
       return (
-        <div className="flex items-center space-x-2">
-          <Button
-            variant="default"
-            size="sm"
-            className="!bg-primary hover:!bg-primary/90 flex cursor-pointer items-center gap-1.5 text-[13px] font-medium"
-          >
-            <SquarePen className="h-2 w-2" />
-            <span>Edit</span>
-          </Button>
+        <div className="flex items-center space-x-0.5">
+          <WorkoutCategoryForm
+            mode="edit"
+            defaultValues={workoutCategory}
+            trigger={
+              <Button
+                variant="ghost"
+                size="sm"
+                className="hover:bg-accent/10 hover:text-accent text-accent flex cursor-pointer items-center justify-center text-sm font-semibold"
+              >
+                <SquarePen className="h-2 w-2" />
+                <span>Edit</span>
+              </Button>
+            }
+          />
 
           <Button
-            variant="destructive"
+            variant="ghost"
             size="sm"
-            className={`flex cursor-pointer items-center gap-1.5 text-[13px] font-medium`}
+            className="hover:bg-destructive/10 hover:text-destructive text-destructive flex cursor-pointer items-center justify-center text-sm font-semibold"
           >
             <Trash className="h-2 w-2" />
             <span>Delete</span>
