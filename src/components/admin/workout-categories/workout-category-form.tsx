@@ -4,6 +4,7 @@ import { Loader2, ShieldCheck } from "lucide-react";
 import React, { useEffect } from "react";
 import { toast } from "sonner";
 
+import { ComboBoxField } from "@/components/shared/forms/combo-box-field";
 import { InputField } from "@/components/shared/forms/input-field";
 import { TextareaField } from "@/components/shared/forms/textarea-field";
 import { Button } from "@/components/ui/button";
@@ -19,10 +20,11 @@ import {
 } from "@/components/ui/dialog";
 import { ENDPOINTS } from "@/config/endpoints";
 import { useForm } from "@/hooks/use-form";
-import { RoleSchema } from "@/lib/validations/admin/role-schema";
-import { RoleFormProperties } from "@/types/admin/role";
+import { useRequest } from "@/hooks/use-request";
+import { WorkoutCategorySchema } from "@/lib/validations/admin/workout-category-schema";
+import { WorkoutCategory, WorkoutCategoryFormProperties } from "@/types/admin/workout-category";
 
-export default function RoleForm({
+export default function WorkoutCategoryForm({
   mode,
   trigger,
   defaultValues,
@@ -30,7 +32,7 @@ export default function RoleForm({
   onOpenChange,
   title,
   description,
-}: RoleFormProperties) {
+}: WorkoutCategoryFormProperties) {
   const isControlled = typeof open === "boolean" && typeof onOpenChange === "function";
   const [uncontrolledOpen, setUncontrolledOpen] = React.useState(false);
 
@@ -49,16 +51,25 @@ export default function RoleForm({
     }
   };
 
+  const { data: workoutCategories } = useRequest({
+    url: `${ENDPOINTS.META.WORKOUT_CATEGORIES}?only=parent`,
+    queryKey: ["workout-categories"],
+    data: { only: "parent" },
+    requireAuth: true,
+    staleTime: 1000 * 60 * 5,
+  });
+
   const form = useForm(
     {
+      parent_id: "",
       name: "",
       description: "",
     },
     {
-      validate: RoleSchema,
+      validate: WorkoutCategorySchema,
       requireAuth: true,
       tanstack: {
-        invalidateQueries: ["admin-roles"],
+        invalidateQueries: ["admin-workout-categories"],
         mutationOptions: {
           onSuccess: (response) => {
             handleDialogOpenChange(false);
@@ -75,25 +86,33 @@ export default function RoleForm({
   useEffect(() => {
     if (isEdit && defaultValues) {
       form.setData({
+        parent_id: defaultValues.parent?.id ?? "",
         name: defaultValues.name ?? "",
         description: defaultValues.description ?? "",
       });
     } else {
       form.setData({
+        parent_id: "",
         name: "",
         description: "",
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [defaultValues?.id, defaultValues?.name, defaultValues?.description, isEdit]);
+  }, [
+    defaultValues?.id,
+    defaultValues?.parent?.id,
+    defaultValues?.name,
+    defaultValues?.description,
+    isEdit,
+  ]);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     if (isEdit && defaultValues?.id) {
-      form.put(ENDPOINTS.ADMIN.ROLES.UPDATE(defaultValues.id));
+      form.put(ENDPOINTS.ADMIN.WORKOUT_CATEGORIES.UPDATE(defaultValues.id));
     } else {
-      form.post(ENDPOINTS.ADMIN.ROLES.STORE);
+      form.post(ENDPOINTS.ADMIN.WORKOUT_CATEGORIES.STORE);
     }
   };
 
@@ -108,18 +127,48 @@ export default function RoleForm({
           <DialogHeader>
             <DialogTitle className="mb-1 flex items-center gap-2">
               <ShieldCheck className="h-5 w-5" />
-              {title ?? (isEdit ? "Edit Role Details" : "Create a New Role")}
+              {title ??
+                (isEdit ? "Edit Workout Category Details" : "Create a New Workout Category")}
             </DialogTitle>
 
             <DialogDescription className="text-muted-foreground text-sm font-medium">
               {description ??
                 (isEdit
-                  ? "Modify the role’s name and description. Changes will update access and permissions for users assigned to this role."
-                  : "Enter a clear name and description to define the responsibilities and access level for this role.")}
+                  ? "Modify the workout category’s name and description. Changes will update access and permissions for users assigned to this workout category."
+                  : "Enter a clear name and description to define the responsibilities and access level for this workout category.")}
             </DialogDescription>
           </DialogHeader>
-
           <div className="space-y-5 py-5">
+            <ComboBoxField
+              id="parent_id"
+              name="parent_id"
+              label="Parent Category"
+              description="Select a parent category if this is a subcategory"
+              placeholder="Select parent category..."
+              searchPlaceholder="Search categories..."
+              emptyMessage="No categories found."
+              options={[
+                { value: "", label: "No parent (Root category)" },
+                ...(Array.isArray(workoutCategories?.data) && workoutCategories !== undefined
+                  ? workoutCategories.data
+                      .filter(
+                        (category: WorkoutCategory) =>
+                          // In edit mode, exclude the current category from parent options
+                          !isEdit || category.id !== defaultValues?.id,
+                      )
+                      .map((category: WorkoutCategory) => ({
+                        value: String(category.id),
+                        label: category.name,
+                      }))
+                  : []),
+              ]}
+              value={String(form.data.parent_id ?? "")}
+              onChange={(value: string) => form.setData("parent_id", value)}
+              error={form.errors.parent_id as string}
+              disabled={form.processing}
+              allowClear
+            />
+
             <InputField
               id="name"
               name="name"
@@ -128,7 +177,7 @@ export default function RoleForm({
               onChange={(event) => form.setData("name", event.target.value)}
               error={form.errors.name as string}
               label="Name"
-              placeholder="e.g., Administrator, Moderator, etc."
+              placeholder="e.g., Upper Body, Lower Body, etc."
               required
               disabled={form.processing}
             />
@@ -137,7 +186,7 @@ export default function RoleForm({
               id="description"
               name="description"
               className="min-h-[96px]"
-              placeholder="Describe the role's purpose and responsibilities..."
+              placeholder="Describe the workout category's purpose and responsibilities..."
               value={String(form.data.description ?? "")}
               onChange={(event) => form.setData("description", event.target.value)}
               error={form.errors.description as string}
@@ -167,12 +216,12 @@ export default function RoleForm({
               {form.processing ? (
                 <>
                   <Loader2 className="h-4 w-4 animate-spin text-white" />
-                  {isEdit ? "Saving Changes..." : "Creating Role..."}
+                  {isEdit ? "Saving Changes..." : "Creating Workout Category..."}
                 </>
               ) : (
                 <>
                   <ShieldCheck className="h-4 w-4" />
-                  {isEdit ? "Save Changes" : "Create Role"}
+                  {isEdit ? "Save Changes" : "Create Workout Category"}
                 </>
               )}
             </Button>

@@ -94,12 +94,16 @@ export default function TablePagination<TData>({
             }
           }}
         >
-          <SelectTrigger className="h-8 w-[70px]">
+          <SelectTrigger className="h-8 w-[70px] cursor-pointer hover:bg-gray-100">
             <SelectValue placeholder={String(actualPageSize)} />
           </SelectTrigger>
-          <SelectContent side="top">
+          <SelectContent side="top" className="!min-w-[2rem]">
             {[10, 20, 30, 40, 50].map((pageSize) => (
-              <SelectItem key={pageSize} value={String(pageSize)}>
+              <SelectItem
+                key={pageSize}
+                value={String(pageSize)}
+                className="hover:!bg-accent/10 hover:!text-accent focus:!bg-accent/20 focus:!text-accent font-medium"
+              >
                 {pageSize}
               </SelectItem>
             ))}
@@ -132,9 +136,9 @@ export default function TablePagination<TData>({
                 }}
                 aria-disabled={!canPreviousPage}
                 className={cn(
-                  "font-medium",
+                  "font-semibold",
                   canPreviousPage
-                    ? "hover:bg-gray-100 hover:text-gray-800"
+                    ? "cursor-pointer hover:bg-gray-100 hover:text-gray-800"
                     : "pointer-events-none opacity-50",
                 )}
               />
@@ -150,7 +154,7 @@ export default function TablePagination<TData>({
                     className={
                       actualCurrentPage === item
                         ? "bg-accent text-accent-foreground hover:bg-accent/90"
-                        : "bg-background border-border border hover:bg-gray-100 hover:text-gray-900"
+                        : "bg-background border-border border hover:bg-gray-100 hover:text-gray-700"
                     }
                     onClick={(event) => {
                       event.preventDefault();
@@ -180,9 +184,9 @@ export default function TablePagination<TData>({
                 }}
                 aria-disabled={!canNextPage}
                 className={cn(
-                  "font-medium",
+                  "font-semibold",
                   canNextPage
-                    ? "hover:bg-gray-100 hover:text-gray-800"
+                    ? "cursor-pointer hover:bg-gray-100 hover:text-gray-800"
                     : "pointer-events-none opacity-50",
                 )}
               />

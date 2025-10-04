@@ -86,17 +86,14 @@ export function useTable<T>({ endpoint, queryKey, searchKeys = [], defaultSort }
   // Build API query parameters from current state
   const apiParameters: ListQueryParameters = useMemo(
     () =>
-      mergeParameters(
-        {},
-        {
-          page: pageIndex + 1, // Convert back to 1-based for API
-          per_page: pageSize,
-          search: debouncedSearch,
-          sort: sortField,
-          direction: sortDirection as SortDirection,
-        },
-      ),
-    [pageIndex, pageSize, debouncedSearch, sortField, sortDirection],
+      mergeParameters(initialParameters, {
+        page: pageIndex + 1, // Convert back to 1-based for API
+        per_page: pageSize,
+        search: debouncedSearch,
+        sort: sortField,
+        direction: sortDirection as SortDirection,
+      }),
+    [initialParameters, pageIndex, pageSize, debouncedSearch, sortField, sortDirection],
   );
 
   const queryString = useMemo(() => serializeParameters(apiParameters), [apiParameters]);

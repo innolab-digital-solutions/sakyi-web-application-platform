@@ -32,3 +32,8 @@ export interface TableServerConfig {
   enabled?: boolean;
   loading?: boolean;
 }
+
+export interface TableSkeletonConfig {
+  rows?: number;
+  customSkeletons?: Record<string, React.ReactNode>;
+}

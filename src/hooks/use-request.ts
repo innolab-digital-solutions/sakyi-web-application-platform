@@ -1,4 +1,3 @@
-/* eslint-disable security/detect-object-injection */
 "use client";
 
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -96,6 +95,8 @@ export const useRequest = <T = unknown>(queryConfig?: {
   const abortController = useRef<AbortController | null>(null);
   // Store previous state when preserveState is enabled
   const preservedState = useRef<RequestState | null>(null);
+  // Track active mutation to prevent duplicates
+  const activeMutation = useRef<string | undefined>(undefined);
 
   /**
    * TanStack Query for GET requests (when queryConfig is provided)
@@ -108,10 +109,9 @@ export const useRequest = <T = unknown>(queryConfig?: {
       }
 
       const needsAuth = queryConfig.requireAuth ?? true;
-      const shouldAuth = needsAuth && token;
 
       const requestOptions = {
-        ...(shouldAuth && { token }),
+        ...(needsAuth && token && { token }),
         requireAuth: needsAuth,
       };
 
@@ -162,6 +162,8 @@ export const useRequest = <T = unknown>(queryConfig?: {
    * TanStack Query mutation for write operations (POST, PUT, PATCH, DELETE)
    */
   const requestMutation = useMutation({
+    mutationKey: ["request-mutation"],
+    retry: false, // Disable retry to prevent duplicate calls
     mutationFn: async ({
       method,
       url,
@@ -175,15 +177,17 @@ export const useRequest = <T = unknown>(queryConfig?: {
       headers?: Record<string, string>;
       requireAuth?: boolean;
     }) => {
-      const needsAuth = requireAuth && token;
-
       const requestOptions = {
-        ...(needsAuth && { token }),
+        ...(requireAuth && token && { token }),
         requireAuth,
         ...headers,
       };
 
-      const response = await http[method](url, data, requestOptions);
+      // Handle DELETE requests differently since they don't accept data parameter
+      const response =
+        method === "delete"
+          ? await http.delete(url, requestOptions)
+          : await http[method](url, data, requestOptions);
 
       if (response.status === "error") {
         throw new Error(response.message);
@@ -243,6 +247,15 @@ export const useRequest = <T = unknown>(queryConfig?: {
         tanstack &&
         (method === "post" || method === "put" || method === "patch" || method === "delete")
       ) {
+        // Create unique mutation key to prevent duplicates
+        const mutationKey = `${method}-${url}`;
+
+        // Prevent duplicate mutations
+        if (activeMutation.current === mutationKey) {
+          return undefined;
+        }
+        activeMutation.current = mutationKey;
+
         requestMutation.mutate(
           { method, url, data, headers, requireAuth },
           {
@@ -271,12 +284,13 @@ export const useRequest = <T = unknown>(queryConfig?: {
               onError?.(apiError);
             },
             onSettled: () => {
+              activeMutation.current = undefined; // Clear active mutation
               tanstack.mutationOptions?.onSettled?.();
               onFinish?.(config);
             },
           },
         );
-        return;
+        return undefined; // Explicitly return undefined to prevent fallback execution
       }
 
       // Fallback to manual request for GET/DELETE or when TanStack Query is not configured
@@ -299,11 +313,9 @@ export const useRequest = <T = unknown>(queryConfig?: {
 
       try {
         // Apply authentication only when both required and available
-        const needsAuth = requireAuth && token;
-
         const requestOptions = {
           signal: abortController.current.signal,
-          ...(needsAuth && { token }),
+          ...(requireAuth && token && { token }),
           requireAuth,
           ...headers,
         };
@@ -443,20 +455,30 @@ export const useRequest = <T = unknown>(queryConfig?: {
 
   return useMemo(
     () => ({
+      // Unified loading state - works for manual requests, queries, and mutations
+      loading:
+        state.loading ||
+        requestMutation.isPending ||
+        (queryConfig?.queryKey ? requestQuery.isLoading : false),
+
+      // Unified error state
+      error:
+        state.error ||
+        requestMutation.error ||
+        (queryConfig?.queryKey ? requestQuery.error : undefined),
+
+      // Unified success state
+      isSuccess:
+        requestMutation.isSuccess || (queryConfig?.queryKey ? requestQuery.isSuccess : false),
+
       // Core request state (manual requests)
-      loading: state.loading,
-      error: state.error,
       cancelled: state.cancelled,
 
       // TanStack Query state (when queryConfig is provided)
       ...(queryConfig?.queryKey && {
         data: requestQuery.data,
-        isLoading: requestQuery.isLoading,
-        isError: requestQuery.isError,
-        isSuccess: requestQuery.isSuccess,
         isFetching: requestQuery.isFetching,
         isRefetching: requestQuery.isRefetching,
-        error: requestQuery.error,
         refetch: requestQuery.refetch,
       }),
 
@@ -474,14 +496,17 @@ export const useRequest = <T = unknown>(queryConfig?: {
       queryManager,
 
       // Convenience state checks
-      isLoading: queryConfig?.queryKey ? requestQuery.isLoading : state.loading,
-      hasError: queryConfig?.queryKey ? !!requestQuery.error : !!state.error,
+      hasError:
+        !!state.error ||
+        !!requestMutation.error ||
+        (queryConfig?.queryKey ? !!requestQuery.error : false),
       isCancelled: state.cancelled,
     }),
     [
       state,
       queryConfig,
       requestQuery,
+      requestMutation,
       visit,
       get,
       post,
