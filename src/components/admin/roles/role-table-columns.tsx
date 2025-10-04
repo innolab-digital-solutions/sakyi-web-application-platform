@@ -36,7 +36,9 @@ export const rolesTableColumns: ColumnDef<Role>[] = [
       return (
         <div>
           <div className="text-foreground text-sm font-semibold">{name}</div>
-          <div className="text-muted-foreground">{description}</div>
+          <div className="text-muted-foreground max-w-full break-words whitespace-pre-line">
+            {description}
+          </div>
         </div>
       );
     },

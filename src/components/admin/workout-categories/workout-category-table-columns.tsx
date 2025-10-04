@@ -43,7 +43,9 @@ export const workoutCategoryTableColumns: ColumnDef<WorkoutCategory>[] = [
               </Badge>
             )}
           </div>
-          <div className="text-muted-foreground">{description}</div>
+          <div className="text-muted-foreground max-w-full break-words whitespace-pre-line">
+            {description}
+          </div>
         </div>
       );
     },
