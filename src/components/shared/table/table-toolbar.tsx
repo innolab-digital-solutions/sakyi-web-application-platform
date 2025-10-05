@@ -56,8 +56,8 @@ export default function TableToolbar<TData>({
 
       <div className="flex items-center space-x-2">
         {toolbarActions && <div className="flex items-center space-x-2">{toolbarActions}</div>}
-        {showColumnVisibility && (
-          table ? (
+        {showColumnVisibility &&
+          (table ? (
             <TableViewOptions table={table} isLoading={isLoading} />
           ) : (
             <Button
@@ -70,8 +70,7 @@ export default function TableToolbar<TData>({
               <span className="hidden sm:block">Columns</span>
               {isLoading && <Loader2 className="ml-1 h-4 w-4 animate-spin" />}
             </Button>
-          )
-        )}
+          ))}
       </div>
     </div>
   );

@@ -2,7 +2,7 @@
 
 import type { ColumnDef } from "@tanstack/react-table";
 import dayjs from "dayjs";
-import { Ellipsis } from "lucide-react";
+import { CheckCircle, Ellipsis, XCircle } from "lucide-react";
 import React from "react";
 
 import SortableHeader from "@/components/shared/table/sortable-header";
@@ -20,6 +20,7 @@ export const staffAccountTableColumns: ColumnDef<StaffAccount>[] = [
       const name = row.getValue("name") as string;
       const username = row.original.username ?? "";
       const avatar = row.original.avatar;
+      const role = row.original.role;
       return (
         <div className="flex items-center gap-3">
           <Avatar className="size-9">
@@ -29,8 +30,17 @@ export const staffAccountTableColumns: ColumnDef<StaffAccount>[] = [
             </AvatarFallback>
           </Avatar>
           <div className="flex min-w-0 flex-col gap-0.5">
-            <div className="text-foreground text-sm font-semibold">{name}</div>
-            <span className="text-primary cursor-pointer">@{username || "-"}</span>
+            <div className="flex items-center gap-2">
+              <div className="text-foreground text-sm font-semibold">{name}</div>
+              {role && (
+                <Badge
+                  variant="secondary"
+                  className="bg-primary/10 text-primary flex items-center gap-1 !font-semibold"
+                >
+                  {role}
+                </Badge>
+              )}
+            </div>
           </div>
         </div>
       );
@@ -59,18 +69,23 @@ export const staffAccountTableColumns: ColumnDef<StaffAccount>[] = [
     cell: ({ row }) => {
       const status = row.getValue("status") as string | null;
       if (!status) return "-";
-      const badgeClass =
-        status === "active"
-          ? " border-green-200 bg-green-50 text-green-700"
-          : " border-red-200 bg-red-50  text-red-700";
+      const isActive = status === "active";
+      const Icon = isActive ? CheckCircle : XCircle;
+      const badgeClass = isActive
+        ? "border-green-200 bg-green-50 text-green-700"
+        : "border-red-200 bg-red-50 text-red-700";
       return (
         <Badge
           variant="outline"
           className={cn(
             badgeClass,
-            "pointer-events-none ml-1 px-2 py-0.5 text-[13px] font-semibold capitalize",
+            "pointer-events-none ml-1 flex items-center gap-1 px-2 py-0.5 text-[13px] font-semibold capitalize",
           )}
         >
+          <Icon
+            className={isActive ? "h-3.5 w-3.5 text-green-500" : "h-3.5 w-3.5 text-red-500"}
+            aria-label={isActive ? "Active" : "Inactive"}
+          />
           {status}
         </Badge>
       );

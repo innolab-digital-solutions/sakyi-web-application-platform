@@ -6,6 +6,7 @@ export interface StaffAccount {
   avatar: string;
   name: string;
   username: string;
+  role: string;
   email: string;
   phone: string | null;
   email_verified_at: string;
