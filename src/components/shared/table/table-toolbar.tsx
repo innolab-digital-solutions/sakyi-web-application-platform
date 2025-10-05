@@ -1,9 +1,10 @@
 "use client";
 
 import { Table } from "@tanstack/react-table";
-import { Loader2 } from "lucide-react";
+import { Columns3, Loader2 } from "lucide-react";
 
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { TableSearchConfig } from "@/types/shared/table";
 
 import TableViewOptions from "./table-view-options";
@@ -55,7 +56,22 @@ export default function TableToolbar<TData>({
 
       <div className="flex items-center space-x-2">
         {toolbarActions && <div className="flex items-center space-x-2">{toolbarActions}</div>}
-        {showColumnVisibility && table && <TableViewOptions table={table} />}
+        {showColumnVisibility && (
+          table ? (
+            <TableViewOptions table={table} isLoading={isLoading} />
+          ) : (
+            <Button
+              variant="outline"
+              size="sm"
+              className="hover:!text-foreground ml-auto hidden h-10 font-medium hover:!bg-gray-100 disabled:cursor-not-allowed disabled:opacity-60 lg:flex"
+              disabled
+            >
+              <Columns3 className="mr-2 h-4 w-4" />
+              <span className="hidden sm:block">Columns</span>
+              {isLoading && <Loader2 className="ml-1 h-4 w-4 animate-spin" />}
+            </Button>
+          )
+        )}
       </div>
     </div>
   );

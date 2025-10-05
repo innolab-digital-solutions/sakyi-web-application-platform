@@ -35,6 +35,7 @@ export const staffAccountTableColumns: ColumnDef<StaffAccount>[] = [
         </div>
       );
     },
+    enableHiding: false,
   },
   {
     accessorKey: "email",
