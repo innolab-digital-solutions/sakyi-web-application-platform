@@ -26,7 +26,7 @@ export default function SortableHeader<TData, TValue>({
       variant="ghost"
       onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       className={cn(
-        "flex cursor-pointer items-center justify-center !gap-x-1 border-none bg-transparent !px-0 !py-2 text-xs font-semibold tracking-wide text-gray-600 !uppercase hover:bg-transparent hover:text-gray-500",
+        "flex cursor-pointer items-center justify-center !gap-x-1 border-none bg-transparent !px-0 !py-2 text-xs !font-bold tracking-wide text-gray-600 !uppercase hover:bg-transparent hover:text-gray-500",
         className,
       )}
     >

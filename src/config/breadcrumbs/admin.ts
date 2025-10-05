@@ -15,6 +15,13 @@ export const adminBreadcrumbs: Breadcrumbs = {
     { label: "Overview", href: PATHS.ADMIN.OVERVIEW },
   ],
 
+  // Staff Accounts
+  "/admin/staff-accounts": [
+    { label: "Admin Control Panel" },
+    { label: "Administration & Access Control" },
+    { label: "Staff Accounts", href: PATHS.ADMIN.STAFF_ACCOUNTS.LIST },
+  ],
+
   // Roles
   "/admin/roles": [
     { label: "Admin Control Panel" },

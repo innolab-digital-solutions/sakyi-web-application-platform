@@ -148,7 +148,7 @@ export const adminNavigation: NavGroup[] = [
       {
         name: "Staff Accounts",
         icon: UserCog,
-        path: "/admin/staff",
+        path: PATHS.ADMIN.STAFF_ACCOUNTS.LIST,
         params: {},
         active: false,
         allow: true,

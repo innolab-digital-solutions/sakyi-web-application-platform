@@ -244,7 +244,7 @@ export default function DataTable<TData, TValue>({
                 {headerGroup.headers.map((header) => (
                   <TableHead
                     key={header.id}
-                    className="text-xs font-semibold tracking-wide text-gray-600 !uppercase"
+                    className="text-xs font-bold tracking-wide text-gray-600 !uppercase"
                   >
                     <div className="px-3.5 py-1.5">
                       {header.isPlaceholder
@@ -267,7 +267,7 @@ export default function DataTable<TData, TValue>({
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
-                      <div className="px-3.5 py-1.5">
+                      <div className="text-foreground px-3.5 py-1.5 text-sm font-medium">
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </div>
                     </TableCell>

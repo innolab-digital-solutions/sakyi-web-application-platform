@@ -9,6 +9,7 @@ export interface LoginCredentials {
 export interface User {
   id: number;
   avatar: string;
+  name: string;
   username: string;
   provider_name: string | null;
   email: string;
