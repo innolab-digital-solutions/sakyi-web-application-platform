@@ -1,33 +1,37 @@
+import { ApiResponse } from "@/types/shared/api";
+import { Pagination } from "@/types/shared/common";
+
+export interface FoodCategoryChild {
+  id: number;
+  name: string;
+  description: string | null;
+}
+
 export interface FoodCategory {
   id: number;
   name: string;
-  description?: string | null;
-  parent_id?: number | null;
-  parent?: {
-    id: number;
-    name: string;
-    parent_id?: number | null;
-  };
-  created_at?: string;
-  updated_at?: string;
-  categories?: { id: number; name: string; parent_id?: number }[];
+  description: string | null;
+  parent: FoodCategoryChild | null;
+  children: FoodCategoryChild[];
 }
 
-// types/admin/food-category.ts
+export interface FoodCategoriesResponse {
+  status: string;
+  message: string;
+  data: FoodCategory[];
+  meta: {
+    pagination: Pagination;
+  };
+}
 
-export interface FoodCategoryFormProperties {
+export type FoodCategoryApiResponse = ApiResponse<FoodCategoriesResponse>;
+
+export type FoodCategoryFormProperties = {
   mode: "create" | "edit";
   trigger?: React.ReactNode;
-  defaultValues?: {
-    id?: number;
-    name?: string;
-    description?: string;
-    parent_id?: number | null;
-  };
+  defaultValues?: Partial<FoodCategory>;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
   title?: string;
   description?: string;
-
-  categories?: { id: number; name: string; parent_id?: number }[];
-}
+};

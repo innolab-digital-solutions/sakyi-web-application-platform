@@ -2,8 +2,8 @@
 
 import { ClipboardCheck, Plus } from "lucide-react";
 
-import CategoryForm from "@/components/admin/foodcategories/category-form";
-import CategoryTable from "@/components/admin/foodcategories/category-table";
+import CategoryForm from "@/components/admin/foodcategories/food-category-form";
+import CategoryTable from "@/components/admin/foodcategories/food-category-table";
 import PageHeader from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
 import { ENDPOINTS } from "@/config/endpoints";

@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 export const CreateFoodCategorySchema = z.object({
+  parent_id: z.string().or(z.number()).optional().nullable(),
   name: z
     .string()
     .min(1, "Category name is required")
@@ -11,7 +12,6 @@ export const CreateFoodCategorySchema = z.object({
     .string()
     .optional()
     .transform((value) => value?.trim() || undefined),
-  parent_id: z.number().nullable().optional(), // null if root category
 });
 
 export type CreateFoodCategoryFormData = z.infer<typeof CreateFoodCategorySchema>;
