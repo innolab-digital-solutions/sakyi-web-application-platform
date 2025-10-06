@@ -1,4 +1,3 @@
-/* eslint-disable security/detect-object-injection */
 "use client";
 
 import * as React from "react";

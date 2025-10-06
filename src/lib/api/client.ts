@@ -113,6 +113,15 @@ export const client = async <T>(
     };
   }
 
+  // Handle 204 No Content responses (common for DELETE operations)
+  if (response.status === 204) {
+    return {
+      status: "success",
+      message: "Success",
+      data: undefined as unknown as T,
+    };
+  }
+
   // Parse JSON response with error handling for malformed JSON
   let json: ApiResponse<T>;
   try {

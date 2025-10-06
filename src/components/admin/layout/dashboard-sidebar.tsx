@@ -28,7 +28,7 @@ export default function DashboardSidebar() {
   const toggleGroup = (name: string) => {
     setOpenGroups((previous) => ({
       ...previous,
-      // eslint-disable-next-line security/detect-object-injection
+
       [name]: !previous[name],
     }));
   };

@@ -1,4 +1,4 @@
-import { ClipboardCheck, Plus } from "lucide-react";
+import { Plus, ShieldCheck } from "lucide-react";
 
 import RoleForm from "@/components/admin/roles/role-form";
 import RoleTable from "@/components/admin/roles/role-table";
@@ -9,7 +9,7 @@ export default function RolesListPage() {
   return (
     <>
       <PageHeader
-        icon={ClipboardCheck}
+        icon={ShieldCheck}
         title="Roles & Permissions"
         description="Manage user roles and permissions to control administrative access and user capabilities throughout the dashboard."
         actions={
@@ -19,7 +19,7 @@ export default function RolesListPage() {
               trigger={
                 <Button
                   variant="default"
-                  className="flex h-10 w-full cursor-pointer items-center gap-2 text-sm font-medium sm:w-auto"
+                  className="flex cursor-pointer items-center font-semibold"
                 >
                   <Plus className="h-4 w-4" />
                   <span>Add Role</span>

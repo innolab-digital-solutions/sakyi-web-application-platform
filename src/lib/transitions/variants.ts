@@ -56,7 +56,6 @@ export const getTransitionVariants = (config: TransitionConfig): TransitionVaria
     },
   };
 
-  // eslint-disable-next-line security/detect-object-injection
   const variants = variantMap[type] || variantMap.fade;
   return {
     ...variants,

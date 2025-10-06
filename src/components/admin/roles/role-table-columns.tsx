@@ -1,15 +1,21 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { Key, SquarePen } from "lucide-react";
-import Link from "next/link";
+import { Ellipsis, Key, SquarePen } from "lucide-react";
 
 import RoleForm from "@/components/admin/roles/role-form";
 import SortableHeader from "@/components/shared/table/sortable-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { PATHS } from "@/config/paths";
 import { Role } from "@/types/admin/role";
 import {
   getModuleActions,
@@ -30,7 +36,9 @@ export const rolesTableColumns: ColumnDef<Role>[] = [
       return (
         <div>
           <div className="text-foreground text-sm font-semibold">{name}</div>
-          <div className="text-muted-foreground">{description}</div>
+          <div className="text-muted-foreground max-w-full break-words whitespace-pre-line">
+            {description}
+          </div>
         </div>
       );
     },
@@ -47,7 +55,7 @@ export const rolesTableColumns: ColumnDef<Role>[] = [
           <div className="flex items-center justify-start">
             <Badge
               variant="outline"
-              className="text-muted-foreground border-dashed text-[13px] font-medium"
+              className="bg-muted/60 text-muted-foreground pointer-events-none border-dashed text-[13px] font-semibold"
             >
               No permissions
             </Badge>
@@ -68,15 +76,21 @@ export const rolesTableColumns: ColumnDef<Role>[] = [
                 <TooltipTrigger asChild>
                   <Badge
                     variant="secondary"
-                    className="max-w-[140px] cursor-help truncate text-[13px]"
+                    className="bg-primary/15 text-primary flex max-w-[140px] cursor-help items-center gap-1 truncate text-[13px] !font-semibold"
                   >
                     {moduleKey}
                   </Badge>
                 </TooltipTrigger>
-                <TooltipContent side="top" align="start">
+                <TooltipContent
+                  side="top"
+                  align="start"
+                  className="bg-popover text-popover-foreground border-border rounded-md border px-3 py-2 shadow-lg"
+                >
                   <div className="text-xs">
-                    <div className="font-semibold">{moduleKey}</div>
-                    <div className="font-medium text-zinc-800">{actions.join(", ") || "-"}</div>
+                    <div className="text-primary font-semibold">{moduleKey}</div>
+                    <div className="text-muted-foreground font-medium">
+                      {actions.join(", ") || "-"}
+                    </div>
                   </div>
                 </TooltipContent>
               </Tooltip>
@@ -86,18 +100,27 @@ export const rolesTableColumns: ColumnDef<Role>[] = [
           {remainingCount > 0 ? (
             <Tooltip>
               <TooltipTrigger asChild>
-                <Badge variant="outline" className="cursor-help text-[13px]">
+                <Badge
+                  variant="outline"
+                  className="bg-muted/60 text-muted-foreground cursor-help border-dashed text-[13px] !font-semibold"
+                >
                   +{remainingCount} more
                 </Badge>
               </TooltipTrigger>
-              <TooltipContent side="top" align="start" className="max-w-xs">
+              <TooltipContent
+                side="top"
+                align="start"
+                className="bg-popover text-popover-foreground border-border max-w-xs rounded-md border px-3 py-2 shadow-lg"
+              >
                 <div className="space-y-2">
                   {moduleNames.slice(2).map((moduleKey) => {
                     const actions = getModuleActions(permissions, moduleKey);
                     return (
                       <div key={moduleKey} className="text-xs">
-                        <div className="font-semibold">{moduleKey}</div>
-                        <div className="font-medium text-zinc-800">{actions.join(", ") || "-"}</div>
+                        <div className="text-primary font-semibold">{moduleKey}</div>
+                        <div className="text-muted-foreground font-medium">
+                          {actions.join(", ") || "-"}
+                        </div>
                       </div>
                     );
                   })}
@@ -119,43 +142,54 @@ export const rolesTableColumns: ColumnDef<Role>[] = [
       const hasPermissions = role.has_permissions;
 
       return (
-        <div className="flex items-center space-x-2">
-          {/* Permissions Management Button */}
-          <Button
-            asChild
-            variant="default"
-            size="sm"
-            className={`flex items-center gap-1.5 text-[13px] font-medium text-white ${
-              hasPermissions
-                ? "bg-emerald-600 hover:bg-emerald-700"
-                : "bg-gray-600 hover:bg-gray-700"
-            }`}
-          >
-            <Link href={PATHS.ADMIN.ROLES.ASSIGN_PERMISSIONS(role.id)}>
-              <Key className="h-2 w-2" />
-              <span>{hasPermissions ? "Manage" : "Assign"}</span>
-            </Link>
-          </Button>
-
-          {/* Edit Role Button */}
-          <RoleForm
-            mode="edit"
-            defaultValues={role}
-            trigger={
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="outline"
+              size="icon"
+              aria-label="Open actions"
+              className="hover:!text-foreground ml-auto size-8 cursor-pointer items-center justify-center hover:!bg-gray-100"
+            >
+              <Ellipsis className="h-5 w-5" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" sideOffset={8} className="p-3.5">
+            <DropdownMenuLabel className="text-muted-foreground text-[13px] font-semibold">
+              Role Actions
+            </DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem asChild>
               <Button
-                variant="default"
-                size="sm"
-                className="!bg-primary hover:!bg-primary/90 flex cursor-pointer items-center gap-1.5 text-[13px] font-medium"
+                variant="outline"
+                className="hover:!bg-accent/10 hover:!text-accent group flex w-full !cursor-pointer items-center justify-start gap-1.5 !border-none text-sm font-medium text-gray-700 shadow-none hover:!ring-0"
+                aria-label={hasPermissions ? "Manage permissions" : "Assign permissions"}
               >
-                <SquarePen className="h-2 w-2" />
-                <span>Edit</span>
+                <Key className="group-hover:text-accent h-4 w-4 transition-colors duration-150" />
+                <span>Assign Permissions</span>
               </Button>
-            }
-          />
-
-          {/* Delete Role Button */}
-          <RoleDeletionDialog role={role} />
-        </div>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <RoleForm
+                mode="edit"
+                defaultValues={role}
+                trigger={
+                  <Button
+                    variant="outline"
+                    className="hover:!bg-accent/10 group hover:!text-accent hover:!ring-none flex w-full !cursor-pointer items-center justify-start gap-1.5 !border-none text-sm font-medium text-gray-700 shadow-none"
+                    aria-label="Edit role"
+                  >
+                    <SquarePen className="group-hover:text-accent h-4 w-4 transition-colors duration-150" />
+                    <span>Edit Role</span>
+                  </Button>
+                }
+              />
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem asChild>
+              <RoleDeletionDialog role={role} />
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       );
     },
   },

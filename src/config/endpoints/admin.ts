@@ -24,6 +24,14 @@ export const ADMIN_ENDPOINTS = {
     DESTROY: (id: string | number) => `/admin/roles/${id}`,
   },
 
+  WORKOUT_CATEGORIES: {
+    INDEX: "/admin/workout-categories",
+    SHOW: (id: string | number) => `/admin/workout-categories/${id}`,
+    STORE: "/admin/workout-categories",
+    UPDATE: (id: string | number) => `/admin/workout-categories/${id}`,
+    DESTROY: (id: string | number) => `/admin/workout-categories/${id}`,
+  },
+
   FOOD_CATEGORIES: {
     INDEX: "/admin/food-categories",
     SHOW: (id: string | number) => `/admin/food-categories/${id}`,
