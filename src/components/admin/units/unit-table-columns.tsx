@@ -2,6 +2,7 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import { SquarePen } from "lucide-react";
+import React from "react";
 
 import SortableHeader from "@/components/shared/table/sortable-header";
 import { Button } from "@/components/ui/button";
@@ -16,7 +17,7 @@ export const unitsTableColumns: ColumnDef<Unit>[] = [
     header: ({ column }) => <SortableHeader column={column}>Name</SortableHeader>,
     cell: ({ row }) => {
       const name = row.getValue("name") as string;
-      return <div className="text-foreground text-sm font-medium">{name}</div>;
+      return <div className="text-foreground text-sm font-semibold">{name}</div>;
     },
   },
   {
@@ -35,15 +36,15 @@ export const unitsTableColumns: ColumnDef<Unit>[] = [
       const unit = row.original;
 
       return (
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-0.5">
           <UnitForm
             mode="edit"
             defaultValues={unit}
             trigger={
               <Button
-                variant="default"
+                variant="ghost"
                 size="sm"
-                className="!bg-primary hover:!bg-primary/90 flex cursor-pointer items-center gap-1.5 text-[13px] font-medium"
+                className="hover:bg-accent/10 hover:text-accent text-accent flex cursor-pointer items-center justify-center text-sm font-semibold"
               >
                 <SquarePen className="h-2 w-2" />
                 <span>Edit</span>
@@ -51,7 +52,6 @@ export const unitsTableColumns: ColumnDef<Unit>[] = [
             }
           />
 
-          {/* Delete Unit Button */}
           <UnitDeletionDialog unit={unit} />
         </div>
       );
