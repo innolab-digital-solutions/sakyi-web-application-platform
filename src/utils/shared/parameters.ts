@@ -59,7 +59,6 @@ export const parseListParameters = (
 
   // Include any additional filter parameters beyond the standard ones
   for (const [key, value] of searchParameters.entries()) {
-    // eslint-disable-next-line security/detect-object-injection
     if (!(key in base)) base[key] = value;
   }
 

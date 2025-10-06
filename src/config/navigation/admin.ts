@@ -324,7 +324,7 @@ export const adminNavigation: NavGroup[] = [
         subitems: [
           {
             name: "Workout Categories",
-            path: "/admin/workouts/categories",
+            path: PATHS.ADMIN.WORKOUT_CATEGORIES.LIST,
             params: {},
             active: false,
             allow: true,

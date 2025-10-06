@@ -23,14 +23,15 @@ export default function RoleDeletionDialog({ role, className }: RoleDeletionDial
   return (
     <>
       <Button
-        variant="destructive"
-        size="sm"
-        className={`flex cursor-pointer items-center gap-1.5 text-[13px] font-medium ${className}`}
+        variant="outline"
+        className={`hover:!bg-destructive/10 text-destructive group hover:text-destructive-900 hover:!ring-none flex w-full !cursor-pointer items-center justify-start gap-1.5 !border-none text-sm font-medium shadow-none ${className ?? ""}`}
         onClick={() => setShowDeleteDialog(true)}
         disabled={false}
+        type="button"
+        aria-label="Delete role"
       >
-        <Trash className="h-2 w-2" />
-        <span>Delete</span>
+        <Trash className="group-hover:text-destructive-900 text-destructive h-4 w-4 transition-colors duration-150" />
+        <span>Delete Role</span>
       </Button>
 
       <ConfirmationDialog

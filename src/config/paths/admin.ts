@@ -23,6 +23,10 @@ export const ADMIN_PATHS = {
     ASSIGN_PERMISSIONS: (id: string | number) => `/admin/roles/${id}/assign-permissions`,
   },
 
+  WORKOUT_CATEGORIES: {
+    LIST: "/admin/workout-categories",
+  },
+
   UNITS: {
     LIST: "/admin/nutrition/units",
     CREATE: "/admin/nutrition/units/create",
