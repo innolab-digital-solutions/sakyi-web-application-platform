@@ -1,8 +1,8 @@
 import { FolderTree, Plus } from "lucide-react";
 import React from "react";
 
-import WorkoutCategoryForm from "@/components/admin/workout-categories/workout-category-form";
-import WorkoutCategoryTable from "@/components/admin/workout-categories/workout-category-table";
+import WorkoutCategoryForm from "@/components/admin/features/workout-categories/workout-category-form";
+import WorkoutCategoryTable from "@/components/admin/features/workout-categories/workout-category-table";
 import PageHeader from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
 

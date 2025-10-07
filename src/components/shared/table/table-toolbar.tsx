@@ -1,9 +1,9 @@
 "use client";
 
 import { Table } from "@tanstack/react-table";
-import { Loader2 } from "lucide-react";
 
 import { Input } from "@/components/ui/input";
+import { Spinner } from "@/components/ui/spinner";
 import { TableSearchConfig } from "@/types/shared/table";
 
 import TableViewOptions from "./table-view-options";
@@ -47,7 +47,7 @@ export default function TableToolbar<TData>({
           />
           {isLoading && (
             <div className="absolute top-1/2 right-2 -translate-y-1/2">
-              <Loader2 className="text-muted-foreground h-4 w-4 animate-spin" />
+              <Spinner className="text-muted-foreground" />
             </div>
           )}
         </div>
