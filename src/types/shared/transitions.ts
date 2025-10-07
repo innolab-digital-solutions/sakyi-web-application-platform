@@ -1,4 +1,4 @@
-import { TargetAndTransition, Transition, VariantLabels } from "framer-motion";
+import { TargetAndTransition, VariantLabels } from "framer-motion";
 
 export type TransitionType =
   | "fade"

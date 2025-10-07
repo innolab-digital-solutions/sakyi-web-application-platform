@@ -37,6 +37,8 @@ export default function RolePermissionsAssignmentPage({
           </Button>
         }
       />
+
+      <div>{resolvedParameters.id}</div>
     </>
   );
 }
