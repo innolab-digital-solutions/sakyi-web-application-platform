@@ -8,4 +8,5 @@
 export const META_ENDPOINTS = {
   PERMISSIONS: "/meta/permissions",
   WORKOUT_CATEGORIES: "/meta/workout-categories",
+  ROLES: "/meta/roles",
 } as const;

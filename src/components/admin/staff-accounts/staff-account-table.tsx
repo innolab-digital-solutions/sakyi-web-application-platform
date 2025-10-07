@@ -8,6 +8,7 @@ import { ENDPOINTS } from "@/config/endpoints";
 import { useTable } from "@/hooks/use-table";
 import { StaffAccount } from "@/types/admin/staff-account";
 
+import StaffAccountFiltersDropdown from "./staff-account-filters-dropdown";
 import { staffAccountTableColumns } from "./staff-account-table-columns";
 
 export default function StaffAccountTable() {
@@ -53,6 +54,12 @@ export default function StaffAccountTable() {
       ui={{
         emptyMessage: "No staff accounts found. Create your first staff account to get started.",
         showColumnVisibility: true,
+        showToolbar: true,
+        toolbarActions: (
+          <>
+            <StaffAccountFiltersDropdown isLoading={serverConfig.loading} />
+          </>
+        ),
       }}
     />
   );

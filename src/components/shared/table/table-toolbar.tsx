@@ -3,8 +3,8 @@
 import { Table } from "@tanstack/react-table";
 import { Columns3, Loader2 } from "lucide-react";
 
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { TableSearchConfig } from "@/types/shared/table";
 
 import TableViewOptions from "./table-view-options";
