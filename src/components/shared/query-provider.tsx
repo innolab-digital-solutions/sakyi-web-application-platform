@@ -19,8 +19,11 @@ export function QueryProvider({ children }: QueryProviderProperties) {
         // Retry failed requests
         retry: (failureCount, error: unknown) => {
           // Don't retry on 4xx errors (client errors)
-          if (error?.status >= 400 && error?.status < 500) {
-            return false;
+          if (error && typeof error === "object" && "status" in error) {
+            const status = (error as { status: number }).status;
+            if (status >= 400 && status < 500) {
+              return false;
+            }
           }
           // Retry up to 3 times for other errors
           return failureCount < 3;

@@ -1,3 +1,5 @@
+import { TargetAndTransition, Transition, VariantLabels } from "framer-motion";
+
 export type TransitionType =
   | "fade"
   | "slide"
@@ -15,8 +17,12 @@ export interface TransitionConfig {
 }
 
 export interface TransitionVariants {
-  initial: Record<string, unknown>;
-  animate: Record<string, unknown>;
-  exit: Record<string, unknown>;
-  transition: Record<string, unknown>;
+  initial: TargetAndTransition | VariantLabels;
+  animate: TargetAndTransition | VariantLabels;
+  exit: TargetAndTransition | VariantLabels;
+  transition: {
+    duration: number;
+    ease: string;
+    type?: "tween" | "spring" | "keyframes" | "inertia" | "just";
+  };
 }

@@ -7,7 +7,11 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint --max-warnings=0",
+    "lint:fix": "next lint --fix",
     "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "type-check": "tsc --noEmit",
+    "check-all": "npm run type-check && npm run lint && npm run format:check",
     "prepare": "husky"
   },
   "dependencies": {
@@ -74,6 +78,12 @@
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
       "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md,yml,yaml}": [
+      "prettier --write"
+    ],
+    "*.{css,scss}": [
       "prettier --write"
     ]
   }
