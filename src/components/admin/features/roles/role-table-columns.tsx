@@ -3,7 +3,8 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Ellipsis, Key, SquarePen } from "lucide-react";
 
-import RoleForm from "@/components/admin/roles/role-form";
+import RoleDeletionDialog from "@/components/admin/features/roles/role-deletion-dialog";
+import RoleForm from "@/components/admin/features/roles/role-form";
 import SortableHeader from "@/components/shared/table/sortable-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -22,8 +23,6 @@ import {
   getPermissionModuleCount,
   getPermissionModuleNames,
 } from "@/utils/admin/permissions";
-
-import RoleDeletionDialog from "./role-deletion-dialog";
 
 export const rolesTableColumns: ColumnDef<Role>[] = [
   {

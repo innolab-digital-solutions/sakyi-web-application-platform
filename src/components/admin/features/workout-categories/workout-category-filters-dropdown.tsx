@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, ChevronDown, Filter, Loader2, RotateCcw } from "lucide-react";
+import { Check, ChevronDown, Filter, RotateCcw } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
@@ -12,6 +12,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Spinner } from "@/components/ui/spinner";
 
 const CATEGORY_FILTERS: {
   label: string;
@@ -76,11 +77,7 @@ export default function WorkoutCategoryFiltersDropdown({
           >
             <Filter className="mr-1 h-4 w-4" />
             <span className="hidden sm:block">Filters</span>
-            {isLoading ? (
-              <Loader2 className="ml-1 h-4 w-4 animate-spin" />
-            ) : (
-              <ChevronDown className="h-4 w-4" />
-            )}
+            {isLoading ? <Spinner /> : <ChevronDown className="h-4 w-4" />}
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-[240px]">

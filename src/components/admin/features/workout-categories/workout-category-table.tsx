@@ -2,14 +2,13 @@
 
 import React from "react";
 
+import WorkoutCategoryFiltersDropdown from "@/components/admin/features/workout-categories/workout-category-filters-dropdown";
+import { workoutCategoryTableColumns } from "@/components/admin/features/workout-categories/workout-category-table-columns";
 import DataTable from "@/components/shared/table/data-table";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ENDPOINTS } from "@/config/endpoints";
 import { useTable } from "@/hooks/use-table";
 import { WorkoutCategory } from "@/types/admin/workout-category";
-
-import WorkoutCategoryFiltersDropdown from "./workout-category-filters-dropdown";
-import { workoutCategoryTableColumns } from "./workout-category-table-columns";
 
 export default function WorkoutCategoryTable() {
   const { data, searchConfig, paginationConfig, sortingConfig, serverConfig } =
