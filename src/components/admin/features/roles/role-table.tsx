@@ -1,12 +1,11 @@
 "use client";
 
+import { rolesTableColumns } from "@/components/admin/features/roles/role-table-columns";
 import DataTable from "@/components/shared/table/data-table";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ENDPOINTS } from "@/config/endpoints";
 import { useTable } from "@/hooks/use-table";
 import { Role } from "@/types/admin/role";
-
-import { rolesTableColumns } from "./role-table-columns";
 
 export default function RoleTable() {
   const { data, searchConfig, paginationConfig, sortingConfig, serverConfig } = useTable<Role>({

@@ -1,12 +1,13 @@
 "use client";
 
-import { ArrowRight, Loader2, Lock, Mail } from "lucide-react";
+import { ArrowRight, Lock, Mail } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useState } from "react";
 
 import InputField from "@/components/shared/forms/input-field";
 import { Button } from "@/components/ui/button";
 import { CardDescription, CardTitle } from "@/components/ui/card";
+import { Spinner } from "@/components/ui/spinner";
 import { PATHS } from "@/config/paths";
 import { useAuth } from "@/context/auth-context";
 import { useForm } from "@/hooks/use-form";
@@ -159,7 +160,7 @@ export default function LoginForm() {
           <div className="absolute inset-0 translate-x-[-100%] bg-gradient-to-r from-white/10 to-white/5 transition-transform duration-700 ease-out group-hover:translate-x-[100%]" />
           {isLoggingIn ? (
             <>
-              <Loader2 className="h-4 w-4 animate-spin" />
+              <Spinner />
               <span className="relative">Signing in...</span>
             </>
           ) : (

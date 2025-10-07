@@ -1,7 +1,7 @@
 import { Plus, ShieldCheck } from "lucide-react";
 
-import RoleForm from "@/components/admin/roles/role-form";
-import RoleTable from "@/components/admin/roles/role-table";
+import RoleForm from "@/components/admin/features/roles/role-form";
+import RoleTable from "@/components/admin/features/roles/role-table";
 import PageHeader from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
 

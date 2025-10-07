@@ -1,6 +1,6 @@
 "use client";
 
-import { Loader2, ShieldCheck } from "lucide-react";
+import { ShieldCheck } from "lucide-react";
 import React, { useEffect } from "react";
 import { toast } from "sonner";
 
@@ -17,6 +17,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Spinner } from "@/components/ui/spinner";
 import { ENDPOINTS } from "@/config/endpoints";
 import { useForm } from "@/hooks/use-form";
 import { RoleSchema } from "@/lib/validations/admin/role-schema";
@@ -166,7 +167,7 @@ export default function RoleForm({
             >
               {form.processing ? (
                 <>
-                  <Loader2 className="h-4 w-4 animate-spin text-white" />
+                  <Spinner />
                   {isEdit ? "Saving Changes..." : "Creating Role..."}
                 </>
               ) : (

@@ -1,6 +1,6 @@
 "use client";
 
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, Transition } from "framer-motion";
 import { usePathname } from "next/navigation";
 import React, { ReactNode, useEffect } from "react";
 
@@ -41,7 +41,7 @@ export default function PageTransition({
         initial={variants.initial}
         animate={variants.animate}
         exit={variants.exit}
-        transition={variants.transition}
+        transition={variants.transition as Transition}
         className={className}
       >
         {children}
