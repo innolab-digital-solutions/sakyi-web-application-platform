@@ -1,6 +1,6 @@
 "use client";
 
-import { ClipboardCheck, Loader2 } from "lucide-react";
+import { ShieldCheck } from "lucide-react";
 import React, { useEffect } from "react";
 import { toast } from "sonner";
 
@@ -18,6 +18,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Spinner } from "@/components/ui/spinner";
 import { ENDPOINTS } from "@/config/endpoints";
 import { useForm } from "@/hooks/use-form";
 import { useRequest } from "@/hooks/use-request";
@@ -118,7 +119,7 @@ export default function FoodCategoryForm({
         <form onSubmit={handleSubmit} className="w-full p-2.5">
           <DialogHeader>
             <DialogTitle className="mb-1 flex items-center gap-2">
-              <ClipboardCheck className="h-5 w-5" />
+              <ShieldCheck className="h-5 w-5" />
               {title ?? (isEdit ? "Edit Food Category Details" : "Create a New Food Category")}
             </DialogTitle>
             <DialogDescription className="text-muted-foreground text-sm font-medium">
@@ -204,13 +205,13 @@ export default function FoodCategoryForm({
             >
               {form.processing ? (
                 <>
-                  <Loader2 className="h-4 w-4 animate-spin text-white" />
-                  {isEdit ? "Saving Changes..." : "Creating Food Category..."}
+                  <Spinner />
+                  {isEdit ? "Saving Changes..." : "Creating Workout Category..."}
                 </>
               ) : (
                 <>
-                  <ClipboardCheck className="h-4 w-4" />
-                  {isEdit ? "Save Changes" : "Create Food Category"}
+                  <ShieldCheck className="h-4 w-4" />
+                  {isEdit ? "Save Changes" : "Create Workout Category"}
                 </>
               )}
             </Button>
