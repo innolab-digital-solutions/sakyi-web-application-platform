@@ -15,7 +15,6 @@ import {
   MessageSquare,
   MonitorCog,
   Receipt,
-  RulerIcon,
   Settings,
   ShieldCheck,
   Stethoscope,
