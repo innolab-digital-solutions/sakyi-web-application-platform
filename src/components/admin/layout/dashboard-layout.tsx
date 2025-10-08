@@ -3,9 +3,9 @@
 import { usePathname } from "next/navigation";
 import React from "react";
 
+import AuthGuard from "@/components/admin/layout/auth-guard";
 import DashboardHeader from "@/components/admin/layout/dashboard-header";
 import DashboardSidebar from "@/components/admin/layout/dashboard-sidebar";
-import AuthGuard from "@/components/shared/auth-guard";
 import NoSSR from "@/components/shared/no-ssr";
 import { QueryProvider } from "@/components/shared/query-provider";
 import PageTransition from "@/components/shared/transitions/page-transition";
