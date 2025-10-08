@@ -293,7 +293,7 @@ export const adminNavigation: NavGroup[] = [
         subitems: [
           {
             name: "Units",
-            path: "/admin/nutrition/units",
+            path: "/admin/units",
             params: {},
             active: false,
             allow: true,
