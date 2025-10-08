@@ -4,7 +4,6 @@ import { ArrowLeft, ClipboardCheck } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 
-import AssignPermissionsForm from "@/components/admin/roles/assign-permissions-form";
 import PageHeader from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
 import { PATHS } from "@/config/paths";
@@ -39,7 +38,7 @@ export default function RolePermissionsAssignmentPage({
         }
       />
 
-      <AssignPermissionsForm roleId={resolvedParameters.id} />
+      <div>{resolvedParameters.id}</div>
     </>
   );
 }

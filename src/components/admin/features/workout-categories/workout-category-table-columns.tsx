@@ -4,13 +4,12 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { CornerDownRight, Network, SquarePen } from "lucide-react";
 import React from "react";
 
+import WorkoutCategoryDeletionDialog from "@/components/admin/features/workout-categories/workout-category-deletion-dialog";
+import WorkoutCategoryForm from "@/components/admin/features/workout-categories/workout-category-form";
 import SortableHeader from "@/components/shared/table/sortable-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { WorkoutCategory } from "@/types/admin/workout-category";
-
-import WorkoutCategoryDeletionDialog from "./workout-category-deletion-dialog";
-import WorkoutCategoryForm from "./workout-category-form";
 
 export const workoutCategoryTableColumns: ColumnDef<WorkoutCategory>[] = [
   {
