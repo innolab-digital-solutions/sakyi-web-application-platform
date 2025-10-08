@@ -1,27 +1,45 @@
 import { Trash } from "lucide-react";
 import React, { useState } from "react";
+import { toast } from "sonner";
 
 import ConfirmationDialog from "@/components/shared/confirmation-dialog";
 import { Button } from "@/components/ui/button";
+import { ENDPOINTS } from "@/config/endpoints";
+import { useRequest } from "@/hooks/use-request";
 import { FoodCategory } from "@/types/admin/food-category";
 import { cn } from "@/utils/shared/cn";
 
-interface FoodCategoryDeletionDialog {
+interface FoodCategoryDeletionDialogProperties {
   foodCategory: FoodCategory;
   className?: string;
 }
 
-export default function RoleDeletionDialog({
+export default function FoodCategoryDeletionDialog({
   foodCategory,
   className,
-}: FoodCategoryDeletionDialog) {
+}: FoodCategoryDeletionDialogProperties) {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
   const closeDeleteDialog = () => setShowDeleteDialog(false);
 
+  const request = useRequest();
+
   const handleDeleteConfirm = () => {
-    alert(`Delete food category: ${foodCategory.name}`);
-    setShowDeleteDialog(false);
+    request.del(ENDPOINTS.ADMIN.FOOD_CATEGORIES.DESTROY(foodCategory.id), {
+      requireAuth: true,
+      tanstack: {
+        invalidateQueries: ["admin-food-categories"],
+        mutationOptions: {
+          onSuccess: () => {
+            closeDeleteDialog();
+            toast.success("Food category deleted successfully.");
+          },
+          onError: (error) => {
+            toast.error(error.message);
+          },
+        },
+      },
+    });
   };
 
   return (
@@ -33,8 +51,9 @@ export default function RoleDeletionDialog({
           "hover:bg-destructive/10 hover:text-destructive text-destructive flex cursor-pointer items-center justify-center text-sm font-semibold",
           className,
         )}
+        disabled={request.loading}
         onClick={() => setShowDeleteDialog(true)}
-        disabled={false}
+        aria-label="Delete food category"
       >
         <Trash className="h-2 w-2" />
         <span>Delete</span>
@@ -42,14 +61,15 @@ export default function RoleDeletionDialog({
 
       <ConfirmationDialog
         title="Delete Food Category Confirmation"
-        description="Are you sure you want to delete this category? This action cannot be undone."
+        description="Are you sure you want to delete this food category? This action cannot be undone."
         icon={Trash}
         variant="destructive"
-        confirmText="Delete"
+        confirmText="Yes, Delete It"
+        cancelText="No, Keep It"
         isOpen={showDeleteDialog}
         onClose={closeDeleteDialog}
         onConfirm={handleDeleteConfirm}
-        isLoading={false}
+        isLoading={request.loading}
       />
     </>
   );

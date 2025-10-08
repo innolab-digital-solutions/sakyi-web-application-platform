@@ -27,10 +27,10 @@ export const ADMIN_PATHS = {
     LIST: "/admin/workout-categories",
   },
 
-  Food_CATEGORIES: {
-    LIST: "/admin/nutrition/categories",
-    CREATE: "/admin/nutrition/categories/create",
-    EDIT: (id: string | number) => `/admin/nutrition/categories/${id}/edit`,
-    DETAIL: (id: string | number) => `/admin/nutrition/categories/${id}`,
+  FOOD_CATEGORIES: {
+    LIST: "/admin/food-categories",
+    CREATE: "/admin/food-categories/create",
+    EDIT: (id: string | number) => `/admin/food-categories/${id}/edit`,
+    DETAIL: (id: string | number) => `/admin/food-categories/${id}`,
   },
 } as const;

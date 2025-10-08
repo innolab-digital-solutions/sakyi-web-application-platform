@@ -46,7 +46,7 @@ export default function FoodCategoryForm({
   };
 
   const { data: foodCategories } = useRequest({
-    url: `${ENDPOINTS.META.FOOD_CATEGORIES}?only=parent`,
+    url: `${ENDPOINTS.META.FOOD_CATEGORIES}`,
     queryKey: ["food-categories"],
     data: { only: "parent" },
     requireAuth: true,

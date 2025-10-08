@@ -299,7 +299,7 @@ export const adminNavigation: NavGroup[] = [
           },
           {
             name: "Food Categories",
-            path: "/admin/nutrition/categories",
+            path: PATHS.ADMIN.FOOD_CATEGORIES.LIST,
             params: {},
             active: false,
             allow: true,
