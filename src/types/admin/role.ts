@@ -1,11 +1,6 @@
+import { Permission } from "@/types/admin/permission";
 import { ApiResponse } from "@/types/shared/api";
 import { Pagination } from "@/types/shared/common";
-
-export interface Permission {
-  [module: string]: {
-    [action: string]: string;
-  };
-}
 
 export interface Role {
   id: number;

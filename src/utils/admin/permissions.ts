@@ -1,4 +1,4 @@
-import { Permission } from "@/types/admin/role";
+import { Permission } from "@/types/admin/permission";
 
 /**
  * Combines multiple permission maps into a single consolidated map.
