@@ -53,8 +53,8 @@ export default function WorkoutCategoryForm({
   };
 
   const { data: workoutCategories } = useRequest({
-    url: `${ENDPOINTS.META.WORKOUT_CATEGORIES}?only=parent`,
-    queryKey: ["workout-categories"],
+    url: ENDPOINTS.META.WORKOUT_CATEGORIES,
+    queryKey: ["meta-workout-categories"],
     data: { only: "parent" },
     requireAuth: true,
     staleTime: 1000 * 60 * 5,

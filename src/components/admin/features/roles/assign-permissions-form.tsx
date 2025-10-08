@@ -25,7 +25,7 @@ export default function AssignPermissionsForm({ role }: AssignPermissionsFormPro
   const router = useRouter();
   const { data, isFetching } = useRequest({
     url: ENDPOINTS.META.PERMISSIONS,
-    queryKey: ["permissions"],
+    queryKey: ["meta-permissions"],
     requireAuth: true,
     staleTime: 1000 * 60 * 5,
   });
