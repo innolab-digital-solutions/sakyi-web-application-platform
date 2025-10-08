@@ -132,7 +132,6 @@ export default function AssignPermissionsForm({ role }: AssignPermissionsFormPro
       validate: AssignPermissionsSchema,
       requireAuth: true,
       tanstack: {
-        invalidateQueries: ["admin-roles"],
         mutationOptions: {
           onSuccess: (response) => {
             router.push(PATHS.ADMIN.ROLES.LIST);
