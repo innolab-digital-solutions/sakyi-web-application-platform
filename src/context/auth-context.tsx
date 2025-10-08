@@ -7,6 +7,8 @@ import { PATHS } from "@/config/paths";
 import { authService } from "@/lib/api/services/shared/auth";
 import { AuthenticatedResponse, LoginCredentials, User } from "@/types/admin/auth";
 import { AuthContextType } from "@/types/admin/auth";
+import { Permission } from "@/types/admin/permission";
+import { can } from "@/utils/admin/permissions";
 import { RetryManager } from "@/utils/auth/retry";
 import { clearStoredToken, getStoredToken, setStoredToken } from "@/utils/auth/storage";
 
@@ -387,6 +389,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         handleApiError,
         loading: loading || !isHydrated,
         isAuthenticated: isHydrated && !!token && !!user,
+        can: (permission: string) => can(user?.permissions as Permission, permission),
       }}
     >
       {children}

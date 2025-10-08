@@ -5,7 +5,7 @@ export interface SubItem {
   path: string;
   params: Record<string, string>;
   active: boolean;
-  allow: boolean;
+  permission: string;
 }
 
 export interface NavItem {
@@ -14,7 +14,7 @@ export interface NavItem {
   path: string;
   params?: Record<string, string>;
   active: boolean;
-  allow?: boolean;
+  permission?: string;
   subitems?: SubItem[];
 }
 

@@ -52,4 +52,5 @@ export interface AuthContextType extends AuthState {
   logout: () => Promise<void>;
   refresh: () => Promise<string | undefined>;
   handleApiError: (error: unknown) => Promise<string | undefined> | undefined;
+  can: (permission: string) => boolean;
 }
