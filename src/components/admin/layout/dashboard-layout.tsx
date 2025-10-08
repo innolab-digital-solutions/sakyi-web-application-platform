@@ -36,7 +36,7 @@ export default function DashboardLayout({ children, defaultOpen }: DashboardLayo
                   <DashboardSidebar />
                   <SidebarInset>
                     <DashboardHeader />
-                    <div className="flex flex-1 flex-col p-5">
+                    <div className="flex flex-1 flex-col p-6">
                       <PageTransition transitionType="scale">{children}</PageTransition>
                     </div>
                   </SidebarInset>

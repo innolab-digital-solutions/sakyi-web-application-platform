@@ -1,6 +1,7 @@
 "use client";
 
 import { CheckSquare, ShieldCheck, XSquare } from "lucide-react";
+import { useRouter } from "next/navigation";
 import React from "react";
 import { toast } from "sonner";
 
@@ -10,6 +11,7 @@ import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Spinner } from "@/components/ui/spinner";
 import { ENDPOINTS } from "@/config/endpoints";
+import { PATHS } from "@/config/paths";
 import { useForm } from "@/hooks/use-form";
 import { useRequest } from "@/hooks/use-request";
 import { AssignPermissionsSchema } from "@/lib/validations/admin/role-schema";
@@ -20,6 +22,7 @@ type AssignPermissionsFormProperties = {
 };
 
 export default function AssignPermissionsForm({ role }: AssignPermissionsFormProperties) {
+  const router = useRouter();
   const { data, isFetching } = useRequest({
     url: ENDPOINTS.META.PERMISSIONS,
     queryKey: ["permissions"],
@@ -38,11 +41,30 @@ export default function AssignPermissionsForm({ role }: AssignPermissionsFormPro
   React.useEffect(() => {
     if (!permissionsData) return;
     const initial: Record<string, Set<string>> = {};
-    for (const moduleKey of Object.keys(permissionsData)) {
-      if (!initial[moduleKey]) initial[moduleKey] = new Set<string>();
+
+    const rolePermissionStrings = new Set<string>();
+    if (role?.permissions) {
+      const rolePermObject = Array.isArray(role.permissions)
+        ? (role.permissions[0] as Record<string, Record<string, string>>)
+        : (role.permissions as Record<string, Record<string, string>>);
+      for (const actionMap of Object.values(rolePermObject || {})) {
+        for (const perm of Object.values(actionMap || {})) {
+          rolePermissionStrings.add(perm);
+        }
+      }
     }
+
+    for (const [moduleKey, actionMap] of Object.entries(permissionsData)) {
+      if (!initial[moduleKey]) initial[moduleKey] = new Set<string>();
+      for (const [actionKey, permString] of Object.entries(actionMap)) {
+        if (rolePermissionStrings.has(permString)) {
+          initial[moduleKey].add(actionKey);
+        }
+      }
+    }
+
     setSelected(initial);
-  }, [permissionsData]);
+  }, [permissionsData, role]);
 
   const isModuleAllChecked = (moduleKey: string) => {
     const actions = Object.keys(permissionsData[moduleKey] ?? {});
@@ -113,6 +135,7 @@ export default function AssignPermissionsForm({ role }: AssignPermissionsFormPro
         invalidateQueries: ["admin-roles"],
         mutationOptions: {
           onSuccess: (response) => {
+            router.push(PATHS.ADMIN.ROLES.LIST);
             toast.success(response.message);
           },
           onError: (error) => {
@@ -123,16 +146,25 @@ export default function AssignPermissionsForm({ role }: AssignPermissionsFormPro
     },
   );
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  // Keep form permissions in sync with selection so submission has up-to-date values
+  React.useEffect(() => {
     const picked: string[] = [];
     for (const [moduleKey, set] of Object.entries(selected)) {
       for (const actionKey of set) {
-        const permissionString = permissionsData[moduleKey]?.[actionKey];
-        if (permissionString) picked.push(permissionString);
+        const perm = permissionsData[moduleKey]?.[actionKey];
+        if (perm) picked.push(perm);
       }
     }
-    form.setData("permissions", picked);
+    const current = (form.data?.permissions as string[]) || [];
+    const isSameLength = current.length === picked.length;
+    const isSameOrder = isSameLength && current.every((value, index) => value === picked[index]);
+    if (!isSameOrder) {
+      form.setData("permissions", picked);
+    }
+  }, [selected, permissionsData, form]);
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
     form.patch(ENDPOINTS.ADMIN.ROLES.ASSIGN_PERMISSIONS(role.id));
   };
 
@@ -141,34 +173,48 @@ export default function AssignPermissionsForm({ role }: AssignPermissionsFormPro
       <div className="flex items-center justify-between">
         <div>
           <h3 className="text-[15px] font-semibold tracking-tight text-gray-800">
-            Role: {role?.name}
+            <span className="inline-block max-w-[280px] truncate align-middle" title={role?.name}>
+              {role?.name !== undefined && role?.name !== null ? (
+                role.name
+              ) : (
+                <Skeleton className="inline-block h-4 w-24 align-middle" />
+              )}
+            </span>
           </h3>
-          <p className="text-muted-foreground mt-0.5 text-[13px] font-medium">
-            Choose the permissions to grant to this role. Use Select All to speed up.
-          </p>
+          {role?.description === undefined ? (
+            <Skeleton className="mt-1 h-4 w-96" />
+          ) : (
+            <p className="text-muted-foreground mt-0.5 text-[13px] font-medium">
+              {role.description ||
+                "Choose the permissions to grant to this role. Use Select All to speed up."}
+            </p>
+          )}
         </div>
 
         <div className="flex items-center space-x-5">
-          <Button
-            type="button"
-            variant="default"
-            size="sm"
-            onClick={() => toggleAll(!isAllChecked)}
-            className="bg-primary text-primary-foreground hover:bg-primary/90 flex cursor-pointer items-center space-x-2 !rounded-sm font-medium"
-            disabled={isLoadingPermissions}
-          >
-            {isAllChecked ? (
-              <>
-                <XSquare className="h-2 w-2" />
-                Unselect all
-              </>
-            ) : (
-              <>
-                <CheckSquare className="h-2 w-2" />
-                Select all
-              </>
-            )}
-          </Button>
+          {isLoadingPermissions ? (
+            <Skeleton className="h-8 w-28" />
+          ) : (
+            <Button
+              type="button"
+              variant="default"
+              size="sm"
+              onClick={() => toggleAll(!isAllChecked)}
+              className="bg-primary text-primary-foreground hover:bg-primary/90 flex cursor-pointer items-center space-x-2 !rounded-sm font-medium"
+            >
+              {isAllChecked ? (
+                <>
+                  <XSquare className="h-2 w-2" />
+                  Unselect all
+                </>
+              ) : (
+                <>
+                  <CheckSquare className="h-2 w-2" />
+                  Select all
+                </>
+              )}
+            </Button>
+          )}
         </div>
       </div>
 
@@ -260,24 +306,28 @@ export default function AssignPermissionsForm({ role }: AssignPermissionsFormPro
       <Separator className="bg-gray-200" />
 
       <div className="flex justify-end space-x-2">
-        <Button
-          type="submit"
-          variant="default"
-          disabled={form.processing || isLoadingPermissions}
-          className="flex cursor-pointer items-center gap-2 font-semibold"
-        >
-          {form.processing ? (
-            <>
-              <Spinner />
-              Saving Changes...
-            </>
-          ) : (
-            <>
-              <ShieldCheck className="h-4 w-4" />
-              Save Changes
-            </>
-          )}
-        </Button>
+        {isLoadingPermissions ? (
+          <Skeleton className="h-9 w-32" />
+        ) : (
+          <Button
+            type="submit"
+            variant="default"
+            disabled={form.processing}
+            className="flex cursor-pointer items-center gap-2 font-semibold"
+          >
+            {form.processing ? (
+              <>
+                <Spinner />
+                Saving Changes...
+              </>
+            ) : (
+              <>
+                <ShieldCheck className="h-4 w-4" />
+                Save Changes
+              </>
+            )}
+          </Button>
+        )}
       </div>
     </form>
   );
