@@ -1,7 +1,7 @@
 "use client";
 
-import { Ruler } from "lucide-react";
-import React from "react";
+import { ShieldCheck } from "lucide-react";
+import React, { useEffect } from "react";
 import { toast } from "sonner";
 
 import { InputField } from "@/components/shared/forms/input-field";
@@ -16,10 +16,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Spinner } from "@/components/ui/spinner";
 import { ENDPOINTS } from "@/config/endpoints";
 import { useForm } from "@/hooks/use-form";
 import { CreateUnitSchema } from "@/lib/validations/admin/unit-schema";
-import { UnitFormProperties } from "@/types/admin/unit"; // custom type
+import { UnitFormProperties } from "@/types/admin/unit";
 
 export default function UnitForm({
   mode,
@@ -30,14 +31,17 @@ export default function UnitForm({
   name,
   abbreviation,
 }: UnitFormProperties) {
-  const [internalOpen, setInternalOpen] = React.useState(false);
   const isControlled = typeof open === "boolean" && typeof onOpenChange === "function";
+  const [uncontrolledOpen, setUncontrolledOpen] = React.useState(false);
 
-  const dialogOpen = isControlled ? open : internalOpen;
+  const dialogOpen = isControlled ? open : uncontrolledOpen;
+  const isEdit = mode === "edit";
 
-  const setDialogOpen = (value: boolean) => {
+  const handleDialogOpenChange = (value: boolean) => {
     if (isControlled) onOpenChange?.(value);
-    else setInternalOpen(value);
+    else setUncontrolledOpen(value);
+
+    if (!value) form.reset();
   };
 
   const form = useForm(
@@ -52,6 +56,7 @@ export default function UnitForm({
         invalidateQueries: ["admin-units"],
         mutationOptions: {
           onSuccess: (response) => {
+            handleDialogOpenChange(false);
             toast.success(response.message);
           },
           onError: (error) => {
@@ -62,51 +67,46 @@ export default function UnitForm({
     },
   );
 
-  React.useEffect(() => {
-    if (dialogOpen) {
-      if (defaultValues?.name !== undefined) {
-        form.setData("name", defaultValues?.name ?? "");
-      }
-      if (defaultValues?.abbreviation !== undefined) {
-        form.setData("abbreviation", defaultValues?.abbreviation ?? "");
-      }
-      form.clearErrors();
+  useEffect(() => {
+    if (isEdit && defaultValues) {
+      form.setData({
+        name: defaultValues.name ?? "",
+        abbreviation: defaultValues.abbreviation ?? "",
+      });
+    } else {
+      form.setData({
+        name: "",
+        abbreviation: "",
+      });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dialogOpen, defaultValues?.name, defaultValues?.abbreviation]);
-
-  const isEdit = mode === "edit";
+  }, [defaultValues?.id, defaultValues?.name, defaultValues?.abbreviation, isEdit]);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     if (isEdit && defaultValues?.id) {
-      form.submit("put", ENDPOINTS.ADMIN.UNITS.UPDATE(defaultValues.id), {
-        onSuccess: () => {
-          setDialogOpen(false);
-        },
-      });
+      form.put(ENDPOINTS.ADMIN.UNITS.UPDATE(defaultValues.id));
     } else {
-      form.submit("post", ENDPOINTS.ADMIN.UNITS.STORE, {
-        onSuccess: () => {
-          setDialogOpen(false);
-          form.reset();
-        },
-      });
+      form.post(ENDPOINTS.ADMIN.UNITS.STORE);
     }
   };
 
   return (
-    <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+    <Dialog open={dialogOpen} onOpenChange={handleDialogOpenChange}>
       {trigger ? <DialogTrigger asChild>{trigger}</DialogTrigger> : undefined}
-      <DialogContent className="w-[95vw] max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl">
-        <form onSubmit={handleSubmit} className="w-full">
+      <DialogContent
+        showCloseButton={false}
+        className="w-[95vw] max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl"
+      >
+        <form onSubmit={handleSubmit} className="w-full p-2.5">
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <Ruler className="h-5 w-5" />
+            <DialogTitle className="mb-1 flex items-center gap-2">
+              <ShieldCheck className="h-5 w-5" />
               {name ?? (isEdit ? "Edit Unit" : "Create Unit")}
             </DialogTitle>
-            <DialogDescription>
+
+            <DialogDescription className="text-muted-foreground text-sm font-medium">
               {abbreviation ??
                 (isEdit
                   ? "Update the unit details and save your changes."
@@ -125,6 +125,7 @@ export default function UnitForm({
               label="Name"
               placeholder="e.g., Kilogram, Gram, Liter"
               required
+              disabled={form.processing}
             />
 
             <InputField
@@ -137,29 +138,39 @@ export default function UnitForm({
               label="Abbreviation"
               placeholder="e.g., kg, g, L"
               required
+              disabled={form.processing}
             />
           </div>
 
-          <DialogFooter className="flex items-center space-x-3">
+          <DialogFooter className="flex items-center space-x-1">
             <DialogClose asChild>
               <Button
                 type="button"
                 variant="outline"
                 disabled={form.processing}
-                className="flex items-center gap-2 bg-gray-100 text-sm font-semibold text-gray-800 hover:bg-gray-200 hover:text-black"
+                className="cursor-pointer hover:bg-gray-100 hover:text-gray-800"
               >
                 Cancel
               </Button>
             </DialogClose>
 
-            <Button type="submit" disabled={form.processing}>
-              {form.processing
-                ? isEdit
-                  ? "Saving..."
-                  : "Creating..."
-                : isEdit
-                  ? "Save changes"
-                  : "Create unit"}
+            <Button
+              type="submit"
+              variant="default"
+              disabled={form.processing}
+              className="flex cursor-pointer items-center gap-2 font-semibold"
+            >
+              {form.processing ? (
+                <>
+                  <Spinner />
+                  {isEdit ? "Saving Changes..." : "Creating Unit..."}
+                </>
+              ) : (
+                <>
+                  <ShieldCheck className="h-4 w-4" />
+                  {isEdit ? "Save Changes" : "Create Unit"}
+                </>
+              )}
             </Button>
           </DialogFooter>
         </form>

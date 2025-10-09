@@ -1,8 +1,8 @@
-import { ClipboardCheck, Plus } from "lucide-react";
+import { FolderTree, Plus } from "lucide-react";
 import React from "react";
 
-import UnitForm from "@/components/admin/units/unit-form";
-import UnitTable from "@/components/admin/units/unit-table";
+import UnitForm from "@/components/admin/features/units/unit-form";
+import UnitTable from "@/components/admin/features/units/unit-table";
 import PageHeader from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
 
@@ -10,7 +10,7 @@ export default function UnitsListPage() {
   return (
     <>
       <PageHeader
-        icon={ClipboardCheck}
+        icon={FolderTree}
         title="Units of Measurement"
         description="Manage standard units like grams, kilograms, and liters used across meals, nutrition, and workouts."
         actions={
@@ -20,7 +20,7 @@ export default function UnitsListPage() {
               trigger={
                 <Button
                   variant="default"
-                  className="flex h-10 w-full cursor-pointer items-center gap-2 text-sm font-medium sm:w-auto"
+                  className="flex cursor-pointer items-center font-semibold"
                 >
                   <Plus className="h-4 w-4" />
                   <span>Add Unit</span>

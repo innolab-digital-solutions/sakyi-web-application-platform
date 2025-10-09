@@ -10,7 +10,6 @@ import {
   ListChecks,
   MonitorCog,
   Receipt,
-  RulerIcon,
   Settings,
   ShieldCheck,
   Stethoscope,
