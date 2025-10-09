@@ -252,7 +252,7 @@ export default function DataTable<TData, TValue>({
                 {headerGroup.headers.map((header) => (
                   <TableHead
                     key={header.id}
-                    className="text-xs font-semibold tracking-wide text-gray-600 !uppercase"
+                    className="text-xs font-bold tracking-wide text-gray-600 !uppercase"
                   >
                     <div className="px-3.5 py-1.5">
                       {header.isPlaceholder
