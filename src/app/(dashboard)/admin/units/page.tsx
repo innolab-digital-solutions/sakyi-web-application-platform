@@ -1,4 +1,4 @@
-import { FolderTree, Plus } from "lucide-react";
+import { Plus, Scale } from "lucide-react";
 import React from "react";
 
 import UnitForm from "@/components/admin/features/units/unit-form";
@@ -10,9 +10,9 @@ export default function UnitsListPage() {
   return (
     <>
       <PageHeader
-        icon={FolderTree}
-        title="Units of Measurement"
-        description="Manage standard units like grams, kilograms, and liters used across meals, nutrition, and workouts."
+        icon={Scale}
+        title="Units"
+        description="Manage and standardize measurement units such as grams, kilograms, and liters. Units are used throughout the dashboard to ensure consistency in meals, nutrition tracking, and workout planning."
         actions={
           <>
             <UnitForm

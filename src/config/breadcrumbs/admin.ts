@@ -41,6 +41,6 @@ export const adminBreadcrumbs: Breadcrumbs = {
     { label: "Admin Control Panel" },
     { label: "Health Data & Plans" },
     { label: "Food & Nutrition" },
-    { label: "Food Categories", href: PATHS.ADMIN.UNITS.LIST },
+    { label: "Units", href: PATHS.ADMIN.UNITS.LIST },
   ],
 };

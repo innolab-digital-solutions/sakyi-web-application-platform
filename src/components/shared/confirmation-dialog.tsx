@@ -177,10 +177,7 @@ export default function ConfirmationDialog({
                 Processing...
               </div>
             ) : (
-              <div className="flex items-center">
-                {Icon && <Icon className="mr-2 h-4 w-4" />}
-                {confirmText}
-              </div>
+              <div className="flex items-center">{confirmText}</div>
             )}
           </Button>
         </AlertDialogFooter>

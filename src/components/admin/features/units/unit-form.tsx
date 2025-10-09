@@ -1,6 +1,7 @@
 "use client";
 
-import { ShieldCheck } from "lucide-react";
+import { Scale } from "lucide-react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect } from "react";
 import { toast } from "sonner";
 
@@ -21,6 +22,7 @@ import { ENDPOINTS } from "@/config/endpoints";
 import { useForm } from "@/hooks/use-form";
 import { CreateUnitSchema } from "@/lib/validations/admin/unit-schema";
 import { UnitFormProperties } from "@/types/admin/unit";
+import { buildDefaultListUrl } from "@/utils/shared/parameters";
 
 export default function UnitForm({
   mode,
@@ -28,9 +30,11 @@ export default function UnitForm({
   defaultValues,
   open,
   onOpenChange,
-  name,
-  abbreviation,
 }: UnitFormProperties) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParameters = useSearchParams();
+
   const isControlled = typeof open === "boolean" && typeof onOpenChange === "function";
   const [uncontrolledOpen, setUncontrolledOpen] = React.useState(false);
 
@@ -57,6 +61,12 @@ export default function UnitForm({
         mutationOptions: {
           onSuccess: (response) => {
             handleDialogOpenChange(false);
+
+            if (!isEdit) {
+              const url = buildDefaultListUrl(pathname, searchParameters);
+              router.replace(url, { scroll: false });
+            }
+
             toast.success(response.message);
           },
           onError: (error) => {
@@ -101,16 +111,15 @@ export default function UnitForm({
       >
         <form onSubmit={handleSubmit} className="w-full p-2.5">
           <DialogHeader>
-            <DialogTitle className="mb-1 flex items-center gap-2">
-              <ShieldCheck className="h-5 w-5" />
-              {name ?? (isEdit ? "Edit Unit" : "Create Unit")}
+            <DialogTitle className="text-md mb-1 flex items-center gap-2 font-bold">
+              <Scale className="h-5 w-5" />
+              {isEdit ? "Edit Unit Details" : "Create a New Unit"}
             </DialogTitle>
 
             <DialogDescription className="text-muted-foreground text-sm font-medium">
-              {abbreviation ??
-                (isEdit
-                  ? "Update the unit details and save your changes."
-                  : "Provide a name and abbreviation for the new unit.")}
+              {isEdit
+                ? "Edit the name or abbreviation of this unit. Changes will update how measurements are displayed throughout the system."
+                : "Create a unit with a name and abbreviation to standardize measurements across your application."}
             </DialogDescription>
           </DialogHeader>
 
@@ -167,7 +176,7 @@ export default function UnitForm({
                 </>
               ) : (
                 <>
-                  <ShieldCheck className="h-4 w-4" />
+                  <Scale className="h-4 w-4" />
                   {isEdit ? "Save Changes" : "Create Unit"}
                 </>
               )}
