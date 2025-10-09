@@ -1,6 +1,7 @@
 "use client";
 
 import { ShieldCheck } from "lucide-react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect } from "react";
 import { toast } from "sonner";
 
@@ -24,6 +25,7 @@ import { useForm } from "@/hooks/use-form";
 import { useRequest } from "@/hooks/use-request";
 import { CreateFoodCategorySchema } from "@/lib/validations/admin/food-category-schema";
 import { FoodCategory, FoodCategoryFormProperties } from "@/types/admin/food-category";
+import { buildDefaultListUrl } from "@/utils/shared/parameters";
 
 export default function FoodCategoryForm({
   mode,
@@ -34,8 +36,13 @@ export default function FoodCategoryForm({
   title,
   description,
 }: FoodCategoryFormProperties) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParameters = useSearchParams();
+
   const isControlled = typeof open === "boolean" && typeof onOpenChange === "function";
   const [uncontrolledOpen, setUncontrolledOpen] = React.useState(false);
+
   const dialogOpen = isControlled ? open : uncontrolledOpen;
   const isEdit = mode === "edit";
 
@@ -68,6 +75,12 @@ export default function FoodCategoryForm({
         mutationOptions: {
           onSuccess: (response) => {
             handleDialogOpenChange(false);
+
+            if (!isEdit) {
+              const url = buildDefaultListUrl(pathname, searchParameters);
+              router.replace(url, { scroll: false });
+            }
+
             toast.success(response.message);
           },
           onError: (error) => toast.error(error.message),
