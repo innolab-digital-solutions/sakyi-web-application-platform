@@ -77,11 +77,18 @@ export function useTable<T>({ endpoint, queryKey, searchKeys = [], defaultSort }
   // Extract sort field and direction from TanStack Table sorting state
   const { sortField, sortDirection } = useMemo(() => {
     const first = sorting[0];
+    // If no sorting is applied, use default sort values
+    if (!first) {
+      return {
+        sortField: defaultSort?.field ?? DEFAULT_LIST_PARAMS.sort,
+        sortDirection: (defaultSort?.direction ?? DEFAULT_LIST_PARAMS.direction) as SortDirection,
+      };
+    }
     return {
-      sortField: first?.id,
-      sortDirection: first ? (first.desc ? "desc" : "asc") : undefined,
+      sortField: first.id,
+      sortDirection: first.desc ? "desc" : "asc",
     };
-  }, [sorting]);
+  }, [sorting, defaultSort]);
 
   // Build API query parameters from current state
   const apiParameters: ListQueryParameters = useMemo(
