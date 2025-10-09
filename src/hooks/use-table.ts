@@ -41,27 +41,25 @@ export function useTable<T>({ endpoint, queryKey, searchKeys = [], defaultSort }
   const router = useRouter();
   const queryClient = useQueryClient();
 
-  // Parse initial URL parameters to set default state
-  const initialParameters = useMemo(
+  // Parse URL parameters - this will update when URL changes
+  const urlParameters = useMemo(
     () => parseListParameters(searchParameters, DEFAULT_LIST_PARAMS),
     [searchParameters],
   );
 
-  // Convert page number to zero-based index for table component
-  const [pageIndex, setPageIndex] = useState(Math.max(0, (initialParameters.page ?? 1) - 1));
-  const [pageSize, setPageSize] = useState(
-    initialParameters.per_page ?? DEFAULT_LIST_PARAMS.per_page,
-  );
-  const [search, setSearch] = useState(initialParameters.search ?? "");
+  // Internal state for table operations
+  const [pageIndex, setPageIndex] = useState(Math.max(0, (urlParameters.page ?? 1) - 1));
+  const [pageSize, setPageSize] = useState(urlParameters.per_page ?? DEFAULT_LIST_PARAMS.per_page);
+  const [search, setSearch] = useState(urlParameters.search ?? "");
   const [debouncedSearch, setDebouncedSearch] = useState("");
 
   // Initialize sorting state from URL parameters or default configuration
   const [sorting, setSorting] = useState<SortingState>(
-    initialParameters.sort
+    urlParameters.sort
       ? [
           {
-            id: String(initialParameters.sort),
-            desc: (initialParameters.direction ?? DEFAULT_LIST_PARAMS.direction) === "desc",
+            id: String(urlParameters.sort),
+            desc: (urlParameters.direction ?? DEFAULT_LIST_PARAMS.direction) === "desc",
           },
         ]
       : defaultSort
@@ -73,6 +71,60 @@ export function useTable<T>({ endpoint, queryKey, searchKeys = [], defaultSort }
           ]
         : [],
   );
+
+  // Sync internal state when URL changes externally (e.g., from form resets)
+  // Only update if values actually differ to prevent infinite loops
+  useEffect(() => {
+    const newPageIndex = Math.max(0, (urlParameters.page ?? 1) - 1);
+    const newPageSize = urlParameters.per_page ?? DEFAULT_LIST_PARAMS.per_page;
+    const newSearch = urlParameters.search ?? "";
+
+    if (pageIndex !== newPageIndex) {
+      setPageIndex(newPageIndex);
+    }
+    if (pageSize !== newPageSize) {
+      setPageSize(newPageSize);
+    }
+    if (search !== newSearch) {
+      setSearch(newSearch);
+    }
+
+    // Update sorting if it changed in URL
+    const currentSortId = sorting[0]?.id;
+    const currentSortDesc = sorting[0]?.desc;
+    const urlSortId = urlParameters.sort ? String(urlParameters.sort) : defaultSort?.field;
+    const urlSortDesc = urlParameters.sort
+      ? (urlParameters.direction ?? DEFAULT_LIST_PARAMS.direction) === "desc"
+      : defaultSort?.direction === "desc";
+
+    // Only update sorting if it actually changed
+    if (currentSortId !== urlSortId || currentSortDesc !== urlSortDesc) {
+      if (urlParameters.sort) {
+        setSorting([
+          {
+            id: String(urlParameters.sort),
+            desc: (urlParameters.direction ?? DEFAULT_LIST_PARAMS.direction) === "desc",
+          },
+        ]);
+      } else if (defaultSort) {
+        setSorting([
+          {
+            id: defaultSort.field,
+            desc: defaultSort.direction === "desc",
+          },
+        ]);
+      } else if (sorting.length > 0) {
+        setSorting([]);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    urlParameters.page,
+    urlParameters.per_page,
+    urlParameters.search,
+    urlParameters.sort,
+    urlParameters.direction,
+  ]);
 
   // Extract sort field and direction from TanStack Table sorting state
   const { sortField, sortDirection } = useMemo(() => {
@@ -93,14 +145,14 @@ export function useTable<T>({ endpoint, queryKey, searchKeys = [], defaultSort }
   // Build API query parameters from current state
   const apiParameters: ListQueryParameters = useMemo(
     () =>
-      mergeParameters(initialParameters, {
+      mergeParameters(urlParameters, {
         page: pageIndex + 1, // Convert back to 1-based for API
         per_page: pageSize,
         search: debouncedSearch,
         sort: sortField,
         direction: sortDirection as SortDirection,
       }),
-    [initialParameters, pageIndex, pageSize, debouncedSearch, sortField, sortDirection],
+    [urlParameters, pageIndex, pageSize, debouncedSearch, sortField, sortDirection],
   );
 
   const queryString = useMemo(() => serializeParameters(apiParameters), [apiParameters]);
@@ -129,13 +181,16 @@ export function useTable<T>({ endpoint, queryKey, searchKeys = [], defaultSort }
     return () => clearTimeout(timer);
   }, [search]);
 
-  // Synchronize current state with URL parameters
+  // Synchronize URL with internal state changes (only when state changes, not when URL changes)
   useEffect(() => {
     const current = searchParameters?.toString() ?? "";
+    // Only update URL if it's different from what our internal state represents
     if (current === queryString) return;
     const nextUrl = queryString ? `${pathname}?${queryString}` : pathname;
     router.replace(nextUrl, { scroll: false });
-  }, [queryString, pathname, router, searchParameters]);
+    // searchParameters is intentionally NOT in dependencies to avoid fighting external URL changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [queryString, pathname, router]);
 
   const items: T[] = data?.status === "success" ? data.data : [];
 
@@ -150,6 +205,24 @@ export function useTable<T>({ endpoint, queryKey, searchKeys = [], defaultSort }
   const invalidateQueries = useCallback(() => {
     queryClient.invalidateQueries({ queryKey });
   }, [queryClient, queryKey]);
+
+  // Utility function to reset table to default parameters
+  const resetParameters = useCallback(() => {
+    setPageIndex(0);
+    setSearch("");
+    setDebouncedSearch("");
+
+    if (defaultSort) {
+      setSorting([
+        {
+          id: defaultSort.field,
+          desc: defaultSort.direction === "desc",
+        },
+      ]);
+    } else {
+      setSorting([]);
+    }
+  }, [defaultSort]);
 
   // Track if we're in a transition state (parameters changed but data hasn't updated yet)
   const [isTransitioning, setIsTransitioning] = useState(false);
@@ -234,5 +307,6 @@ export function useTable<T>({ endpoint, queryKey, searchKeys = [], defaultSort }
 
     // Utility functions
     invalidateQueries,
+    resetParameters,
   };
 }

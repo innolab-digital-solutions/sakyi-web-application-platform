@@ -1,6 +1,7 @@
 "use client";
 
 import { ShieldCheck } from "lucide-react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect } from "react";
 import { toast } from "sonner";
 
@@ -22,6 +23,7 @@ import { ENDPOINTS } from "@/config/endpoints";
 import { useForm } from "@/hooks/use-form";
 import { RoleSchema } from "@/lib/validations/admin/role-schema";
 import { RoleFormProperties } from "@/types/admin/role";
+import { buildDefaultListUrl } from "@/utils/shared/parameters";
 
 export default function RoleForm({
   mode,
@@ -32,6 +34,10 @@ export default function RoleForm({
   title,
   description,
 }: RoleFormProperties) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParameters = useSearchParams();
+
   const isControlled = typeof open === "boolean" && typeof onOpenChange === "function";
   const [uncontrolledOpen, setUncontrolledOpen] = React.useState(false);
 
@@ -63,6 +69,12 @@ export default function RoleForm({
         mutationOptions: {
           onSuccess: (response) => {
             handleDialogOpenChange(false);
+
+            if (!isEdit) {
+              const url = buildDefaultListUrl(pathname, searchParameters);
+              router.replace(url, { scroll: false });
+            }
+
             toast.success(response.message);
           },
           onError: (error) => {
