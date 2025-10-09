@@ -1,8 +1,11 @@
 import { Trash } from "lucide-react";
 import React, { useState } from "react";
+import { toast } from "sonner";
 
 import ConfirmationDialog from "@/components/shared/confirmation-dialog";
 import { Button } from "@/components/ui/button";
+import { ENDPOINTS } from "@/config/endpoints";
+import { useRequest } from "@/hooks/use-request";
 import { Role } from "@/types/admin/role";
 
 interface RoleDeletionDialogProperties {
@@ -15,9 +18,24 @@ export default function RoleDeletionDialog({ role, className }: RoleDeletionDial
 
   const closeDeleteDialog = () => setShowDeleteDialog(false);
 
+  const request = useRequest();
+
   const handleDeleteConfirm = () => {
-    alert(`Delete role: ${role.name}`);
-    setShowDeleteDialog(false);
+    request.del(ENDPOINTS.ADMIN.ROLES.DESTROY(role.id), {
+      requireAuth: true,
+      tanstack: {
+        invalidateQueries: ["admin-roles"],
+        mutationOptions: {
+          onSuccess: () => {
+            closeDeleteDialog();
+            toast.success("Role deleted successfully.");
+          },
+          onError: (error) => {
+            toast.error(error.message);
+          },
+        },
+      },
+    });
   };
 
   return (
@@ -26,7 +44,7 @@ export default function RoleDeletionDialog({ role, className }: RoleDeletionDial
         variant="outline"
         className={`hover:!bg-destructive/10 text-destructive group hover:text-destructive-900 hover:!ring-none flex w-full !cursor-pointer items-center justify-start gap-1.5 !border-none text-sm font-medium shadow-none ${className ?? ""}`}
         onClick={() => setShowDeleteDialog(true)}
-        disabled={false}
+        disabled={request.loading}
         type="button"
         aria-label="Delete role"
       >
@@ -39,11 +57,12 @@ export default function RoleDeletionDialog({ role, className }: RoleDeletionDial
         description="Are you sure you want to delete this role? This action cannot be undone."
         icon={Trash}
         variant="destructive"
-        confirmText="Delete"
+        confirmText="Yes, Delete It"
+        cancelText="No, Keep It"
         isOpen={showDeleteDialog}
         onClose={closeDeleteDialog}
         onConfirm={handleDeleteConfirm}
-        isLoading={false}
+        isLoading={request.loading}
       />
     </>
   );
