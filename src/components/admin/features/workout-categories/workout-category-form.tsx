@@ -1,6 +1,6 @@
 "use client";
 
-import { ShieldCheck } from "lucide-react";
+import { FolderKanban } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect } from "react";
 import { toast } from "sonner";
@@ -76,7 +76,7 @@ export default function WorkoutCategoryForm({
       validate: WorkoutCategorySchema,
       requireAuth: true,
       tanstack: {
-        invalidateQueries: ["admin-workout-categories"],
+        invalidateQueries: ["admin-workout-categories", "meta-workout-categories"],
         mutationOptions: {
           onSuccess: (response) => {
             handleDialogOpenChange(false);
@@ -138,17 +138,16 @@ export default function WorkoutCategoryForm({
       >
         <form onSubmit={handleSubmit} className="w-full p-2.5">
           <DialogHeader>
-            <DialogTitle className="mb-1 flex items-center gap-2">
-              <ShieldCheck className="h-5 w-5" />
-              {title ??
-                (isEdit ? "Edit Workout Category Details" : "Create a New Workout Category")}
+            <DialogTitle className="text-md mb-1 flex items-center gap-2 font-bold">
+              <FolderKanban className="h-5 w-5" />
+              {title ?? (isEdit ? "Edit Workout Category" : "Create a New Workout Category")}
             </DialogTitle>
 
             <DialogDescription className="text-muted-foreground text-sm font-medium">
               {description ??
                 (isEdit
-                  ? "Modify the workout category’s name and description. Changes will update access and permissions for users assigned to this workout category."
-                  : "Enter a clear name and description to define the responsibilities and access level for this workout category.")}
+                  ? "Edit the name, parent, or description of this workout category. Changes will update how workouts are organized."
+                  : "Create a workout category with a name, optional parent, and description to organize your workouts.")}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-5 py-5">
@@ -233,7 +232,7 @@ export default function WorkoutCategoryForm({
                 </>
               ) : (
                 <>
-                  <ShieldCheck className="h-4 w-4" />
+                  <FolderKanban className="h-4 w-4" />
                   {isEdit ? "Save Changes" : "Create Workout Category"}
                 </>
               )}

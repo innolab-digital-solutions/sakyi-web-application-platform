@@ -127,8 +127,8 @@ export default function RoleForm({
             <DialogDescription className="text-muted-foreground text-sm font-medium">
               {description ??
                 (isEdit
-                  ? "Update the role’s name and description. Changes will immediately affect access and permissions for all users assigned to this role."
-                  : "Define a new role to manage administrative access and user capabilities. Provide a clear name and description to specify the responsibilities with this role.")}
+                  ? "Edit the name or description of this role. Changes will update user access and permissions."
+                  : "Create a role with a name and description to manage user access and permissions.")}
             </DialogDescription>
           </DialogHeader>
 
