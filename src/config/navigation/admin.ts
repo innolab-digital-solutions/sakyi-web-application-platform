@@ -202,10 +202,10 @@ export const adminNavigation: NavGroup[] = [
         subitems: [
           {
             name: "Units",
-            path: "/admin/nutrition/units",
+            path: PATHS.ADMIN.UNITS.LIST,
             params: {},
             active: false,
-            permission: "",
+            permission: "units.view",
           },
           {
             name: "Food Categories",
