@@ -27,9 +27,18 @@ const PATH_PERMISSION_MAP = flattenPermissions();
 export default function PermissionGuard({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
-  const { can } = useAuth();
+  const { can, loading, isAuthenticated, user } = useAuth();
 
   React.useEffect(() => {
+    // Don't run permission checks while auth is still loading
+    if (loading) return;
+
+    // Don't run permission checks if not authenticated (let auth context handle redirect)
+    if (!isAuthenticated) return;
+
+    // Don't run permission checks if user data is not loaded yet
+    if (!user) return;
+
     if (!pathname) return;
 
     let requiredPermission: string | undefined;
@@ -66,9 +75,20 @@ export default function PermissionGuard({ children }: { children: React.ReactNod
       requiredPermission.trim().length > 0 &&
       !can(requiredPermission)
     ) {
-      router.replace(PATHS.ADMIN.OVERVIEW === pathname ? "/" : PATHS.ADMIN.OVERVIEW);
+      router.replace(PATHS.ADMIN.OVERVIEW === pathname ? PATHS.PUBLIC.HOME : PATHS.ADMIN.OVERVIEW);
     }
-  }, [pathname, router, can]);
+  }, [pathname, router, can, loading, isAuthenticated, user]);
+
+  if (loading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="text-center">
+          <div className="border-primary h-8 w-8 animate-spin rounded-full border-4 border-t-transparent"></div>
+          <p className="text-muted-foreground mt-2 text-sm">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   return <>{children}</>;
 }
