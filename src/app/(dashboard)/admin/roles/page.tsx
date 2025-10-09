@@ -11,7 +11,7 @@ export default function RolesListPage() {
       <PageHeader
         icon={ShieldCheck}
         title="Roles & Permissions"
-        description="Manage user roles and permissions to control administrative access and user capabilities throughout the dashboard."
+        description="Manage roles and permissions to control administrative access and user capabilities throughout the dashboard."
         actions={
           <>
             <RoleForm

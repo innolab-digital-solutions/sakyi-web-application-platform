@@ -119,7 +119,7 @@ export default function RoleForm({
       >
         <form onSubmit={handleSubmit} className="w-full p-2.5">
           <DialogHeader>
-            <DialogTitle className="mb-1 flex items-center gap-2">
+            <DialogTitle className="text-md mb-1 flex items-center gap-2 font-bold">
               <ShieldCheck className="h-5 w-5" />
               {title ?? (isEdit ? "Edit Role Details" : "Create a New Role")}
             </DialogTitle>
@@ -127,8 +127,8 @@ export default function RoleForm({
             <DialogDescription className="text-muted-foreground text-sm font-medium">
               {description ??
                 (isEdit
-                  ? "Modify the role’s name and description. Changes will update access and permissions for users assigned to this role."
-                  : "Enter a clear name and description to define the responsibilities and access level for this role.")}
+                  ? "Update the role’s name and description. Changes will immediately affect access and permissions for all users assigned to this role."
+                  : "Define a new role to manage administrative access and user capabilities. Provide a clear name and description to specify the responsibilities with this role.")}
             </DialogDescription>
           </DialogHeader>
 
