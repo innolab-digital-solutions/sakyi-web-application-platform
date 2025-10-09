@@ -1,4 +1,4 @@
-import { Permission } from "@/types/admin/role";
+import { Permission } from "@/types/admin/permission";
 
 /**
  * Combines multiple permission maps into a single consolidated map.
@@ -116,4 +116,33 @@ export const hasPermission = (
   }
 
   return false;
+};
+
+/**
+ * Checks if a user has a specific permission.
+ *
+ * This function determines whether the provided user permissions object contains
+ * the specified permission string (e.g., "staffs.view"). It supports both single
+ * Permission objects and arrays of Permission objects, but only checks the first
+ * Permission object if an array is provided.
+ *
+ * @param userPermissions - The user's permissions object or undefined
+ * @param permission - The permission string to check (e.g., "staffs.view")
+ * @returns True if the user has the specified permission, false otherwise
+ */
+export const can = (userPermissions: Permission | undefined, permission: string): boolean => {
+  if (!userPermissions) return false;
+
+  // Handle both single Permission object and array of Permission objects
+  const permissions = Array.isArray(userPermissions) ? userPermissions[0] : userPermissions;
+
+  if (!permissions) return false;
+
+  // Split permission string (e.g., 'staffs.view' -> ['staffs', 'view'])
+  const [module, action] = permission.split(".");
+
+  if (!module || !action) return false;
+
+  // Check if the module exists and has the specific action
+  return permissions[module]?.[action] === permission;
 };

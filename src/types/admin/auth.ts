@@ -1,3 +1,4 @@
+import { Permission } from "@/types/admin/permission";
 import { ApiResponse } from "@/types/shared/api";
 
 export interface LoginCredentials {
@@ -20,6 +21,7 @@ export interface User {
   created_at: string;
   updated_at: string;
   deleted_at: string | null;
+  permissions?: Permission | Permission[];
 }
 
 export interface Token {
@@ -50,4 +52,5 @@ export interface AuthContextType extends AuthState {
   logout: () => Promise<void>;
   refresh: () => Promise<string | undefined>;
   handleApiError: (error: unknown) => Promise<string | undefined> | undefined;
+  can: (permission: string) => boolean;
 }
