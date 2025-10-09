@@ -1,7 +1,7 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { Ellipsis, Key, SquarePen } from "lucide-react";
+import { Ellipsis, FileKey, SquarePen } from "lucide-react";
 import Link from "next/link";
 
 import RoleDeletionDialog from "@/components/admin/features/roles/role-deletion-dialog";
@@ -167,7 +167,7 @@ export const rolesTableColumns: ColumnDef<Role>[] = [
                 aria-label={hasPermissions ? "Manage permissions" : "Assign permissions"}
               >
                 <Link href={PATHS.ADMIN.ROLES.ASSIGN_PERMISSIONS(role.id)}>
-                  <Key className="group-hover:text-accent h-4 w-4 transition-colors duration-150" />
+                  <FileKey className="group-hover:text-accent h-4 w-4 transition-colors duration-150" />
                   <span>Assign Permissions</span>
                 </Link>
               </Button>

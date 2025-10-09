@@ -1,4 +1,4 @@
-import { Trash } from "lucide-react";
+import { FileQuestionMark, Trash2 } from "lucide-react";
 import React, { useState } from "react";
 import { toast } from "sonner";
 
@@ -48,14 +48,14 @@ export default function RoleDeletionDialog({ role, className }: RoleDeletionDial
         type="button"
         aria-label="Delete role"
       >
-        <Trash className="group-hover:text-destructive-900 text-destructive h-4 w-4 transition-colors duration-150" />
+        <Trash2 className="group-hover:text-destructive-900 text-destructive h-4 w-4 transition-colors duration-150" />
         <span>Delete Role</span>
       </Button>
 
       <ConfirmationDialog
         title="Delete Role Confirmation"
-        description="Are you sure you want to delete this role? This action cannot be undone."
-        icon={Trash}
+        description={`Permanently delete the role "${role.name}"? This action cannot be undone.`}
+        icon={FileQuestionMark}
         variant="destructive"
         confirmText="Yes, Delete It"
         cancelText="No, Keep It"
