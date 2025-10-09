@@ -39,4 +39,12 @@ export const ADMIN_ENDPOINTS = {
     UPDATE: (id: string | number) => `/admin/units/${id}`,
     DESTROY: (id: string | number) => `/admin/units/${id}`,
   },
+
+  FOOD_CATEGORIES: {
+    INDEX: "/admin/food-categories",
+    SHOW: (id: string | number) => `/admin/food-categories/${id}`,
+    STORE: "/admin/food-categories",
+    UPDATE: (id: string | number) => `/admin/food-categories/${id}`,
+    DESTROY: (id: string | number) => `/admin/food-categories/${id}`,
+  },
 } as const;

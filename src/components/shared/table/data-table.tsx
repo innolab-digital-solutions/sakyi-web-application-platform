@@ -81,12 +81,20 @@ interface DataTableProperties<TData, TValue> {
  * This component provides:
  * - Client-side and server-side pagination
  * - Global search across multiple columns
- * - Column sorting with custom handlers
+ * - Column sorting with custom handlers and reset functionality
  * - Column visibility controls
  * - Row selection functionality
  * - Customizable toolbar and actions
  * - Loading states and empty states
  * - Responsive design with proper styling
+ * - Clear sort button in toolbar
+ * - Triple-click column headers to reset sorting
+ *
+ * Sorting Reset Features:
+ * - Click column header: Sort ascending
+ * - Click again: Sort descending
+ * - Triple-click: Reset to default (no sorting)
+ * - Clear Sort button: Reset all sorting at once
  *
  * @template TData - The type of data in each row
  * @template TValue - The type of values in the cells

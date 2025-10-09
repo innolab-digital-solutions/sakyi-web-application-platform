@@ -123,3 +123,34 @@ export const mergeParameters = (
     merged.direction = defaults.direction;
   return merged;
 };
+
+/**
+ * Builds a URL with default list parameters while optionally preserving certain values
+ *
+ * @param pathname - The pathname to build the URL for
+ * @param currentSearchParameters - Current URLSearchParams to extract values from
+ * @param options - Options for which parameters to preserve
+ * @param options.preservePerPage - Whether to preserve the current per_page value (default: true)
+ * @returns Complete URL with query parameters
+ */
+export const buildDefaultListUrl = (
+  pathname: string,
+  currentSearchParameters: URLSearchParams,
+  options: { preservePerPage?: boolean } = {},
+): string => {
+  const { preservePerPage = true } = options;
+  const query = new URLSearchParams();
+
+  // Set default parameters
+  query.set("page", String(DEFAULT_LIST_PARAMS.page));
+  query.set(
+    "per_page",
+    preservePerPage
+      ? currentSearchParameters.get("per_page") || String(DEFAULT_LIST_PARAMS.per_page)
+      : String(DEFAULT_LIST_PARAMS.per_page),
+  );
+  query.set("sort", String(DEFAULT_LIST_PARAMS.sort));
+  query.set("direction", String(DEFAULT_LIST_PARAMS.direction));
+
+  return `${pathname}?${query.toString()}`;
+};

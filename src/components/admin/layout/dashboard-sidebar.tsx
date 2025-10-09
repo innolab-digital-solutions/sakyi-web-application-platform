@@ -17,11 +17,13 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { adminNavigation } from "@/config/navigation";
-import { getActiveAdminNav } from "@/utils/admin/navigation";
+import { useAuth } from "@/context/auth-context";
+import { filterNavByPermission, getActiveAdminNav } from "@/utils/admin/navigation";
 import { cn } from "@/utils/shared/cn";
 
 export default function DashboardSidebar() {
   const pathname = usePathname();
+  const { can } = useAuth();
 
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({});
 
@@ -33,7 +35,9 @@ export default function DashboardSidebar() {
     }));
   };
 
-  const items = getActiveAdminNav(pathname, adminNavigation);
+  const filtered = filterNavByPermission(adminNavigation, can);
+
+  const items = getActiveAdminNav(pathname, filtered);
 
   useEffect(() => {
     const activeGroups: Record<string, boolean> = {};

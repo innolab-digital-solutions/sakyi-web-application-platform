@@ -1,6 +1,7 @@
 "use client";
 
-import { Loader2, ShieldCheck } from "lucide-react";
+import { ShieldCheck } from "lucide-react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect } from "react";
 import { toast } from "sonner";
 
@@ -18,11 +19,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Spinner } from "@/components/ui/spinner";
 import { ENDPOINTS } from "@/config/endpoints";
 import { useForm } from "@/hooks/use-form";
 import { useRequest } from "@/hooks/use-request";
 import { WorkoutCategorySchema } from "@/lib/validations/admin/workout-category-schema";
 import { WorkoutCategory, WorkoutCategoryFormProperties } from "@/types/admin/workout-category";
+import { buildDefaultListUrl } from "@/utils/shared/parameters";
 
 export default function WorkoutCategoryForm({
   mode,
@@ -33,6 +36,10 @@ export default function WorkoutCategoryForm({
   title,
   description,
 }: WorkoutCategoryFormProperties) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParameters = useSearchParams();
+
   const isControlled = typeof open === "boolean" && typeof onOpenChange === "function";
   const [uncontrolledOpen, setUncontrolledOpen] = React.useState(false);
 
@@ -52,8 +59,8 @@ export default function WorkoutCategoryForm({
   };
 
   const { data: workoutCategories } = useRequest({
-    url: `${ENDPOINTS.META.WORKOUT_CATEGORIES}?only=parent`,
-    queryKey: ["workout-categories"],
+    url: ENDPOINTS.META.WORKOUT_CATEGORIES,
+    queryKey: ["meta-workout-categories"],
     data: { only: "parent" },
     requireAuth: true,
     staleTime: 1000 * 60 * 5,
@@ -73,6 +80,12 @@ export default function WorkoutCategoryForm({
         mutationOptions: {
           onSuccess: (response) => {
             handleDialogOpenChange(false);
+
+            if (!isEdit) {
+              const url = buildDefaultListUrl(pathname, searchParameters);
+              router.replace(url, { scroll: false });
+            }
+
             toast.success(response.message);
           },
           onError: (error) => {
@@ -215,7 +228,7 @@ export default function WorkoutCategoryForm({
             >
               {form.processing ? (
                 <>
-                  <Loader2 className="h-4 w-4 animate-spin text-white" />
+                  <Spinner />
                   {isEdit ? "Saving Changes..." : "Creating Workout Category..."}
                 </>
               ) : (

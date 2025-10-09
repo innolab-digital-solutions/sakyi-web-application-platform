@@ -1,9 +1,9 @@
 "use client";
 
-import { Loader2 } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
+import { Spinner } from "@/components/ui/spinner";
 import { PATHS } from "@/config/paths";
 import { useAuth } from "@/context/auth-context";
 import { isAuthenticated } from "@/utils/auth/storage";
@@ -118,7 +118,7 @@ export default function AuthGuard({
             <div className="relative mb-4">
               <div className="from-primary/20 via-accent/20 absolute inset-0 rounded-full bg-gradient-to-tr to-blue-300/20 blur-lg" />
               <div className="relative rounded-full bg-white p-3 shadow-sm ring-1 ring-gray-200">
-                <Loader2 className="text-primary h-7 w-7 animate-spin" />
+                <Spinner className="text-primary size-6" />
               </div>
             </div>
 

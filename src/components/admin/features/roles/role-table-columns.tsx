@@ -2,8 +2,10 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import { Ellipsis, Key, SquarePen } from "lucide-react";
+import Link from "next/link";
 
-import RoleForm from "@/components/admin/roles/role-form";
+import RoleDeletionDialog from "@/components/admin/features/roles/role-deletion-dialog";
+import RoleForm from "@/components/admin/features/roles/role-form";
 import SortableHeader from "@/components/shared/table/sortable-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -16,14 +18,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { PATHS } from "@/config/paths";
 import { Role } from "@/types/admin/role";
 import {
   getModuleActions,
   getPermissionModuleCount,
   getPermissionModuleNames,
 } from "@/utils/admin/permissions";
-
-import RoleDeletionDialog from "./role-deletion-dialog";
 
 export const rolesTableColumns: ColumnDef<Role>[] = [
   {
@@ -160,12 +161,15 @@ export const rolesTableColumns: ColumnDef<Role>[] = [
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
               <Button
+                asChild
                 variant="outline"
                 className="hover:!bg-accent/10 hover:!text-accent group flex w-full !cursor-pointer items-center justify-start gap-1.5 !border-none text-sm font-medium text-gray-700 shadow-none hover:!ring-0"
                 aria-label={hasPermissions ? "Manage permissions" : "Assign permissions"}
               >
-                <Key className="group-hover:text-accent h-4 w-4 transition-colors duration-150" />
-                <span>Assign Permissions</span>
+                <Link href={PATHS.ADMIN.ROLES.ASSIGN_PERMISSIONS(role.id)}>
+                  <Key className="group-hover:text-accent h-4 w-4 transition-colors duration-150" />
+                  <span>Assign Permissions</span>
+                </Link>
               </Button>
             </DropdownMenuItem>
             <DropdownMenuItem asChild>

@@ -22,13 +22,13 @@ const CATEGORY_FILTERS: {
   { label: "Child categories", value: "child" },
 ];
 
-interface WorkoutCategoryFiltersDropdownProperties {
+interface FoodCategoryFiltersDropdownProperties {
   isLoading?: boolean;
 }
 
-export default function WorkoutCategoryFiltersDropdown({
+export default function FoodCategoryFiltersDropdown({
   isLoading = false,
-}: WorkoutCategoryFiltersDropdownProperties) {
+}: FoodCategoryFiltersDropdownProperties) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParameters = useSearchParams();
@@ -56,7 +56,6 @@ export default function WorkoutCategoryFiltersDropdown({
   };
 
   const currentOnly = searchParameters.get("only");
-
   const setOnly = (value: "parent" | "child" | undefined) => setParameter("only", value);
 
   const isActive = (value: string | undefined) => {
@@ -83,9 +82,11 @@ export default function WorkoutCategoryFiltersDropdown({
             )}
           </Button>
         </DropdownMenuTrigger>
+
         <DropdownMenuContent align="end" className="w-[240px]">
           <DropdownMenuLabel>Category Type</DropdownMenuLabel>
           <DropdownMenuSeparator />
+
           {CATEGORY_FILTERS.map(({ label, value }) => (
             <DropdownMenuItem
               key={label}
@@ -96,7 +97,7 @@ export default function WorkoutCategoryFiltersDropdown({
                 isActive(value)
                   ? "!bg-accent/10 !text-accent"
                   : "hover:!bg-accent/5 hover:!text-accent"
-              } `}
+              }`}
             >
               {isActive(value) ? (
                 <Check className="text-accent mr-2 h-4 w-4 transition-colors duration-150" />
@@ -106,7 +107,9 @@ export default function WorkoutCategoryFiltersDropdown({
               {label}
             </DropdownMenuItem>
           ))}
+
           <DropdownMenuSeparator />
+
           <DropdownMenuItem
             onClick={clearFilters}
             onSelect={(event) => event.preventDefault()}

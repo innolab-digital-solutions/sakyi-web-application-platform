@@ -33,4 +33,11 @@ export const ADMIN_PATHS = {
     EDIT: (id: string | number) => `/admin/units/${id}/edit`,
     DETAIL: (id: string | number) => `/admin/units/${id}`,
   },
+
+  FOOD_CATEGORIES: {
+    LIST: "/admin/food-categories",
+    CREATE: "/admin/food-categories/create",
+    EDIT: (id: string | number) => `/admin/food-categories/${id}/edit`,
+    DETAIL: (id: string | number) => `/admin/food-categories/${id}`,
+  },
 } as const;

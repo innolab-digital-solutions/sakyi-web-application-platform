@@ -16,7 +16,11 @@ import { TransitionConfig, TransitionVariants } from "@/types/shared/transitions
 export const getTransitionVariants = (config: TransitionConfig): TransitionVariants => {
   const { type, duration, ease } = config;
 
-  const baseTransition = { duration, ease };
+  const baseTransition = {
+    duration,
+    ease,
+    type: "tween" as const,
+  };
 
   const variantMap: Record<string, Omit<TransitionVariants, "transition">> = {
     fade: {
