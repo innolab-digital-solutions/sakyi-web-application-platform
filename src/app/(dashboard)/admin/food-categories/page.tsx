@@ -1,4 +1,4 @@
-import { FolderTree, Plus } from "lucide-react";
+import { FolderKanban, Plus } from "lucide-react";
 import React from "react";
 
 import FoodCategoryForm from "@/components/admin/features/food-categories/food-category-form";
@@ -10,9 +10,9 @@ export default function FoodCategoryListPage() {
   return (
     <>
       <PageHeader
-        icon={FolderTree}
+        icon={FolderKanban}
         title="Food Categories"
-        description="Manage and structure your food categories. Organize parent and child categories to streamline how your menu is grouped, making it easier to maintain and update."
+        description="Manage and structure your food categories. Organize parent and child categories to streamline how foods are grouped, making it easier to maintain, update, and navigate your menu."
         actions={
           <>
             <FoodCategoryForm
