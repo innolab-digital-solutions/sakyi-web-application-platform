@@ -1,13 +1,11 @@
 "use client";
 
-import { FolderKanban } from "lucide-react";
+import { Scale } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect } from "react";
 import { toast } from "sonner";
 
-import { ComboBoxField } from "@/components/shared/forms/combo-box-field";
 import { InputField } from "@/components/shared/forms/input-field";
-import { TextareaField } from "@/components/shared/forms/textarea-field";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -22,20 +20,17 @@ import {
 import { Spinner } from "@/components/ui/spinner";
 import { ENDPOINTS } from "@/config/endpoints";
 import { useForm } from "@/hooks/use-form";
-import { useRequest } from "@/hooks/use-request";
-import { WorkoutCategorySchema } from "@/lib/validations/admin/workout-category-schema";
-import { WorkoutCategory, WorkoutCategoryFormProperties } from "@/types/admin/workout-category";
+import { CreateUnitSchema } from "@/lib/validations/admin/unit-schema";
+import { UnitFormProperties } from "@/types/admin/unit";
 import { buildDefaultListUrl } from "@/utils/shared/parameters";
 
-export default function WorkoutCategoryForm({
+export default function UnitForm({
   mode,
   trigger,
   defaultValues,
   open,
   onOpenChange,
-  title,
-  description,
-}: WorkoutCategoryFormProperties) {
+}: UnitFormProperties) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParameters = useSearchParams();
@@ -47,36 +42,22 @@ export default function WorkoutCategoryForm({
   const isEdit = mode === "edit";
 
   const handleDialogOpenChange = (value: boolean) => {
-    if (isControlled) {
-      onOpenChange?.(value);
-    } else {
-      setUncontrolledOpen(value);
-    }
+    if (isControlled) onOpenChange?.(value);
+    else setUncontrolledOpen(value);
 
-    if (!value) {
-      form.reset();
-    }
+    if (!value) form.reset();
   };
-
-  const { data: workoutCategories } = useRequest({
-    url: ENDPOINTS.META.WORKOUT_CATEGORIES,
-    queryKey: ["meta-workout-categories"],
-    data: { only: "parent" },
-    requireAuth: true,
-    staleTime: 1000 * 60 * 5,
-  });
 
   const form = useForm(
     {
-      parent_id: "",
-      name: "",
-      description: "",
+      name: defaultValues?.name ?? "",
+      abbreviation: defaultValues?.abbreviation ?? "",
     },
     {
-      validate: WorkoutCategorySchema,
+      validate: CreateUnitSchema,
       requireAuth: true,
       tanstack: {
-        invalidateQueries: ["admin-workout-categories", "meta-workout-categories"],
+        invalidateQueries: ["admin-units"],
         mutationOptions: {
           onSuccess: (response) => {
             handleDialogOpenChange(false);
@@ -99,33 +80,25 @@ export default function WorkoutCategoryForm({
   useEffect(() => {
     if (isEdit && defaultValues) {
       form.setData({
-        parent_id: defaultValues.parent?.id ?? "",
         name: defaultValues.name ?? "",
-        description: defaultValues.description ?? "",
+        abbreviation: defaultValues.abbreviation ?? "",
       });
     } else {
       form.setData({
-        parent_id: "",
         name: "",
-        description: "",
+        abbreviation: "",
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    defaultValues?.id,
-    defaultValues?.parent?.id,
-    defaultValues?.name,
-    defaultValues?.description,
-    isEdit,
-  ]);
+  }, [defaultValues?.id, defaultValues?.name, defaultValues?.abbreviation, isEdit]);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     if (isEdit && defaultValues?.id) {
-      form.put(ENDPOINTS.ADMIN.WORKOUT_CATEGORIES.UPDATE(defaultValues.id));
+      form.put(ENDPOINTS.ADMIN.UNITS.UPDATE(defaultValues.id));
     } else {
-      form.post(ENDPOINTS.ADMIN.WORKOUT_CATEGORIES.STORE);
+      form.post(ENDPOINTS.ADMIN.UNITS.STORE);
     }
   };
 
@@ -139,48 +112,18 @@ export default function WorkoutCategoryForm({
         <form onSubmit={handleSubmit} className="w-full p-2.5">
           <DialogHeader>
             <DialogTitle className="text-md mb-1 flex items-center gap-2 font-bold">
-              <FolderKanban className="h-5 w-5" />
-              {title ?? (isEdit ? "Edit Workout Category" : "Create a New Workout Category")}
+              <Scale className="h-5 w-5" />
+              {isEdit ? "Edit Unit Details" : "Create a New Unit"}
             </DialogTitle>
 
             <DialogDescription className="text-muted-foreground text-sm font-medium">
-              {description ??
-                (isEdit
-                  ? "Edit the name, parent, or description of this workout category. Changes will update how workouts are organized."
-                  : "Create a workout category with a name, optional parent, and description to organize your workouts.")}
+              {isEdit
+                ? "Edit the name or abbreviation of this unit. Changes will update how measurements are displayed throughout the system."
+                : "Create a unit with a name and abbreviation to standardize measurements across your application."}
             </DialogDescription>
           </DialogHeader>
-          <div className="space-y-5 py-5">
-            <ComboBoxField
-              id="parent_id"
-              name="parent_id"
-              label="Parent Category"
-              description="Select a parent category if this is a subcategory"
-              placeholder="Select parent category..."
-              searchPlaceholder="Search categories..."
-              emptyMessage="No categories found."
-              options={[
-                { value: "", label: "No parent (Root category)" },
-                ...(Array.isArray(workoutCategories?.data) && workoutCategories !== undefined
-                  ? workoutCategories.data
-                      .filter(
-                        (category: WorkoutCategory) =>
-                          // In edit mode, exclude the current category from parent options
-                          !isEdit || category.id !== defaultValues?.id,
-                      )
-                      .map((category: WorkoutCategory) => ({
-                        value: String(category.id),
-                        label: category.name,
-                      }))
-                  : []),
-              ]}
-              value={String(form.data.parent_id ?? "")}
-              onChange={(value: string) => form.setData("parent_id", value)}
-              error={form.errors.parent_id as string}
-              disabled={form.processing}
-              allowClear
-            />
 
+          <div className="space-y-5 py-5">
             <InputField
               id="name"
               name="name"
@@ -189,20 +132,21 @@ export default function WorkoutCategoryForm({
               onChange={(event) => form.setData("name", event.target.value)}
               error={form.errors.name as string}
               label="Name"
-              placeholder="e.g., Upper Body, Lower Body, etc."
+              placeholder="e.g., Kilogram, Gram, Liter"
               required
               disabled={form.processing}
             />
 
-            <TextareaField
-              id="description"
-              name="description"
-              className="min-h-[96px]"
-              placeholder="Describe the workout category's purpose and responsibilities..."
-              value={String(form.data.description ?? "")}
-              onChange={(event) => form.setData("description", event.target.value)}
-              error={form.errors.description as string}
-              label="Description"
+            <InputField
+              id="abbreviation"
+              name="abbreviation"
+              type="text"
+              value={String(form.data.abbreviation ?? "")}
+              onChange={(event) => form.setData("abbreviation", event.target.value)}
+              error={form.errors.abbreviation as string}
+              label="Abbreviation"
+              placeholder="e.g., kg, g, L"
+              required
               disabled={form.processing}
             />
           </div>
@@ -228,12 +172,12 @@ export default function WorkoutCategoryForm({
               {form.processing ? (
                 <>
                   <Spinner />
-                  {isEdit ? "Saving Changes..." : "Creating Workout Category..."}
+                  {isEdit ? "Saving Changes..." : "Creating Unit..."}
                 </>
               ) : (
                 <>
-                  <FolderKanban className="h-4 w-4" />
-                  {isEdit ? "Save Changes" : "Create Workout Category"}
+                  <Scale className="h-4 w-4" />
+                  {isEdit ? "Save Changes" : "Create Unit"}
                 </>
               )}
             </Button>

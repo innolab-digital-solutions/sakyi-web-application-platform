@@ -1,4 +1,4 @@
-import { FolderTree, Plus } from "lucide-react";
+import { FolderKanban, Plus } from "lucide-react";
 import React from "react";
 
 import WorkoutCategoryForm from "@/components/admin/features/workout-categories/workout-category-form";
@@ -10,7 +10,7 @@ export default function WorkoutCategoriesListPage() {
   return (
     <>
       <PageHeader
-        icon={FolderTree}
+        icon={FolderKanban}
         title="Workout Categories"
         description="Manage and structure your workout categories. Organize parent and child categories to streamline how workouts are grouped, making it easier to find and maintain your workout library."
         actions={

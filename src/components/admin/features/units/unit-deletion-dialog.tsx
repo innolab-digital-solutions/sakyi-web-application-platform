@@ -6,33 +6,29 @@ import ConfirmationDialog from "@/components/shared/confirmation-dialog";
 import { Button } from "@/components/ui/button";
 import { ENDPOINTS } from "@/config/endpoints";
 import { useRequest } from "@/hooks/use-request";
-import { FoodCategory } from "@/types/admin/food-category";
+import { Unit } from "@/types/admin/unit";
 import { cn } from "@/utils/shared/cn";
 
-interface FoodCategoryDeletionDialogProperties {
-  foodCategory: FoodCategory;
+interface UnitDeletionDialogProperties {
+  unit: Unit;
   className?: string;
 }
 
-export default function FoodCategoryDeletionDialog({
-  foodCategory,
-  className,
-}: FoodCategoryDeletionDialogProperties) {
+export default function UnitDeletionDialog({ unit, className }: UnitDeletionDialogProperties) {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const request = useRequest();
 
   const closeDeleteDialog = () => setShowDeleteDialog(false);
 
-  const request = useRequest();
-
   const handleDeleteConfirm = () => {
-    request.del(ENDPOINTS.ADMIN.FOOD_CATEGORIES.DESTROY(foodCategory.id), {
+    request.del(ENDPOINTS.ADMIN.UNITS.DESTROY(unit.id), {
       requireAuth: true,
       tanstack: {
-        invalidateQueries: ["admin-food-categories"],
+        invalidateQueries: ["admin-units"],
         mutationOptions: {
           onSuccess: () => {
             closeDeleteDialog();
-            toast.success("Food category deleted successfully.");
+            toast.success("Unit deleted successfully.");
           },
           onError: (error) => {
             toast.error(error.message);
@@ -53,15 +49,15 @@ export default function FoodCategoryDeletionDialog({
         )}
         disabled={request.loading}
         onClick={() => setShowDeleteDialog(true)}
-        aria-label="Delete food category"
+        aria-label="Delete unit"
       >
         <Trash2 className="h-2 w-2" />
         <span>Delete</span>
       </Button>
 
       <ConfirmationDialog
-        title="Delete Food Category Confirmation"
-        description={`Permanently delete the role "${foodCategory.name}"? This action cannot be undone.`}
+        title="Delete Unit Confirmation"
+        description={`Permanently delete the unit "${unit.name}"? This action cannot be undone.`}
         icon={FileQuestionMark}
         variant="destructive"
         confirmText="Yes, Delete It"

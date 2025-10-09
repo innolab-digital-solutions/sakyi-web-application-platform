@@ -4,7 +4,7 @@ import { ChevronDown } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
   Sidebar,
@@ -38,6 +38,21 @@ export default function DashboardSidebar() {
   const filtered = filterNavByPermission(adminNavigation, can);
 
   const items = getActiveAdminNav(pathname, filtered);
+
+  useEffect(() => {
+    const activeGroups: Record<string, boolean> = {};
+
+    const updatedItems = getActiveAdminNav(pathname, adminNavigation);
+    for (const group of updatedItems) {
+      for (const item of group.items) {
+        if (item.active) {
+          activeGroups[item.name] = true;
+        }
+      }
+    }
+
+    setOpenGroups((previous) => ({ ...previous, ...activeGroups }));
+  }, [pathname]);
 
   return (
     <Sidebar className="border-border/40 border-r">

@@ -26,9 +26,7 @@ export default function DynamicBreadcrumb() {
                   </Link>
                 </BreadcrumbLink>
               ) : (
-                <BreadcrumbPage className={index === breadcrumbs.length - 1 ? "font-medium" : ""}>
-                  {item.label}
-                </BreadcrumbPage>
+                <BreadcrumbPage>{item.label}</BreadcrumbPage>
               )}
             </BreadcrumbItem>
 

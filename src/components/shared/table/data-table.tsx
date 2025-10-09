@@ -252,7 +252,7 @@ export default function DataTable<TData, TValue>({
                 {headerGroup.headers.map((header) => (
                   <TableHead
                     key={header.id}
-                    className="text-xs font-semibold tracking-wide text-gray-600 !uppercase"
+                    className="text-xs font-bold tracking-wide text-gray-600 !uppercase"
                   >
                     <div className="px-3.5 py-1.5">
                       {header.isPlaceholder
@@ -290,14 +290,14 @@ export default function DataTable<TData, TValue>({
                   className="h-48 bg-gray-50 text-center hover:bg-gray-50"
                 >
                   <div className="flex flex-col items-center justify-center space-y-3">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-200">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-md bg-gray-200">
                       <FileSearch2 className="text-muted-foreground h-5 w-5" />
                     </div>
                     <div className="text-center">
-                      <p className="text-muted-foreground text-sm font-medium">
+                      <p className="text-sm font-semibold text-gray-700 capitalize">
                         {uiConfig.emptyMessage || "No data available"}
                       </p>
-                      <p className="text-muted-foreground/80 mt-1 text-xs">
+                      <p className="text-muted-foreground mt-1 text-xs font-medium">
                         Try adjusting your search or filter criteria
                       </p>
                     </div>

@@ -19,7 +19,7 @@ export default function PageHeader({
     <div className="mb-6 flex items-center justify-between">
       <div className="flex w-full flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-foreground mb-1 flex items-center gap-2 text-lg font-bold">
+          <h1 className="text-foreground text-md mb-1 flex items-center gap-2 font-bold">
             {Icon && <Icon className="h-5 w-5" />}
             {title}
           </h1>

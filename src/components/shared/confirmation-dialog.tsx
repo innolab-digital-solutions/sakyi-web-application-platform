@@ -125,25 +125,30 @@ export default function ConfirmationDialog({
   return (
     <AlertDialog open={isOpen} onOpenChange={handleOpenChange}>
       <AlertDialogContent className={cn(maxWidthClasses[maxWidth], className)}>
-        <AlertDialogHeader className="space-y-2.5">
+        <AlertDialogHeader className="">
           {showIcon && Icon && (
             <div
               className={cn(
-                "mx-auto flex h-12 w-12 items-center justify-center rounded-full",
+                "mx-auto mb-2.5 flex h-12 w-12 items-center justify-center rounded-md",
                 styles.iconBg,
                 iconClassName,
               )}
             >
-              <Icon className={cn("h-5 w-5", styles.iconColor)} />
+              <Icon className={cn("h-6 w-6", styles.iconColor)} />
             </div>
           )}
 
-          <AlertDialogTitle className={cn("text-center text-lg font-bold", titleClassName)}>
+          <AlertDialogTitle
+            className={cn("text-center text-lg font-bold text-gray-800", titleClassName)}
+          >
             {title}
           </AlertDialogTitle>
 
           <AlertDialogDescription
-            className={cn("text-center leading-relaxed", descriptionClassName)}
+            className={cn(
+              "text-muted-foreground text-center text-sm leading-relaxed font-medium",
+              descriptionClassName,
+            )}
           >
             {description}
           </AlertDialogDescription>
@@ -172,10 +177,7 @@ export default function ConfirmationDialog({
                 Processing...
               </div>
             ) : (
-              <div className="flex items-center">
-                {Icon && <Icon className="mr-2 h-4 w-4" />}
-                {confirmText}
-              </div>
+              <div className="flex items-center">{confirmText}</div>
             )}
           </Button>
         </AlertDialogFooter>

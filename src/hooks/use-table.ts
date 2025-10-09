@@ -157,6 +157,8 @@ export function useTable<T>({ endpoint, queryKey, searchKeys = [], defaultSort }
 
   const queryString = useMemo(() => serializeParameters(apiParameters), [apiParameters]);
 
+  const isQueryEnabled = !!token && (debouncedSearch.length === 0 || debouncedSearch.length > 0);
+
   const { data, isLoading, error, isFetching, isPlaceholderData } = useQuery({
     queryKey: [...queryKey, apiParameters],
     queryFn: async () => {
@@ -167,8 +169,7 @@ export function useTable<T>({ endpoint, queryKey, searchKeys = [], defaultSort }
       }
       return response;
     },
-    // Only fetch when authenticated and search term is empty or at least 2 characters
-    enabled: !!token && (debouncedSearch.length === 0 || debouncedSearch.length >= 2),
+    enabled: isQueryEnabled,
     // Prevent showing stale data during transitions
     placeholderData: undefined,
     // Ensure we always get fresh data for server-side operations
@@ -177,7 +178,7 @@ export function useTable<T>({ endpoint, queryKey, searchKeys = [], defaultSort }
 
   // Debounce search input to avoid excessive API calls
   useEffect(() => {
-    const timer = setTimeout(() => setDebouncedSearch(search.trim()), 500);
+    const timer = setTimeout(() => setDebouncedSearch(search.trim()), 600);
     return () => clearTimeout(timer);
   }, [search]);
 
@@ -233,11 +234,17 @@ export function useTable<T>({ endpoint, queryKey, searchKeys = [], defaultSort }
   // Detect parameter changes and set transition state
   useEffect(() => {
     const parametersChanged = JSON.stringify(previousParameters) !== JSON.stringify(apiParameters);
+    if (!isQueryEnabled) {
+      // If query is disabled (e.g., search length = 1), never show transitioning
+      setIsTransitioning(false);
+      setPreviousParameters(apiParameters);
+      return;
+    }
     if (parametersChanged) {
       setIsTransitioning(true);
       setPreviousParameters(apiParameters);
     }
-  }, [apiParameters, previousParameters]);
+  }, [apiParameters, previousParameters, isQueryEnabled]);
 
   // Clear transition state when new data arrives
   useEffect(() => {
@@ -247,7 +254,7 @@ export function useTable<T>({ endpoint, queryKey, searchKeys = [], defaultSort }
   }, [data, isLoading]);
 
   // Determine the appropriate loading state
-  const isTableLoading = isLoading || isTransitioning || (isFetching && !data);
+  const isTableLoading = isQueryEnabled && (isLoading || isTransitioning || (isFetching && !data));
 
   return {
     // Table data

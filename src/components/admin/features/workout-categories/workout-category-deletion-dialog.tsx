@@ -1,4 +1,4 @@
-import { Trash } from "lucide-react";
+import { FileQuestionMark, Trash2 } from "lucide-react";
 import React, { useState } from "react";
 import { toast } from "sonner";
 
@@ -55,14 +55,14 @@ export default function WorkoutCategoryDeletionDialog({
         onClick={() => setShowDeleteDialog(true)}
         aria-label="Delete workout category"
       >
-        <Trash className="h-2 w-2" />
+        <Trash2 className="h-2 w-2" />
         <span>Delete</span>
       </Button>
 
       <ConfirmationDialog
         title="Delete Workout Category Confirmation"
-        description="Are you sure you want to delete this workout category? This action cannot be undone."
-        icon={Trash}
+        description={`Permanently delete the workout category "${workoutCategory.name}"? This action cannot be undone.`}
+        icon={FileQuestionMark}
         variant="destructive"
         confirmText="Yes, Delete It"
         cancelText="No, Keep It"
