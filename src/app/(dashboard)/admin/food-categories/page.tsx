@@ -1,10 +1,8 @@
-"use client";
-
 import { FolderTree, Plus } from "lucide-react";
 import React from "react";
 
-import FoodCategoryForm from "@/components/admin/features/foodcategories/food-category-form";
-import FoodCategoryTable from "@/components/admin/features/foodcategories/food-category-table";
+import FoodCategoryForm from "@/components/admin/features/food-categories/food-category-form";
+import FoodCategoryTable from "@/components/admin/features/food-categories/food-category-table";
 import PageHeader from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
 

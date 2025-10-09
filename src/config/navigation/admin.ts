@@ -211,7 +211,7 @@ export const adminNavigation: NavGroup[] = [
             path: PATHS.ADMIN.FOOD_CATEGORIES.LIST,
             params: {},
             active: false,
-            permission: "",
+            permission: "food-categories.view",
           },
           {
             name: "Food Items",
