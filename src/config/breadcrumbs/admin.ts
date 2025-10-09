@@ -35,4 +35,12 @@ export const adminBreadcrumbs: Breadcrumbs = {
     { label: "Workout Library" },
     { label: "Workout Categories", href: PATHS.ADMIN.WORKOUT_CATEGORIES.LIST },
   ],
+
+  // Food Categories
+  "/admin/food-categories": [
+    { label: "Admin Control Panel" },
+    { label: "Health Data & Plans" },
+    { label: "Food & Nutrition" },
+    { label: "Food Categories", href: PATHS.ADMIN.FOOD_CATEGORIES.LIST },
+  ],
 };
