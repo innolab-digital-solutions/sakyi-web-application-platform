@@ -30,7 +30,6 @@ export default function LoginForm() {
     },
     {
       validate: LoginSchema,
-      requireAuth: false,
     },
   );
 

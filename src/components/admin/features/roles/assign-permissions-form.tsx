@@ -26,7 +26,6 @@ export default function AssignPermissionsForm({ role }: AssignPermissionsFormPro
   const { data, isFetching } = useRequest({
     url: ENDPOINTS.META.PERMISSIONS,
     queryKey: ["meta-permissions"],
-    requireAuth: true,
     staleTime: 1000 * 60 * 5,
   });
 
@@ -130,7 +129,6 @@ export default function AssignPermissionsForm({ role }: AssignPermissionsFormPro
     },
     {
       validate: AssignPermissionsSchema,
-      requireAuth: true,
       tanstack: {
         mutationOptions: {
           onSuccess: (response) => {

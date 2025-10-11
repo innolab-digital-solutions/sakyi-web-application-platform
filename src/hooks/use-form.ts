@@ -4,19 +4,13 @@ import { useMutation } from "@tanstack/react-query";
 import { useCallback, useRef, useState } from "react";
 import { z, ZodType } from "zod";
 
-import { useAuth } from "@/context/auth-context";
 import { useQueryManager } from "@/hooks/use-query-manager";
 import { http } from "@/lib/api/client";
 import { ApiError, ApiResponse } from "@/types/shared/api";
 
-/**
- * Form configuration options
- * @template TSchema - Zod schema type
- */
 type FormOptions<TSchema extends ZodType> = {
   validate?: TSchema;
   defaults?: Partial<z.infer<TSchema>>;
-  requireAuth?: boolean;
   tanstack?: {
     queryKey?: string[];
     invalidateQueries?: string[] | string[][];
@@ -28,30 +22,15 @@ type FormOptions<TSchema extends ZodType> = {
   };
 };
 
-/**
- * Submit operation options
- * @template T - Response data type
- */
 type SubmitOptions<T> = {
   onSuccess?: (response: ApiResponse<T>) => void;
   onError?: (error: ApiError) => void;
-  requireAuth?: boolean;
 };
 
-/**
- * Form validation errors mapping
- * @template T - Form data type
- */
 type Errors<T> = Partial<Record<keyof T | string, string>>;
 
 /**
- * Advanced React hook for form state management with validation and API integration
- *
- * @template TSchema - Zod schema type for form validation
- * @param initial - Initial form data values
- * @param options - Form configuration options
- *
- * @returns Form state and methods for data manipulation, validation, and submission
+ * Form state management hook with validation
  */
 export const useForm = <TSchema extends ZodType>(
   initial: z.infer<TSchema>,
@@ -59,7 +38,6 @@ export const useForm = <TSchema extends ZodType>(
 ) => {
   type T = z.infer<TSchema> & Record<string, unknown>;
 
-  const { token } = useAuth();
   const queryManager = useQueryManager();
 
   // Core form state
@@ -75,7 +53,8 @@ export const useForm = <TSchema extends ZodType>(
   /**
    * TanStack Query mutation for form submissions
    *
-   * Handles form submission with authentication, error handling, and query invalidation.
+   * Handles form submission with error handling and query invalidation.
+   * Authentication is handled automatically via session cookies.
    * Automatically manages request cancellation and state updates on success/error.
    */
   const formMutation = useMutation({
@@ -88,15 +67,7 @@ export const useForm = <TSchema extends ZodType>(
       url: string;
       data: T;
     }) => {
-      const needsAuth = options.requireAuth ?? true;
-      const shouldAuth = needsAuth && token;
-
-      const requestOptions = {
-        ...(shouldAuth && { token }),
-        requireAuth: needsAuth,
-      };
-
-      const response = await http[method as keyof typeof http]<T>(url, formData, requestOptions);
+      const response = await http[method as keyof typeof http]<T>(url, formData);
 
       if (response.status === "error") {
         throw new Error(response.message);
@@ -310,14 +281,9 @@ export const useForm = <TSchema extends ZodType>(
       abortController.current = new AbortController();
 
       try {
-        // Determine authentication requirements
-        const needsAuth = submitOptions.requireAuth ?? options.requireAuth ?? true;
-        const shouldAuth = needsAuth && token;
-
+        // Request options (session auth handled automatically via cookies)
         const requestOptions = {
           signal: abortController.current.signal,
-          ...(shouldAuth && { token }),
-          requireAuth: needsAuth,
         };
 
         // Execute appropriate HTTP method (GET/DELETE don't send body data)
@@ -339,16 +305,9 @@ export const useForm = <TSchema extends ZodType>(
         setProcessing(false);
       }
     },
-    [data, runValidation, clearErrors, options, token, formMutation],
+    [data, runValidation, clearErrors, options, formMutation],
   );
 
-  /**
-   * Performs a GET request to the specified endpoint
-   *
-   * @param url - API endpoint URL to send the GET request to
-   * @param options_ - Optional submission options for handling success/error callbacks
-   * @returns Promise that resolves when the request completes
-   */
   const get = useCallback(
     (url: string, options_?: SubmitOptions<T>) => {
       return submit("get", url, options_);
@@ -356,13 +315,6 @@ export const useForm = <TSchema extends ZodType>(
     [submit],
   );
 
-  /**
-   * Performs a POST request with form data to the specified endpoint
-   *
-   * @param url - API endpoint URL to send the POST request to
-   * @param options_ - Optional submission options for handling success/error callbacks
-   * @returns Promise that resolves when the request completes
-   */
   const post = useCallback(
     (url: string, options_?: SubmitOptions<T>) => {
       return submit("post", url, options_);
@@ -370,13 +322,6 @@ export const useForm = <TSchema extends ZodType>(
     [submit],
   );
 
-  /**
-   * Performs a PUT request with form data to the specified endpoint
-   *
-   * @param url - API endpoint URL to send the PUT request to
-   * @param options_ - Optional submission options for handling success/error callbacks
-   * @returns Promise that resolves when the request completes
-   */
   const put = useCallback(
     (url: string, options_?: SubmitOptions<T>) => {
       return submit("put", url, options_);
@@ -384,13 +329,6 @@ export const useForm = <TSchema extends ZodType>(
     [submit],
   );
 
-  /**
-   * Performs a PATCH request with form data to the specified endpoint
-   *
-   * @param url - API endpoint URL to send the PATCH request to
-   * @param options_ - Optional submission options for handling success/error callbacks
-   * @returns Promise that resolves when the request completes
-   */
   const patch = useCallback(
     (url: string, options_?: SubmitOptions<T>) => {
       return submit("patch", url, options_);
@@ -398,13 +336,6 @@ export const useForm = <TSchema extends ZodType>(
     [submit],
   );
 
-  /**
-   * Performs a DELETE request to the specified endpoint
-   *
-   * @param url - API endpoint URL to send the DELETE request to
-   * @param options_ - Optional submission options for handling success/error callbacks
-   * @returns Promise that resolves when the request completes
-   */
   const del = useCallback(
     (url: string, options_?: SubmitOptions<T>) => {
       return submit("delete", url, options_);

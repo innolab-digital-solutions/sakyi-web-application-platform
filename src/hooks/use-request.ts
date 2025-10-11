@@ -3,20 +3,13 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useCallback, useMemo, useRef, useState } from "react";
 
-import { useAuth } from "@/context/auth-context";
 import { useQueryManager } from "@/hooks/use-query-manager";
 import { http } from "@/lib/api/client";
 import { ApiError, ApiResponse } from "@/types/shared/api";
 
-/**
- * Configuration options for HTTP requests
- *
- * @template T - Expected response data type
- */
 type RequestOptions<T = unknown> = {
   data?: Record<string, unknown>;
   headers?: Record<string, string>;
-  requireAuth?: boolean;
   preserveState?: boolean;
   onBefore?: (config: RequestConfig) => boolean | void;
   onStart?: (config: RequestConfig) => void;
@@ -41,9 +34,6 @@ type RequestOptions<T = unknown> = {
   };
 };
 
-/**
- * Internal request configuration object
- */
 type RequestConfig = {
   method: "get" | "post" | "put" | "patch" | "delete";
   url: string;
@@ -51,9 +41,6 @@ type RequestConfig = {
   headers?: Record<string, string>;
 };
 
-/**
- * Request state tracking
- */
 type RequestState = {
   loading: boolean;
   error: ApiError | null | undefined;
@@ -61,14 +48,7 @@ type RequestState = {
 };
 
 /**
- * Advanced React hook for HTTP request management with TanStack Query integration
- *
- * Provides a complete solution for making HTTP requests with proper state management,
- * error handling, request cancellation, and TanStack Query integration for both
- * read operations (queries) and write operations (mutations).
- *
- * @param queryConfig - Optional TanStack Query configuration for GET requests
- * @returns Object containing request state, methods, and convenience shortcuts
+ * HTTP request hook with TanStack Query integration
  */
 export const useRequest = <T = unknown>(queryConfig?: {
   queryKey?: string[];
@@ -80,9 +60,7 @@ export const useRequest = <T = unknown>(queryConfig?: {
   refetchOnWindowFocus?: boolean;
   refetchOnMount?: boolean;
   retry?: boolean | number;
-  requireAuth?: boolean;
 }) => {
-  const { token } = useAuth();
   const queryManager = useQueryManager();
 
   const [state, setState] = useState<RequestState>({
@@ -100,6 +78,7 @@ export const useRequest = <T = unknown>(queryConfig?: {
 
   /**
    * TanStack Query for GET requests (when queryConfig is provided)
+   * Authentication is handled automatically via session cookies
    */
   const requestQuery = useQuery({
     queryKey: queryConfig?.queryKey || [],
@@ -108,20 +87,13 @@ export const useRequest = <T = unknown>(queryConfig?: {
         throw new Error("Query URL is required");
       }
 
-      const needsAuth = queryConfig.requireAuth ?? true;
-
-      const requestOptions = {
-        ...(needsAuth && token && { token }),
-        requireAuth: needsAuth,
-      };
-
       // For GET requests, data becomes query parameters
       const queryParameters = queryConfig.data;
       const urlWithParameters = queryParameters
         ? `${queryConfig.url}?${new URLSearchParams(queryParameters as Record<string, string>).toString()}`
         : queryConfig.url;
 
-      const response = await http.get<T>(urlWithParameters, requestOptions);
+      const response = await http.get<T>(urlWithParameters);
 
       if (response.status === "error") {
         throw new Error(response.message);
@@ -160,6 +132,7 @@ export const useRequest = <T = unknown>(queryConfig?: {
 
   /**
    * TanStack Query mutation for write operations (POST, PUT, PATCH, DELETE)
+   * Authentication is handled automatically via session cookies
    */
   const requestMutation = useMutation({
     mutationKey: ["request-mutation"],
@@ -169,17 +142,13 @@ export const useRequest = <T = unknown>(queryConfig?: {
       url,
       data,
       headers = {},
-      requireAuth = true,
     }: {
       method: "post" | "put" | "patch" | "delete";
       url: string;
       data?: Record<string, unknown>;
       headers?: Record<string, string>;
-      requireAuth?: boolean;
     }) => {
       const requestOptions = {
-        ...(requireAuth && token && { token }),
-        requireAuth,
         ...headers,
       };
 
@@ -216,7 +185,6 @@ export const useRequest = <T = unknown>(queryConfig?: {
         method = "get",
         data = {},
         headers = {},
-        requireAuth = true,
         preserveState = false,
         onBefore,
         onStart,
@@ -257,7 +225,7 @@ export const useRequest = <T = unknown>(queryConfig?: {
         activeMutation.current = mutationKey;
 
         requestMutation.mutate(
-          { method, url, data, headers, requireAuth },
+          { method, url, data, headers },
           {
             onSuccess: (response) => {
               tanstack.mutationOptions?.onSuccess?.(response as ApiResponse<T>);
@@ -312,11 +280,9 @@ export const useRequest = <T = unknown>(queryConfig?: {
       onStart?.(config);
 
       try {
-        // Apply authentication only when both required and available
+        // Request options (session auth handled automatically via cookies)
         const requestOptions = {
           signal: abortController.current.signal,
-          ...(requireAuth && token && { token }),
-          requireAuth,
           ...headers,
         };
 
@@ -360,7 +326,7 @@ export const useRequest = <T = unknown>(queryConfig?: {
         return undefined;
       }
     },
-    [token, state, resetState, requestMutation, queryManager],
+    [state, resetState, requestMutation, queryManager],
   );
 
   /**

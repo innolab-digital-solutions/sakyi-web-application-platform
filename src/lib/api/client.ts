@@ -1,25 +1,40 @@
 import { PATHS } from "@/config/paths";
 import { ApiError, ApiResponse, HttpMethod } from "@/types/shared/api";
-import { clearStoredToken } from "@/utils/auth/storage";
 
 export interface FetchOptions extends Omit<RequestInit, "body"> {
   body?: BodyInit | Record<string, unknown> | unknown[];
-  requireAuth?: boolean;
-  token?: string;
   parseJson?: boolean;
 }
 
 const DEFAULT_BASE_URL = "https://api.sakyi.com/v1";
+const DEFAULT_API_DOMAIN = "https://api.sakyi.com";
 
 /**
- * Global auth error handler
+ * Retrieves CSRF token from cookies
+ */
+const getCsrfToken = (): string | undefined => {
+  if (typeof document === "undefined") return undefined;
+
+  const name = "XSRF-TOKEN=";
+  const decodedCookie = decodeURIComponent(document.cookie);
+  const cookies = decodedCookie.split(";");
+
+  for (let cookie of cookies) {
+    cookie = cookie.trim();
+    if (cookie.startsWith(name)) {
+      return cookie.slice(name.length);
+    }
+  }
+  return undefined;
+};
+
+/**
+ * Handles authentication errors by redirecting to login
  *
  * @param status - The status code of the error
  */
 const handleAuthError = (status: number) => {
   if (status === 419 || status === 401) {
-    clearStoredToken();
-
     setTimeout(() => {
       globalThis.location.href = PATHS.ADMIN.LOGIN;
     }, 100);
@@ -27,34 +42,30 @@ const handleAuthError = (status: number) => {
 };
 
 /**
- * Core HTTP client for making API requests
+ * Core HTTP client for API requests
  *
- * A clean, consistent API client that works everywhere in the application,
- * including useForm hook, useRequest hook, and direct API calls.
- *
- * @template T - The expected response data type
- * @param endpoint - API endpoint path (without base URL)
+ * @template T - Expected response data type
+ * @param endpoint - API endpoint path
  * @param options - Request configuration options
- * @returns Promise resolving to a standardized API response
+ * @returns Standardized API response
  */
 export const client = async <T>(
   endpoint: string,
   options: FetchOptions & { method?: HttpMethod } = {},
 ): Promise<ApiResponse<T>> => {
-  // Extract configuration options with sensible defaults
-  const {
-    method = "GET",
-    body,
-    headers = {},
-    requireAuth = true,
-    token,
-    parseJson = true,
-    ...requestOptions
-  } = options;
+  const { method = "GET", body, headers = {}, parseJson = true, ...requestOptions } = options;
 
-  // Construct the full API URL by combining base URL with endpoint
-  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_ENDPOINT || DEFAULT_BASE_URL;
-  const url = `${baseUrl.replace(/\/+$/, "")}/${endpoint.replace(/^\/+/, "")}`;
+  // Sanctum routes (e.g., /sanctum/csrf-cookie) exclude /v1 prefix
+  const isSanctumRoute = endpoint.startsWith("/sanctum/") || endpoint.startsWith("sanctum/");
+
+  let url: string;
+  if (isSanctumRoute) {
+    const apiDomain = process.env.NEXT_PUBLIC_API_DOMAIN || DEFAULT_API_DOMAIN;
+    url = `${apiDomain.replace(/\/+$/, "")}/${endpoint.replace(/^\/+/, "")}`;
+  } else {
+    const baseUrl = process.env.NEXT_PUBLIC_API_BASE_ENDPOINT || DEFAULT_BASE_URL;
+    url = `${baseUrl.replace(/\/+$/, "")}/${endpoint.replace(/^\/+/, "")}`;
+  }
 
   // Initialize request headers with default Accept header and merge custom headers
   const requestHeaders: Record<string, string> = {
@@ -62,12 +73,14 @@ export const client = async <T>(
     ...(headers as Record<string, string>),
   };
 
-  // Add Bearer token authentication if required and token is provided
-  if (requireAuth && token) {
-    requestHeaders.Authorization = `Bearer ${token}`;
+  // Add CSRF token for non-GET requests
+  if (method !== "GET") {
+    const csrfToken = getCsrfToken();
+    if (csrfToken) {
+      requestHeaders["X-XSRF-TOKEN"] = csrfToken;
+    }
   }
 
-  // Process request body based on its type
   let requestBody: BodyInit | undefined;
   if (body !== undefined) {
     // Handle different body types: string, FormData, URLSearchParams, or JSON
@@ -80,17 +93,15 @@ export const client = async <T>(
     }
   }
 
-  // Configure the fetch request with all options
   const config: RequestInit = {
     method,
     headers: requestHeaders,
     body: requestBody,
-    credentials: "include", // Include cookies for session management
-    cache: "no-store", // Prevent caching for fresh data
+    credentials: "include",
+    cache: "no-store",
     ...requestOptions,
   };
 
-  // Execute the HTTP request with network error handling
   let response: Response;
   try {
     response = await fetch(url, config);
@@ -100,6 +111,7 @@ export const client = async <T>(
       status: "error",
       message: "Network error. Please check your connection.",
       errors: { network: [String(error)] },
+      data: undefined,
     };
   }
 
@@ -122,24 +134,20 @@ export const client = async <T>(
     };
   }
 
-  // Parse JSON response with error handling for malformed JSON
   let json: ApiResponse<T>;
   try {
     json = await response.json();
   } catch {
-    // Return error response for invalid JSON
     return {
       status: "error",
       message: "Invalid JSON response from server",
+      data: undefined,
     };
   }
 
-  // Handle HTTP errors and API-level errors
   if (!response.ok || json.status === "error") {
-    // Trigger authentication flow for auth-related errors
     handleAuthError(response.status);
 
-    // Return standardized error response with details
     return {
       status: "error",
       message: json.message || response.statusText,
@@ -148,7 +156,6 @@ export const client = async <T>(
     };
   }
 
-  // Return successful response
   return json;
 };
 
@@ -156,8 +163,8 @@ export const client = async <T>(
  * HTTP client with method-specific helpers
  *
  * Provides convenient method-specific functions that wrap the core client.
- * All methods support dynamic authentication via the token option and
- * return standardized API responses.
+ * Authentication is handled automatically via Laravel Sanctum session cookies.
+ * All methods return standardized API responses.
  */
 export const http = {
   /**

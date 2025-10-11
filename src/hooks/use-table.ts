@@ -8,7 +8,6 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { http } from "@/lib/api/client";
 import { Pagination } from "@/types/shared/common";
 import { ListQueryParameters, SortDirection } from "@/types/shared/parameters";
-import { getStoredToken } from "@/utils/auth/storage";
 import {
   DEFAULT_LIST_PARAMS,
   mergeParameters,
@@ -24,18 +23,9 @@ interface UseTableConfig {
 }
 
 /**
- * Custom hook for managing server-side table operations including pagination, sorting, searching, and URL synchronization.
- *
- * @template T - The type of data items in the table
- * @param config - Configuration object for the server table
- * @param config.endpoint - API endpoint for fetching table data
- * @param config.queryKey - React Query cache key for the data
- * @param config.searchKeys - Array of field names that can be searched (optional)
- * @param config.defaultSort - Default sorting configuration (optional)
- * @returns Object containing table data, loading state, and configuration objects for search, pagination, sorting, and server operations
+ * Server-side table operations hook
  */
 export function useTable<T>({ endpoint, queryKey, searchKeys = [], defaultSort }: UseTableConfig) {
-  const { token } = getStoredToken();
   const searchParameters = useSearchParams();
   const pathname = usePathname();
   const router = useRouter();
@@ -157,13 +147,15 @@ export function useTable<T>({ endpoint, queryKey, searchKeys = [], defaultSort }
 
   const queryString = useMemo(() => serializeParameters(apiParameters), [apiParameters]);
 
-  const isQueryEnabled = !!token && (debouncedSearch.length === 0 || debouncedSearch.length > 0);
+  // Enable query when search is either empty or has valid content
+  const isQueryEnabled = debouncedSearch.length === 0 || debouncedSearch.length > 0;
 
   const { data, isLoading, error, isFetching, isPlaceholderData } = useQuery({
     queryKey: [...queryKey, apiParameters],
     queryFn: async () => {
       const url = `${endpoint}?${queryString}`;
-      const response = await http.get<T[]>(url, { requireAuth: true, token });
+      // Session authentication is handled automatically via cookies
+      const response = await http.get<T[]>(url);
       if (response.status === "error") {
         throw new Error(response.message);
       }

@@ -57,7 +57,6 @@ export default function FoodCategoryForm({
     url: `${ENDPOINTS.META.FOOD_CATEGORIES}`,
     queryKey: ["meta-food-categories"],
     data: { only: "parent" },
-    requireAuth: true,
     staleTime: 1000 * 60 * 5,
   });
 
@@ -69,7 +68,6 @@ export default function FoodCategoryForm({
     },
     {
       validate: CreateFoodCategorySchema,
-      requireAuth: true,
       tanstack: {
         invalidateQueries: ["admin-food-categories", "meta-food-categories"],
         mutationOptions: {

@@ -26,7 +26,6 @@ export default function RolePermissionsAssignmentPage({
   const { data } = useRequest({
     url: ENDPOINTS.ADMIN.ROLES.SHOW(resolvedParameters.id),
     queryKey: ["admin-specific-role", resolvedParameters.id],
-    requireAuth: true,
     staleTime: 1000 * 60 * 5,
   });
 

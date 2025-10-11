@@ -6,7 +6,6 @@ import { useEffect, useState } from "react";
 import { Spinner } from "@/components/ui/spinner";
 import { PATHS } from "@/config/paths";
 import { useAuth } from "@/context/auth-context";
-import { isAuthenticated } from "@/utils/auth/storage";
 
 interface AuthGuardProperties {
   children: React.ReactNode;
@@ -16,19 +15,7 @@ interface AuthGuardProperties {
 }
 
 /**
- * AuthGuard component that provides comprehensive authentication management.
- *
- * Features:
- * - Automatic token synchronization with cookies for SSR compatibility
- * - Route-based authentication protection
- * - Smart redirects for authenticated/unauthenticated users
- * - Loading states during authentication checks
- * - Client-side hydration handling
- *
- * @param children - React nodes to render when authentication passes
- * @param requireAuth - Whether the route requires authentication (default: true)
- * @param loginPath - Path to redirect unauthenticated users (default: PATHS.ADMIN.LOGIN)
- * @param dashboardPath - Path to redirect authenticated users from login page (default: PATHS.ADMIN.OVERVIEW)
+ * Route authentication guard
  */
 export default function AuthGuard({
   children,
@@ -43,26 +30,16 @@ export default function AuthGuard({
   const pathname = usePathname();
   const { loading: contextLoading, isAuthenticated: contextAuth } = useAuth();
 
-  // Mark component as client-side rendered to prevent hydration issues
   useEffect(() => {
     setIsClient(true);
   }, []);
 
-  // Main authentication logic with route-based redirects
   useEffect(() => {
     if (!isClient) return;
 
-    /**
-     * Performs authentication check and handles route redirects based on auth state.
-     * Implements smart routing logic for different authentication scenarios.
-     */
     const checkAndRedirect = () => {
-      const hasToken = isAuthenticated();
-      const userAuthenticated = contextAuth || hasToken;
-
-      // Handle login page immediately without waiting for context loading
       if (pathname === loginPath) {
-        if (userAuthenticated) {
+        if (contextAuth) {
           router.replace(dashboardPath);
         } else {
           setIsChecking(false);
@@ -70,23 +47,19 @@ export default function AuthGuard({
         return;
       }
 
-      // Handle protected routes - redirect unauthenticated users to login
-      if (requireAuth && !userAuthenticated) {
+      if (requireAuth && !contextAuth) {
         router.replace(loginPath);
         return;
       }
 
-      // Handle public routes - no authentication required
       if (!requireAuth) {
         setIsChecking(false);
         return;
       }
 
-      // All authentication checks passed, allow access
       setIsChecking(false);
     };
 
-    // For non-login routes, optionally wait for context but with a timeout fallback
     if (contextLoading) {
       const timeout = setTimeout(() => {
         checkAndRedirect();

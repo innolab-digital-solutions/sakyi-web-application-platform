@@ -62,7 +62,6 @@ export default function WorkoutCategoryForm({
     url: ENDPOINTS.META.WORKOUT_CATEGORIES,
     queryKey: ["meta-workout-categories"],
     data: { only: "parent" },
-    requireAuth: true,
     staleTime: 1000 * 60 * 5,
   });
 
@@ -74,7 +73,6 @@ export default function WorkoutCategoryForm({
     },
     {
       validate: WorkoutCategorySchema,
-      requireAuth: true,
       tanstack: {
         invalidateQueries: ["admin-workout-categories", "meta-workout-categories"],
         mutationOptions: {
