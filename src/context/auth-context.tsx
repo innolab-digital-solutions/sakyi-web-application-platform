@@ -104,17 +104,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const initSession = async () => {
       setLoading(true);
 
-      if (pathname === PATHS.ADMIN.LOGIN) {
-        setLoading(false);
-        return;
-      }
+      await checkAuth();
 
-      const isAuthenticated = await checkAuth();
-
-      if (!isAuthenticated && mounted) {
+      if (mounted) {
         setLoading(false);
-      } else {
-        if (mounted) setLoading(false);
       }
     };
 
@@ -123,7 +116,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return () => {
       mounted = false;
     };
-  }, [isHydrated, pathname, checkAuth]);
+  }, [isHydrated, checkAuth]);
 
   return (
     <AuthContext.Provider

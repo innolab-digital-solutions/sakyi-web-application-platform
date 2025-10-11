@@ -27,7 +27,7 @@ export default function DashboardLayout({ children, defaultOpen }: DashboardLayo
     <QueryProvider>
       <AuthProvider>
         <TransitionProvider defaultTransition="scale">
-          <AuthGuard requireAuth={!isLoginPage}>
+          <AuthGuard requireAuth={!isLoginPage} checkPermissions={!isLoginPage}>
             {isLoginPage ? (
               children
             ) : (
