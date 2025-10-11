@@ -37,10 +37,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const login = useCallback(async (credentials: LoginCredentials) => {
     setLoading(true);
     try {
-      await http.get<void>(ENDPOINTS.AUTH.CSRF_COOKIE);
-      const response = await http.post<AuthenticatedResponse>(ENDPOINTS.AUTH.LOGIN, {
-        ...credentials,
-      });
+      await http.get<void>(ENDPOINTS.AUTH.CSRF_COOKIE, { throwOnError: false });
+      const response = await http.post<AuthenticatedResponse>(
+        ENDPOINTS.AUTH.LOGIN,
+        {
+          ...credentials,
+        },
+        { throwOnError: false },
+      );
 
       if (response.status === "success" && response.data) {
         setUser(response.data.user);
@@ -63,7 +67,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const logout = useCallback(async () => {
     setLoading(true);
     try {
-      await http.post<void>(ENDPOINTS.AUTH.LOGOUT, {});
+      await http.post<void>(ENDPOINTS.AUTH.LOGOUT, {}, { throwOnError: false });
     } catch {
       // Ignore errors on logout
     } finally {
@@ -75,7 +79,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const checkAuth = useCallback(async (): Promise<boolean> => {
     try {
-      const response = await http.get<User>(ENDPOINTS.AUTH.ME);
+      const response = await http.get<User>(ENDPOINTS.AUTH.ME, { throwOnError: false });
 
       if (response.status === "success" && response.data) {
         setUser(response.data);

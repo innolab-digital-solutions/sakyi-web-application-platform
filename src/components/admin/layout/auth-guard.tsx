@@ -1,8 +1,13 @@
 "use client";
 
+import { Home } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { adminNavigation } from "@/config/navigation";
 import { PATHS } from "@/config/paths";
@@ -55,8 +60,9 @@ export default function AuthGuard({
   dashboardPath = PATHS.ADMIN.OVERVIEW,
 }: AuthGuardProperties) {
   const [phase, setPhase] = useState<GuardPhase>("hydrating");
-  const [permissionDenied, setPermissionDenied] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  const [permissionDenied, setPermissionDenied] = useState(false);
+  const [deniedMessage, setDeniedMessage] = useState("");
 
   const router = useRouter();
   const pathname = usePathname();
@@ -77,7 +83,6 @@ export default function AuthGuard({
     if (phase === "hydrating") return;
 
     const runChecks = async () => {
-      // Wait for auth context to finish loading first
       if (contextLoading) {
         setPhase("auth-checking");
         return;
@@ -86,40 +91,35 @@ export default function AuthGuard({
       // Special case: Login page - block authenticated users
       if (pathname === loginPath) {
         if (isAuthenticated) {
-          // Authenticated user trying to access login page - redirect to dashboard
           setPhase("redirecting");
           router.replace(dashboardPath);
         } else {
-          // Unauthenticated user on login page - allow access
           setPhase("authenticated");
         }
         return;
       }
 
-      // For all other routes, check authentication first
       if (requireAuth && !isAuthenticated) {
-        // Unauthenticated user trying to access protected route - redirect to login
         setPhase("redirecting");
         router.replace(loginPath);
         return;
       }
 
-      // If no auth required or not checking permissions, proceed
       if (!requireAuth || !checkPermissions) {
         setPhase("authenticated");
         return;
       }
 
-      // Phase 3: Permission checking (only for authenticated protected routes)
       setPhase("permission-checking");
 
-      // Small delay to show permission checking state
-      await new Promise((resolve) => setTimeout(resolve, 200));
-
       if (!user) {
-        // User data not loaded yet - should not happen but safety check
         setPhase("redirecting");
         router.replace(loginPath);
+        return;
+      }
+
+      if (pathname === dashboardPath) {
+        setPhase("authenticated");
         return;
       }
 
@@ -127,12 +127,10 @@ export default function AuthGuard({
       let requiredPermission: string | undefined;
       let matched = false;
 
-      // Exact match first
       if (PATH_PERMISSION_MAP.has(pathname)) {
         requiredPermission = PATH_PERMISSION_MAP.get(pathname);
         matched = true;
       } else {
-        // If no exact match, try prefix match for nested routes
         for (const [path, permission] of PATH_PERMISSION_MAP.entries()) {
           if (pathname.startsWith(path + "/")) {
             requiredPermission = permission;
@@ -148,31 +146,23 @@ export default function AuthGuard({
         return;
       }
 
-      // If permission is empty string, treat as restricted (hidden + blocked)
-      if (requiredPermission !== undefined && requiredPermission.trim().length === 0) {
+      // If permission is empty or undefined, treat as misconfigured (deny access)
+      if (!requiredPermission || requiredPermission.trim().length === 0) {
         setPermissionDenied(true);
-        setPhase("redirecting");
-        const redirectTo = pathname === dashboardPath ? PATHS.PUBLIC.HOME : dashboardPath;
-        setTimeout(() => router.replace(redirectTo), 1500);
+        setDeniedMessage("This page is misconfigured and cannot be accessed at this time.");
         return;
       }
 
-      // If permission is required and user doesn't have it
-      if (
-        typeof requiredPermission === "string" &&
-        requiredPermission.trim().length > 0 &&
-        !can(requiredPermission)
-      ) {
+      if (!can(requiredPermission)) {
         setPermissionDenied(true);
-        setPhase("redirecting");
-        const redirectTo = pathname === dashboardPath ? PATHS.PUBLIC.HOME : dashboardPath;
-        setTimeout(() => router.replace(redirectTo), 1500);
+        setDeniedMessage(
+          // Just present a single message like the 404 page in not-found.tsx
+          "You do not have permission to view this page.",
+        );
         return;
       }
 
-      // All checks passed
       setPhase("authenticated");
-      setPermissionDenied(false);
     };
 
     runChecks();
@@ -189,6 +179,59 @@ export default function AuthGuard({
     dashboardPath,
     router,
   ]);
+
+  // Show 403 permission denied page
+  if (permissionDenied) {
+    return (
+      <div className="bg-background flex min-h-screen items-center justify-center px-4 py-16">
+        <div className="w-full max-w-2xl text-center">
+          {/* Hero Image */}
+          <div className="mb-12 flex justify-center">
+            <Image
+              src="/images/403.png"
+              alt="Access denied"
+              width={400}
+              height={300}
+              priority
+              className="h-auto w-full max-w-md"
+            />
+          </div>
+          <div className="space-y-6">
+            {/* Error Badge & Title */}
+            <div className="space-y-4">
+              <div className="flex justify-center">
+                <Badge
+                  variant="outline"
+                  className="bg-accent/10 text-accent border-none px-2 py-1.5 font-semibold"
+                >
+                  403 Forbidden
+                </Badge>
+              </div>
+              <h1 className="text-2xl font-bold tracking-tight text-gray-800 sm:text-4xl">
+                Access Denied
+              </h1>
+              <p className="text-md text-muted-foreground mx-auto max-w-2xl font-semibold">
+                {deniedMessage}
+              </p>
+            </div>
+            {/* Actions */}
+            <div className="flex flex-col items-center justify-center gap-3 pt-4 sm:flex-row">
+              <Button
+                asChild
+                className="from-primary to-accent hover:from-primary/90 hover:to-accent/90 group relative flex h-10 min-w-[140px] items-center justify-center gap-2 overflow-hidden bg-gradient-to-r text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl"
+              >
+                <Link href={PATHS.ADMIN.OVERVIEW}>
+                  <div className="absolute inset-0 translate-x-[-100%] bg-gradient-to-r from-white/10 to-white/5 transition-transform duration-700 ease-out group-hover:translate-x-[100%]" />
+                  <Home />
+                  <span className="relative">Go Back To Dashboard</span>
+                </Link>
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   // Prevent hydration mismatch - don't render anything until mounted
   if (!isMounted) {
@@ -235,7 +278,6 @@ export default function AuthGuard({
 
     let title = "Loading";
     let description = "Please wait...";
-    let showDenied = false;
 
     switch (phase) {
       case "hydrating": {
@@ -256,17 +298,10 @@ export default function AuthGuard({
         break;
       }
       case "redirecting": {
-        if (permissionDenied) {
-          title = "Access Denied";
-          description = "You don't have permission to access this page. Redirecting...";
-          showDenied = true;
-        } else if (isLoginPage) {
-          title = "Redirecting to dashboard";
-          description = "You are already signed in. Taking you to the right place.";
-        } else {
-          title = "Redirecting";
-          description = "Taking you to the right place...";
-        }
+        title = isLoginPage ? "Redirecting to dashboard" : "Redirecting";
+        description = isLoginPage
+          ? "You are already signed in. Taking you to the right place."
+          : "Taking you to the right place...";
         break;
       }
     }
@@ -274,58 +309,22 @@ export default function AuthGuard({
     return (
       <div className="flex min-h-screen w-full items-center justify-center bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-6">
         <div className="relative">
-          <div
-            className={`from-primary/10 via-accent/10 absolute -inset-16 animate-pulse rounded-full bg-gradient-to-tr to-blue-300/10 blur-xl ${
-              showDenied ? "from-red-500/10 via-orange-500/10 to-red-300/10" : ""
-            }`}
-          />
+          <div className="from-primary/10 via-accent/10 absolute -inset-16 animate-pulse rounded-full bg-gradient-to-tr to-blue-300/10 blur-xl" />
           <div className="relative z-10 flex h-52 w-80 flex-col items-center justify-center rounded-2xl border border-white/40 bg-white/80 px-8 py-7 text-center shadow-xl backdrop-blur-xl">
             <div className="relative mb-4">
-              <div
-                className={`from-primary/20 via-accent/20 absolute inset-0 rounded-full bg-gradient-to-tr to-blue-300/20 blur-lg ${
-                  showDenied ? "from-red-500/20 via-orange-500/20 to-red-300/20" : ""
-                }`}
-              />
+              <div className="from-primary/20 via-accent/20 absolute inset-0 rounded-full bg-gradient-to-tr to-blue-300/20 blur-lg" />
               <div className="relative rounded-full bg-white p-3 shadow-sm ring-1 ring-gray-200">
-                {showDenied ? (
-                  <svg
-                    className="size-6 text-red-500"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-                    />
-                  </svg>
-                ) : (
-                  <Spinner className="text-primary size-6" />
-                )}
+                <Spinner className="text-primary size-6" />
               </div>
             </div>
 
-            <h2
-              className={`text-base font-semibold tracking-tight ${
-                showDenied ? "text-red-700" : "text-gray-800"
-              }`}
-            >
-              {title}
-            </h2>
-            <p
-              className={`mt-1.5 max-w-xs text-xs ${showDenied ? "text-red-600" : "text-gray-500"}`}
-            >
-              {description}
-            </p>
+            <h2 className="text-base font-semibold tracking-tight text-gray-800">{title}</h2>
+            <p className="mt-1.5 max-w-xs text-xs text-gray-500">{description}</p>
 
             <div className="mt-5 h-1 w-40">
-              {!showDenied && (
-                <div className="h-full w-full overflow-hidden rounded-full bg-gray-200">
-                  <div className="from-primary via-accent h-full w-1/3 animate-[shimmer_1.2s_ease_infinite] rounded-full bg-gradient-to-r to-blue-400" />
-                </div>
-              )}
+              <div className="h-full w-full overflow-hidden rounded-full bg-gray-200">
+                <div className="from-primary via-accent h-full w-1/3 animate-[shimmer_1.2s_ease_infinite] rounded-full bg-gradient-to-r to-blue-400" />
+              </div>
             </div>
           </div>
         </div>

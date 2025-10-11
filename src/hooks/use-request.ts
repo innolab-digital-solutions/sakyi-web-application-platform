@@ -93,6 +93,7 @@ export const useRequest = <T = unknown>(queryConfig?: {
         ? `${queryConfig.url}?${new URLSearchParams(queryParameters as Record<string, string>).toString()}`
         : queryConfig.url;
 
+      // Queries throw errors by default - error.tsx will catch them
       const response = await http.get<T>(urlWithParameters);
 
       if (response.status === "error") {
@@ -153,6 +154,7 @@ export const useRequest = <T = unknown>(queryConfig?: {
       };
 
       // Handle DELETE requests differently since they don't accept data parameter
+      // Mutations throw errors by default - error.tsx will catch them
       const response =
         method === "delete"
           ? await http.delete(url, requestOptions)
@@ -287,6 +289,7 @@ export const useRequest = <T = unknown>(queryConfig?: {
         };
 
         // Execute request based on HTTP method (GET/DELETE vs POST/PUT/PATCH)
+        // Errors throw by default - error.tsx will catch them
         const response: ApiResponse<T> = await (method === "get" || method === "delete"
           ? http[method]<T>(url, requestOptions)
           : http[method]<T>(url, data, requestOptions));

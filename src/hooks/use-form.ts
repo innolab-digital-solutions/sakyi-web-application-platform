@@ -67,7 +67,10 @@ export const useForm = <TSchema extends ZodType>(
       url: string;
       data: T;
     }) => {
-      const response = await http[method as keyof typeof http]<T>(url, formData);
+      // Forms should NEVER show error pages - always handle inline
+      const response = await http[method as keyof typeof http]<T>(url, formData, {
+        throwOnError: false,
+      });
 
       if (response.status === "error") {
         throw new Error(response.message);
@@ -287,9 +290,10 @@ export const useForm = <TSchema extends ZodType>(
         };
 
         // Execute appropriate HTTP method (GET/DELETE don't send body data)
+        // Forms should NEVER show error pages - always handle errors inline
         const response = await (method === "get" || method === "delete"
-          ? http[method]<T>(url, requestOptions)
-          : http[method]<T>(url, data, requestOptions));
+          ? http[method]<T>(url, { ...requestOptions, throwOnError: false })
+          : http[method]<T>(url, data, { ...requestOptions, throwOnError: false }));
 
         if (response.status === "error") {
           // Handle API validation errors

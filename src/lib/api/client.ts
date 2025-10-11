@@ -1,9 +1,12 @@
 import { PATHS } from "@/config/paths";
-import { ApiError, ApiResponse, HttpMethod } from "@/types/shared/api";
+import { ApiError as ApiErrorType, ApiResponse, HttpMethod } from "@/types/shared/api";
+
+import { ApiError } from "./api-error";
 
 export interface FetchOptions extends Omit<RequestInit, "body"> {
   body?: BodyInit | Record<string, unknown> | unknown[];
   parseJson?: boolean;
+  throwOnError?: boolean; // false = handle inline (auth, forms), true = show error page (default)
 }
 
 const DEFAULT_BASE_URL = "https://api.sakyi.com/v1";
@@ -53,7 +56,14 @@ export const client = async <T>(
   endpoint: string,
   options: FetchOptions & { method?: HttpMethod } = {},
 ): Promise<ApiResponse<T>> => {
-  const { method = "GET", body, headers = {}, parseJson = true, ...requestOptions } = options;
+  const {
+    method = "GET",
+    body,
+    headers = {},
+    parseJson = true,
+    throwOnError = true, // Default: throw errors to show error pages
+    ...requestOptions
+  } = options;
 
   // Sanctum routes (e.g., /sanctum/csrf-cookie) exclude /v1 prefix
   const isSanctumRoute = endpoint.startsWith("/sanctum/") || endpoint.startsWith("sanctum/");
@@ -148,12 +158,24 @@ export const client = async <T>(
   if (!response.ok || json.status === "error") {
     handleAuthError(response.status);
 
-    return {
-      status: "error",
+    const errorResponse = {
+      status: "error" as const,
       message: json.message || response.statusText,
-      errors: (json as ApiError).errors,
-      data: (json as ApiError).data,
+      errors: (json as ApiErrorType).errors,
+      data: (json as ApiErrorType).data,
     };
+
+    // Throw error to show error page (unless explicitly disabled)
+    if (throwOnError) {
+      throw new ApiError(
+        errorResponse.message || "An error occurred",
+        response.status,
+        errorResponse.errors as Record<string, string[]> | undefined,
+        response.headers.get("x-request-id") || undefined,
+      );
+    }
+
+    return errorResponse;
   }
 
   return json;
@@ -176,7 +198,7 @@ export const http = {
    * @returns Promise resolving to API response
    */
   get: <T>(endpoint: string, options?: Omit<FetchOptions, "body">) => {
-    return client<T>(endpoint, { ...options, method: "GET" });
+    return client<T>(endpoint, { ...options, method: "GET", throwOnError: options?.throwOnError });
   },
 
   /**
@@ -189,7 +211,12 @@ export const http = {
    * @returns Promise resolving to API response
    */
   post: <T>(endpoint: string, body?: FetchOptions["body"], options?: FetchOptions) => {
-    return client<T>(endpoint, { ...options, method: "POST", body });
+    return client<T>(endpoint, {
+      ...options,
+      method: "POST",
+      body,
+      throwOnError: options?.throwOnError,
+    });
   },
 
   /**
@@ -202,7 +229,12 @@ export const http = {
    * @returns Promise resolving to API response
    */
   put: <T>(endpoint: string, body?: FetchOptions["body"], options?: FetchOptions) => {
-    return client<T>(endpoint, { ...options, method: "PUT", body });
+    return client<T>(endpoint, {
+      ...options,
+      method: "PUT",
+      body,
+      throwOnError: options?.throwOnError,
+    });
   },
 
   /**
@@ -215,7 +247,12 @@ export const http = {
    * @returns Promise resolving to API response
    */
   patch: <T>(endpoint: string, body?: FetchOptions["body"], options?: FetchOptions) => {
-    return client<T>(endpoint, { ...options, method: "PATCH", body });
+    return client<T>(endpoint, {
+      ...options,
+      method: "PATCH",
+      body,
+      throwOnError: options?.throwOnError,
+    });
   },
 
   /**
@@ -227,6 +264,10 @@ export const http = {
    * @returns Promise resolving to API response
    */
   delete: <T>(endpoint: string, options?: Omit<FetchOptions, "body">) => {
-    return client<T>(endpoint, { ...options, method: "DELETE" });
+    return client<T>(endpoint, {
+      ...options,
+      method: "DELETE",
+      throwOnError: options?.throwOnError,
+    });
   },
 };
