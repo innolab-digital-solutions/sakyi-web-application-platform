@@ -20,6 +20,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<User | undefined>();
   const [loading, setLoading] = useState(true);
   const [isHydrated, setIsHydrated] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const router = useRouter();
   const pathname = usePathname();
@@ -65,6 +66,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const logout = useCallback(async () => {
+    setIsLoggingOut(true);
     setLoading(true);
     try {
       await http.post<void>(ENDPOINTS.AUTH.LOGOUT, {}, { throwOnError: false });
@@ -74,6 +76,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       clearAuthData();
       redirectToLoginIfNeeded();
       setLoading(false);
+      // Keep isLoggingOut true during redirect to prevent loading screen flash
+      // It will reset on next mount/navigation
     }
   }, [clearAuthData, redirectToLoginIfNeeded]);
 
@@ -107,6 +111,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     const initSession = async () => {
       setLoading(true);
+      setIsLoggingOut(false); // Reset logout flag on mount
 
       await checkAuth();
 
@@ -130,6 +135,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         logout,
         loading: loading || !isHydrated,
         isAuthenticated: isHydrated && !!user,
+        isLoggingOut,
         can: (permission: string) => can(user?.permissions as Permission, permission),
       }}
     >

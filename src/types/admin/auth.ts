@@ -32,6 +32,7 @@ export interface AuthState {
   user: User | undefined;
   loading: boolean;
   isAuthenticated: boolean;
+  isLoggingOut: boolean;
 }
 
 export interface AuthContextType extends AuthState {

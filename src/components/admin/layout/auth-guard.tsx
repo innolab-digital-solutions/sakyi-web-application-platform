@@ -1,6 +1,6 @@
 "use client";
 
-import { Home } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -66,7 +66,7 @@ export default function AuthGuard({
 
   const router = useRouter();
   const pathname = usePathname();
-  const { loading: contextLoading, isAuthenticated, user, can } = useAuth();
+  const { loading: contextLoading, isAuthenticated, isLoggingOut, user, can } = useAuth();
 
   // Phase 1: Wait for client-side hydration
   useEffect(() => {
@@ -224,14 +224,14 @@ export default function AuthGuard({
               </p>
             </div>
             {/* Actions */}
-            <div className="flex flex-col items-center justify-center gap-3 pt-4 sm:flex-row">
+            <div className="flex flex-col items-center justify-center gap-3 sm:flex-row">
               <Button
                 asChild
                 className="from-primary to-accent hover:from-primary/90 hover:to-accent/90 group relative flex h-10 min-w-[140px] items-center justify-center gap-2 overflow-hidden bg-gradient-to-r text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl"
               >
                 <Link href={PATHS.ADMIN.OVERVIEW}>
                   <div className="absolute inset-0 translate-x-[-100%] bg-gradient-to-r from-white/10 to-white/5 transition-transform duration-700 ease-out group-hover:translate-x-[100%]" />
-                  <Home />
+                  <ArrowLeft />
                   <span className="relative">Go Back To Dashboard</span>
                 </Link>
               </Button>
@@ -329,6 +329,11 @@ export default function AuthGuard({
         `}</style>
       </div>
     );
+  }
+
+  // Skip all loading screens during logout - user already sees logout animation
+  if (isLoggingOut) {
+    return <>{children}</>;
   }
 
   // Show loading screens based on phase
