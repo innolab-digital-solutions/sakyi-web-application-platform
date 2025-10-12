@@ -156,8 +156,6 @@ export const client = async <T>(
   }
 
   if (!response.ok || json.status === "error") {
-    handleAuthError(response.status);
-
     const errorResponse = {
       status: "error" as const,
       message: json.message || response.statusText,
@@ -165,8 +163,10 @@ export const client = async <T>(
       data: (json as ApiErrorType).data,
     };
 
-    // Throw error to show error page (unless explicitly disabled)
+    // Only handle auth errors automatically when throwing (showing error pages)
+    // When throwOnError is false, the caller handles errors inline
     if (throwOnError) {
+      handleAuthError(response.status);
       throw new ApiError(
         errorResponse.message || "An error occurred",
         response.status,
