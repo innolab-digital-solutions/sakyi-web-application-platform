@@ -26,7 +26,6 @@ export default function FoodCategoryDeletionDialog({
 
   const handleDeleteConfirm = () => {
     request.del(ENDPOINTS.ADMIN.FOOD_CATEGORIES.DESTROY(foodCategory.id), {
-      requireAuth: true,
       tanstack: {
         invalidateQueries: ["admin-food-categories"],
         mutationOptions: {

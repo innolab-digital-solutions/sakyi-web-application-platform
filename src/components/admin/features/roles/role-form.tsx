@@ -63,7 +63,6 @@ export default function RoleForm({
     },
     {
       validate: RoleSchema,
-      requireAuth: true,
       tanstack: {
         invalidateQueries: ["admin-roles"],
         mutationOptions: {

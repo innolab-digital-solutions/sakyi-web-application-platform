@@ -1,15 +1,17 @@
 import { PATHS } from "@/config/paths";
 
 /**
- * Authentication Guards
+ * Authentication Guards for Laravel Sanctum SPA Authentication
  *
  * Provides route protection utilities for managing access control and navigation
- * flow in the admin application. These guards determine which routes require
- * authentication and handle automatic redirects based on user state.
+ * flow in the admin application. These guards work with session-based authentication
+ * where auth state is managed via httpOnly cookies by Laravel Sanctum.
  */
 
 /**
  * Determines if a given pathname requires authentication to access
+ *
+ * Protected routes require a valid Laravel Sanctum session to access.
  *
  * @param pathname - The route pathname to check (e.g., "/admin/users")
  * @returns True if the route requires authentication, false otherwise
@@ -25,6 +27,8 @@ export const isProtectedRoute = (pathname: string): boolean => {
 
 /**
  * Determines if a given pathname is a public route that doesn't require authentication
+ *
+ * Public routes can be accessed without a valid session.
  *
  * @param pathname - The route pathname to check (e.g., "/admin/login")
  * @returns True if the route is public, false otherwise
@@ -44,7 +48,7 @@ export const isPublicRoute = (pathname: string): boolean => {
  * - Handles root admin path redirects based on auth state
  *
  * @param pathname - The current route pathname
- * @param isAuthenticated - Whether the user is currently authenticated
+ * @param isAuthenticated - Whether the user has a valid session
  * @returns The redirect URL if a redirect is needed, undefined otherwise
  */
 export const getRedirectUrl = (pathname: string, isAuthenticated: boolean): string | undefined => {

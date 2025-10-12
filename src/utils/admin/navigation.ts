@@ -29,7 +29,9 @@ export const getActiveAdminNav = (currentPath: string, navigation: NavGroup[]) =
 
 /**
  * Filter navigation groups and items based on permission helper.
- * Items with an empty or missing `permission` are considered allowed.
+ * Special case: /admin/overview (Overview page) has empty permission and is always shown.
+ * All other empty permissions are treated as "not configured" and hidden.
+ * Items with a non-empty permission string are checked against the canFunction.
  * A parent with subitems is kept if it is allowed OR has at least one allowed subitem.
  *
  * @param navigation - The full navigation config
@@ -44,16 +46,22 @@ export const filterNavByPermission = (
     .map((group) => {
       const filteredItems = group.items
         .map((item) => {
-          const parentAllowed =
-            typeof item.permission === "string"
-              ? item.permission.trim().length > 0 && canFunction(item.permission)
-              : true;
+          // Special case: Overview page (/admin/overview) is always accessible
+          const isOverviewPage = item.path === "/admin/overview";
+
+          // Empty permission = not configured (hide), except for Overview page
+          // Non-empty permission = check if user has that permission
+          const parentAllowed = isOverviewPage
+            ? true
+            : !item.permission || item.permission.trim().length === 0
+              ? false
+              : canFunction(item.permission);
 
           if (item.subitems && item.subitems.length > 0) {
             const filteredSubitems = item.subitems.filter((sub) =>
-              typeof sub.permission === "string"
-                ? sub.permission.trim().length > 0 && canFunction(sub.permission)
-                : true,
+              !sub.permission || sub.permission.trim().length === 0
+                ? false
+                : canFunction(sub.permission),
             );
 
             const keepParent = parentAllowed || filteredSubitems.length > 0;

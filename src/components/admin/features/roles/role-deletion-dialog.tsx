@@ -22,7 +22,6 @@ export default function RoleDeletionDialog({ role, className }: RoleDeletionDial
 
   const handleDeleteConfirm = () => {
     request.del(ENDPOINTS.ADMIN.ROLES.DESTROY(role.id), {
-      requireAuth: true,
       tanstack: {
         invalidateQueries: ["admin-roles"],
         mutationOptions: {

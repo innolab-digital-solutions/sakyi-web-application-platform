@@ -30,7 +30,6 @@ export default function LoginForm() {
     },
     {
       validate: LoginSchema,
-      requireAuth: false,
     },
   );
 
@@ -76,20 +75,11 @@ export default function LoginForm() {
         }
 
         // Intelligently assign system errors to appropriate form fields
-        const errorMessage = errorResponse.errors?.system as string;
+        const errorMessage =
+          !errorResponse.errors && errorResponse.message ? errorResponse.message : undefined;
+
         if (errorMessage && errorMessage.length > 0) {
-          if (errorMessage.toLowerCase().includes("email")) {
-            form.setError("email", errorMessage);
-          } else if (errorMessage.toLowerCase().includes("password")) {
-            form.setError("password", errorMessage);
-          } else if (
-            errorMessage.toLowerCase().includes("account") ||
-            errorMessage.toLowerCase().includes("inactive")
-          ) {
-            form.setError("email", errorMessage);
-          } else {
-            form.setError("password", errorMessage);
-          }
+          form.setError("email", errorMessage);
         }
       }
     } catch (error) {

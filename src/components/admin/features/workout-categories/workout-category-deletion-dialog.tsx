@@ -26,7 +26,6 @@ export default function WorkoutCategoryDeletionDialog({
 
   const handleDeleteConfirm = () => {
     request.del(ENDPOINTS.ADMIN.WORKOUT_CATEGORIES.DESTROY(workoutCategory.id), {
-      requireAuth: true,
       tanstack: {
         invalidateQueries: ["admin-workout-categories"],
         mutationOptions: {

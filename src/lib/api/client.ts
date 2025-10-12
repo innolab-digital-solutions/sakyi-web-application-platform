@@ -1,25 +1,53 @@
 import { PATHS } from "@/config/paths";
-import { ApiError, ApiResponse, HttpMethod } from "@/types/shared/api";
-import { clearStoredToken } from "@/utils/auth/storage";
+import { ApiError } from "@/lib/api/error";
+import { ApiError as ApiErrorType, ApiResponse, HttpMethod } from "@/types/shared/api";
 
+/**
+ * Options for customizing API fetch requests.
+ * Extends the built-in RequestInit (minus "body"), and provides flexible body and response handling.
+ */
 export interface FetchOptions extends Omit<RequestInit, "body"> {
+  /** Request body (can be primitives, JSON serializable, FormData, etc.) */
   body?: BodyInit | Record<string, unknown> | unknown[];
-  requireAuth?: boolean;
-  token?: string;
+  /** If false, skips JSON parsing (for file/text responses). Default is true. */
   parseJson?: boolean;
+  /**
+   * If true (default), errors throw and can bubble to error boundaries.
+   * If false, handles errors inline—useful for forms/auth flows.
+   */
+  throwOnError?: boolean;
 }
 
 const DEFAULT_BASE_URL = "https://api.sakyi.com/v1";
+const DEFAULT_API_DOMAIN = "https://api.sakyi.com";
 
 /**
- * Global auth error handler
- *
- * @param status - The status code of the error
+ * Get the XSRF-TOKEN value from document cookies.
+ * @returns {string | undefined} The XSRF-TOKEN, or undefined if not found or executed server-side.
+ */
+const getCsrfToken = (): string | undefined => {
+  // Guard for server-side execution
+  if (typeof document === "undefined") return undefined;
+  const name = "XSRF-TOKEN=";
+  const decodedCookie = decodeURIComponent(document.cookie);
+  const cookies = decodedCookie.split(";");
+
+  // Find and extract the XSRF-TOKEN value
+  for (let cookie of cookies) {
+    cookie = cookie.trim();
+    if (cookie.startsWith(name)) {
+      return cookie.slice(name.length);
+    }
+  }
+  return undefined;
+};
+
+/**
+ * Redirect to login page if an authentication error is encountered.
+ * @param status HTTP status code from the response.
  */
 const handleAuthError = (status: number) => {
   if (status === 419 || status === 401) {
-    clearStoredToken();
-
     setTimeout(() => {
       globalThis.location.href = PATHS.ADMIN.LOGIN;
     }, 100);
@@ -27,83 +55,89 @@ const handleAuthError = (status: number) => {
 };
 
 /**
- * Core HTTP client for making API requests
+ * Core HTTP client for API requests.
+ * Standardizes API interaction, error handling, CSRF strategy (Laravel Sanctum), and JSON parsing.
  *
- * A clean, consistent API client that works everywhere in the application,
- * including useForm hook, useRequest hook, and direct API calls.
- *
- * @template T - The expected response data type
- * @param endpoint - API endpoint path (without base URL)
- * @param options - Request configuration options
- * @returns Promise resolving to a standardized API response
+ * @template T Expected data shape as returned by the endpoint.
+ * @param endpoint API endpoint path (with or without /v1, supports Sanctum endpoints).
+ * @param options Fetch customization and handling options.
+ * @returns Promise resolving to standardized API response shape.
+ * @throws {ApiError} If throwOnError is true and error response is returned.
  */
 export const client = async <T>(
   endpoint: string,
   options: FetchOptions & { method?: HttpMethod } = {},
 ): Promise<ApiResponse<T>> => {
-  // Extract configuration options with sensible defaults
   const {
     method = "GET",
     body,
     headers = {},
-    requireAuth = true,
-    token,
     parseJson = true,
+    throwOnError = true,
     ...requestOptions
   } = options;
 
-  // Construct the full API URL by combining base URL with endpoint
-  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_ENDPOINT || DEFAULT_BASE_URL;
-  const url = `${baseUrl.replace(/\/+$/, "")}/${endpoint.replace(/^\/+/, "")}`;
+  // Detect if this is a Sanctum endpoint, which should not have the /v1 prefix.
+  const isSanctumRoute = endpoint.startsWith("/sanctum/") || endpoint.startsWith("sanctum/");
 
-  // Initialize request headers with default Accept header and merge custom headers
+  // Construct final request URL, ensuring there is only a single slash between segments.
+  let url: string;
+  if (isSanctumRoute) {
+    const apiDomain = process.env.NEXT_PUBLIC_API_DOMAIN || DEFAULT_API_DOMAIN;
+    url = `${apiDomain.replace(/\/+$/, "")}/${endpoint.replace(/^\/+/, "")}`;
+  } else {
+    const baseUrl = process.env.NEXT_PUBLIC_API_BASE_ENDPOINT || DEFAULT_BASE_URL;
+    url = `${baseUrl.replace(/\/+$/, "")}/${endpoint.replace(/^\/+/, "")}`;
+  }
+
+  // Set Accept header and merge custom headers (if provided)
   const requestHeaders: Record<string, string> = {
     Accept: "application/json",
     ...(headers as Record<string, string>),
   };
 
-  // Add Bearer token authentication if required and token is provided
-  if (requireAuth && token) {
-    requestHeaders.Authorization = `Bearer ${token}`;
+  // Send CSRF token for state-changing methods
+  if (method !== "GET") {
+    const csrfToken = getCsrfToken();
+    if (csrfToken) {
+      requestHeaders["X-XSRF-TOKEN"] = csrfToken;
+    }
   }
 
-  // Process request body based on its type
+  // Set requestBody conditionally based on body shape
   let requestBody: BodyInit | undefined;
   if (body !== undefined) {
-    // Handle different body types: string, FormData, URLSearchParams, or JSON
     if (typeof body === "string" || body instanceof FormData || body instanceof URLSearchParams) {
       requestBody = body;
     } else {
-      // Serialize objects to JSON and set appropriate Content-Type header
       requestBody = JSON.stringify(body);
       requestHeaders["Content-Type"] = "application/json";
     }
   }
 
-  // Configure the fetch request with all options
   const config: RequestInit = {
     method,
     headers: requestHeaders,
     body: requestBody,
-    credentials: "include", // Include cookies for session management
-    cache: "no-store", // Prevent caching for fresh data
+    credentials: "include",
+    cache: "no-store",
     ...requestOptions,
   };
 
-  // Execute the HTTP request with network error handling
   let response: Response;
   try {
     response = await fetch(url, config);
   } catch (error) {
-    // Return standardized error response for network failures
+    // Network/connection error—return standardized error response
     return {
       status: "error",
       message: "Network error. Please check your connection.",
       errors: { network: [String(error)] },
+      data: undefined,
     };
   }
 
-  // Handle non-JSON responses (e.g., file downloads, plain text)
+  // If parseJson is false, simply return response as plain text (useful for file downloads, etc)
   if (!parseJson) {
     const text = await response.text();
     return {
@@ -113,7 +147,7 @@ export const client = async <T>(
     };
   }
 
-  // Handle 204 No Content responses (common for DELETE operations)
+  // Handle 204 No Content (common on DELETE/PUT/PATCH success, no response body)
   if (response.status === 204) {
     return {
       status: "success",
@@ -122,104 +156,127 @@ export const client = async <T>(
     };
   }
 
-  // Parse JSON response with error handling for malformed JSON
+  // Attempt to parse JSON response; handle parsing error as a client-side problem
   let json: ApiResponse<T>;
   try {
     json = await response.json();
   } catch {
-    // Return error response for invalid JSON
     return {
       status: "error",
       message: "Invalid JSON response from server",
+      data: undefined,
     };
   }
 
-  // Handle HTTP errors and API-level errors
+  // If the API indicates an error, or HTTP status is not ok, handle gracefully or throw
   if (!response.ok || json.status === "error") {
-    // Trigger authentication flow for auth-related errors
-    handleAuthError(response.status);
-
-    // Return standardized error response with details
-    return {
-      status: "error",
+    const errorResponse = {
+      status: "error" as const,
       message: json.message || response.statusText,
-      errors: (json as ApiError).errors,
-      data: (json as ApiError).data,
+      errors: (json as ApiErrorType).errors,
+      data: (json as ApiErrorType).data,
     };
+
+    // Only redirect/throw for authentication errors if errors are not handled inline
+    if (throwOnError) {
+      handleAuthError(response.status);
+      throw new ApiError(
+        errorResponse.message || "An error occurred",
+        response.status,
+        errorResponse.errors as Record<string, string[]> | undefined,
+        response.headers.get("x-request-id") || undefined,
+      );
+    }
+    return errorResponse;
   }
 
-  // Return successful response
+  // Default: return parsed, successful API response
   return json;
 };
 
 /**
- * HTTP client with method-specific helpers
- *
- * Provides convenient method-specific functions that wrap the core client.
- * All methods support dynamic authentication via the token option and
- * return standardized API responses.
+ * Pre-configured HTTP client with convenience helpers for each HTTP verb (GET, POST, PUT, PATCH, DELETE).
+ * Wraps the core client and keeps API usage consistent across the app.
  */
 export const http = {
   /**
-   * Performs a GET request
-   *
+   * Perform a GET request.
    * @template T - Expected response data type
    * @param endpoint - API endpoint path
-   * @param options - Request options (excluding body)
-   * @returns Promise resolving to API response
+   * @param options - Custom fetch options (excluding body)
+   * @returns Promise resolving to API response of type T
    */
   get: <T>(endpoint: string, options?: Omit<FetchOptions, "body">) => {
-    return client<T>(endpoint, { ...options, method: "GET" });
+    return client<T>(endpoint, {
+      ...options,
+      method: "GET",
+      throwOnError: options?.throwOnError,
+    });
   },
 
   /**
-   * Performs a POST request
-   *
+   * Perform a POST request.
    * @template T - Expected response data type
    * @param endpoint - API endpoint path
    * @param body - Request body data
    * @param options - Additional request options
-   * @returns Promise resolving to API response
+   * @returns Promise resolving to API response of type T
    */
   post: <T>(endpoint: string, body?: FetchOptions["body"], options?: FetchOptions) => {
-    return client<T>(endpoint, { ...options, method: "POST", body });
+    return client<T>(endpoint, {
+      ...options,
+      method: "POST",
+      body,
+      throwOnError: options?.throwOnError,
+    });
   },
 
   /**
-   * Performs a PUT request
-   *
+   * Perform a PUT request.
    * @template T - Expected response data type
    * @param endpoint - API endpoint path
    * @param body - Request body data
    * @param options - Additional request options
-   * @returns Promise resolving to API response
+   * @returns Promise resolving to API response of type T
    */
   put: <T>(endpoint: string, body?: FetchOptions["body"], options?: FetchOptions) => {
-    return client<T>(endpoint, { ...options, method: "PUT", body });
+    return client<T>(endpoint, {
+      ...options,
+      method: "PUT",
+      body,
+      throwOnError: options?.throwOnError,
+    });
   },
 
   /**
-   * Performs a PATCH request
-   *
+   * Perform a PATCH request.
    * @template T - Expected response data type
    * @param endpoint - API endpoint path
    * @param body - Request body data
    * @param options - Additional request options
-   * @returns Promise resolving to API response
+   * @returns Promise resolving to API response of type T
    */
   patch: <T>(endpoint: string, body?: FetchOptions["body"], options?: FetchOptions) => {
-    return client<T>(endpoint, { ...options, method: "PATCH", body });
+    return client<T>(endpoint, {
+      ...options,
+      method: "PATCH",
+      body,
+      throwOnError: options?.throwOnError,
+    });
   },
 
   /**
-   * Performs a DELETE request
-   *
+   * Perform a DELETE request.
    * @template T - Expected response data type
    * @param endpoint - API endpoint path
-   * @param options - Request options (excluding body)
-   * @returns Promise resolving to API response
+   * @param options - Custom fetch options (excluding body)
+   * @returns Promise resolving to API response of type T
    */
   delete: <T>(endpoint: string, options?: Omit<FetchOptions, "body">) => {
-    return client<T>(endpoint, { ...options, method: "DELETE" });
+    return client<T>(endpoint, {
+      ...options,
+      method: "DELETE",
+      throwOnError: options?.throwOnError,
+    });
   },
 };

@@ -55,7 +55,6 @@ export default function UnitForm({
     },
     {
       validate: CreateUnitSchema,
-      requireAuth: true,
       tanstack: {
         invalidateQueries: ["admin-units"],
         mutationOptions: {

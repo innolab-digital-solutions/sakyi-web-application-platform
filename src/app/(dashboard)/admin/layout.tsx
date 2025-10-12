@@ -2,7 +2,6 @@ import { Inter } from "next/font/google";
 import { cookies } from "next/headers";
 
 import DashboardLayout from "@/components/admin/layout/dashboard-layout";
-import PermissionGuard from "@/components/admin/layout/permission-guard";
 import { Toaster } from "@/components/ui/sonner";
 
 const inter = Inter({
@@ -16,9 +15,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
 
   return (
     <div className={`${inter.className} min-h-screen`}>
-      <DashboardLayout defaultOpen={defaultOpen}>
-        <PermissionGuard>{children}</PermissionGuard>
-      </DashboardLayout>
+      <DashboardLayout defaultOpen={defaultOpen}>{children}</DashboardLayout>
 
       <Toaster position="top-right" richColors />
     </div>

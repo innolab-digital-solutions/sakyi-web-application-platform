@@ -32,6 +32,7 @@ interface ConfirmationDialogProperties {
   // Button customization
   confirmText?: string;
   cancelText?: string;
+  processingText?: string; // <-- Added prop
   variant?: ConfirmationVariant;
 
   // Advanced customization
@@ -97,6 +98,7 @@ export default function ConfirmationDialog({
   icon: Icon,
   confirmText = "Confirm",
   cancelText = "Cancel",
+  processingText = "Processing...", // <-- Added default
   variant = "default",
   showIcon = true,
   maxWidth = "md",
@@ -174,7 +176,7 @@ export default function ConfirmationDialog({
             {isLoading ? (
               <div className="flex items-center">
                 <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
-                Processing...
+                {processingText}
               </div>
             ) : (
               <div className="flex items-center">{confirmText}</div>

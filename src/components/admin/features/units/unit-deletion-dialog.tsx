@@ -22,7 +22,6 @@ export default function UnitDeletionDialog({ unit, className }: UnitDeletionDial
 
   const handleDeleteConfirm = () => {
     request.del(ENDPOINTS.ADMIN.UNITS.DESTROY(unit.id), {
-      requireAuth: true,
       tanstack: {
         invalidateQueries: ["admin-units"],
         mutationOptions: {

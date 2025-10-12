@@ -85,6 +85,7 @@ export default function DashboardMenu() {
         variant="destructive"
         confirmText="Sign Out"
         cancelText="Stay Signed In"
+        processingText="Signing you out..."
         isOpen={showLogoutDialog}
         onClose={closeLogoutDialog}
         onConfirm={handleLogoutConfirm}
