@@ -1,12 +1,10 @@
 "use client";
 
 import { Home, RefreshCw } from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
-import React from "react";
 import { useEffect } from "react";
 
-import { Button } from "@/components/ui/button";
+import { ErrorPage } from "@/components/shared/error-page";
+import { PATHS } from "@/config/paths";
 
 export default function AdminError({
   error,
@@ -31,7 +29,7 @@ export default function AdminError({
     errorMessage.toLowerCase().includes("maintenance");
 
   // Configure error display
-  let errorType = "500";
+  let errorCode = "Error 500";
   let imageSource = "/images/500.png";
   let title = "Internal Server Error";
   let description =
@@ -39,19 +37,19 @@ export default function AdminError({
   let suggestion = "Please try again in a few moments.";
 
   if (is403) {
-    errorType = "403";
+    errorCode = "Error 403";
     imageSource = "/images/403.png";
     title = "Access Denied";
     description = errorMessage || "You don't have permission to access this resource.";
     suggestion = "If you believe this is a mistake, please contact your administrator for access.";
   } else if (is404) {
-    errorType = "404";
+    errorCode = "Error 404";
     imageSource = "/images/404.png";
     title = "Resource Not Found";
     description = "The resource you're looking for doesn't exist or has been removed.";
     suggestion = "Please check the URL or return to the dashboard.";
   } else if (is503) {
-    errorType = "503";
+    errorCode = "Error 503";
     imageSource = "/images/503.png";
     title = "Service Temporarily Unavailable";
     description = "The service is currently undergoing maintenance or experiencing high traffic.";
@@ -59,75 +57,31 @@ export default function AdminError({
   }
 
   return (
-    <div className="bg-background flex min-h-screen items-center justify-center px-4 py-16">
-      <div className="w-full max-w-2xl text-center">
-        {/* Hero Image */}
-        <div className="mb-12 flex justify-center">
-          <Image
-            src={imageSource}
-            alt={`Error ${errorType}`}
-            width={400}
-            height={300}
-            priority
-            className="h-auto w-full max-w-md"
-          />
-        </div>
-
-        {/* Content */}
-        <div className="space-y-6">
-          {/* Error Badge & Title */}
-          <div className="space-y-3">
-            <div className="flex justify-center">
-              <span className="bg-accent/10 text-accent inline-flex items-center rounded-full px-3 py-1 text-sm font-medium">
-                Error {errorType}
-              </span>
-            </div>
-            <h1 className="text-foreground text-xl font-bold tracking-tight sm:text-5xl">
-              {title}
-            </h1>
-          </div>
-
-          {/* Description */}
-          <div className="space-y-2">
-            <p className="text-muted-foreground text-lg">{description}</p>
-            <p className="text-muted-foreground text-sm">{suggestion}</p>
-          </div>
-
-          {/* Technical Details (Development Only) */}
-          {process.env.NODE_ENV === "development" && errorMessage && (
-            <div className="bg-muted/50 mx-auto max-w-lg rounded-lg border p-4 text-left">
-              <p className="text-muted-foreground mb-2 text-xs font-semibold tracking-wide uppercase">
-                Technical Details
-              </p>
-              <p className="text-foreground font-mono text-xs break-words">{errorMessage}</p>
-              {error.digest && (
-                <p className="text-muted-foreground mt-2 font-mono text-xs">
-                  Digest: {error.digest}
-                </p>
-              )}
-            </div>
-          )}
-
-          {/* Error ID (Production Only) */}
-          {process.env.NODE_ENV === "production" && error.digest && (
-            <p className="text-muted-foreground font-mono text-sm">Error ID: {error.digest}</p>
-          )}
-
-          {/* Actions */}
-          <div className="flex flex-col items-center justify-center gap-3 pt-4 sm:flex-row">
-            <Button onClick={() => reset()} size="lg" className="min-w-[140px]">
-              <RefreshCw className="mr-2 size-4" />
-              Try Again
-            </Button>
-            <Button asChild variant="outline" size="lg" className="min-w-[140px]">
-              <Link href="/admin/overview">
-                <Home className="mr-2 size-4" />
-                Dashboard
-              </Link>
-            </Button>
-          </div>
-        </div>
-      </div>
-    </div>
+    <ErrorPage
+      code={errorCode}
+      imageSrc={imageSource}
+      imageAlt={title}
+      title={title}
+      description={description}
+      suggestion={suggestion}
+      actions={[
+        {
+          label: "Try Again",
+          onClick: reset,
+          icon: RefreshCw,
+          variant: "default",
+        },
+        {
+          label: "Dashboard",
+          href: PATHS.ADMIN.OVERVIEW,
+          icon: Home,
+          variant: "outline",
+        },
+      ]}
+      technicalDetails={{
+        message: errorMessage,
+        digest: error.digest,
+      }}
+    />
   );
 }

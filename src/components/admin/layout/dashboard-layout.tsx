@@ -3,7 +3,7 @@
 import { usePathname } from "next/navigation";
 import React from "react";
 
-import AuthGuard from "@/components/admin/layout/auth-guard";
+import AccessControl from "@/components/admin/layout/access-control";
 import DashboardHeader from "@/components/admin/layout/dashboard-header";
 import DashboardSidebar from "@/components/admin/layout/dashboard-sidebar";
 import NoSSR from "@/components/shared/no-ssr";
@@ -27,7 +27,7 @@ export default function DashboardLayout({ children, defaultOpen }: DashboardLayo
     <QueryProvider>
       <AuthProvider>
         <TransitionProvider defaultTransition="scale">
-          <AuthGuard requireAuth={!isLoginPage} checkPermissions={!isLoginPage}>
+          <AccessControl requireAuth={!isLoginPage} checkPermissions={!isLoginPage}>
             {isLoginPage ? (
               children
             ) : (
@@ -46,7 +46,7 @@ export default function DashboardLayout({ children, defaultOpen }: DashboardLayo
                 </SidebarProvider>
               </NoSSR>
             )}
-          </AuthGuard>
+          </AccessControl>
         </TransitionProvider>
       </AuthProvider>
     </QueryProvider>
