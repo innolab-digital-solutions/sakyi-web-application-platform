@@ -22,6 +22,12 @@ export const adminBreadcrumbs: Breadcrumbs = {
     { label: "Roles & Permissions", href: PATHS.ADMIN.ROLES.LIST },
   ],
 
+  "/admin/programs": [
+    { label: "Admin Control Panel" },
+    { label: "Programs & Clients" },
+    { label: "Program Management", href: PATHS.ADMIN.PROGRAMS.LIST },
+  ],
+
   "/admin/roles/:id/assign-permissions": [
     { label: "Admin Control Panel" },
     { label: "Administration & Access Control" },
