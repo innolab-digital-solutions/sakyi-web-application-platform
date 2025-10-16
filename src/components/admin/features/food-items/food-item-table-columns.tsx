@@ -21,7 +21,7 @@ export const foodItemsTableColumns: ColumnDef<FoodItem>[] = [
   },
   {
     accessorKey: "category.name",
-    header: ({ column }) => <SortableHeader column={column}>Category</SortableHeader>,
+    header: "Category",
     cell: ({ row }) => {
       const categoryName = row.original.category?.name || "—";
       return <div className="text-muted-foreground text-sm">{categoryName}</div>;
@@ -29,7 +29,7 @@ export const foodItemsTableColumns: ColumnDef<FoodItem>[] = [
   },
   {
     accessorKey: "unit.name",
-    header: ({ column }) => <SortableHeader column={column}>Unit</SortableHeader>,
+    header: "Unit",
     cell: ({ row }) => {
       const unitName = row.original.unit?.name || "—";
       return <div className="text-muted-foreground text-sm">{unitName}</div>;
@@ -37,7 +37,7 @@ export const foodItemsTableColumns: ColumnDef<FoodItem>[] = [
   },
   {
     accessorKey: "calories_per_unit",
-    header: ({ column }) => <SortableHeader column={column}>Calories / Unit</SortableHeader>,
+    header: "Calories / Unit",
     cell: ({ row }) => {
       const calories = row.getValue("calories_per_unit") as number;
       return <div className="text-muted-foreground text-sm">{calories}</div>;

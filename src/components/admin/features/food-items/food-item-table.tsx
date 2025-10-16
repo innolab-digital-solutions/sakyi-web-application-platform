@@ -5,6 +5,7 @@ import { ENDPOINTS } from "@/config/endpoints";
 import { useTable } from "@/hooks/use-table";
 import { FoodItem } from "@/types/admin/food-item";
 
+import FoodItemFiltersDropdown from "./food-item-filters-dropdown";
 import { foodItemsTableColumns } from "./food-item-table-columns";
 
 export default function FoodItemTable() {
@@ -25,6 +26,12 @@ export default function FoodItemTable() {
       ui={{
         emptyMessage: "No food items found. Create your first food item to get started.",
         showColumnVisibility: false,
+        showToolbar: true,
+        toolbarActions: (
+          <>
+            <FoodItemFiltersDropdown isLoading={serverConfig.loading} />
+          </>
+        ),
       }}
     />
   );
