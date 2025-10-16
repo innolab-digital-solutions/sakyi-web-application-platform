@@ -25,10 +25,10 @@ interface TransitionProviderProperties {
  * @param defaultTransition - The default transition type (used for configuration)
  * @returns JSX element providing transition context
  */
-export function TransitionProvider({
+export const TransitionProvider: React.FC<TransitionProviderProperties> = ({
   children,
   defaultTransition = "fade",
-}: TransitionProviderProperties) {
+}) => {
   const [isTransitioning, setIsTransitioning] = useState(false);
 
   /**
@@ -52,7 +52,7 @@ export function TransitionProvider({
   };
 
   return <TransitionContext.Provider value={value}>{children}</TransitionContext.Provider>;
-}
+};
 
 /**
  * Hook to access the transition context.
@@ -60,7 +60,7 @@ export function TransitionProvider({
  * @returns The transition context value containing transition state and methods
  * @throws Error if used outside of a TransitionProvider
  */
-export const useTransition = () => {
+export const useTransition = (): TransitionContextValue => {
   const context = useContext(TransitionContext);
   if (context === undefined) {
     throw new Error("useTransition must be used within a TransitionProvider");
