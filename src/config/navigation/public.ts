@@ -2,10 +2,10 @@ import { PATHS } from "@/config/paths";
 import { NavItem } from "@/types/shared/navigation";
 
 /**
- * Public navigation configuration
- * Defines the sidebar navigation structure for all public routes.
+ * Public website navigation configuration
  *
- * @returns The public navigation
+ * Defines navigation structure for public-facing pages.
+ * Active states are managed at runtime by `getActivePublicNav()` utility.
  */
 export const publicNavigation: NavItem[] = [
   {
@@ -17,9 +17,8 @@ export const publicNavigation: NavItem[] = [
 
 /**
  * Footer navigation configuration
- * Defines the footer navigation structure for all public routes.
  *
- * @returns The footer navigation
+ * Links displayed in the website footer, organized by category.
  */
 export const footerNavigation = {
   company: [
