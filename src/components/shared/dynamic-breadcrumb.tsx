@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { Fragment } from "react";
+import { usePathname } from "next/navigation";
+import { Fragment, useMemo } from "react";
 
 import {
   Breadcrumb,
@@ -9,10 +10,14 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { useBreadcrumbs } from "@/hooks/use-breadcrumbs";
+import { getBreadcrumbsForPath } from "@/utils/shared/breadcrumb";
 
 export default function DynamicBreadcrumb() {
-  const breadcrumbs = useBreadcrumbs();
+  const pathname = usePathname();
+
+  const breadcrumbs = useMemo(() => {
+    return getBreadcrumbsForPath(pathname);
+  }, [pathname]);
   return (
     <Breadcrumb>
       <BreadcrumbList>

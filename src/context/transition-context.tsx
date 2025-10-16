@@ -6,8 +6,6 @@ import { TRANSITION_PRESETS } from "@/lib/transitions/presets";
 import { TransitionConfig, TransitionType } from "@/types/shared/transitions";
 
 interface TransitionContextValue {
-  currentTransition: TransitionType;
-  setTransition: (type: TransitionType) => void;
   getTransitionConfig: (type?: TransitionType) => TransitionConfig;
   isTransitioning: boolean;
   setIsTransitioning: (transitioning: boolean) => void;
@@ -21,46 +19,33 @@ interface TransitionProviderProperties {
 }
 
 /**
- * Provides transition context to child components, managing global transition state.
+ * Provides transition context to child components, managing transition state.
  *
  * @param children - React child components to be wrapped by the provider
- * @param defaultTransition - The default transition type to use (defaults to "fade")
+ * @param defaultTransition - The default transition type (used for configuration)
  * @returns JSX element providing transition context
  */
 export function TransitionProvider({
   children,
   defaultTransition = "fade",
 }: TransitionProviderProperties) {
-  const [currentTransition, setCurrentTransition] = useState<TransitionType>(defaultTransition);
   const [isTransitioning, setIsTransitioning] = useState(false);
-
-  /**
-   * Sets the current transition type.
-   *
-   * @param type - The transition type to set as current
-   */
-  const setTransition = useCallback((type: TransitionType) => {
-    setCurrentTransition(type);
-  }, []);
 
   /**
    * Retrieves the configuration for a specific transition type.
    *
-   * @param type - Optional transition type. If not provided, uses the current transition
+   * @param type - Optional transition type. If not provided, uses the default
    * @returns The transition configuration object
    */
   const getTransitionConfig = useCallback(
     (type?: TransitionType): TransitionConfig => {
-      const transitionType = type || currentTransition;
-
+      const transitionType = type || defaultTransition;
       return TRANSITION_PRESETS[transitionType];
     },
-    [currentTransition],
+    [defaultTransition],
   );
 
   const value: TransitionContextValue = {
-    currentTransition,
-    setTransition,
     getTransitionConfig,
     isTransitioning,
     setIsTransitioning,
@@ -72,7 +57,7 @@ export function TransitionProvider({
 /**
  * Hook to access the transition context.
  *
- * @returns The transition context value containing current transition state and methods
+ * @returns The transition context value containing transition state and methods
  * @throws Error if used outside of a TransitionProvider
  */
 export const useTransition = () => {
