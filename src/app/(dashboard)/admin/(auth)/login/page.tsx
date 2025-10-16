@@ -19,7 +19,7 @@ export default function LoginPage() {
                     <div className="flex h-full w-full items-center justify-center rounded-lg bg-white shadow-inner">
                       <Image
                         src="/images/logo.jpg"
-                        alt="SaKyi Health & Wellness"
+                        alt="SaKyi Health & Wellness Logo"
                         width={56}
                         height={56}
                         className="rounded-md object-cover"

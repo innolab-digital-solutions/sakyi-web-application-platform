@@ -65,7 +65,7 @@ export default function DashboardSidebar() {
                   src="/images/logo.jpg"
                   alt="logo"
                   fill
-                  className="object-cover transition-transform duration-200 hover:scale-110"
+                  className="object-cover"
                   sizes="100px"
                 />
               </div>
