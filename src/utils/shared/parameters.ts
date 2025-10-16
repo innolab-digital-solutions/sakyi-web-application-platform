@@ -125,6 +125,36 @@ export const mergeParameters = (
 };
 
 /**
+ * Appends default list parameters to a path for consistent table navigation
+ *
+ * @param path - The base path to append parameters to
+ * @param options - Optional configuration for default parameters
+ * @returns Path with default query parameters
+ */
+export const addDefaultListParameters = (
+  path: string,
+  options?: {
+    page?: number;
+    per_page?: number;
+    sort?: string;
+    direction?: "asc" | "desc";
+  },
+): string => {
+  // If path already has query parameters, return as is
+  if (path.includes("?")) {
+    return path;
+  }
+
+  const parameters = new URLSearchParams();
+  parameters.set("page", String(options?.page ?? DEFAULT_LIST_PARAMS.page));
+  parameters.set("per_page", String(options?.per_page ?? DEFAULT_LIST_PARAMS.per_page));
+  parameters.set("sort", options?.sort ?? DEFAULT_LIST_PARAMS.sort);
+  parameters.set("direction", options?.direction ?? DEFAULT_LIST_PARAMS.direction);
+
+  return `${path}?${parameters.toString()}`;
+};
+
+/**
  * Builds a URL with default list parameters while optionally preserving certain values
  *
  * @param pathname - The pathname to build the URL for

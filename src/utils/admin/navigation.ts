@@ -1,6 +1,28 @@
 import { NavGroup } from "@/types/shared/navigation";
 
 /**
+ * Checks if a path is an admin list/table page that should have default parameters
+ *
+ * @param path - The path to check
+ * @returns True if the path is an admin list page
+ */
+export const isAdminListPage = (path: string): boolean => {
+  // List pages are typically plural resources without additional segments
+  const listPagePatterns = [
+    /\/admin\/workout-categories$/,
+    /\/admin\/food-categories$/,
+    /\/admin\/units$/,
+    /\/admin\/roles$/,
+    /\/admin\/users$/,
+    /\/admin\/staff$/,
+    /\/admin\/programs$/,
+    /\/admin\/enrollments$/,
+  ];
+
+  return listPagePatterns.some((pattern) => pattern.test(path));
+};
+
+/**
  * Get the active admin navigation
  *
  * @param currentPath - The current route pathname to match against navigation items

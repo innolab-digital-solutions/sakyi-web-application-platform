@@ -3,14 +3,13 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { SortingState } from "@tanstack/react-table";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { http } from "@/lib/api/client";
 import { Pagination } from "@/types/shared/common";
 import { ListQueryParameters, SortDirection } from "@/types/shared/parameters";
 import {
   DEFAULT_LIST_PARAMS,
-  mergeParameters,
   parseListParameters,
   serializeParameters,
 } from "@/utils/shared/parameters";
@@ -25,17 +24,33 @@ interface UseTableConfig {
 /**
  * Server-side table operations hook
  */
-export function useTable<T>({ endpoint, queryKey, searchKeys = [], defaultSort }: UseTableConfig) {
+export const useTable = <T>({
+  endpoint,
+  queryKey,
+  searchKeys = [],
+  defaultSort,
+}: UseTableConfig) => {
   const searchParameters = useSearchParams();
   const pathname = usePathname();
   const router = useRouter();
   const queryClient = useQueryClient();
+
+  // Track if this is the initial mount to initialize URL parameters
+  const [isInitialMount, setIsInitialMount] = useState(true);
+
+  // Use ref to track if we're syncing from URL (avoids re-render issues)
+  const isSyncingFromUrlReference = useRef(false);
 
   // Parse URL parameters - this will update when URL changes
   const urlParameters = useMemo(
     () => parseListParameters(searchParameters, DEFAULT_LIST_PARAMS),
     [searchParameters],
   );
+
+  // Determine if URL has any query parameters at all
+  const hasUrlParameters = useMemo(() => {
+    return searchParameters?.toString().length > 0;
+  }, [searchParameters]);
 
   // Internal state for table operations
   const [pageIndex, setPageIndex] = useState(Math.max(0, (urlParameters.page ?? 1) - 1));
@@ -62,59 +77,112 @@ export function useTable<T>({ endpoint, queryKey, searchKeys = [], defaultSort }
         : [],
   );
 
-  // Sync internal state when URL changes externally (e.g., from form resets)
+  // Initialize URL parameters on mount if they don't exist
+  useEffect(() => {
+    if (isInitialMount && !hasUrlParameters) {
+      // Build initial parameters with defaults
+      const initialParameters: ListQueryParameters = {
+        page: DEFAULT_LIST_PARAMS.page,
+        per_page: DEFAULT_LIST_PARAMS.per_page,
+        sort: defaultSort?.field ?? DEFAULT_LIST_PARAMS.sort,
+        direction: (defaultSort?.direction ?? DEFAULT_LIST_PARAMS.direction) as SortDirection,
+      };
+
+      const queryString = serializeParameters(initialParameters);
+      const nextUrl = `${pathname}?${queryString}`;
+
+      // Use replace to avoid adding to browser history
+      router.replace(nextUrl, { scroll: false });
+      setIsInitialMount(false);
+    } else if (isInitialMount) {
+      // URL has parameters, just mark as initialized
+      setIsInitialMount(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isInitialMount, hasUrlParameters, pathname]);
+
+  // Sync internal state when URL changes externally (e.g., from form resets or filter changes)
   // Only update if values actually differ to prevent infinite loops
   useEffect(() => {
+    // Skip sync during initial mount to avoid conflicts
+    if (isInitialMount) return;
+
     const newPageIndex = Math.max(0, (urlParameters.page ?? 1) - 1);
     const newPageSize = urlParameters.per_page ?? DEFAULT_LIST_PARAMS.per_page;
     const newSearch = urlParameters.search ?? "";
 
-    if (pageIndex !== newPageIndex) {
-      setPageIndex(newPageIndex);
-    }
-    if (pageSize !== newPageSize) {
-      setPageSize(newPageSize);
-    }
-    if (search !== newSearch) {
-      setSearch(newSearch);
-    }
+    // Check if anything actually changed
+    const pageChanged = pageIndex !== newPageIndex;
+    const sizeChanged = pageSize !== newPageSize;
+    const searchChanged = search !== newSearch;
 
-    // Update sorting if it changed in URL
+    // Check if sorting changed
     const currentSortId = sorting[0]?.id;
     const currentSortDesc = sorting[0]?.desc;
     const urlSortId = urlParameters.sort ? String(urlParameters.sort) : defaultSort?.field;
     const urlSortDesc = urlParameters.sort
       ? (urlParameters.direction ?? DEFAULT_LIST_PARAMS.direction) === "desc"
       : defaultSort?.direction === "desc";
+    const sortingChanged = currentSortId !== urlSortId || currentSortDesc !== urlSortDesc;
 
-    // Only update sorting if it actually changed
-    if (currentSortId !== urlSortId || currentSortDesc !== urlSortDesc) {
-      if (urlParameters.sort) {
-        setSorting([
-          {
-            id: String(urlParameters.sort),
-            desc: (urlParameters.direction ?? DEFAULT_LIST_PARAMS.direction) === "desc",
-          },
-        ]);
-      } else if (defaultSort) {
-        setSorting([
-          {
-            id: defaultSort.field,
-            desc: defaultSort.direction === "desc",
-          },
-        ]);
-      } else if (sorting.length > 0) {
-        setSorting([]);
-      }
+    // If nothing changed, don't update
+    if (!pageChanged && !sizeChanged && !searchChanged && !sortingChanged) {
+      return;
     }
+
+    // Set syncing flag to prevent URL update effect from running
+    isSyncingFromUrlReference.current = true;
+
+    // Log for debugging
+    // eslint-disable-next-line no-console
+    console.log("🔄 URL changed externally, syncing state:", {
+      pageChanged,
+      newPageIndex,
+      urlParameters,
+    });
+
+    // Batch state updates in a microtask to ensure they happen together
+    Promise.resolve().then(() => {
+      if (pageChanged) {
+        setPageIndex(newPageIndex);
+      }
+      if (sizeChanged) {
+        setPageSize(newPageSize);
+      }
+      if (searchChanged) {
+        setSearch(newSearch);
+        setDebouncedSearch(newSearch);
+      }
+
+      // Update sorting if it changed
+      if (sortingChanged) {
+        if (urlParameters.sort) {
+          setSorting([
+            {
+              id: String(urlParameters.sort),
+              desc: (urlParameters.direction ?? DEFAULT_LIST_PARAMS.direction) === "desc",
+            },
+          ]);
+        } else if (defaultSort) {
+          setSorting([
+            {
+              id: defaultSort.field,
+              desc: defaultSort.direction === "desc",
+            },
+          ]);
+        } else if (sorting.length > 0) {
+          setSorting([]);
+        }
+      }
+
+      // Clear flag after updates complete
+      setTimeout(() => {
+        isSyncingFromUrlReference.current = false;
+      }, 100);
+    });
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    urlParameters.page,
-    urlParameters.per_page,
-    urlParameters.search,
-    urlParameters.sort,
-    urlParameters.direction,
-  ]);
+  }, [searchParameters?.toString()]);
 
   // Extract sort field and direction from TanStack Table sorting state
   const { sortField, sortDirection } = useMemo(() => {
@@ -132,18 +200,26 @@ export function useTable<T>({ endpoint, queryKey, searchKeys = [], defaultSort }
     };
   }, [sorting, defaultSort]);
 
-  // Build API query parameters from current state
-  const apiParameters: ListQueryParameters = useMemo(
-    () =>
-      mergeParameters(urlParameters, {
-        page: pageIndex + 1, // Convert back to 1-based for API
-        per_page: pageSize,
-        search: debouncedSearch,
-        sort: sortField,
-        direction: sortDirection as SortDirection,
-      }),
-    [urlParameters, pageIndex, pageSize, debouncedSearch, sortField, sortDirection],
-  );
+  // Build API query parameters from current internal state
+  // Don't use urlParameters here to avoid feedback loops - use internal state only
+  const apiParameters: ListQueryParameters = useMemo(() => {
+    const parameters: ListQueryParameters = {
+      page: pageIndex + 1, // Convert back to 1-based for API
+      per_page: pageSize,
+      search: debouncedSearch,
+      sort: sortField,
+      direction: sortDirection as SortDirection,
+    };
+
+    // Include any additional filter parameters from URL (like 'only', etc.)
+    for (const [key, value] of Object.entries(urlParameters)) {
+      if (!["page", "per_page", "search", "sort", "direction"].includes(key)) {
+        parameters[key] = value;
+      }
+    }
+
+    return parameters;
+  }, [pageIndex, pageSize, debouncedSearch, sortField, sortDirection, urlParameters]);
 
   const queryString = useMemo(() => serializeParameters(apiParameters), [apiParameters]);
 
@@ -176,14 +252,31 @@ export function useTable<T>({ endpoint, queryKey, searchKeys = [], defaultSort }
 
   // Synchronize URL with internal state changes (only when state changes, not when URL changes)
   useEffect(() => {
+    // Skip URL sync during initial mount - let the initialization effect handle it
+    if (isInitialMount) return;
+
+    // Skip URL sync when we're syncing state FROM the URL to prevent fighting
+    if (isSyncingFromUrlReference.current) {
+      // eslint-disable-next-line no-console
+      console.log("⏸️ Skipping URL update - currently syncing FROM URL");
+      return;
+    }
+
     const current = searchParameters?.toString() ?? "";
     // Only update URL if it's different from what our internal state represents
     if (current === queryString) return;
+
+    // eslint-disable-next-line no-console
+    console.log("📝 Updating URL from internal state:", {
+      from: current,
+      to: queryString,
+    });
+
     const nextUrl = queryString ? `${pathname}?${queryString}` : pathname;
     router.replace(nextUrl, { scroll: false });
     // searchParameters is intentionally NOT in dependencies to avoid fighting external URL changes
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [queryString, pathname, router]);
+  }, [queryString, pathname, router, isInitialMount]);
 
   const items: T[] = data?.status === "success" ? data.data : [];
 
@@ -308,4 +401,4 @@ export function useTable<T>({ endpoint, queryKey, searchKeys = [], defaultSort }
     invalidateQueries,
     resetParameters,
   };
-}
+};

@@ -1,8 +1,29 @@
 import { breadcrumbs } from "@/config/breadcrumbs";
 import { BreadcrumbItem } from "@/types/shared/breadcrumb";
+import { isAdminListPage } from "@/utils/admin/navigation";
+
+import { addDefaultListParameters } from "./parameters";
 
 // Create a secure Map for breadcrumb access
 const breadcrumbMap = new Map(Object.entries(breadcrumbs));
+
+/**
+ * Adds default list parameters to breadcrumb hrefs for admin list pages
+ *
+ * @param items - Breadcrumb items to process
+ * @returns Breadcrumb items with default parameters added to list page hrefs
+ */
+const addParametersToListPages = (items: BreadcrumbItem[]): BreadcrumbItem[] => {
+  return items.map((item) => {
+    if (item.href && isAdminListPage(item.href)) {
+      return {
+        ...item,
+        href: addDefaultListParameters(item.href),
+      };
+    }
+    return item;
+  });
+};
 
 /**
  * Retrieves breadcrumb items for a given pathname.
@@ -20,7 +41,7 @@ export const getBreadcrumbsForPath = (pathname: string): BreadcrumbItem[] => {
 
   const exactMatch = getBreadcrumbs(sanitizedPath);
   if (exactMatch) {
-    return exactMatch;
+    return addParametersToListPages(exactMatch);
   }
 
   const dynamicRoutes = getDynamicRoutes();
@@ -31,7 +52,7 @@ export const getBreadcrumbsForPath = (pathname: string): BreadcrumbItem[] => {
       const routeConfig = getBreadcrumbs(route);
 
       if (routeConfig && id) {
-        return replacePlaceholders(routeConfig, id);
+        return addParametersToListPages(replacePlaceholders(routeConfig, id));
       }
     }
   }
