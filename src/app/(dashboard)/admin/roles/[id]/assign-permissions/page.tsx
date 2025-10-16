@@ -30,7 +30,7 @@ export default function RolePermissionsAssignmentPage({
   });
 
   return (
-    <>
+    <div className="flex flex-col gap-2">
       <PageHeader
         icon={ShieldCheck}
         title="Assign Permissions"
@@ -51,6 +51,6 @@ export default function RolePermissionsAssignmentPage({
       <div className="w-full rounded-md border border-gray-200 p-5">
         <AssignPermissionsForm role={data?.data as Role} />
       </div>
-    </>
+    </div>
   );
 }

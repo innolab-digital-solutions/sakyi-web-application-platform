@@ -2,7 +2,7 @@ import { Home } from "lucide-react";
 
 import { ErrorPage } from "@/components/shared/error-page";
 
-export default function NotFound() {
+export default function PublicNotFound() {
   return (
     <ErrorPage
       code="404 Not Found"
