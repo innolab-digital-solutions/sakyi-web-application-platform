@@ -1,15 +1,13 @@
 import { Permission } from "@/types/admin/permission";
 
 /**
- * Combines multiple permission maps into a single consolidated map.
+ * Combines multiple permission maps into a single consolidated map
  *
- * This utility function takes either a single permission object or an array of permission objects
- * and merges them into a unified permission structure. When multiple permissions contain the same
- * module key, their actions are merged together, with later permissions overriding earlier ones
- * for duplicate action keys.
+ * Merges permission objects, with later permissions overriding earlier
+ * ones for duplicate module/action keys.
  *
- * @param permissions - Single permission object or array of permission objects to combine
- * @returns A consolidated record where keys are module names and values are action maps
+ * @param permissions - Permission object(s) to combine
+ * @returns Consolidated permission map (module → actions)
  */
 export const combinePermissions = (
   permissions: Permission | Permission[],
@@ -33,13 +31,10 @@ export const combinePermissions = (
 };
 
 /**
- * Gets the count of unique permission modules.
+ * Gets count of unique permission modules
  *
- * Calculates the total number of distinct permission modules across all provided
- * permissions. This is useful for determining the scope of a role's access.
- *
- * @param permissions - Single permission object or array of permission objects
- * @returns The number of unique permission modules
+ * @param permissions - Permission object(s) to count
+ * @returns Number of unique modules
  */
 export const getPermissionModuleCount = (permissions: Permission | Permission[]): number => {
   const combinedModules = combinePermissions(permissions);
@@ -47,13 +42,10 @@ export const getPermissionModuleCount = (permissions: Permission | Permission[])
 };
 
 /**
- * Gets permission module names for display purposes.
+ * Gets permission module names
  *
- * Extracts all unique module names from the provided permissions. This is commonly
- * used for generating UI elements like permission lists or access summaries.
- *
- * @param permissions - Single permission object or array of permission objects
- * @returns Array of module names sorted alphabetically
+ * @param permissions - Permission object(s) to extract from
+ * @returns Array of module names
  */
 export const getPermissionModuleNames = (permissions: Permission | Permission[]): string[] => {
   const combinedModules = combinePermissions(permissions);
@@ -61,14 +53,11 @@ export const getPermissionModuleNames = (permissions: Permission | Permission[])
 };
 
 /**
- * Gets all available actions for a specific permission module.
+ * Gets all actions for a specific module
  *
- * Retrieves the action keys for a given module from the combined permissions.
- * Returns an empty array if the module doesn't exist in the permissions.
- *
- * @param permissions - Single permission object or array of permission objects
- * @param moduleKey - The module identifier to get actions for
- * @returns Array of action keys for the specified module
+ * @param permissions - Permission object(s) to search
+ * @param moduleKey - Module identifier
+ * @returns Array of action keys, empty if module not found
  */
 export const getModuleActions = (
   permissions: Permission | Permission[],
@@ -79,29 +68,24 @@ export const getModuleActions = (
 };
 
 /**
- * Checks if the provided permissions contain any accessible modules.
+ * Checks if permissions contain any modules
  *
- * Determines whether a role or user has at least one permission module assigned.
- * This is useful for conditional rendering and access control logic.
- *
- * @param permissions - Single permission object or array of permission objects
- * @returns True if any permissions exist, false otherwise
+ * @param permissions - Permission object(s) to check
+ * @returns True if any permissions exist
  */
 export const hasAnyPermissions = (permissions: Permission | Permission[]): boolean => {
   return getPermissionModuleCount(permissions) > 0;
 };
 
-// eslint-disable-next-line no-commented-code/no-commented-code
 /**
- * Checks if a specific permission exists in the provided permissions.
+ * Checks if specific permission exists
  *
- * Searches through all modules and actions to find a specific permission by its action value.
- * This is useful for authorization checks where you need to verify if a role/user has
- * a specific permission like roles.view, programs.create, etc.
+ * Searches for a permission action string (e.g., "roles.view") across
+ * all modules and actions.
  *
- * @param permissions - Single permission object or array of permission objects
- * @param permissionAction - The permission action to check for (e.g., roles.view, programs.create)
- * @returns True if the permission exists, false otherwise
+ * @param permissions - Permission object(s) to search
+ * @param permissionAction - Permission to check (e.g., "roles.view")
+ * @returns True if permission exists
  */
 export const hasPermission = (
   permissions: Permission | Permission[],
@@ -119,30 +103,33 @@ export const hasPermission = (
 };
 
 /**
- * Checks if a user has a specific permission.
+ * Checks if user has a specific permission
  *
- * This function determines whether the provided user permissions object contains
- * the specified permission string (e.g., "staffs.view"). It supports both single
- * Permission objects and arrays of Permission objects, but only checks the first
- * Permission object if an array is provided.
+ * Primary permission checking function used throughout the application.
+ * Parses permission string (e.g., "staffs.view") and validates against
+ * user's permission structure.
  *
- * @param userPermissions - The user's permissions object or undefined
- * @param permission - The permission string to check (e.g., "staffs.view")
- * @returns True if the user has the specified permission, false otherwise
+ * @param userPermissions - User's permission object
+ * @param permission - Permission string to check (format: "module.action")
+ * @returns True if user has the permission
+ *
+ * @example
+ * ```ts
+ * can(user.permissions, "roles.view")  // true if user can view roles
+ * can(user.permissions, "roles.create") // true if user can create roles
+ * ```
  */
 export const can = (userPermissions: Permission | undefined, permission: string): boolean => {
   if (!userPermissions) return false;
 
-  // Handle both single Permission object and array of Permission objects
+  // Handle array of permissions (use first object)
   const permissions = Array.isArray(userPermissions) ? userPermissions[0] : userPermissions;
 
   if (!permissions) return false;
 
-  // Split permission string (e.g., 'staffs.view' -> ['staffs', 'view'])
   const [module, action] = permission.split(".");
 
   if (!module || !action) return false;
 
-  // Check if the module exists and has the specific action
   return permissions[module]?.[action] === permission;
 };

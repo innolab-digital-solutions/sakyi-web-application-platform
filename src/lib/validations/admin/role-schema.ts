@@ -1,5 +1,11 @@
 import { z } from "zod";
 
+/**
+ * Validation schema for role creation/update
+ *
+ * Validates role name with trimming and whitespace-only prevention.
+ * Description is optional and automatically trimmed.
+ */
 export const RoleSchema = z.object({
   name: z
     .string()
@@ -13,6 +19,9 @@ export const RoleSchema = z.object({
     .transform((value) => value?.trim() || undefined),
 });
 
+/**
+ * Validation schema for assigning permissions to a role
+ */
 export const AssignPermissionsSchema = z.object({
   permissions: z.array(z.string()).optional().default([]),
 });

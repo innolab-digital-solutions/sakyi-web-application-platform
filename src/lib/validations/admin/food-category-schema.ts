@@ -1,5 +1,11 @@
 import { z } from "zod";
 
+/**
+ * Validation schema for food category creation
+ *
+ * Supports hierarchical categories with optional parent_id.
+ * Parent can be string (from form select) or number (from API).
+ */
 export const CreateFoodCategorySchema = z.object({
   parent_id: z.string().or(z.number()).optional().nullable(),
   name: z
@@ -14,9 +20,14 @@ export const CreateFoodCategorySchema = z.object({
     .transform((value) => value?.trim() || undefined),
 });
 
-export type CreateFoodCategoryFormData = z.infer<typeof CreateFoodCategorySchema>;
-export type UpdateFoodCategoryFormData = z.infer<typeof CreateFoodCategorySchema>;
-
+/**
+ * Validation schema for food category updates
+ *
+ * Extends create schema with stricter parent_id type (number from API).
+ */
 export const UpdateFoodCategorySchema = CreateFoodCategorySchema.extend({
-  parent_id: z.number().nullable().optional(), // null if root category
+  parent_id: z.number().nullable().optional(),
 });
+
+export type CreateFoodCategoryFormData = z.infer<typeof CreateFoodCategorySchema>;
+export type UpdateFoodCategoryFormData = z.infer<typeof UpdateFoodCategorySchema>;
