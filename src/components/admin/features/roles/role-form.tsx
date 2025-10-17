@@ -118,6 +118,7 @@ export default function RoleForm({
       submitLabel={isEdit ? "Save Changes" : "Create Role"}
       submittingLabel={isEdit ? "Saving Changes..." : "Creating Role..."}
     >
+      {/* Name Field */}
       <InputField
         id="name"
         name="name"
@@ -131,6 +132,7 @@ export default function RoleForm({
         disabled={form.processing}
       />
 
+      {/* Description Field */}
       <TextareaField
         id="description"
         name="description"

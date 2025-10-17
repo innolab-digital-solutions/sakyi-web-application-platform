@@ -109,6 +109,7 @@ export default function UnitForm({
       submitLabel={isEdit ? "Save Changes" : "Create Unit"}
       submittingLabel={isEdit ? "Saving Changes..." : "Creating Unit..."}
     >
+      {/* Name Field */}
       <InputField
         id="name"
         name="name"
@@ -122,6 +123,7 @@ export default function UnitForm({
         disabled={form.processing}
       />
 
+      {/* Abbreviation Field */}
       <InputField
         id="abbreviation"
         name="abbreviation"

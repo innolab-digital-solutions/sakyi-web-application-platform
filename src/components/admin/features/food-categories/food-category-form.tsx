@@ -129,6 +129,7 @@ export default function FoodCategoryForm({
       submitLabel={isEdit ? "Save Changes" : "Create Food Category"}
       submittingLabel={isEdit ? "Saving Changes..." : "Creating Food Category..."}
     >
+      {/* Parent Category Field */}
       <ComboBoxField
         id="parent_id"
         name="parent_id"
@@ -155,6 +156,7 @@ export default function FoodCategoryForm({
         allowClear
       />
 
+      {/* Name Field */}
       <InputField
         id="name"
         name="name"
@@ -168,6 +170,7 @@ export default function FoodCategoryForm({
         disabled={form.processing}
       />
 
+      {/* Description Field */}
       <TextareaField
         id="description"
         name="description"

@@ -136,6 +136,7 @@ export default function WorkoutCategoryForm({
       submitLabel={isEdit ? "Save Changes" : "Create Workout Category"}
       submittingLabel={isEdit ? "Saving Changes..." : "Creating Workout Category..."}
     >
+      {/* Parent Category Field */}
       <ComboBoxField
         id="parent_id"
         name="parent_id"
@@ -166,6 +167,7 @@ export default function WorkoutCategoryForm({
         allowClear
       />
 
+      {/* Name Field */}
       <InputField
         id="name"
         name="name"
@@ -179,6 +181,7 @@ export default function WorkoutCategoryForm({
         disabled={form.processing}
       />
 
+      {/* Description Field */}
       <TextareaField
         id="description"
         name="description"

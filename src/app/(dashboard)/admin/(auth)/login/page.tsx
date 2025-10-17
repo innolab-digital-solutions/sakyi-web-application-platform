@@ -15,6 +15,7 @@ export default function LoginPage() {
       <div className="relative z-10 mx-auto w-full max-w-6xl">
         <Card className="overflow-hidden rounded-lg border-0 bg-white/95 p-0 shadow-lg backdrop-blur-xl">
           <div className="grid min-h-[600px] grid-cols-1 lg:grid-cols-2">
+            {/* Login Form Logo and Title Section (Left Side) */}
             <div className="from-primary/90 via-primary to-accent/90 relative hidden flex-col items-center justify-center overflow-hidden bg-gradient-to-br p-8 text-white lg:flex lg:p-12">
               <div className="relative z-10 space-y-10 text-center">
                 <div className="flex justify-center">
@@ -51,6 +52,7 @@ export default function LoginPage() {
               </div>
             </div>
 
+            {/* Login Form Input Section (Right Side) */}
             <div className="flex flex-col justify-center p-8 lg:p-12">
               <LoginForm />
             </div>

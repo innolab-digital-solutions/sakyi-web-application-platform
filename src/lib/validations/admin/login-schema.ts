@@ -18,7 +18,6 @@ export const LoginSchema = z.object({
     .string()
     .min(1, "Password is required")
     .min(6, "Password must be at least 6 characters long"),
-  device_type: z.string(),
 });
 
 /**
