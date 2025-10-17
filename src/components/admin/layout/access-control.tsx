@@ -4,8 +4,8 @@ import { ArrowLeft } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
+import { LoadingScreen } from "@/components/admin/shared/loading-screen";
 import { ErrorPage } from "@/components/shared/error-page";
-import { LoadingScreen } from "@/components/shared/loading-screen";
 import { adminNavigation } from "@/config/navigation";
 import { PATHS } from "@/config/paths";
 import { useAuth } from "@/context/auth-context";

@@ -5,7 +5,7 @@ import Link from "next/link";
 import React from "react";
 
 import AssignPermissionsForm from "@/components/admin/features/roles/assign-permissions-form";
-import PageHeader from "@/components/shared/page-header";
+import PageHeader from "@/components/admin/shared/page-header";
 import { Button } from "@/components/ui/button";
 import { ENDPOINTS } from "@/config/endpoints";
 import { PATHS } from "@/config/paths";

@@ -2,31 +2,19 @@
 
 import React from "react";
 
-import DataTable from "@/components/shared/table/data-table";
+import FoodCategoryFiltersDropdown from "@/components/admin/features/food-categories/food-category-filters-dropdown";
+import { foodCategoriesTableColumns } from "@/components/admin/features/food-categories/food-category-table-columns";
+import ResourceTable from "@/components/admin/shared/resource-table";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ENDPOINTS } from "@/config/endpoints";
-import { useTable } from "@/hooks/use-table";
 import { FoodCategory } from "@/types/admin/food-category";
 
-import FoodCategoryFiltersDropdown from "./food-category-filters-dropdown";
-import { foodCategoriesTableColumns } from "./food-category-table-columns";
-
 export default function FoodCategoryTable() {
-  const { data, searchConfig, paginationConfig, sortingConfig, serverConfig } =
-    useTable<FoodCategory>({
-      endpoint: ENDPOINTS.ADMIN.FOOD_CATEGORIES.INDEX,
-      queryKey: ["admin-food-categories"],
-      defaultSort: { field: "id", direction: "desc" },
-    });
-
   return (
-    <DataTable
+    <ResourceTable<FoodCategory>
+      endpoint={ENDPOINTS.ADMIN.FOOD_CATEGORIES.INDEX}
+      queryKey={["admin-food-categories"]}
       columns={foodCategoriesTableColumns}
-      data={data}
-      search={searchConfig}
-      pagination={paginationConfig}
-      sorting={sortingConfig}
-      server={serverConfig}
       skeleton={{
         customSkeletons: {
           name: (
@@ -46,16 +34,8 @@ export default function FoodCategoryTable() {
           ),
         },
       }}
-      ui={{
-        emptyMessage: "No food categories found. Create your first food category to get started.",
-        showColumnVisibility: false,
-        showToolbar: true,
-        toolbarActions: (
-          <>
-            <FoodCategoryFiltersDropdown isLoading={serverConfig.loading} />
-          </>
-        ),
-      }}
+      emptyMessage="No food categories found. Create your first food category to get started."
+      filters={<FoodCategoryFiltersDropdown isLoading={false} />}
     />
   );
 }

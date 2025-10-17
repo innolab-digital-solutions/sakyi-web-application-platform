@@ -4,28 +4,17 @@ import React from "react";
 
 import WorkoutCategoryFiltersDropdown from "@/components/admin/features/workout-categories/workout-category-filters-dropdown";
 import { workoutCategoryTableColumns } from "@/components/admin/features/workout-categories/workout-category-table-columns";
-import DataTable from "@/components/shared/table/data-table";
+import ResourceTable from "@/components/admin/shared/resource-table";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ENDPOINTS } from "@/config/endpoints";
-import { useTable } from "@/hooks/use-table";
 import { WorkoutCategory } from "@/types/admin/workout-category";
 
 export default function WorkoutCategoryTable() {
-  const { data, searchConfig, paginationConfig, sortingConfig, serverConfig } =
-    useTable<WorkoutCategory>({
-      endpoint: ENDPOINTS.ADMIN.WORKOUT_CATEGORIES.INDEX,
-      queryKey: ["admin-workout-categories"],
-      defaultSort: { field: "id", direction: "desc" },
-    });
-
   return (
-    <DataTable
+    <ResourceTable<WorkoutCategory>
+      endpoint={ENDPOINTS.ADMIN.WORKOUT_CATEGORIES.INDEX}
+      queryKey={["admin-workout-categories"]}
       columns={workoutCategoryTableColumns}
-      data={data}
-      search={searchConfig}
-      pagination={paginationConfig}
-      sorting={sortingConfig}
-      server={serverConfig}
       skeleton={{
         customSkeletons: {
           name: (
@@ -45,17 +34,8 @@ export default function WorkoutCategoryTable() {
           ),
         },
       }}
-      ui={{
-        emptyMessage:
-          "No workout categories found. Create your first workout category to get started.",
-        showColumnVisibility: false,
-        showToolbar: true,
-        toolbarActions: (
-          <>
-            <WorkoutCategoryFiltersDropdown isLoading={serverConfig.loading} />
-          </>
-        ),
-      }}
+      emptyMessage="No workout categories found. Create your first workout category to get started."
+      filters={<WorkoutCategoryFiltersDropdown isLoading={false} />}
     />
   );
 }
