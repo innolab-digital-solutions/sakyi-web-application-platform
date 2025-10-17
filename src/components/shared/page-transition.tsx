@@ -14,12 +14,6 @@ interface PageTransitionProperties {
   className?: string;
 }
 
-/**
- * Page transition wrapper component
- *
- * Wraps page content with Framer Motion animations for smooth transitions
- * between routes. Tracks transition state in context.
- */
 export default function PageTransition({
   children,
   transitionType,
@@ -31,7 +25,6 @@ export default function PageTransition({
   const config = getTransitionConfig(transitionType);
   const variants = getTransitionVariants(config);
 
-  // Track transition state for loading indicators
   useEffect(() => {
     setIsTransitioning(true);
     const timer = setTimeout(() => {

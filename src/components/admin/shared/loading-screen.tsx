@@ -1,21 +1,12 @@
 import { Spinner } from "@/components/ui/spinner";
 
-interface LoadingScreenProperties {
-  /**
-   * Main title to display
-   */
+export default function LoadingScreen({
+  title,
+  description,
+}: {
   title: string;
-  /**
-   * Description text below the title
-   */
   description: string;
-}
-
-/**
- * Shared loading screen component for authentication and permission checks
- * Provides consistent loading UI with animated spinner and progress bar
- */
-export function LoadingScreen({ title, description }: LoadingScreenProperties) {
+}) {
   return (
     <div className="flex min-h-screen w-full items-center justify-center bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-6">
       <div className="relative">

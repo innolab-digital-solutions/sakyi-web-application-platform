@@ -1,5 +1,3 @@
-"use client";
-
 import { unitsTableColumns } from "@/components/admin/features/units/unit-table-columns";
 import ResourceTable from "@/components/admin/shared/resource-table";
 import { Skeleton } from "@/components/ui/skeleton";

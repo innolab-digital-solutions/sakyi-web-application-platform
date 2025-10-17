@@ -1,4 +1,4 @@
-import { FileQuestionMark, Trash2 } from "lucide-react";
+import { Trash2, TriangleAlert } from "lucide-react";
 import React, { useState } from "react";
 import { toast } from "sonner";
 
@@ -59,9 +59,9 @@ export default function FoodCategoryDeletionDialog({
       </Button>
 
       <ConfirmationDialog
-        title="Delete Food Category Confirmation"
-        description={`Permanently delete the role "${foodCategory.name}"? This action cannot be undone.`}
-        icon={FileQuestionMark}
+        title="Delete Food Category"
+        description={`Permanently delete the food category "${foodCategory.name}"? This action cannot be undone.`}
+        icon={TriangleAlert}
         variant="destructive"
         confirmText="Yes, Delete It"
         cancelText="No, Keep It"

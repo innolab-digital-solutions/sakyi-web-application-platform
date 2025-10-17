@@ -1,5 +1,3 @@
-"use client";
-
 import React from "react";
 
 import FoodCategoryFiltersDropdown from "@/components/admin/features/food-categories/food-category-filters-dropdown";

@@ -1,5 +1,3 @@
-"use client";
-
 import { rolesTableColumns } from "@/components/admin/features/roles/role-table-columns";
 import ResourceTable from "@/components/admin/shared/resource-table";
 import { Skeleton } from "@/components/ui/skeleton";

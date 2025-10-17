@@ -1,9 +1,7 @@
-"use client";
-
 import { Home, RefreshCw } from "lucide-react";
-import { useEffect } from "react";
 
 import { ErrorPage } from "@/components/shared/error-page";
+import { PATHS } from "@/config/paths";
 
 export default function PublicError({
   error,
@@ -12,10 +10,6 @@ export default function PublicError({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
-  useEffect(() => {
-    console.error("Public route error:", error);
-  }, [error]);
-
   return (
     <ErrorPage
       code="Error"
@@ -31,8 +25,8 @@ export default function PublicError({
           variant: "default",
         },
         {
-          label: "Go Home",
-          href: "/",
+          label: "Go to Home",
+          href: PATHS.PUBLIC.HOME,
           icon: Home,
           variant: "outline",
         },

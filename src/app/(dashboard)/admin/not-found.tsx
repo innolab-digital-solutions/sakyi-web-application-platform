@@ -1,4 +1,4 @@
-import { ArrowLeft, Home } from "lucide-react";
+import { ArrowLeft, LayoutDashboard } from "lucide-react";
 
 import { ErrorPage } from "@/components/shared/error-page";
 import { PATHS } from "@/config/paths";
@@ -19,10 +19,10 @@ export default function AdminNotFound() {
           variant: "outline",
         },
         {
-          label: "Dashboard",
+          label: "Go to Dashboard",
           href: PATHS.ADMIN.OVERVIEW,
-          icon: Home,
-          variant: "default",
+          icon: LayoutDashboard,
+          variant: "outline",
         },
       ]}
     />

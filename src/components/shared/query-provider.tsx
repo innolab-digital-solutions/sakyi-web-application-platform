@@ -4,39 +4,27 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { useState } from "react";
 
-interface QueryProviderProperties {
-  children: React.ReactNode;
-}
-
-export function QueryProvider({ children }: QueryProviderProperties) {
+export default function QueryProvider({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(
     () =>
       new QueryClient({
         defaultOptions: {
           queries: {
-            // Stale time - how long data is considered fresh
-            staleTime: 5 * 60 * 1000, // 5 minutes
-            // Cache time - how long inactive data stays in cache
-            gcTime: 10 * 60 * 1000, // 10 minutes (was cacheTime in v4)
-            // Retry failed requests
+            staleTime: 5 * 60 * 1000,
+            gcTime: 10 * 60 * 1000,
             retry: (failureCount, error: unknown) => {
-              // Don't retry on 4xx errors (client errors)
               if (error && typeof error === "object" && "status" in error) {
                 const status = (error as { status: number }).status;
                 if (status >= 400 && status < 500) {
                   return false;
                 }
               }
-              // Retry up to 3 times for other errors
               return failureCount < 3;
             },
-            // Refetch on window focus for important data
             refetchOnWindowFocus: false,
-            // Don't refetch on reconnect by default
             refetchOnReconnect: true,
           },
           mutations: {
-            // Global mutation settings
             retry: 1,
           },
         },

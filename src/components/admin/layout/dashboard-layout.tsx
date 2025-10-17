@@ -8,18 +8,19 @@ import DashboardHeader from "@/components/admin/layout/dashboard-header";
 import DashboardSidebar from "@/components/admin/layout/dashboard-sidebar";
 import NoSSR from "@/components/shared/no-ssr";
 import PageTransition from "@/components/shared/page-transition";
-import { QueryProvider } from "@/components/shared/query-provider";
+import QueryProvider from "@/components/shared/query-provider";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { PATHS } from "@/config/paths";
 import { AuthProvider } from "@/context/auth-context";
 import { TransitionProvider } from "@/context/transition-context";
 
-interface DashboardLayoutProperties {
+export default function DashboardLayout({
+  children,
+  defaultOpen,
+}: {
   children: React.ReactNode;
   defaultOpen: boolean;
-}
-
-export default function DashboardLayout({ children, defaultOpen }: DashboardLayoutProperties) {
+}) {
   const pathname = usePathname();
   const isLoginPage = pathname === PATHS.ADMIN.LOGIN;
 

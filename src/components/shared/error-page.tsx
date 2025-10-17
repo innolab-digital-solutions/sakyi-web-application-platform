@@ -14,47 +14,19 @@ interface ErrorPageAction {
 }
 
 interface ErrorPageProperties {
-  /**
-   * Error code to display in badge (e.g., "403", "404", "500")
-   */
   code: string;
-  /**
-   * Path to error illustration image
-   */
   imageSrc: string;
-  /**
-   * Alt text for the image
-   */
   imageAlt: string;
-  /**
-   * Main error title
-   */
   title: string;
-  /**
-   * Primary description of the error
-   */
   description: string;
-  /**
-   * Optional secondary message or suggestion
-   */
   suggestion?: string;
-  /**
-   * Actions to display (buttons)
-   */
   actions: ErrorPageAction[];
-  /**
-   * Optional technical details (shown only in development)
-   */
   technicalDetails?: {
     message?: string;
     digest?: string;
   };
 }
 
-/**
- * Shared error page component for 403, 404, 500, and other error states
- * Provides consistent UI across all error scenarios
- */
 export function ErrorPage({
   code,
   imageSrc,

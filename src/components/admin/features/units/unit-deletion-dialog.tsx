@@ -1,4 +1,4 @@
-import { FileQuestionMark, Trash2 } from "lucide-react";
+import { Trash2, TriangleAlert } from "lucide-react";
 import React, { useState } from "react";
 import { toast } from "sonner";
 
@@ -55,9 +55,9 @@ export default function UnitDeletionDialog({ unit, className }: UnitDeletionDial
       </Button>
 
       <ConfirmationDialog
-        title="Delete Unit Confirmation"
+        title="Delete Unit"
         description={`Permanently delete the unit "${unit.name}"? This action cannot be undone.`}
-        icon={FileQuestionMark}
+        icon={TriangleAlert}
         variant="destructive"
         confirmText="Yes, Delete It"
         cancelText="No, Keep It"

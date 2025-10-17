@@ -12,15 +12,13 @@ import { PATHS } from "@/config/paths";
 import { useRequest } from "@/hooks/use-request";
 import { Role } from "@/types/admin/role";
 
-interface RolePermissionsAssignmentPageProperties {
+export default function RolePermissionsAssignmentPage({
+  params,
+}: {
   params: Promise<{
     id: string;
   }>;
-}
-
-export default function RolePermissionsAssignmentPage({
-  params,
-}: RolePermissionsAssignmentPageProperties) {
+}) {
   const resolvedParameters = React.use(params);
 
   const { data } = useRequest({

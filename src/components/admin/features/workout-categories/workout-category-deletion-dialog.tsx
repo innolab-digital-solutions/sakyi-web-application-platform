@@ -1,4 +1,4 @@
-import { FileQuestionMark, Trash2 } from "lucide-react";
+import { Trash2, TriangleAlert } from "lucide-react";
 import React, { useState } from "react";
 import { toast } from "sonner";
 
@@ -59,9 +59,9 @@ export default function WorkoutCategoryDeletionDialog({
       </Button>
 
       <ConfirmationDialog
-        title="Delete Workout Category Confirmation"
+        title="Delete Workout Category"
         description={`Permanently delete the workout category "${workoutCategory.name}"? This action cannot be undone.`}
-        icon={FileQuestionMark}
+        icon={TriangleAlert}
         variant="destructive"
         confirmText="Yes, Delete It"
         cancelText="No, Keep It"

@@ -1,4 +1,4 @@
-import { FileQuestionMark, Trash2 } from "lucide-react";
+import { Trash2, TriangleAlert } from "lucide-react";
 import React, { useState } from "react";
 import { toast } from "sonner";
 
@@ -52,9 +52,9 @@ export default function RoleDeletionDialog({ role, className }: RoleDeletionDial
       </Button>
 
       <ConfirmationDialog
-        title="Delete Role Confirmation"
+        title="Delete Role"
         description={`Permanently delete the role "${role.name}"? This action cannot be undone.`}
-        icon={FileQuestionMark}
+        icon={TriangleAlert}
         variant="destructive"
         confirmText="Yes, Delete It"
         cancelText="No, Keep It"

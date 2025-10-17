@@ -1,7 +1,6 @@
 "use client";
 
-import { Home, RefreshCw } from "lucide-react";
-import { useEffect } from "react";
+import { LayoutDashboard, RefreshCw } from "lucide-react";
 
 import { ErrorPage } from "@/components/shared/error-page";
 import { PATHS } from "@/config/paths";
@@ -13,11 +12,7 @@ export default function AdminError({
   error: Error & { digest?: string; statusCode?: number };
   reset: () => void;
 }) {
-  useEffect(() => {
-    console.error("Admin error:", error);
-  }, [error]);
-
-  // Determine error type
+  // Determine error type and configure error display
   const errorMessage = error.message || "";
   const statusCode = error.statusCode || 500;
 
@@ -72,9 +67,9 @@ export default function AdminError({
           variant: "default",
         },
         {
-          label: "Dashboard",
+          label: "Go to Dashboard",
           href: PATHS.ADMIN.OVERVIEW,
-          icon: Home,
+          icon: LayoutDashboard,
           variant: "outline",
         },
       ]}
