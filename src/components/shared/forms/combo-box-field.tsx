@@ -140,7 +140,7 @@ export const ComboBoxField = forwardRef<HTMLButtonElement, ComboBoxFieldProperti
             </Button>
           </PopoverTrigger>
           <PopoverContent
-            className={cn("!w-[var(--radix-popover-trigger-width)] w-full p-0", popoverClassName)}
+            className={cn("!w-[var(--radix-popover-trigger-width)] p-0", popoverClassName)}
             align="start"
             sideOffset={4}
             style={{ minWidth: "100%" }}
