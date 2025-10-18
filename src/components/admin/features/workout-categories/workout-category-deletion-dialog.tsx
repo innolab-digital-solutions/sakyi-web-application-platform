@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { ENDPOINTS } from "@/config/endpoints";
 import { useRequest } from "@/hooks/use-request";
 import { WorkoutCategory } from "@/types/admin/workout-category";
+import { ApiResponse } from "@/types/shared/api";
 import { cn } from "@/utils/shared/cn";
 
 interface WorkoutCategoryDeletionDialogProperties {
@@ -30,6 +31,22 @@ export default function WorkoutCategoryDeletionDialog({
         invalidateQueries: ["admin-workout-categories"],
         mutationOptions: {
           onSuccess: () => {
+            // Optimistic cache update - remove the deleted workout category from the list
+            request.queryCache.setQueryData<ApiResponse<WorkoutCategory[]> | undefined>(
+              ["admin-workout-categories"],
+              (previous) => {
+                if (!previous || previous.status !== "success" || !Array.isArray(previous.data)) {
+                  return previous;
+                }
+
+                return {
+                  ...previous,
+                  data: previous.data.filter((wc) => wc.id !== workoutCategory.id),
+                } as ApiResponse<WorkoutCategory[]>;
+              },
+              { all: true },
+            );
+
             closeDeleteDialog();
             toast.success("Workout category deleted successfully.");
           },

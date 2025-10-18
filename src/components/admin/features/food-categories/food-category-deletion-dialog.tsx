@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { ENDPOINTS } from "@/config/endpoints";
 import { useRequest } from "@/hooks/use-request";
 import { FoodCategory } from "@/types/admin/food-category";
+import { ApiResponse } from "@/types/shared/api";
 import { cn } from "@/utils/shared/cn";
 
 interface FoodCategoryDeletionDialogProperties {
@@ -30,6 +31,22 @@ export default function FoodCategoryDeletionDialog({
         invalidateQueries: ["admin-food-categories"],
         mutationOptions: {
           onSuccess: () => {
+            // Optimistic cache update - remove the deleted food category from the list
+            request.queryCache.setQueryData<ApiResponse<FoodCategory[]> | undefined>(
+              ["admin-food-categories"],
+              (previous) => {
+                if (!previous || previous.status !== "success" || !Array.isArray(previous.data)) {
+                  return previous;
+                }
+
+                return {
+                  ...previous,
+                  data: previous.data.filter((fc) => fc.id !== foodCategory.id),
+                } as ApiResponse<FoodCategory[]>;
+              },
+              { all: true },
+            );
+
             closeDeleteDialog();
             toast.success("Food category deleted successfully.");
           },

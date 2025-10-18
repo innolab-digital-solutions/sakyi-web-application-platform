@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { ENDPOINTS } from "@/config/endpoints";
 import { useRequest } from "@/hooks/use-request";
 import { Unit } from "@/types/admin/unit";
+import { ApiResponse } from "@/types/shared/api";
 import { cn } from "@/utils/shared/cn";
 
 interface UnitDeletionDialogProperties {
@@ -26,6 +27,22 @@ export default function UnitDeletionDialog({ unit, className }: UnitDeletionDial
         invalidateQueries: ["admin-units"],
         mutationOptions: {
           onSuccess: () => {
+            // Optimistic cache update - remove the deleted unit from the list
+            request.queryCache.setQueryData<ApiResponse<Unit[]> | undefined>(
+              ["admin-units"],
+              (previous) => {
+                if (!previous || previous.status !== "success" || !Array.isArray(previous.data)) {
+                  return previous;
+                }
+
+                return {
+                  ...previous,
+                  data: previous.data.filter((u) => u.id !== unit.id),
+                } as ApiResponse<Unit[]>;
+              },
+              { all: true },
+            );
+
             closeDeleteDialog();
             toast.success("Unit deleted successfully.");
           },

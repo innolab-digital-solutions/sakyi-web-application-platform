@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { ENDPOINTS } from "@/config/endpoints";
 import { useRequest } from "@/hooks/use-request";
 import { Role } from "@/types/admin/role";
+import { ApiResponse } from "@/types/shared/api";
 
 interface RoleDeletionDialogProperties {
   role: Role;
@@ -26,6 +27,22 @@ export default function RoleDeletionDialog({ role, className }: RoleDeletionDial
         invalidateQueries: ["admin-roles"],
         mutationOptions: {
           onSuccess: () => {
+            // Optimistic cache update - remove the deleted role from the list
+            request.queryCache.setQueryData<ApiResponse<Role[]> | undefined>(
+              ["admin-roles"],
+              (previous) => {
+                if (!previous || previous.status !== "success" || !Array.isArray(previous.data)) {
+                  return previous;
+                }
+
+                return {
+                  ...previous,
+                  data: previous.data.filter((r) => r.id !== role.id),
+                } as ApiResponse<Role[]>;
+              },
+              { all: true },
+            );
+
             closeDeleteDialog();
             toast.success("Role deleted successfully.");
           },

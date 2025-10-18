@@ -53,7 +53,7 @@ export default function DashboardMenu() {
         <DropdownMenuTrigger asChild>
           <Button
             variant="outline"
-            className="focus:!border-border border-border relative h-9 w-9 cursor-pointer overflow-hidden rounded-md border !p-0 hover:!bg-transparent focus:!ring-0"
+            className="focus:!border-border border-border relative h-9 w-9 cursor-pointer overflow-hidden rounded-full border !p-0 hover:!bg-transparent focus:!ring-0"
           >
             <Avatar className="!h-full !w-full">
               <AvatarImage src={user.avatar} alt={user.username || "User"} />
