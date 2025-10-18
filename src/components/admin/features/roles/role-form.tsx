@@ -97,11 +97,13 @@ export default function RoleForm({
               { all: true },
             );
 
-            handleDialogOpenChange(false);
             if (!isEdit) {
               const url = buildDefaultListUrl(pathname, searchParameters);
               router.replace(url, { scroll: false });
             }
+
+            handleDialogOpenChange(false);
+
             toast.success(response.message);
           },
           onError: (error) => {
