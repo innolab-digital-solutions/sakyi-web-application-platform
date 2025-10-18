@@ -10,8 +10,7 @@ import { InputField } from "@/components/shared/forms/input-field";
 import { ENDPOINTS } from "@/config/endpoints";
 import { useForm } from "@/hooks/use-form";
 import { CreateUnitSchema } from "@/lib/validations/admin/unit-schema";
-import { Unit, UnitFormProperties } from "@/types/admin/unit";
-import { ApiResponse } from "@/types/shared/api";
+import { Unit, UnitApiResponse, UnitFormProperties } from "@/types/admin/unit";
 import { buildDefaultListUrl } from "@/utils/shared/parameters";
 
 export default function UnitForm({
@@ -50,20 +49,20 @@ export default function UnitForm({
         mutationOptions: {
           onSuccess: (response) => {
             // Optimistic/UI-first cache update for smoother UX
-            form.queryCache.setQueryData<ApiResponse<Unit[]> | undefined>(
+            form.queryCache.setQueryData<UnitApiResponse>(
               ["admin-units"],
               (previous) => {
-                const base: ApiResponse<Unit[]> =
+                const base: UnitApiResponse =
                   previous && previous.status === "success" && Array.isArray(previous.data)
                     ? previous
                     : ({
                         status: "success",
                         data: [] as Unit[],
                         message: previous?.message ?? "",
-                      } as ApiResponse<Unit[]>);
+                      } as UnitApiResponse);
 
-                const updatedFromServer = (response as ApiResponse<Unit>).data;
-                const baseData = (base.data as Unit[]) ?? [];
+                const updatedFromServer = (response as UnitApiResponse)?.data;
+                const baseData = (base?.data as Unit[]) ?? [];
 
                 if (isEdit && defaultValues?.id) {
                   const existing = baseData.find((r) => r.id === defaultValues.id);
@@ -80,14 +79,14 @@ export default function UnitForm({
                   return {
                     ...base,
                     data: baseData.map((r) => (r.id === defaultValues.id ? next : r)),
-                  } as ApiResponse<Unit[]>;
+                  } as UnitApiResponse;
                 }
 
                 if (!isEdit && updatedFromServer) {
-                  return { ...base, data: [updatedFromServer, ...baseData] } as ApiResponse<Unit[]>;
+                  return { ...base, data: [updatedFromServer, ...baseData] } as UnitApiResponse;
                 }
 
-                return base as ApiResponse<Unit[]>;
+                return base as UnitApiResponse;
               },
               { all: true },
             );

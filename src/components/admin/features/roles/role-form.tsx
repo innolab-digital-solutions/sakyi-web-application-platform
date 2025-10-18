@@ -11,8 +11,7 @@ import { TextareaField } from "@/components/shared/forms/textarea-field";
 import { ENDPOINTS } from "@/config/endpoints";
 import { useForm } from "@/hooks/use-form";
 import { RoleSchema } from "@/lib/validations/admin/role-schema";
-import { Role, RoleFormProperties } from "@/types/admin/role";
-import { ApiResponse } from "@/types/shared/api";
+import { Role, RoleApiResponse, RoleFormProperties } from "@/types/admin/role";
 import { buildDefaultListUrl } from "@/utils/shared/parameters";
 
 export default function RoleForm({
@@ -57,20 +56,20 @@ export default function RoleForm({
         invalidateQueries: ["admin-roles"],
         mutationOptions: {
           onSuccess: (response) => {
-            form.queryCache.setQueryData<ApiResponse<Role[]> | undefined>(
+            form.queryCache.setQueryData<RoleApiResponse>(
               ["admin-roles"],
               (previous) => {
-                const base: ApiResponse<Role[]> =
+                const base: RoleApiResponse =
                   previous && previous.status === "success" && Array.isArray(previous.data)
                     ? previous
                     : ({
                         status: "success",
                         data: [] as Role[],
                         message: previous?.message ?? "",
-                      } as ApiResponse<Role[]>);
+                      } as RoleApiResponse);
 
-                const updatedFromServer = (response as ApiResponse<Role>).data;
-                const baseData = (base.data as Role[]) ?? [];
+                const updatedFromServer = (response as RoleApiResponse)?.data;
+                const baseData = (base?.data as Role[]) ?? [];
 
                 if (isEdit && defaultValues) {
                   const existing = baseData.find((r) => r.id === defaultValues.id);
@@ -87,13 +86,13 @@ export default function RoleForm({
                   return {
                     ...base,
                     data: baseData.map((r) => (r.id === defaultValues.id ? next : r)),
-                  } as ApiResponse<Role[]>;
+                  } as RoleApiResponse;
                 }
 
                 if (!isEdit && updatedFromServer) {
-                  return { ...base, data: [updatedFromServer, ...baseData] } as ApiResponse<Role[]>;
+                  return { ...base, data: [updatedFromServer, ...baseData] } as RoleApiResponse;
                 }
-                return base as ApiResponse<Role[]>;
+                return base as RoleApiResponse;
               },
               { all: true },
             );

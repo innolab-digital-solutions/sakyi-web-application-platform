@@ -21,7 +21,7 @@ export interface RolesResponse {
   };
 }
 
-export type RoleApiResponse = ApiResponse<RolesResponse>;
+export type RoleApiResponse = ApiResponse<Role[]> | undefined;
 
 export type RoleFormProperties = {
   mode: "create" | "edit";

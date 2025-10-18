@@ -13,8 +13,11 @@ import { ENDPOINTS } from "@/config/endpoints";
 import { useForm } from "@/hooks/use-form";
 import { useRequest } from "@/hooks/use-request";
 import { CreateFoodCategorySchema } from "@/lib/validations/admin/food-category-schema";
-import { FoodCategory, FoodCategoryFormProperties } from "@/types/admin/food-category";
-import { ApiResponse } from "@/types/shared/api";
+import {
+  FoodCategory,
+  FoodCategoryApiResponse,
+  FoodCategoryFormProperties,
+} from "@/types/admin/food-category";
 import { buildDefaultListUrl } from "@/utils/shared/parameters";
 
 export default function FoodCategoryForm({
@@ -62,20 +65,20 @@ export default function FoodCategoryForm({
         invalidateQueries: ["admin-food-categories", "meta-food-categories"],
         mutationOptions: {
           onSuccess: (response) => {
-            form.queryCache.setQueryData<ApiResponse<FoodCategory[]> | undefined>(
+            form.queryCache.setQueryData<FoodCategoryApiResponse>(
               ["admin-food-categories"],
               (previous) => {
-                const base: ApiResponse<FoodCategory[]> =
+                const base: FoodCategoryApiResponse =
                   previous && previous.status === "success" && Array.isArray(previous.data)
                     ? previous
                     : ({
                         status: "success",
                         data: [] as FoodCategory[],
                         message: previous?.message ?? "",
-                      } as ApiResponse<FoodCategory[]>);
+                      } as FoodCategoryApiResponse);
 
-                const updatedFromServer = (response as ApiResponse<FoodCategory>).data;
-                const baseData = (base.data as FoodCategory[]) ?? [];
+                const updatedFromServer = (response as FoodCategoryApiResponse)?.data;
+                const baseData = (base?.data as FoodCategory[]) ?? [];
 
                 if (isEdit && defaultValues) {
                   const existing = baseData.find((r) => r.id === defaultValues.id);
@@ -93,15 +96,16 @@ export default function FoodCategoryForm({
                   return {
                     ...base,
                     data: baseData.map((r) => (r.id === defaultValues.id ? next : r)),
-                  } as ApiResponse<FoodCategory[]>;
+                  } as FoodCategoryApiResponse;
                 }
 
                 if (!isEdit && updatedFromServer) {
-                  return { ...base, data: [updatedFromServer, ...baseData] } as ApiResponse<
-                    FoodCategory[]
-                  >;
+                  return {
+                    ...base,
+                    data: [updatedFromServer, ...baseData],
+                  } as FoodCategoryApiResponse;
                 }
-                return base as ApiResponse<FoodCategory[]>;
+                return base as FoodCategoryApiResponse;
               },
               { all: true },
             );

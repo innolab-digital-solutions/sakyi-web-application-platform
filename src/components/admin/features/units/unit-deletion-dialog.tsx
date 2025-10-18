@@ -6,8 +6,7 @@ import ConfirmationDialog from "@/components/shared/confirmation-dialog";
 import { Button } from "@/components/ui/button";
 import { ENDPOINTS } from "@/config/endpoints";
 import { useRequest } from "@/hooks/use-request";
-import { Unit } from "@/types/admin/unit";
-import { ApiResponse } from "@/types/shared/api";
+import { Unit, UnitApiResponse } from "@/types/admin/unit";
 import { cn } from "@/utils/shared/cn";
 
 interface UnitDeletionDialogProperties {
@@ -28,7 +27,7 @@ export default function UnitDeletionDialog({ unit, className }: UnitDeletionDial
         mutationOptions: {
           onSuccess: () => {
             // Optimistic cache update - remove the deleted unit from the list
-            request.queryCache.setQueryData<ApiResponse<Unit[]> | undefined>(
+            request.queryCache.setQueryData<UnitApiResponse>(
               ["admin-units"],
               (previous) => {
                 if (!previous || previous.status !== "success" || !Array.isArray(previous.data)) {
@@ -38,7 +37,7 @@ export default function UnitDeletionDialog({ unit, className }: UnitDeletionDial
                 return {
                   ...previous,
                   data: previous.data.filter((u) => u.id !== unit.id),
-                } as ApiResponse<Unit[]>;
+                } as UnitApiResponse;
               },
               { all: true },
             );
