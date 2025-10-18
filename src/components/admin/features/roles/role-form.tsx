@@ -11,7 +11,8 @@ import { TextareaField } from "@/components/shared/forms/textarea-field";
 import { ENDPOINTS } from "@/config/endpoints";
 import { useForm } from "@/hooks/use-form";
 import { RoleSchema } from "@/lib/validations/admin/role-schema";
-import { RoleFormProperties } from "@/types/admin/role";
+import { Role, RoleFormProperties } from "@/types/admin/role";
+import { ApiResponse } from "@/types/shared/api";
 import { buildDefaultListUrl } from "@/utils/shared/parameters";
 
 export default function RoleForm({
@@ -56,13 +57,52 @@ export default function RoleForm({
         invalidateQueries: ["admin-roles"],
         mutationOptions: {
           onSuccess: (response) => {
-            handleDialogOpenChange(false);
+            form.queryCache.setQueryData<ApiResponse<Role[]> | undefined>(
+              ["admin-roles"],
+              (previous) => {
+                const base: ApiResponse<Role[]> =
+                  previous && previous.status === "success" && Array.isArray(previous.data)
+                    ? previous
+                    : ({
+                        status: "success",
+                        data: [] as Role[],
+                        message: previous?.message ?? "",
+                      } as ApiResponse<Role[]>);
 
+                const updatedFromServer = (response as ApiResponse<Role>).data;
+                const baseData = (base.data as Role[]) ?? [];
+
+                if (isEdit && defaultValues) {
+                  const existing = baseData.find((r) => r.id === defaultValues.id);
+                  const next =
+                    updatedFromServer ??
+                    (existing
+                      ? {
+                          ...existing,
+                          name: String(form.data.name ?? ""),
+                          description: String(form.data.description ?? ""),
+                        }
+                      : undefined);
+                  if (!next) return base;
+                  return {
+                    ...base,
+                    data: baseData.map((r) => (r.id === defaultValues.id ? next : r)),
+                  } as ApiResponse<Role[]>;
+                }
+
+                if (!isEdit && updatedFromServer) {
+                  return { ...base, data: [updatedFromServer, ...baseData] } as ApiResponse<Role[]>;
+                }
+                return base as ApiResponse<Role[]>;
+              },
+              { all: true },
+            );
+
+            handleDialogOpenChange(false);
             if (!isEdit) {
               const url = buildDefaultListUrl(pathname, searchParameters);
               router.replace(url, { scroll: false });
             }
-
             toast.success(response.message);
           },
           onError: (error) => {

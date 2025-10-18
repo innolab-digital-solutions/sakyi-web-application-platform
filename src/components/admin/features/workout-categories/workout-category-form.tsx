@@ -14,6 +14,7 @@ import { useForm } from "@/hooks/use-form";
 import { useRequest } from "@/hooks/use-request";
 import { WorkoutCategorySchema } from "@/lib/validations/admin/workout-category-schema";
 import { WorkoutCategory, WorkoutCategoryFormProperties } from "@/types/admin/workout-category";
+import { ApiResponse } from "@/types/shared/api";
 import { buildDefaultListUrl } from "@/utils/shared/parameters";
 
 export default function WorkoutCategoryForm({
@@ -66,13 +67,56 @@ export default function WorkoutCategoryForm({
         invalidateQueries: ["admin-workout-categories", "meta-workout-categories"],
         mutationOptions: {
           onSuccess: (response) => {
-            handleDialogOpenChange(false);
+            form.queryCache.setQueryData<ApiResponse<WorkoutCategory[]> | undefined>(
+              ["admin-workout-categories"],
+              (previous) => {
+                const base: ApiResponse<WorkoutCategory[]> =
+                  previous && previous.status === "success" && Array.isArray(previous.data)
+                    ? previous
+                    : ({
+                        status: "success",
+                        data: [] as WorkoutCategory[],
+                        message: previous?.message ?? "",
+                      } as ApiResponse<WorkoutCategory[]>);
 
+                const updatedFromServer = (response as ApiResponse<WorkoutCategory>).data;
+                const baseData = (base.data as WorkoutCategory[]) ?? [];
+
+                if (isEdit && defaultValues) {
+                  const existing = baseData.find((r) => r.id === defaultValues.id);
+                  const next =
+                    updatedFromServer ??
+                    (existing
+                      ? {
+                          ...existing,
+                          name: String(form.data.name ?? ""),
+                          description: String(form.data.description ?? ""),
+                          parent: defaultValues.parent,
+                        }
+                      : undefined);
+                  if (!next) return base;
+                  return {
+                    ...base,
+                    data: baseData.map((r) => (r.id === defaultValues.id ? next : r)),
+                  } as ApiResponse<WorkoutCategory[]>;
+                }
+
+                if (!isEdit && updatedFromServer) {
+                  return {
+                    ...base,
+                    data: [updatedFromServer, ...baseData],
+                  } as ApiResponse<WorkoutCategory[]>;
+                }
+                return base as ApiResponse<WorkoutCategory[]>;
+              },
+              { all: true },
+            );
+
+            handleDialogOpenChange(false);
             if (!isEdit) {
               const url = buildDefaultListUrl(pathname, searchParameters);
               router.replace(url, { scroll: false });
             }
-
             toast.success(response.message);
           },
           onError: (error) => {

@@ -14,6 +14,7 @@ import { useForm } from "@/hooks/use-form";
 import { useRequest } from "@/hooks/use-request";
 import { CreateFoodCategorySchema } from "@/lib/validations/admin/food-category-schema";
 import { FoodCategory, FoodCategoryFormProperties } from "@/types/admin/food-category";
+import { ApiResponse } from "@/types/shared/api";
 import { buildDefaultListUrl } from "@/utils/shared/parameters";
 
 export default function FoodCategoryForm({
@@ -61,13 +62,55 @@ export default function FoodCategoryForm({
         invalidateQueries: ["admin-food-categories", "meta-food-categories"],
         mutationOptions: {
           onSuccess: (response) => {
-            handleDialogOpenChange(false);
+            form.queryCache.setQueryData<ApiResponse<FoodCategory[]> | undefined>(
+              ["admin-food-categories"],
+              (previous) => {
+                const base: ApiResponse<FoodCategory[]> =
+                  previous && previous.status === "success" && Array.isArray(previous.data)
+                    ? previous
+                    : ({
+                        status: "success",
+                        data: [] as FoodCategory[],
+                        message: previous?.message ?? "",
+                      } as ApiResponse<FoodCategory[]>);
 
+                const updatedFromServer = (response as ApiResponse<FoodCategory>).data;
+                const baseData = (base.data as FoodCategory[]) ?? [];
+
+                if (isEdit && defaultValues) {
+                  const existing = baseData.find((r) => r.id === defaultValues.id);
+                  const next =
+                    updatedFromServer ??
+                    (existing
+                      ? {
+                          ...existing,
+                          name: String(form.data.name ?? ""),
+                          description: String(form.data.description ?? ""),
+                          parent: defaultValues.parent,
+                        }
+                      : undefined);
+                  if (!next) return base;
+                  return {
+                    ...base,
+                    data: baseData.map((r) => (r.id === defaultValues.id ? next : r)),
+                  } as ApiResponse<FoodCategory[]>;
+                }
+
+                if (!isEdit && updatedFromServer) {
+                  return { ...base, data: [updatedFromServer, ...baseData] } as ApiResponse<
+                    FoodCategory[]
+                  >;
+                }
+                return base as ApiResponse<FoodCategory[]>;
+              },
+              { all: true },
+            );
+
+            handleDialogOpenChange(false);
             if (!isEdit) {
               const url = buildDefaultListUrl(pathname, searchParameters);
               router.replace(url, { scroll: false });
             }
-
             toast.success(response.message);
           },
           onError: (error) => toast.error(error.message),

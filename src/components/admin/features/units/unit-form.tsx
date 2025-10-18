@@ -10,7 +10,8 @@ import { InputField } from "@/components/shared/forms/input-field";
 import { ENDPOINTS } from "@/config/endpoints";
 import { useForm } from "@/hooks/use-form";
 import { CreateUnitSchema } from "@/lib/validations/admin/unit-schema";
-import { UnitFormProperties } from "@/types/admin/unit";
+import { Unit, UnitFormProperties } from "@/types/admin/unit";
+import { ApiResponse } from "@/types/shared/api";
 import { buildDefaultListUrl } from "@/utils/shared/parameters";
 
 export default function UnitForm({
@@ -48,13 +49,54 @@ export default function UnitForm({
         invalidateQueries: ["admin-units"],
         mutationOptions: {
           onSuccess: (response) => {
-            handleDialogOpenChange(false);
+            // Optimistic/UI-first cache update for smoother UX
+            form.queryCache.setQueryData<ApiResponse<Unit[]> | undefined>(
+              ["admin-units"],
+              (previous) => {
+                const base: ApiResponse<Unit[]> =
+                  previous && previous.status === "success" && Array.isArray(previous.data)
+                    ? previous
+                    : ({
+                        status: "success",
+                        data: [] as Unit[],
+                        message: previous?.message ?? "",
+                      } as ApiResponse<Unit[]>);
 
+                const updatedFromServer = (response as ApiResponse<Unit>).data;
+                const baseData = (base.data as Unit[]) ?? [];
+
+                if (isEdit && defaultValues?.id) {
+                  const existing = baseData.find((r) => r.id === defaultValues.id);
+                  const next =
+                    updatedFromServer ??
+                    (existing
+                      ? {
+                          ...existing,
+                          name: String(form.data.name ?? ""),
+                          abbreviation: String(form.data.abbreviation ?? ""),
+                        }
+                      : undefined);
+                  if (!next) return base;
+                  return {
+                    ...base,
+                    data: baseData.map((r) => (r.id === defaultValues.id ? next : r)),
+                  } as ApiResponse<Unit[]>;
+                }
+
+                if (!isEdit && updatedFromServer) {
+                  return { ...base, data: [updatedFromServer, ...baseData] } as ApiResponse<Unit[]>;
+                }
+
+                return base as ApiResponse<Unit[]>;
+              },
+              { all: true },
+            );
+
+            handleDialogOpenChange(false);
             if (!isEdit) {
               const url = buildDefaultListUrl(pathname, searchParameters);
               router.replace(url, { scroll: false });
             }
-
             toast.success(response.message);
           },
           onError: (error) => {

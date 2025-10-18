@@ -65,8 +65,17 @@ export const useQueryCache = () => {
    * @param data - Data to store in cache
    */
   const setQueryData = useCallback(
-    <T>(queryKey: string[], data: T) => {
-      queryClient.setQueryData(queryKey, data);
+    <T>(
+      queryKey: string[] | string,
+      dataOrUpdater: T | ((previousData: T | undefined) => T),
+      options?: { all?: boolean },
+    ) => {
+      const normalizedKey = typeof queryKey === "string" ? [queryKey] : queryKey;
+      if (options?.all) {
+        queryClient.setQueriesData<T>({ queryKey: normalizedKey }, dataOrUpdater as T);
+        return;
+      }
+      queryClient.setQueryData<T>(normalizedKey, dataOrUpdater as T);
     },
     [queryClient],
   );
