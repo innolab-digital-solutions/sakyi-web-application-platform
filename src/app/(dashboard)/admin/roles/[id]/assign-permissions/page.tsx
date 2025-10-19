@@ -5,22 +5,20 @@ import Link from "next/link";
 import React from "react";
 
 import AssignPermissionsForm from "@/components/admin/features/roles/assign-permissions-form";
-import PageHeader from "@/components/shared/page-header";
+import PageHeader from "@/components/admin/shared/page-header";
 import { Button } from "@/components/ui/button";
 import { ENDPOINTS } from "@/config/endpoints";
 import { PATHS } from "@/config/paths";
 import { useRequest } from "@/hooks/use-request";
 import { Role } from "@/types/admin/role";
 
-interface RolePermissionsAssignmentPageProperties {
+export default function RolePermissionsAssignmentPage({
+  params,
+}: {
   params: Promise<{
     id: string;
   }>;
-}
-
-export default function RolePermissionsAssignmentPage({
-  params,
-}: RolePermissionsAssignmentPageProperties) {
+}) {
   const resolvedParameters = React.use(params);
 
   const { data } = useRequest({
@@ -30,7 +28,7 @@ export default function RolePermissionsAssignmentPage({
   });
 
   return (
-    <>
+    <div className="flex flex-col gap-2">
       <PageHeader
         icon={ShieldCheck}
         title="Assign Permissions"
@@ -51,6 +49,6 @@ export default function RolePermissionsAssignmentPage({
       <div className="w-full rounded-md border border-gray-200 p-5">
         <AssignPermissionsForm role={data?.data as Role} />
       </div>
-    </>
+    </div>
   );
 }

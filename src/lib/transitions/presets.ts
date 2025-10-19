@@ -1,20 +1,10 @@
 import { TransitionConfig, TransitionType } from "@/types/shared/transitions";
 
 /**
- * Pre-configured transition settings for different animation types.
+ * Pre-configured transition settings for page animations.
  *
- * This object contains standardized transition configurations that can be used
- * throughout the application for consistent page transitions. Each preset includes
- * the transition type, duration, and easing function.
- *
- * Available transition types:
- * - fade: Simple opacity fade in/out
- * - slide: Horizontal slide with opacity
- * - scale: Scale animation with opacity
- * - slideUp: Vertical slide upward
- * - slideDown: Vertical slide downward
- * - slideLeft: Horizontal slide from right to left
- * - slideRight: Horizontal slide from left to right
+ * Contains standardized transition configurations with consistent
+ * duration and easing for smooth page transitions.
  */
 export const TRANSITION_PRESETS: Record<TransitionType, TransitionConfig> = {
   fade: {
@@ -24,7 +14,7 @@ export const TRANSITION_PRESETS: Record<TransitionType, TransitionConfig> = {
   },
   slide: {
     type: "slide",
-    duration: 0.4,
+    duration: 0.3,
     ease: "easeInOut",
   },
   scale: {
@@ -34,22 +24,22 @@ export const TRANSITION_PRESETS: Record<TransitionType, TransitionConfig> = {
   },
   slideUp: {
     type: "slideUp",
-    duration: 0.4,
-    ease: "easeOut",
+    duration: 0.3,
+    ease: "easeInOut",
   },
   slideDown: {
     type: "slideDown",
-    duration: 0.4,
-    ease: "easeOut",
+    duration: 0.3,
+    ease: "easeInOut",
   },
   slideLeft: {
     type: "slideLeft",
-    duration: 0.4,
+    duration: 0.3,
     ease: "easeInOut",
   },
   slideRight: {
     type: "slideRight",
-    duration: 0.4,
+    duration: 0.3,
     ease: "easeInOut",
   },
 };

@@ -3,20 +3,33 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useCallback, useMemo, useRef, useState } from "react";
 
-import { useQueryManager } from "@/hooks/use-query-manager";
+import { useQueryCache } from "@/hooks/use-query-cache";
 import { http } from "@/lib/api/client";
 import { ApiError, ApiResponse } from "@/types/shared/api";
 
+/**
+ * Request lifecycle options
+ */
 type RequestOptions<T = unknown> = {
+  /** Request payload data */
   data?: Record<string, unknown>;
+  /** Custom HTTP headers */
   headers?: Record<string, string>;
+  /** Preserve state on new requests */
   preserveState?: boolean;
+  /** Called before request starts (return false to cancel) */
   onBefore?: (config: RequestConfig) => boolean | void;
+  /** Called when request starts */
   onStart?: (config: RequestConfig) => void;
+  /** Called on successful response */
   onSuccess?: (response: ApiResponse<T>) => void | Promise<void>;
+  /** Called on error response */
   onError?: (error: ApiError) => void | Promise<void>;
+  /** Called when request completes (success or error) */
   onFinish?: (config: RequestConfig) => void | Promise<void>;
+  /** Called when request is cancelled */
   onCancel?: () => void;
+  /** TanStack Query integration options */
   tanstack?: {
     queryKey?: string[];
     enabled?: boolean;
@@ -34,6 +47,9 @@ type RequestOptions<T = unknown> = {
   };
 };
 
+/**
+ * HTTP request configuration
+ */
 type RequestConfig = {
   method: "get" | "post" | "put" | "patch" | "delete";
   url: string;
@@ -41,6 +57,9 @@ type RequestConfig = {
   headers?: Record<string, string>;
 };
 
+/**
+ * Request state tracking
+ */
 type RequestState = {
   loading: boolean;
   error: ApiError | null | undefined;
@@ -49,6 +68,18 @@ type RequestState = {
 
 /**
  * HTTP request hook with TanStack Query integration
+ *
+ * Provides unified interface for HTTP requests with:
+ * - TanStack Query integration for caching and state management
+ * - GET requests via useQuery (for queryConfig provided)
+ * - Mutations via useMutation (POST/PUT/PATCH/DELETE)
+ * - Manual requests with lifecycle hooks
+ * - Automatic query invalidation
+ * - Request cancellation support
+ *
+ * @template T - Expected response data type
+ * @param queryConfig - Query configuration for GET requests
+ * @returns Request state, HTTP method functions, and query management
  */
 export const useRequest = <T = unknown>(queryConfig?: {
   queryKey?: string[];
@@ -61,39 +92,50 @@ export const useRequest = <T = unknown>(queryConfig?: {
   refetchOnMount?: boolean;
   retry?: boolean | number;
 }) => {
-  const queryManager = useQueryManager();
+  const queryCache = useQueryCache();
 
+  // ============================================================================
+  // State Management
+  // ============================================================================
+
+  /** Manual request state tracking */
   const [state, setState] = useState<RequestState>({
     loading: false,
     error: undefined,
     cancelled: false,
   });
 
-  // Track active request for cancellation
+  /** AbortController for request cancellation */
   const abortController = useRef<AbortController | null>(null);
-  // Store previous state when preserveState is enabled
+
+  /** Preserved state when preserveState option is enabled */
   const preservedState = useRef<RequestState | null>(null);
-  // Track active mutation to prevent duplicates
+
+  /** Tracks active mutation key to prevent duplicates */
   const activeMutation = useRef<string | undefined>(undefined);
 
+  // ============================================================================
+  // TanStack Query Integration
+  // ============================================================================
+
   /**
-   * TanStack Query for GET requests (when queryConfig is provided)
-   * Authentication is handled automatically via session cookies
+   * TanStack Query for GET requests
+   *
+   * Always creates a query but only enables it when queryConfig is provided.
+   * For mutations without config, the query remains disabled.
    */
   const requestQuery = useQuery({
-    queryKey: queryConfig?.queryKey || [],
+    queryKey: queryConfig?.queryKey || ["useRequest-disabled"],
     queryFn: async () => {
       if (!queryConfig?.url) {
         throw new Error("Query URL is required");
       }
 
-      // For GET requests, data becomes query parameters
       const queryParameters = queryConfig.data;
       const urlWithParameters = queryParameters
         ? `${queryConfig.url}?${new URLSearchParams(queryParameters as Record<string, string>).toString()}`
         : queryConfig.url;
 
-      // Queries throw errors by default - error.tsx will catch them
       const response = await http.get<T>(urlWithParameters);
 
       if (response.status === "error") {
@@ -102,7 +144,7 @@ export const useRequest = <T = unknown>(queryConfig?: {
 
       return response;
     },
-    enabled: queryConfig?.enabled ?? true,
+    enabled: !!queryConfig && (queryConfig.enabled ?? true),
     staleTime: queryConfig?.staleTime,
     gcTime: queryConfig?.gcTime,
     refetchOnWindowFocus: queryConfig?.refetchOnWindowFocus,
@@ -110,8 +152,12 @@ export const useRequest = <T = unknown>(queryConfig?: {
     retry: queryConfig?.retry,
   });
 
+  // ============================================================================
+  // Utility Functions
+  // ============================================================================
+
   /**
-   * Resets request state to initial values
+   * Reset request state to initial values
    */
   const resetState = useCallback(() => {
     setState({
@@ -122,7 +168,9 @@ export const useRequest = <T = unknown>(queryConfig?: {
   }, []);
 
   /**
-   * Cancels the currently active request
+   * Cancel the currently active request
+   *
+   * Aborts the HTTP request and updates state.
    */
   const cancel = useCallback(() => {
     if (abortController.current) {
@@ -132,12 +180,14 @@ export const useRequest = <T = unknown>(queryConfig?: {
   }, []);
 
   /**
-   * TanStack Query mutation for write operations (POST, PUT, PATCH, DELETE)
-   * Authentication is handled automatically via session cookies
+   * TanStack Query mutation for write operations
+   *
+   * Handles POST, PUT, PATCH, and DELETE requests with automatic
+   * error handling and query invalidation.
    */
   const requestMutation = useMutation({
     mutationKey: ["request-mutation"],
-    retry: false, // Disable retry to prevent duplicate calls
+    retry: false,
     mutationFn: async ({
       method,
       url,
@@ -153,8 +203,6 @@ export const useRequest = <T = unknown>(queryConfig?: {
         ...headers,
       };
 
-      // Handle DELETE requests differently since they don't accept data parameter
-      // Mutations throw errors by default - error.tsx will catch them
       const response =
         method === "delete"
           ? await http.delete(url, requestOptions)
@@ -168,13 +216,24 @@ export const useRequest = <T = unknown>(queryConfig?: {
     },
   });
 
+  // ============================================================================
+  // Core Request Function
+  // ============================================================================
+
   /**
-   * Core request method that handles all HTTP operations with TanStack Query integration
+   * Core request method with lifecycle hooks and TanStack Query integration
+   *
+   * Handles all HTTP methods with:
+   * - Lifecycle callbacks (onBefore, onStart, onSuccess, onError, onFinish)
+   * - TanStack Query mutations for write operations
+   * - Manual HTTP requests as fallback
+   * - Automatic query invalidation
+   * - Request cancellation support
    *
    * @template T - Expected response data type
-   * @param url - Target endpoint URL
-   * @param options - Request configuration and lifecycle callbacks
-   * @returns Promise resolving to API response or undefined if cancelled/failed
+   * @param url - API endpoint URL
+   * @param options - Request configuration and callbacks
+   * @returns Promise resolving to API response or undefined
    */
   const visit = useCallback(
     async <T = unknown>(
@@ -204,7 +263,6 @@ export const useRequest = <T = unknown>(queryConfig?: {
 
       const config: RequestConfig = { method, url, data, headers };
 
-      // Early cancellation check via onBefore callback
       if (onBefore) {
         const shouldContinue = onBefore(config);
         if (shouldContinue === false) {
@@ -212,15 +270,13 @@ export const useRequest = <T = unknown>(queryConfig?: {
         }
       }
 
-      // If TanStack Query is configured and it's a mutation method, use TanStack Query
+      /** Route to TanStack Query mutation for write operations */
       if (
         tanstack &&
         (method === "post" || method === "put" || method === "patch" || method === "delete")
       ) {
-        // Create unique mutation key to prevent duplicates
         const mutationKey = `${method}-${url}`;
 
-        // Prevent duplicate mutations
         if (activeMutation.current === mutationKey) {
           return undefined;
         }
@@ -237,9 +293,9 @@ export const useRequest = <T = unknown>(queryConfig?: {
               if (tanstack.invalidateQueries) {
                 for (const queryKey of tanstack.invalidateQueries) {
                   if (Array.isArray(queryKey)) {
-                    queryManager.invalidateQueries(queryKey);
+                    queryCache.invalidateQueries(queryKey);
                   } else {
-                    queryManager.invalidateQueries([queryKey]);
+                    queryCache.invalidateQueries([queryKey]);
                   }
                 }
               }
@@ -329,16 +385,20 @@ export const useRequest = <T = unknown>(queryConfig?: {
         return undefined;
       }
     },
-    [state, resetState, requestMutation, queryManager],
+    [state, resetState, requestMutation, queryCache],
   );
 
+  // ============================================================================
+  // HTTP Method Shortcuts
+  // ============================================================================
+
   /**
-   * Performs a GET request with query parameters
+   * Perform GET request with query parameters
    *
    * @template T - Expected response data type
-   * @param url - Target endpoint URL
+   * @param url - API endpoint URL
    * @param data - Query parameters
-   * @param options - Additional request options
+   * @param options - Request lifecycle callbacks
    */
   const get = useCallback(
     <T = unknown>(
@@ -351,14 +411,7 @@ export const useRequest = <T = unknown>(queryConfig?: {
     [visit],
   );
 
-  /**
-   * Performs a POST request with request body data
-   *
-   * @template T - Expected response data type
-   * @param url - Target endpoint URL
-   * @param data - Request body data
-   * @param options - Additional request options
-   */
+  /** Perform POST request with request body */
   const post = useCallback(
     <T = unknown>(
       url: string,
@@ -370,14 +423,7 @@ export const useRequest = <T = unknown>(queryConfig?: {
     [visit],
   );
 
-  /**
-   * Performs a PUT request with request body data
-   *
-   * @template T - Expected response data type
-   * @param url - Target endpoint URL
-   * @param data - Request body data
-   * @param options - Additional request options
-   */
+  /** Perform PUT request with request body */
   const put = useCallback(
     <T = unknown>(
       url: string,
@@ -389,14 +435,7 @@ export const useRequest = <T = unknown>(queryConfig?: {
     [visit],
   );
 
-  /**
-   * Performs a PATCH request with request body data
-   *
-   * @template T - Expected response data type
-   * @param url - Target endpoint URL
-   * @param data - Request body data
-   * @param options - Additional request options
-   */
+  /** Perform PATCH request with request body */
   const patch = useCallback(
     <T = unknown>(
       url: string,
@@ -408,13 +447,7 @@ export const useRequest = <T = unknown>(queryConfig?: {
     [visit],
   );
 
-  /**
-   * Performs a DELETE request
-   *
-   * @template T - Expected response data type
-   * @param url - Target endpoint URL
-   * @param options - Additional request options
-   */
+  /** Perform DELETE request */
   const del = useCallback(
     <T = unknown>(url: string, options?: RequestOptions<T>) => {
       return visit<T>(url, { ...options, method: "delete" });
@@ -461,8 +494,8 @@ export const useRequest = <T = unknown>(queryConfig?: {
       cancel,
       resetState,
 
-      // Query management
-      queryManager,
+      // Query cache management
+      queryCache,
 
       // Convenience state checks
       hasError:
@@ -472,10 +505,20 @@ export const useRequest = <T = unknown>(queryConfig?: {
       isCancelled: state.cancelled,
     }),
     [
-      state,
-      queryConfig,
-      requestQuery,
-      requestMutation,
+      state.loading,
+      state.error,
+      state.cancelled,
+      requestMutation.isPending,
+      requestMutation.error,
+      requestMutation.isSuccess,
+      queryConfig?.queryKey,
+      requestQuery.isLoading,
+      requestQuery.error,
+      requestQuery.isSuccess,
+      requestQuery.data,
+      requestQuery.isFetching,
+      requestQuery.isRefetching,
+      requestQuery.refetch,
       visit,
       get,
       post,
@@ -484,7 +527,7 @@ export const useRequest = <T = unknown>(queryConfig?: {
       del,
       cancel,
       resetState,
-      queryManager,
+      queryCache,
     ],
   );
 };

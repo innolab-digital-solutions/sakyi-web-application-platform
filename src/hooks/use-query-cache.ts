@@ -4,16 +4,26 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useCallback } from "react";
 
 /**
- * Centralized query manager for easy cache invalidation and management
- * Provides a clean API for managing TanStack Query cache across the application
+ * Centralized query cache manager hook
+ *
+ * Provides a unified interface for managing TanStack Query cache operations:
+ * - Query invalidation to trigger refetch
+ * - Cache removal and cleanup
+ * - Direct cache data manipulation
+ * - Query prefetching
+ * - Bulk cache operations
+ *
+ * @returns Query management functions and raw query client
  */
-export const useQueryManager = () => {
+export const useQueryCache = () => {
   const queryClient = useQueryClient();
 
   /**
-   * Invalidate queries by key pattern
+   * Invalidate queries to trigger a refetch
    *
-   * @param queryKey - Query key or pattern to invalidate
+   * Accepts multiple formats for flexibility in different use cases.
+   *
+   * @param queryKey - Query key, array, or filter object
    */
   const invalidateQueries = useCallback(
     (queryKey: string | string[] | { queryKey: string[] }) => {
@@ -29,9 +39,9 @@ export const useQueryManager = () => {
   );
 
   /**
-   * Remove queries from cache
+   * Remove queries from cache permanently
    *
-   * @param queryKey - Query key or pattern to remove
+   * @param queryKey - Query key, array, or filter object
    */
   const removeQueries = useCallback(
     (queryKey: string | string[] | { queryKey: string[] }) => {
@@ -49,21 +59,32 @@ export const useQueryManager = () => {
   /**
    * Set query data directly in cache
    *
-   * @param queryKey - Query key to set data for
-   * @param data - Data to set
+   * Useful for optimistic updates or manual cache manipulation.
+   *
+   * @param queryKey - Query key array
+   * @param data - Data to store in cache
    */
   const setQueryData = useCallback(
-    <T>(queryKey: string[], data: T) => {
-      queryClient.setQueryData(queryKey, data);
+    <T>(
+      queryKey: string[] | string,
+      dataOrUpdater: T | ((previousData: T | undefined) => T),
+      options?: { all?: boolean },
+    ) => {
+      const normalizedKey = typeof queryKey === "string" ? [queryKey] : queryKey;
+      if (options?.all) {
+        queryClient.setQueriesData<T>({ queryKey: normalizedKey }, dataOrUpdater as T);
+        return;
+      }
+      queryClient.setQueryData<T>(normalizedKey, dataOrUpdater as T);
     },
     [queryClient],
   );
 
-  // eslint-disable-next-line no-commented-code/no-commented-code
   /**
-   * Get query data from cache
+   * Retrieve query data from cache
    *
-   * @param queryKey - Query key to get data for
+   * @param queryKey - Query key array
+   * @returns Cached data or undefined
    */
   const getQueryData = useCallback(
     <T>(queryKey: string[]) => {
@@ -73,10 +94,12 @@ export const useQueryManager = () => {
   );
 
   /**
-   * Prefetch query data
+   * Prefetch query data before it's needed
    *
-   * @param queryKey - Query key to prefetch
-   * @param queryFunction - Function to fetch data
+   * Useful for improving perceived performance by loading data in advance.
+   *
+   * @param queryKey - Query key array
+   * @param queryFunction - Async function to fetch data
    */
   const prefetchQuery = useCallback(
     async <T>(queryKey: string[], queryFunction: () => Promise<T>) => {
@@ -89,9 +112,9 @@ export const useQueryManager = () => {
   );
 
   /**
-   * Invalidate multiple query patterns at once
+   * Invalidate multiple query patterns in one call
    *
-   * @param patterns - Array of query key patterns
+   * @param patterns - Array of query keys or key arrays
    */
   const invalidateMultiple = useCallback(
     (patterns: (string | string[])[]) => {
@@ -107,7 +130,9 @@ export const useQueryManager = () => {
   );
 
   /**
-   * Clear all queries from cache
+   * Clear all cached queries
+   *
+   * Use with caution as this removes all data from the cache.
    */
   const clearAll = useCallback(() => {
     queryClient.clear();

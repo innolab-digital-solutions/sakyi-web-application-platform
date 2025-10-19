@@ -1,4 +1,4 @@
-import { FileQuestionMark, Trash2 } from "lucide-react";
+import { Trash2, TriangleAlert } from "lucide-react";
 import React, { useState } from "react";
 import { toast } from "sonner";
 
@@ -6,7 +6,7 @@ import ConfirmationDialog from "@/components/shared/confirmation-dialog";
 import { Button } from "@/components/ui/button";
 import { ENDPOINTS } from "@/config/endpoints";
 import { useRequest } from "@/hooks/use-request";
-import { Unit } from "@/types/admin/unit";
+import { Unit, UnitApiResponse } from "@/types/admin/unit";
 import { cn } from "@/utils/shared/cn";
 
 interface UnitDeletionDialogProperties {
@@ -16,6 +16,7 @@ interface UnitDeletionDialogProperties {
 
 export default function UnitDeletionDialog({ unit, className }: UnitDeletionDialogProperties) {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+
   const request = useRequest();
 
   const closeDeleteDialog = () => setShowDeleteDialog(false);
@@ -26,6 +27,22 @@ export default function UnitDeletionDialog({ unit, className }: UnitDeletionDial
         invalidateQueries: ["admin-units"],
         mutationOptions: {
           onSuccess: () => {
+            // Optimistic cache update - remove the deleted unit from the list
+            request.queryCache.setQueryData<UnitApiResponse>(
+              ["admin-units"],
+              (previous) => {
+                if (!previous || previous.status !== "success" || !Array.isArray(previous.data)) {
+                  return previous;
+                }
+
+                return {
+                  ...previous,
+                  data: previous.data.filter((u) => u.id !== unit.id),
+                } as UnitApiResponse;
+              },
+              { all: true },
+            );
+
             closeDeleteDialog();
             toast.success("Unit deleted successfully.");
           },
@@ -55,9 +72,9 @@ export default function UnitDeletionDialog({ unit, className }: UnitDeletionDial
       </Button>
 
       <ConfirmationDialog
-        title="Delete Unit Confirmation"
+        title="Delete Unit"
         description={`Permanently delete the unit "${unit.name}"? This action cannot be undone.`}
-        icon={FileQuestionMark}
+        icon={TriangleAlert}
         variant="destructive"
         confirmText="Yes, Delete It"
         cancelText="No, Keep It"

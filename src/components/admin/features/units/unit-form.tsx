@@ -5,23 +5,12 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect } from "react";
 import { toast } from "sonner";
 
+import { FormDialog } from "@/components/shared/forms/form-dialog";
 import { InputField } from "@/components/shared/forms/input-field";
-import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Spinner } from "@/components/ui/spinner";
 import { ENDPOINTS } from "@/config/endpoints";
 import { useForm } from "@/hooks/use-form";
 import { CreateUnitSchema } from "@/lib/validations/admin/unit-schema";
-import { UnitFormProperties } from "@/types/admin/unit";
+import { Unit, UnitApiResponse, UnitFormProperties } from "@/types/admin/unit";
 import { buildDefaultListUrl } from "@/utils/shared/parameters";
 
 export default function UnitForm({
@@ -59,12 +48,55 @@ export default function UnitForm({
         invalidateQueries: ["admin-units"],
         mutationOptions: {
           onSuccess: (response) => {
-            handleDialogOpenChange(false);
+            // Optimistic/UI-first cache update for smoother UX
+            form.queryCache.setQueryData<UnitApiResponse>(
+              ["admin-units"],
+              (previous) => {
+                const base: UnitApiResponse =
+                  previous && previous.status === "success" && Array.isArray(previous.data)
+                    ? previous
+                    : ({
+                        status: "success",
+                        data: [] as Unit[],
+                        message: previous?.message ?? "",
+                      } as UnitApiResponse);
+
+                const updatedFromServer = (response as UnitApiResponse)?.data;
+                const baseData = (base?.data as Unit[]) ?? [];
+
+                if (isEdit && defaultValues?.id) {
+                  const existing = baseData.find((r) => r.id === defaultValues.id);
+                  const next =
+                    updatedFromServer ??
+                    (existing
+                      ? {
+                          ...existing,
+                          name: String(form.data.name ?? ""),
+                          abbreviation: String(form.data.abbreviation ?? ""),
+                        }
+                      : undefined);
+                  if (!next) return base;
+                  return {
+                    ...base,
+                    data: baseData.map((r) => (r.id === defaultValues.id ? next : r)),
+                  } as UnitApiResponse;
+                }
+
+                if (!isEdit && updatedFromServer) {
+                  return { ...base, data: [updatedFromServer, ...baseData] } as UnitApiResponse;
+                }
+
+                return base as UnitApiResponse;
+              },
+              { all: true },
+            );
 
             if (!isEdit) {
               const url = buildDefaultListUrl(pathname, searchParameters);
               router.replace(url, { scroll: false });
             }
+
+            handleDialogOpenChange(false);
 
             toast.success(response.message);
           },
@@ -102,87 +134,51 @@ export default function UnitForm({
   };
 
   return (
-    <Dialog open={dialogOpen} onOpenChange={handleDialogOpenChange}>
-      {trigger ? <DialogTrigger asChild>{trigger}</DialogTrigger> : undefined}
-      <DialogContent
-        showCloseButton={false}
-        className="w-[95vw] max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl"
-      >
-        <form onSubmit={handleSubmit} className="w-full p-2.5">
-          <DialogHeader>
-            <DialogTitle className="text-md mb-1 flex items-center gap-2 font-bold">
-              <Scale className="h-5 w-5" />
-              {isEdit ? "Edit Unit Details" : "Create a New Unit"}
-            </DialogTitle>
+    <FormDialog
+      trigger={trigger}
+      open={dialogOpen}
+      onOpenChange={handleDialogOpenChange}
+      onClose={() => form.reset()}
+      title={isEdit ? "Edit Unit Details" : "Create a New Unit"}
+      description={
+        isEdit
+          ? "Edit the name or abbreviation of this unit. Changes will update how measurements are displayed throughout the system."
+          : "Create a unit with a name and abbreviation to standardize measurements across your application."
+      }
+      icon={<Scale className="h-5 w-5" />}
+      onSubmit={handleSubmit}
+      processing={form.processing}
+      isEdit={isEdit}
+      submitLabel={isEdit ? "Save Changes" : "Create Unit"}
+      submittingLabel={isEdit ? "Saving Changes..." : "Creating Unit..."}
+    >
+      {/* Name Field */}
+      <InputField
+        id="name"
+        name="name"
+        type="text"
+        value={String(form.data.name ?? "")}
+        onChange={(event) => form.setData("name", event.target.value)}
+        error={form.errors.name as string}
+        label="Name"
+        placeholder="e.g., Kilogram, Gram, Liter"
+        required
+        disabled={form.processing}
+      />
 
-            <DialogDescription className="text-muted-foreground text-sm font-medium">
-              {isEdit
-                ? "Edit the name or abbreviation of this unit. Changes will update how measurements are displayed throughout the system."
-                : "Create a unit with a name and abbreviation to standardize measurements across your application."}
-            </DialogDescription>
-          </DialogHeader>
-
-          <div className="space-y-5 py-5">
-            <InputField
-              id="name"
-              name="name"
-              type="text"
-              value={String(form.data.name ?? "")}
-              onChange={(event) => form.setData("name", event.target.value)}
-              error={form.errors.name as string}
-              label="Name"
-              placeholder="e.g., Kilogram, Gram, Liter"
-              required
-              disabled={form.processing}
-            />
-
-            <InputField
-              id="abbreviation"
-              name="abbreviation"
-              type="text"
-              value={String(form.data.abbreviation ?? "")}
-              onChange={(event) => form.setData("abbreviation", event.target.value)}
-              error={form.errors.abbreviation as string}
-              label="Abbreviation"
-              placeholder="e.g., kg, g, L"
-              required
-              disabled={form.processing}
-            />
-          </div>
-
-          <DialogFooter className="flex items-center space-x-1">
-            <DialogClose asChild>
-              <Button
-                type="button"
-                variant="outline"
-                disabled={form.processing}
-                className="cursor-pointer hover:bg-gray-100 hover:text-gray-800"
-              >
-                Cancel
-              </Button>
-            </DialogClose>
-
-            <Button
-              type="submit"
-              variant="default"
-              disabled={form.processing}
-              className="flex cursor-pointer items-center gap-2 font-semibold"
-            >
-              {form.processing ? (
-                <>
-                  <Spinner />
-                  {isEdit ? "Saving Changes..." : "Creating Unit..."}
-                </>
-              ) : (
-                <>
-                  <Scale className="h-4 w-4" />
-                  {isEdit ? "Save Changes" : "Create Unit"}
-                </>
-              )}
-            </Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
+      {/* Abbreviation Field */}
+      <InputField
+        id="abbreviation"
+        name="abbreviation"
+        type="text"
+        value={String(form.data.abbreviation ?? "")}
+        onChange={(event) => form.setData("abbreviation", event.target.value)}
+        error={form.errors.abbreviation as string}
+        label="Abbreviation"
+        placeholder="e.g., kg, g, L"
+        required
+        disabled={form.processing}
+      />
+    </FormDialog>
   );
 }

@@ -1,28 +1,11 @@
-import { ClipboardList, Plus } from "lucide-react";
-import React from "react";
+import type { Metadata } from "next";
 
-import ProgramTable from "@/components/admin/features/programs/program-table";
-import PageHeader from "@/components/shared/page-header";
-import { Button } from "@/components/ui/button";
+export const metadata: Metadata = {
+  title: "Programs | SaKyi Health & Wellness",
+  description:
+    "Manage wellness programs including fitness routines, nutrition plans, and health challenges.",
+};
 
-export default function WorkoutCategoriesListPage() {
-  return (
-    <>
-      <PageHeader
-        icon={ClipboardList}
-        title="Program Management"
-        description="Manage all your organization’s health, wellness, coaching, and guardianship programs here. Organize, update, and present services to better serve your clients’ needs."
-        actions={
-          <>
-            <Button variant="default" className="flex cursor-pointer items-center font-semibold">
-              <Plus className="h-4 w-4" />
-              <span>Add Program</span>
-            </Button>
-          </>
-        }
-      />
-
-      <ProgramTable />
-    </>
-  );
+export default function ProgramsListPage() {
+  return <div>Programs List</div>;
 }

@@ -1,13 +1,24 @@
+/* eslint-disable no-commented-code/no-commented-code */
+
+/**
+ * Custom error class for API request failures
+ *
+ * Extends native Error with HTTP status codes, structured validation
+ * errors, and request tracing support. Provides helper methods for
+ * common HTTP status checks.
+ */
 export class ApiError extends Error {
   public statusCode: number;
   public errors?: Record<string, string[]>;
   public digest?: string;
 
   /**
-   * @param message   Human-readable error description
-   * @param statusCode HTTP status code
-   * @param errors     Optional structured error details returned by API
-   * @param digest     Optional unique digest/request ID for tracing
+   * Creates an API error instance
+   *
+   * @param message - Human-readable error description
+   * @param statusCode - HTTP status code
+   * @param errors - Structured validation errors from API (field → messages)
+   * @param digest - Request ID for error tracking/debugging
    */
   constructor(
     message: string,
@@ -23,35 +34,35 @@ export class ApiError extends Error {
   }
 
   /**
-   * Returns true if the error is a "Forbidden" (HTTP 403).
+   * Checks if error is Forbidden (403)
    */
   isForbidden(): boolean {
     return this.statusCode === 403;
   }
 
   /**
-   * Returns true if the error is "Unauthorized" (HTTP 401 or 419).
+   * Checks if error is Unauthorized (401 or 419 CSRF)
    */
   isUnauthorized(): boolean {
     return this.statusCode === 401 || this.statusCode === 419;
   }
 
   /**
-   * Returns true if the error is "Not Found" (HTTP 404).
+   * Checks if error is Not Found (404)
    */
   isNotFound(): boolean {
     return this.statusCode === 404;
   }
 
   /**
-   * Returns true if the error is an internal server error (5xx).
+   * Checks if error is server error (5xx)
    */
   isServerError(): boolean {
     return this.statusCode >= 500;
   }
 
   /**
-   * Returns true if the error is a validation error (HTTP 422).
+   * Checks if error is validation error (422)
    */
   isValidationError(): boolean {
     return this.statusCode === 422;

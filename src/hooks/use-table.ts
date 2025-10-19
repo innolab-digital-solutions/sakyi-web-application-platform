@@ -1,49 +1,105 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable no-commented-code/no-commented-code */
 "use client";
 
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { SortingState } from "@tanstack/react-table";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
+import { useQueryCache } from "@/hooks/use-query-cache";
 import { http } from "@/lib/api/client";
 import { Pagination } from "@/types/shared/common";
 import { ListQueryParameters, SortDirection } from "@/types/shared/parameters";
 import {
   DEFAULT_LIST_PARAMS,
-  mergeParameters,
   parseListParameters,
   serializeParameters,
 } from "@/utils/shared/parameters";
 
+/**
+ * Configuration options for the useTable hook
+ */
 interface UseTableConfig {
+  /** API endpoint for fetching table data */
   endpoint: string;
+  /** TanStack Query key for caching and invalidation */
   queryKey: string[];
+  /** Column keys to include in search functionality */
   searchKeys?: string[];
+  /** Default sorting configuration on mount */
   defaultSort?: { field: string; direction: "asc" | "desc" };
 }
 
 /**
- * Server-side table operations hook
+ * Server-side table management hook with URL state synchronization
+ *
+ * Provides comprehensive table functionality including:
+ * - Automatic URL parameter initialization and synchronization
+ * - Server-side pagination, sorting, and search
+ * - Debounced search with configurable keys
+ * - TanStack Query integration for data fetching
+ * - Bi-directional state management (URL ↔ Internal State)
+ *
+ * @template T - Type of data items in the table
+ * @param config - Table configuration options
+ * @returns Table state, handlers, and configuration objects
+ *
+ * @example
+ * ```tsx
+ * const { data, searchConfig, paginationConfig, sortingConfig } = useTable<User>({
+ *   endpoint: '/api/users',
+ *   queryKey: ['users'],
+ *   searchKeys: ['name', 'email'],
+ *   defaultSort: { field: 'created_at', direction: 'desc' }
+ * });
+ * ```
  */
-export function useTable<T>({ endpoint, queryKey, searchKeys = [], defaultSort }: UseTableConfig) {
+export const useTable = <T>({
+  endpoint,
+  queryKey,
+  searchKeys = [],
+  defaultSort,
+}: UseTableConfig) => {
   const searchParameters = useSearchParams();
   const pathname = usePathname();
   const router = useRouter();
-  const queryClient = useQueryClient();
+  const queryCache = useQueryCache();
 
-  // Parse URL parameters - this will update when URL changes
+  // ============================================================================
+  // State Management
+  // ============================================================================
+
+  /** Tracks initial mount to handle URL parameter initialization */
+  const [isInitialMount, setIsInitialMount] = useState(true);
+
+  /** Ref to prevent URL update conflicts during external URL changes */
+  const isSyncingFromUrlReference = useRef(false);
+
+  /** Parse URL search parameters into structured format */
   const urlParameters = useMemo(
     () => parseListParameters(searchParameters, DEFAULT_LIST_PARAMS),
     [searchParameters],
   );
 
-  // Internal state for table operations
-  const [pageIndex, setPageIndex] = useState(Math.max(0, (urlParameters.page ?? 1) - 1));
-  const [pageSize, setPageSize] = useState(urlParameters.per_page ?? DEFAULT_LIST_PARAMS.per_page);
-  const [search, setSearch] = useState(urlParameters.search ?? "");
-  const [debouncedSearch, setDebouncedSearch] = useState("");
+  /** Check if URL contains any query parameters */
+  const hasUrlParameters = useMemo(() => {
+    return searchParameters?.toString().length > 0;
+  }, [searchParameters]);
 
-  // Initialize sorting state from URL parameters or default configuration
+  /** Current page index (0-based for TanStack Table compatibility) */
+  const [pageIndex, setPageIndex] = useState(Math.max(0, (urlParameters.page ?? 1) - 1));
+
+  /** Number of items to display per page */
+  const [pageSize, setPageSize] = useState(urlParameters.per_page ?? DEFAULT_LIST_PARAMS.per_page);
+
+  /** Current search query value */
+  const [search, setSearch] = useState(urlParameters.search ?? "");
+
+  /** Debounced search value to reduce API calls */
+  const [debouncedSearch, setDebouncedSearch] = useState(urlParameters.search ?? "");
+
+  /** Sorting state compatible with TanStack Table */
   const [sorting, setSorting] = useState<SortingState>(
     urlParameters.sort
       ? [
@@ -62,64 +118,113 @@ export function useTable<T>({ endpoint, queryKey, searchKeys = [], defaultSort }
         : [],
   );
 
-  // Sync internal state when URL changes externally (e.g., from form resets)
-  // Only update if values actually differ to prevent infinite loops
+  // ============================================================================
+  // Effects: URL Initialization & Synchronization
+  // ============================================================================
+
+  /**
+   * Initialize URL parameters on mount
+   *
+   * Ensures consistent URL state by adding default query parameters when navigating
+   * to a table page without parameters (e.g., via sidebar or breadcrumb links).
+   */
   useEffect(() => {
+    if (isInitialMount && !hasUrlParameters) {
+      const initialParameters: ListQueryParameters = {
+        page: DEFAULT_LIST_PARAMS.page,
+        per_page: DEFAULT_LIST_PARAMS.per_page,
+        sort: defaultSort?.field ?? DEFAULT_LIST_PARAMS.sort,
+        direction: (defaultSort?.direction ?? DEFAULT_LIST_PARAMS.direction) as SortDirection,
+      };
+
+      const queryString = serializeParameters(initialParameters);
+      const nextUrl = `${pathname}?${queryString}`;
+
+      router.replace(nextUrl, { scroll: false });
+      setIsInitialMount(false);
+    } else if (isInitialMount) {
+      setIsInitialMount(false);
+    }
+  }, [isInitialMount, hasUrlParameters, pathname]);
+
+  /**
+   * Synchronize internal state when URL changes externally
+   *
+   * Handles external URL changes from:
+   * - Filter dropdowns resetting page to 1
+   * - Form submissions updating parameters
+   * - Browser back/forward navigation
+   *
+   * Uses a ref-based flag to prevent race conditions with the URL update effect.
+   */
+  useEffect(() => {
+    if (isInitialMount) return;
+
     const newPageIndex = Math.max(0, (urlParameters.page ?? 1) - 1);
     const newPageSize = urlParameters.per_page ?? DEFAULT_LIST_PARAMS.per_page;
     const newSearch = urlParameters.search ?? "";
 
-    if (pageIndex !== newPageIndex) {
-      setPageIndex(newPageIndex);
-    }
-    if (pageSize !== newPageSize) {
-      setPageSize(newPageSize);
-    }
-    if (search !== newSearch) {
-      setSearch(newSearch);
-    }
+    const pageChanged = pageIndex !== newPageIndex;
+    const sizeChanged = pageSize !== newPageSize;
+    const searchChanged = search !== newSearch;
 
-    // Update sorting if it changed in URL
     const currentSortId = sorting[0]?.id;
     const currentSortDesc = sorting[0]?.desc;
     const urlSortId = urlParameters.sort ? String(urlParameters.sort) : defaultSort?.field;
     const urlSortDesc = urlParameters.sort
       ? (urlParameters.direction ?? DEFAULT_LIST_PARAMS.direction) === "desc"
       : defaultSort?.direction === "desc";
+    const sortingChanged = currentSortId !== urlSortId || currentSortDesc !== urlSortDesc;
 
-    // Only update sorting if it actually changed
-    if (currentSortId !== urlSortId || currentSortDesc !== urlSortDesc) {
-      if (urlParameters.sort) {
-        setSorting([
-          {
-            id: String(urlParameters.sort),
-            desc: (urlParameters.direction ?? DEFAULT_LIST_PARAMS.direction) === "desc",
-          },
-        ]);
-      } else if (defaultSort) {
-        setSorting([
-          {
-            id: defaultSort.field,
-            desc: defaultSort.direction === "desc",
-          },
-        ]);
-      } else if (sorting.length > 0) {
-        setSorting([]);
-      }
+    if (!pageChanged && !sizeChanged && !searchChanged && !sortingChanged) {
+      return;
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    urlParameters.page,
-    urlParameters.per_page,
-    urlParameters.search,
-    urlParameters.sort,
-    urlParameters.direction,
-  ]);
 
-  // Extract sort field and direction from TanStack Table sorting state
+    // Prevent URL update effect from running during this sync
+    isSyncingFromUrlReference.current = true;
+
+    // Batch state updates to ensure they happen together
+    Promise.resolve().then(() => {
+      if (pageChanged) setPageIndex(newPageIndex);
+      if (sizeChanged) setPageSize(newPageSize);
+      if (searchChanged) {
+        setSearch(newSearch);
+        setDebouncedSearch(newSearch);
+      }
+
+      if (sortingChanged) {
+        if (urlParameters.sort) {
+          setSorting([
+            {
+              id: String(urlParameters.sort),
+              desc: (urlParameters.direction ?? DEFAULT_LIST_PARAMS.direction) === "desc",
+            },
+          ]);
+        } else if (defaultSort) {
+          setSorting([
+            {
+              id: defaultSort.field,
+              desc: defaultSort.direction === "desc",
+            },
+          ]);
+        } else if (sorting.length > 0) {
+          setSorting([]);
+        }
+      }
+
+      setTimeout(() => {
+        isSyncingFromUrlReference.current = false;
+      }, 100);
+    });
+  }, [searchParameters?.toString()]);
+
+  // ============================================================================
+  // Computed Values
+  // ============================================================================
+
+  /** Extract sort configuration from TanStack Table format */
   const { sortField, sortDirection } = useMemo(() => {
     const first = sorting[0];
-    // If no sorting is applied, use default sort values
     if (!first) {
       return {
         sortField: defaultSort?.field ?? DEFAULT_LIST_PARAMS.sort,
@@ -132,29 +237,52 @@ export function useTable<T>({ endpoint, queryKey, searchKeys = [], defaultSort }
     };
   }, [sorting, defaultSort]);
 
-  // Build API query parameters from current state
-  const apiParameters: ListQueryParameters = useMemo(
-    () =>
-      mergeParameters(urlParameters, {
-        page: pageIndex + 1, // Convert back to 1-based for API
-        per_page: pageSize,
-        search: debouncedSearch,
-        sort: sortField,
-        direction: sortDirection as SortDirection,
-      }),
-    [urlParameters, pageIndex, pageSize, debouncedSearch, sortField, sortDirection],
-  );
+  /**
+   * Build API query parameters from internal state
+   *
+   * Uses internal state as source of truth to avoid feedback loops.
+   * Includes additional filter parameters from URL (e.g., 'only', 'status').
+   */
+  const apiParameters: ListQueryParameters = useMemo(() => {
+    const parameters: ListQueryParameters = {
+      page: pageIndex + 1,
+      per_page: pageSize,
+      search: debouncedSearch,
+      sort: sortField,
+      direction: sortDirection as SortDirection,
+    };
 
+    for (const [key, value] of Object.entries(urlParameters)) {
+      if (!["page", "per_page", "search", "sort", "direction"].includes(key)) {
+        parameters[key] = value;
+      }
+    }
+
+    return parameters;
+  }, [
+    pageIndex,
+    pageSize,
+    debouncedSearch,
+    sortField,
+    sortDirection,
+    searchParameters?.toString(),
+  ]);
+
+  /** Serialize parameters for URL and API requests */
   const queryString = useMemo(() => serializeParameters(apiParameters), [apiParameters]);
 
-  // Enable query when search is either empty or has valid content
-  const isQueryEnabled = debouncedSearch.length === 0 || debouncedSearch.length > 0;
+  /** Enable query for all search states (empty or with content) */
+  const isQueryEnabled = true;
 
+  // ============================================================================
+  // Data Fetching
+  // ============================================================================
+
+  /** TanStack Query for server-side table data fetching */
   const { data, isLoading, error, isFetching, isPlaceholderData } = useQuery({
     queryKey: [...queryKey, apiParameters],
     queryFn: async () => {
       const url = `${endpoint}?${queryString}`;
-      // Session authentication is handled automatically via cookies
       const response = await http.get<T[]>(url);
       if (response.status === "error") {
         throw new Error(response.message);
@@ -162,44 +290,75 @@ export function useTable<T>({ endpoint, queryKey, searchKeys = [], defaultSort }
       return response;
     },
     enabled: isQueryEnabled,
-    // Prevent showing stale data during transitions
     placeholderData: undefined,
-    // Ensure we always get fresh data for server-side operations
     refetchOnMount: true,
   });
 
-  // Debounce search input to avoid excessive API calls
+  /**
+   * Debounce search input
+   *
+   * Reduces API calls by waiting 600ms after user stops typing.
+   */
   useEffect(() => {
     const timer = setTimeout(() => setDebouncedSearch(search.trim()), 600);
     return () => clearTimeout(timer);
   }, [search]);
 
-  // Synchronize URL with internal state changes (only when state changes, not when URL changes)
+  /**
+   * Update URL when internal state changes
+   *
+   * Skips during:
+   * - Initial mount (handled by initialization effect)
+   * - External URL sync (prevents race conditions)
+   */
   useEffect(() => {
+    if (isInitialMount) return;
+
+    if (isSyncingFromUrlReference.current) {
+      return;
+    }
+
     const current = searchParameters?.toString() ?? "";
-    // Only update URL if it's different from what our internal state represents
     if (current === queryString) return;
+
     const nextUrl = queryString ? `${pathname}?${queryString}` : pathname;
     router.replace(nextUrl, { scroll: false });
-    // searchParameters is intentionally NOT in dependencies to avoid fighting external URL changes
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [queryString, pathname, router]);
+  }, [queryString, pathname, router, isInitialMount]);
 
+  // ============================================================================
+  // Data Processing
+  // ============================================================================
+
+  /** Extract items from API response */
   const items: T[] = data?.status === "success" ? data.data : [];
 
-  // Extract total count from API response metadata
+  /** Extract total count from pagination metadata */
   const total =
     data?.status === "success"
       ? ((data.meta as unknown as { pagination: Pagination })?.pagination?.total ?? items.length)
       : 0;
+
+  /** Calculate total number of pages */
   const pageCount = Math.max(1, Math.ceil(total / (pageSize || 1)));
 
-  // Utility function to invalidate related queries
-  const invalidateQueries = useCallback(() => {
-    queryClient.invalidateQueries({ queryKey });
-  }, [queryClient, queryKey]);
+  // ============================================================================
+  // Utility Functions
+  // ============================================================================
 
-  // Utility function to reset table to default parameters
+  /**
+   * Invalidate the current table query cache
+   *
+   * Triggers a refetch of table data. Useful after mutations.
+   */
+  const invalidateQueries = useCallback(() => {
+    queryCache.invalidateQueries(queryKey);
+  }, [queryCache, queryKey]);
+
+  /**
+   * Reset table to default state
+   *
+   * Clears search, resets pagination, and applies default sorting.
+   */
   const resetParameters = useCallback(() => {
     setPageIndex(0);
     setSearch("");
@@ -217,17 +376,18 @@ export function useTable<T>({ endpoint, queryKey, searchKeys = [], defaultSort }
     }
   }, [defaultSort]);
 
-  // Track if we're in a transition state (parameters changed but data hasn't updated yet)
-  const [isTransitioning, setIsTransitioning] = useState(false);
+  // ============================================================================
+  // Loading State Management
+  // ============================================================================
 
-  // Track previous parameters to detect changes
+  /** Track transition state (parameters changed but data not yet loaded) */
+  const [isTransitioning, setIsTransitioning] = useState(false);
   const [previousParameters, setPreviousParameters] = useState(apiParameters);
 
-  // Detect parameter changes and set transition state
+  /** Detect parameter changes and set transition state */
   useEffect(() => {
     const parametersChanged = JSON.stringify(previousParameters) !== JSON.stringify(apiParameters);
     if (!isQueryEnabled) {
-      // If query is disabled (e.g., search length = 1), never show transitioning
       setIsTransitioning(false);
       setPreviousParameters(apiParameters);
       return;
@@ -238,15 +398,19 @@ export function useTable<T>({ endpoint, queryKey, searchKeys = [], defaultSort }
     }
   }, [apiParameters, previousParameters, isQueryEnabled]);
 
-  // Clear transition state when new data arrives
+  /** Clear transition state when new data arrives */
   useEffect(() => {
     if (data && !isLoading) {
       setIsTransitioning(false);
     }
   }, [data, isLoading]);
 
-  // Determine the appropriate loading state
+  /** Unified loading state for table UI */
   const isTableLoading = isQueryEnabled && (isLoading || isTransitioning || (isFetching && !data));
+
+  // ============================================================================
+  // Return Configuration Objects
+  // ============================================================================
 
   return {
     // Table data
@@ -307,5 +471,8 @@ export function useTable<T>({ endpoint, queryKey, searchKeys = [], defaultSort }
     // Utility functions
     invalidateQueries,
     resetParameters,
+
+    // Query cache management
+    queryCache,
   };
-}
+};

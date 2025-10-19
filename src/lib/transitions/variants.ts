@@ -1,17 +1,13 @@
 import { TransitionConfig, TransitionVariants } from "@/types/shared/transitions";
 
 /**
- * Generates framer-motion animation variants based on the provided transition configuration.
+ * Generates Framer Motion animation variants for page transitions.
  *
- * This function creates standardized animation variants for different transition types including
- * fade, slide, scale, and directional slide animations. Each variant includes initial, animate,
- * and exit states for smooth page transitions.
+ * Creates standardized animation variants with initial, animate, and exit states
+ * for smooth page transitions using opacity and transform animations.
  *
- * @param config - The transition configuration object containing type, duration, and easing
- * @param config.type - The type of transition (fade, slide, scale, slideUp, slideDown, slideLeft, slideRight)
- * @param config.duration - The duration of the animation in seconds
- * @param config.ease - The easing function for the animation
- * @returns The complete transition variants object with initial, animate, exit, and transition properties
+ * @param config - Transition configuration with type, duration, and easing
+ * @returns Complete transition variants for Framer Motion
  */
 export const getTransitionVariants = (config: TransitionConfig): TransitionVariants => {
   const { type, duration, ease } = config;
@@ -60,9 +56,8 @@ export const getTransitionVariants = (config: TransitionConfig): TransitionVaria
     },
   };
 
-  const variants = variantMap[type] || variantMap.fade;
   return {
-    ...variants,
+    ...(variantMap[type] || variantMap.fade),
     transition: baseTransition,
   };
 };

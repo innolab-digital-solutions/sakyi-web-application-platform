@@ -1,4 +1,4 @@
-import { FileQuestionMark, Trash2 } from "lucide-react";
+import { Trash2, TriangleAlert } from "lucide-react";
 import React, { useState } from "react";
 import { toast } from "sonner";
 
@@ -6,7 +6,7 @@ import ConfirmationDialog from "@/components/shared/confirmation-dialog";
 import { Button } from "@/components/ui/button";
 import { ENDPOINTS } from "@/config/endpoints";
 import { useRequest } from "@/hooks/use-request";
-import { Role } from "@/types/admin/role";
+import { Role, RoleApiResponse } from "@/types/admin/role";
 
 interface RoleDeletionDialogProperties {
   role: Role;
@@ -26,6 +26,22 @@ export default function RoleDeletionDialog({ role, className }: RoleDeletionDial
         invalidateQueries: ["admin-roles"],
         mutationOptions: {
           onSuccess: () => {
+            // Optimistic cache update - remove the deleted role from the list
+            request.queryCache.setQueryData<RoleApiResponse>(
+              ["admin-roles"],
+              (previous) => {
+                if (!previous || previous.status !== "success" || !Array.isArray(previous.data)) {
+                  return previous;
+                }
+
+                return {
+                  ...previous,
+                  data: previous.data.filter((r) => r.id !== role.id),
+                } as RoleApiResponse;
+              },
+              { all: true },
+            );
+
             closeDeleteDialog();
             toast.success("Role deleted successfully.");
           },
@@ -52,9 +68,9 @@ export default function RoleDeletionDialog({ role, className }: RoleDeletionDial
       </Button>
 
       <ConfirmationDialog
-        title="Delete Role Confirmation"
+        title="Delete Role"
         description={`Permanently delete the role "${role.name}"? This action cannot be undone.`}
-        icon={FileQuestionMark}
+        icon={TriangleAlert}
         variant="destructive"
         confirmText="Yes, Delete It"
         cancelText="No, Keep It"
