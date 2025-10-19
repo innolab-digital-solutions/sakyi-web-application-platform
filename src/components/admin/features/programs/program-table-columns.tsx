@@ -1,10 +1,11 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { Archive, CircleCheckBig, Ellipsis, SquarePen, Trash2, XCircle } from "lucide-react";
+import { Archive, CircleCheckBig, Ellipsis, SquarePen, XCircle } from "lucide-react";
 import Image from "next/image";
 import React from "react";
 
+import ProgramDeletionDialog from "@/components/admin/features/programs/program-deletion-dialog";
 import SortableHeader from "@/components/shared/table/sortable-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -131,7 +132,9 @@ export const programsTableColumns: ColumnDef<Program>[] = [
     id: "actions",
     enableHiding: false,
     header: "Actions",
-    cell: () => {
+    cell: ({ row }) => {
+      const program = row.original;
+
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -164,14 +167,7 @@ export const programsTableColumns: ColumnDef<Program>[] = [
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
-              <Button
-                variant="outline"
-                className="group hover:!text-destructive flex w-full items-center gap-1.5 !border-none text-sm font-medium text-red-600 shadow-none hover:!bg-red-100/40"
-                aria-label="Delete program"
-              >
-                <Trash2 className="group-hover:text-destructive h-4 w-4 transition-colors duration-150" />
-                <span>Delete</span>
-              </Button>
+              <ProgramDeletionDialog program={program} />
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
