@@ -97,7 +97,7 @@ export const useTable = <T>({
   const [search, setSearch] = useState(urlParameters.search ?? "");
 
   /** Debounced search value to reduce API calls */
-  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState(urlParameters.search ?? "");
 
   /** Sorting state compatible with TanStack Table */
   const [sorting, setSorting] = useState<SortingState>(
@@ -259,13 +259,20 @@ export const useTable = <T>({
     }
 
     return parameters;
-  }, [pageIndex, pageSize, debouncedSearch, sortField, sortDirection, urlParameters]);
+  }, [
+    pageIndex,
+    pageSize,
+    debouncedSearch,
+    sortField,
+    sortDirection,
+    searchParameters?.toString(),
+  ]);
 
   /** Serialize parameters for URL and API requests */
   const queryString = useMemo(() => serializeParameters(apiParameters), [apiParameters]);
 
   /** Enable query for all search states (empty or with content) */
-  const isQueryEnabled = debouncedSearch.length === 0 || debouncedSearch.length > 0;
+  const isQueryEnabled = true;
 
   // ============================================================================
   // Data Fetching

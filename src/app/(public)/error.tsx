@@ -1,3 +1,5 @@
+"use client";
+
 import { Home, RefreshCw } from "lucide-react";
 
 import { ErrorPage } from "@/components/shared/error-page";

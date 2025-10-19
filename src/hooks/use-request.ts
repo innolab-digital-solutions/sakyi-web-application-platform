@@ -121,11 +121,11 @@ export const useRequest = <T = unknown>(queryConfig?: {
   /**
    * TanStack Query for GET requests
    *
-   * Automatically fetches and caches data when queryConfig is provided.
-   * Authentication handled via session cookies.
+   * Always creates a query but only enables it when queryConfig is provided.
+   * For mutations without config, the query remains disabled.
    */
   const requestQuery = useQuery({
-    queryKey: queryConfig?.queryKey || [],
+    queryKey: queryConfig?.queryKey || ["useRequest-disabled"],
     queryFn: async () => {
       if (!queryConfig?.url) {
         throw new Error("Query URL is required");
@@ -144,7 +144,7 @@ export const useRequest = <T = unknown>(queryConfig?: {
 
       return response;
     },
-    enabled: queryConfig?.enabled ?? true,
+    enabled: !!queryConfig && (queryConfig.enabled ?? true),
     staleTime: queryConfig?.staleTime,
     gcTime: queryConfig?.gcTime,
     refetchOnWindowFocus: queryConfig?.refetchOnWindowFocus,
@@ -505,10 +505,20 @@ export const useRequest = <T = unknown>(queryConfig?: {
       isCancelled: state.cancelled,
     }),
     [
-      state,
-      queryConfig,
-      requestQuery,
-      requestMutation,
+      state.loading,
+      state.error,
+      state.cancelled,
+      requestMutation.isPending,
+      requestMutation.error,
+      requestMutation.isSuccess,
+      queryConfig?.queryKey,
+      requestQuery.isLoading,
+      requestQuery.error,
+      requestQuery.isSuccess,
+      requestQuery.data,
+      requestQuery.isFetching,
+      requestQuery.isRefetching,
+      requestQuery.refetch,
       visit,
       get,
       post,

@@ -16,6 +16,7 @@ interface UnitDeletionDialogProperties {
 
 export default function UnitDeletionDialog({ unit, className }: UnitDeletionDialogProperties) {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+
   const request = useRequest();
 
   const closeDeleteDialog = () => setShowDeleteDialog(false);
