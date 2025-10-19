@@ -1,5 +1,3 @@
-"use client";
-
 import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 import { Table } from "@tanstack/react-table";
 import { ChevronDown, Columns3 } from "lucide-react";
@@ -11,11 +9,7 @@ import {
   DropdownMenuContent,
 } from "@/components/ui/dropdown-menu";
 
-interface TableViewOptionsProperties<TData> {
-  table: Table<TData>;
-}
-
-export default function TableViewOptions<TData>({ table }: TableViewOptionsProperties<TData>) {
+export default function TableViewOptions<TData>({ table }: { table: Table<TData> }) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>

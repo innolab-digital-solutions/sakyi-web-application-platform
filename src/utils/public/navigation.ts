@@ -1,13 +1,16 @@
 import { NavItem } from "@/types/shared/navigation";
 
 /**
- * Get the active public navigation
+ * Sets active states on public navigation items
  *
- * @param currentPath - The current route pathname to match against navigation items
- * @param navigation - Array of public navigation items and their nested structure
- * @returns Updated navigation items with active states properly configured
+ * Marks navigation items as active based on current route path.
+ * Parent items are marked active if any subitem matches.
+ *
+ * @param currentPath - Current route pathname
+ * @param navigation - Public navigation items with nested structure
+ * @returns Navigation with active states updated
  */
-export const getActivePublicNav = (currentPath: string, navigation: NavItem[]) => {
+export const getActivePublicNav = (currentPath: string, navigation: NavItem[]): NavItem[] => {
   return navigation.map((item) => ({
     ...item,
     active:

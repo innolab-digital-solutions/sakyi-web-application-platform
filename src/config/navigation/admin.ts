@@ -22,9 +22,21 @@ import { NavGroup } from "@/types/shared/navigation";
 
 /**
  * Admin sidebar navigation configuration
- * Defines the sidebar navigation structure for all admin routes.
  *
- * @returns The admin sidebar navigation
+ * Defines the navigation structure for the admin dashboard sidebar.
+ * Organized into logical groups with icons, paths, and permission requirements.
+ *
+ * Properties:
+ * - **name**: Display text for navigation item
+ * - **icon**: Lucide icon component
+ * - **path**: Route path (use PATHS constants)
+ * - **permission**: Required permission string (empty = always visible)
+ * - **params**: Reserved for future use (filtering, etc.)
+ * - **active**: Managed at runtime by navigation utilities
+ * - **subitems**: Nested navigation items
+ *
+ * Note: Active states and runtime params are managed by
+ * `getActiveAdminNav()` utility, not defined here.
  */
 export const adminNavigation: NavGroup[] = [
   {

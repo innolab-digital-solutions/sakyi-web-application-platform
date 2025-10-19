@@ -1,37 +1,58 @@
 import { breadcrumbs } from "@/config/breadcrumbs";
 import { BreadcrumbItem } from "@/types/shared/breadcrumb";
+import { isAdminListPage } from "@/utils/admin/navigation";
 
-// Create a secure Map for breadcrumb access
+import { addDefaultListParameters } from "./parameters";
+
 const breadcrumbMap = new Map(Object.entries(breadcrumbs));
 
 /**
- * Retrieves breadcrumb items for a given pathname.
- * Handles both exact matches and dynamic routes with ID parameters.
+ * Adds default list parameters to breadcrumb href for admin list pages
+ */
+const addParametersToListPages = (items: BreadcrumbItem[]): BreadcrumbItem[] => {
+  return items.map((item) => {
+    if (item.href && isAdminListPage(item.href)) {
+      return {
+        ...item,
+        href: addDefaultListParameters(item.href),
+      };
+    }
+    return item;
+  });
+};
+
+/**
+ * Retrieves breadcrumb items for a given pathname
  *
- * @param pathname - The current pathname to match against breadcrumb configuration
- * @returns Array of breadcrumb items for the given path, or default breadcrumbs if no match found
+ * Matches pathname against configured breadcrumbs, supporting both exact
+ * matches and dynamic routes with `:id` placeholders. Automatically adds
+ * default query parameters to admin list page links.
+ *
+ * @param pathname - Current route pathname
+ * @returns Breadcrumb items for the path, or default breadcrumbs if no match
  */
 export const getBreadcrumbsForPath = (pathname: string): BreadcrumbItem[] => {
   if (!pathname || typeof pathname !== "string") {
     return getDefaultBreadcrumbs();
   }
 
+  // Sanitize pathname to prevent injection attacks
   const sanitizedPath = pathname.replaceAll(/[^a-zA-Z0-9\/\-_:]/g, "");
 
   const exactMatch = getBreadcrumbs(sanitizedPath);
   if (exactMatch) {
-    return exactMatch;
+    return addParametersToListPages(exactMatch);
   }
 
+  // Try matching against dynamic routes
   const dynamicRoutes = getDynamicRoutes();
-
   for (const route of dynamicRoutes) {
     if (matchesDynamicRoute(sanitizedPath, route)) {
       const id = extractIdFromPath(sanitizedPath);
       const routeConfig = getBreadcrumbs(route);
 
       if (routeConfig && id) {
-        return replacePlaceholders(routeConfig, id);
+        return addParametersToListPages(replacePlaceholders(routeConfig, id));
       }
     }
   }
@@ -40,11 +61,13 @@ export const getBreadcrumbsForPath = (pathname: string): BreadcrumbItem[] => {
 };
 
 /**
- * Adds a new breadcrumb configuration for a specific path.
- * Validates inputs and sanitizes the path before storing.
+ * Dynamically adds a breadcrumb configuration for a specific path
  *
- * @param path - The path to associate with the breadcrumb configuration
- * @param breadcrumbs - Array of breadcrumb items for the specified path
+ * Allows runtime registration of breadcrumb configurations for routes
+ * not defined in the static breadcrumb config. Sanitizes input for security.
+ *
+ * @param path - Route path to associate with breadcrumbs
+ * @param breadcrumbs - Breadcrumb items for the path
  */
 export const addBreadcrumb = (path: string, breadcrumbs: BreadcrumbItem[]) => {
   if (!path || typeof path !== "string" || !Array.isArray(breadcrumbs)) {
@@ -56,60 +79,23 @@ export const addBreadcrumb = (path: string, breadcrumbs: BreadcrumbItem[]) => {
 };
 
 /**
- * Splits a pathname into individual segments, filtering out empty strings.
- *
- * @param pathname - The pathname to split into segments
- * @returns Array of path segments without empty strings
- */
-export const getBreadcrumbSegments = (pathname: string): string[] => {
-  return pathname.split("/").filter(Boolean);
-};
-
-/**
- * Updates the label of a breadcrumb item at a specific index.
- * Returns a new array with the updated breadcrumb item.
- *
- * @param breadcrumbs - The array of breadcrumb items to update
- * @param index - The index of the breadcrumb item to update
- * @param newLabel - The new label to set for the breadcrumb item
- * @returns New array with the updated breadcrumb item
- */
-export const updateBreadcrumbLabel = (
-  breadcrumbs: BreadcrumbItem[],
-  index: number,
-  newLabel: string,
-): BreadcrumbItem[] => {
-  return breadcrumbs.map((item, index_) =>
-    index_ === index ? { ...item, label: newLabel } : item,
-  );
-};
-
-/**
- * Safely retrieves breadcrumb configuration for a given path.
- *
- * @param path - The path to lookup in the breadcrumb configuration
- * @returns Breadcrumb items array if found, undefined otherwise
+ * Retrieves breadcrumb configuration for a path
  */
 const getBreadcrumbs = (path: string): BreadcrumbItem[] | undefined => {
   return breadcrumbMap.get(path) as BreadcrumbItem[] | undefined;
 };
 
 /**
- * Retrieves all dynamic route patterns that contain ID parameters.
- *
- * @returns Array of route patterns that include ":id" placeholders
+ * Gets all dynamic route patterns containing `:id` placeholders
  */
 const getDynamicRoutes = (): string[] => {
   return [...breadcrumbMap.keys()].filter((route) => route.includes(":id"));
 };
 
 /**
- * Checks if a pathname matches a dynamic route pattern.
- * Converts ":id" placeholders to regex patterns for matching.
+ * Checks if pathname matches a dynamic route pattern
  *
- * @param pathname - The pathname to test against the route pattern
- * @param route - The route pattern with ":id" placeholders
- * @returns True if the pathname matches the dynamic route pattern
+ * Converts `:id` placeholders to regex patterns for flexible matching.
  */
 const matchesDynamicRoute = (pathname: string, route: string): boolean => {
   const routePattern = route.replaceAll(":id", "[^/]+");
@@ -119,10 +105,7 @@ const matchesDynamicRoute = (pathname: string, route: string): boolean => {
 };
 
 /**
- * Extracts the ID parameter from the last segment of a pathname.
- *
- * @param pathname - The pathname to extract the ID from
- * @returns The extracted ID string, or undefined if no valid segments found
+ * Extracts ID parameter from the last path segment
  */
 const extractIdFromPath = (pathname: string): string | undefined => {
   const segments = pathname.split("/").filter(Boolean);
@@ -130,11 +113,7 @@ const extractIdFromPath = (pathname: string): string | undefined => {
 };
 
 /**
- * Replaces ":id" placeholders in breadcrumb configuration with actual ID values.
- *
- * @param config - The breadcrumb configuration array with placeholders
- * @param id - The ID value to replace placeholders with
- * @returns New breadcrumb configuration with placeholders replaced
+ * Replaces `:id` placeholders with actual ID values
  */
 const replacePlaceholders = (config: BreadcrumbItem[], id: string): BreadcrumbItem[] => {
   return config.map((item) => ({
@@ -144,9 +123,7 @@ const replacePlaceholders = (config: BreadcrumbItem[], id: string): BreadcrumbIt
 };
 
 /**
- * Returns the default breadcrumb configuration when no specific match is found.
- *
- * @returns Default breadcrumb items for admin dashboard
+ * Returns default breadcrumb configuration
  */
 const getDefaultBreadcrumbs = (): BreadcrumbItem[] => {
   return [{ label: "Admin Control Panel" }, { label: "Overview" }];

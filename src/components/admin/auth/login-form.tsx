@@ -17,28 +17,21 @@ import { getRedirectUrl } from "@/utils/auth/guards";
 
 export default function LoginForm() {
   const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const { login } = useAuth();
 
   const router = useRouter();
   const searchParameters = useSearchParams();
-  const { login } = useAuth();
 
   const form = useForm(
     {
       email: "",
       password: "",
-      device_type: "web",
     },
     {
       validate: LoginSchema,
     },
   );
 
-  /**
-   * Handles the login form submission process
-   * Validates user input, authenticates with backend, and manages error states
-   *
-   * @param event - The form submission event
-   */
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -92,7 +85,6 @@ export default function LoginForm() {
 
   return (
     <div className="mx-auto w-full max-w-md space-y-8">
-      {/* Header */}
       <div className="space-y-3 text-center">
         <CardTitle className="text-foreground text-2xl font-bold tracking-tight">
           Welcome Back
@@ -102,7 +94,6 @@ export default function LoginForm() {
         </CardDescription>
       </div>
 
-      {/* Form */}
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Email Field */}
         <InputField

@@ -27,13 +27,7 @@ export interface UnitsResponse {
   };
 }
 
-export type UnitApiResponse = {
-  status: string;
-  message: string;
-  data: Unit;
-};
-
-export type UnitsListApiResponse = ApiResponse<UnitsResponse>;
+export type UnitApiResponse = ApiResponse<Unit[]> | undefined;
 
 export type UnitFormProperties = {
   mode: "create" | "edit";

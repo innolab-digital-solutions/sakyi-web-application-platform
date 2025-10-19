@@ -1,5 +1,3 @@
-"use client";
-
 import { LucideIcon } from "lucide-react";
 import React from "react";
 
@@ -98,7 +96,7 @@ export default function ConfirmationDialog({
   icon: Icon,
   confirmText = "Confirm",
   cancelText = "Cancel",
-  processingText = "Processing...", // <-- Added default
+  processingText = "Processing...",
   variant = "default",
   showIcon = true,
   maxWidth = "md",

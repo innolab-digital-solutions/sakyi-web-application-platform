@@ -1,13 +1,41 @@
 import { NavGroup } from "@/types/shared/navigation";
 
 /**
- * Get the active admin navigation
+ * Checks if path is an admin list/table page
  *
- * @param currentPath - The current route pathname to match against navigation items
- * @param navigation - Array of navigation groups containing admin menu structure
- * @returns Updated navigation groups with active states properly set
+ * Identifies pages that should have default pagination/sorting parameters
+ * in their URLs (e.g., page=1&per_page=10&sort=id&direction=desc).
+ *
+ * @param path - Path to check
+ * @returns True if path is an admin list page
  */
-export const getActiveAdminNav = (currentPath: string, navigation: NavGroup[]) => {
+export const isAdminListPage = (path: string): boolean => {
+  const listPagePatterns = [
+    /\/admin\/workout-categories$/,
+    /\/admin\/food-categories$/,
+    /\/admin\/units$/,
+    /\/admin\/roles$/,
+    /\/admin\/users$/,
+    /\/admin\/staff$/,
+    /\/admin\/programs$/,
+    /\/admin\/enrollments$/,
+  ];
+
+  return listPagePatterns.some((pattern) => pattern.test(path));
+};
+
+/**
+ * Sets active states on admin navigation items
+ *
+ * Marks navigation items as active based on current route path.
+ * Handles both top-level items and nested subitems, with parent
+ * items marked active if any subitem matches.
+ *
+ * @param currentPath - Current route pathname
+ * @param navigation - Navigation groups with menu structure
+ * @returns Navigation with active states updated
+ */
+export const getActiveAdminNav = (currentPath: string, navigation: NavGroup[]): NavGroup[] => {
   return navigation.map((group) => ({
     ...group,
     items: group.items.map((item) => ({
@@ -28,15 +56,17 @@ export const getActiveAdminNav = (currentPath: string, navigation: NavGroup[]) =
 };
 
 /**
- * Filter navigation groups and items based on permission helper.
- * Special case: /admin/overview (Overview page) has empty permission and is always shown.
- * All other empty permissions are treated as "not configured" and hidden.
- * Items with a non-empty permission string are checked against the canFunction.
- * A parent with subitems is kept if it is allowed OR has at least one allowed subitem.
+ * Filters navigation by user permissions
  *
- * @param navigation - The full navigation config
- * @param canFn - Function that returns true/false for a given permission string
- * @returns Navigation filtered to only items the user can access
+ * Removes navigation items the user doesn't have access to. Special handling:
+ * - `/admin/overview` is always accessible (default landing page)
+ * - Empty permissions are treated as unconfigured and hidden
+ * - Parents with subitems are kept if they're allowed OR have any allowed subitems
+ * - Empty groups are removed
+ *
+ * @param navigation - Full navigation configuration
+ * @param canFunction - Permission check function (returns true if allowed)
+ * @returns Filtered navigation containing only accessible items
  */
 export const filterNavByPermission = (
   navigation: NavGroup[],
@@ -46,17 +76,16 @@ export const filterNavByPermission = (
     .map((group) => {
       const filteredItems = group.items
         .map((item) => {
-          // Special case: Overview page (/admin/overview) is always accessible
           const isOverviewPage = item.path === "/admin/overview";
 
-          // Empty permission = not configured (hide), except for Overview page
-          // Non-empty permission = check if user has that permission
+          // Check parent permission
           const parentAllowed = isOverviewPage
             ? true
             : !item.permission || item.permission.trim().length === 0
               ? false
               : canFunction(item.permission);
 
+          // Handle items with subitems
           if (item.subitems && item.subitems.length > 0) {
             const filteredSubitems = item.subitems.filter((sub) =>
               !sub.permission || sub.permission.trim().length === 0
