@@ -7,7 +7,7 @@ interface ResourceListPageProperties {
   icon: LucideIcon;
   title: string;
   description: string;
-  createTrigger: ReactNode;
+  createTrigger?: ReactNode;
   table: ReactNode;
 }
 

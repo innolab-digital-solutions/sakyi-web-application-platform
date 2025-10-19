@@ -1,29 +1,17 @@
-"use client";
-
 import React from "react";
 
 import { programsTableColumns } from "@/components/admin/features/programs/program-table-columns";
-import DataTable from "@/components/shared/table/data-table";
+import ResourceTable from "@/components/admin/shared/resource-table";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ENDPOINTS } from "@/config/endpoints";
-import { useTable } from "@/hooks/use-table";
 import { Program } from "@/types/admin/program";
 
 export default function ProgramTable() {
-  const { data, searchConfig, paginationConfig, sortingConfig, serverConfig } = useTable<Program>({
-    endpoint: ENDPOINTS.ADMIN.PROGRAMS.INDEX,
-    queryKey: ["admin-programs"],
-    defaultSort: { field: "id", direction: "desc" },
-  });
-
   return (
-    <DataTable
+    <ResourceTable<Program>
+      endpoint={ENDPOINTS.ADMIN.PROGRAMS.INDEX}
+      queryKey={["admin-programs"]}
       columns={programsTableColumns}
-      data={data}
-      search={searchConfig}
-      pagination={paginationConfig}
-      sorting={sortingConfig}
-      server={serverConfig}
       skeleton={{
         customSkeletons: {
           name: (
@@ -43,10 +31,7 @@ export default function ProgramTable() {
           ),
         },
       }}
-      ui={{
-        emptyMessage: "No programs found. Create your first program to get started.",
-        showColumnVisibility: false,
-      }}
+      emptyMessage="No programs found. Create your first program to get started."
     />
   );
 }

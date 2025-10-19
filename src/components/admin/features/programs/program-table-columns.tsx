@@ -108,7 +108,7 @@ export const programsTableColumns: ColumnDef<Program>[] = [
       const { duration_value, duration_unit } = row.original;
       if (!duration_value || !duration_unit) return <span>-</span>;
       return (
-        <span className="text-foreground text-[14px] font-medium">
+        <span className="text-sm font-medium text-neutral-800">
           {duration_value} {durationUnitLabel[duration_unit]}
         </span>
       );
@@ -121,7 +121,7 @@ export const programsTableColumns: ColumnDef<Program>[] = [
       const price = row.getValue("price") as string;
       const currency = row.original.currency;
       return (
-        <span className="text-foreground font-medium">
+        <span className="text-sm font-medium text-neutral-800">
           {price} {currency}
         </span>
       );

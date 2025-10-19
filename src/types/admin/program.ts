@@ -23,7 +23,7 @@ export interface ProgramsResponse {
   };
 }
 
-export type ProgramApiResponse = ApiResponse<ProgramsResponse>;
+export type ProgramApiResponse = ApiResponse<Program[]>;
 
 export type ProgramFormProperties = {
   mode: "create" | "edit";

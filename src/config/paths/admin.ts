@@ -17,9 +17,6 @@ export const ADMIN_PATHS = {
   /** Program management routes */
   PROGRAMS: {
     LIST: "/admin/programs",
-    CREATE: "/admin/programs/create",
-    EDIT: (id: string | number) => `/admin/programs/${id}/edit`,
-    DETAIL: (id: string | number) => `/admin/programs/${id}`,
   },
 
   /** Role and permission management routes */

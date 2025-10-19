@@ -40,6 +40,13 @@ export const adminBreadcrumbs: Breadcrumbs = {
     { label: "Assign Permissions" },
   ],
 
+  /** Programs list page */
+  "/admin/programs": [
+    { label: "Admin Control Panel" },
+    { label: "Programs & Clients" },
+    { label: "Program Management", href: PATHS.ADMIN.PROGRAMS.LIST },
+  ],
+
   /** Workout categories list page */
   "/admin/workout-categories": [
     { label: "Admin Control Panel" },

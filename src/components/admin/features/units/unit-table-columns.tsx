@@ -25,7 +25,7 @@ export const unitsTableColumns: ColumnDef<Unit>[] = [
     header: ({ column }) => <SortableHeader column={column}>Abbreviation</SortableHeader>,
     cell: ({ row }) => {
       const abbreviation = row.getValue("abbreviation") as string;
-      return <div className="text-foreground font-medium">{abbreviation}</div>;
+      return <div className="text-sm font-medium text-neutral-800">{abbreviation}</div>;
     },
   },
   {
