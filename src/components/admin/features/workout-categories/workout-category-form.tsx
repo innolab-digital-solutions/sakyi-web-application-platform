@@ -6,25 +6,18 @@ import React, { useEffect } from "react";
 import { toast } from "sonner";
 
 import { ComboBoxField } from "@/components/shared/forms/combo-box-field";
+import { FormDialog } from "@/components/shared/forms/form-dialog";
 import { InputField } from "@/components/shared/forms/input-field";
 import { TextareaField } from "@/components/shared/forms/textarea-field";
-import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Spinner } from "@/components/ui/spinner";
 import { ENDPOINTS } from "@/config/endpoints";
 import { useForm } from "@/hooks/use-form";
 import { useRequest } from "@/hooks/use-request";
 import { WorkoutCategorySchema } from "@/lib/validations/admin/workout-category-schema";
-import { WorkoutCategory, WorkoutCategoryFormProperties } from "@/types/admin/workout-category";
+import {
+  WorkoutCategory,
+  WorkoutCategoryApiResponse,
+  WorkoutCategoryFormProperties,
+} from "@/types/admin/workout-category";
 import { buildDefaultListUrl } from "@/utils/shared/parameters";
 
 export default function WorkoutCategoryForm({
@@ -77,12 +70,57 @@ export default function WorkoutCategoryForm({
         invalidateQueries: ["admin-workout-categories", "meta-workout-categories"],
         mutationOptions: {
           onSuccess: (response) => {
-            handleDialogOpenChange(false);
+            form.queryCache.setQueryData<WorkoutCategoryApiResponse>(
+              ["admin-workout-categories"],
+              (previous) => {
+                const base: WorkoutCategoryApiResponse =
+                  previous && previous.status === "success" && Array.isArray(previous.data)
+                    ? previous
+                    : ({
+                        status: "success",
+                        data: [] as WorkoutCategory[],
+                        message: previous?.message ?? "",
+                      } as WorkoutCategoryApiResponse);
+
+                const updatedFromServer = (response as WorkoutCategoryApiResponse)?.data;
+                const baseData = (base?.data as WorkoutCategory[]) ?? [];
+
+                if (isEdit && defaultValues) {
+                  const existing = baseData.find((r) => r.id === defaultValues.id);
+                  const next =
+                    updatedFromServer ??
+                    (existing
+                      ? {
+                          ...existing,
+                          name: String(form.data.name ?? ""),
+                          description: String(form.data.description ?? ""),
+                          parent: defaultValues.parent,
+                        }
+                      : undefined);
+                  if (!next) return base;
+                  return {
+                    ...base,
+                    data: baseData.map((r) => (r.id === defaultValues.id ? next : r)),
+                  } as WorkoutCategoryApiResponse;
+                }
+
+                if (!isEdit && updatedFromServer) {
+                  return {
+                    ...base,
+                    data: [updatedFromServer, ...baseData],
+                  } as WorkoutCategoryApiResponse;
+                }
+                return base as WorkoutCategoryApiResponse;
+              },
+              { all: true },
+            );
 
             if (!isEdit) {
               const url = buildDefaultListUrl(pathname, searchParameters);
               router.replace(url, { scroll: false });
             }
+
+            handleDialogOpenChange(false);
 
             toast.success(response.message);
           },
@@ -128,116 +166,82 @@ export default function WorkoutCategoryForm({
   };
 
   return (
-    <Dialog open={dialogOpen} onOpenChange={handleDialogOpenChange}>
-      {trigger ? <DialogTrigger asChild>{trigger}</DialogTrigger> : undefined}
-      <DialogContent
-        showCloseButton={false}
-        className="w-[95vw] max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl"
-      >
-        <form onSubmit={handleSubmit} className="w-full p-2.5">
-          <DialogHeader>
-            <DialogTitle className="text-md mb-1 flex items-center gap-2 font-bold">
-              <FolderKanban className="h-5 w-5" />
-              {title ?? (isEdit ? "Edit Workout Category" : "Create a New Workout Category")}
-            </DialogTitle>
+    <FormDialog
+      trigger={trigger}
+      open={dialogOpen}
+      onOpenChange={handleDialogOpenChange}
+      onClose={() => form.reset()}
+      title={title ?? (isEdit ? "Edit Workout Category" : "Create a New Workout Category")}
+      description={
+        description ??
+        (isEdit
+          ? "Edit the name, parent, or description of this workout category. Changes will update how workouts are organized."
+          : "Create a workout category with a name, optional parent, and description to organize your workouts.")
+      }
+      icon={<FolderKanban className="h-5 w-5" />}
+      onSubmit={handleSubmit}
+      processing={form.processing}
+      isEdit={isEdit}
+      submitLabel={isEdit ? "Save Changes" : "Create Workout Category"}
+      submittingLabel={isEdit ? "Saving Changes..." : "Creating Workout Category..."}
+    >
+      {/* Parent Category Field */}
+      <ComboBoxField
+        id="parent_id"
+        name="parent_id"
+        label="Parent Category"
+        description="Select a parent category if this is a subcategory"
+        placeholder="Select parent category..."
+        searchPlaceholder="Search categories..."
+        emptyMessage="No categories found."
+        options={[
+          { value: "", label: "No parent (Root category)" },
+          ...(Array.isArray(workoutCategories?.data) && workoutCategories !== undefined
+            ? workoutCategories.data
+                .filter(
+                  (category: WorkoutCategory) =>
+                    // In edit mode, exclude the current category from parent options
+                    !isEdit || category.id !== defaultValues?.id,
+                )
+                .map((category: WorkoutCategory) => ({
+                  value: String(category.id),
+                  label: category.name,
+                }))
+            : []),
+        ]}
+        value={String(form.data.parent_id ?? "")}
+        onChange={(value: string) => form.setData("parent_id", value)}
+        error={form.errors.parent_id as string}
+        disabled={form.processing}
+        allowClear
+      />
 
-            <DialogDescription className="text-muted-foreground text-sm font-medium">
-              {description ??
-                (isEdit
-                  ? "Edit the name, parent, or description of this workout category. Changes will update how workouts are organized."
-                  : "Create a workout category with a name, optional parent, and description to organize your workouts.")}
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-5 py-5">
-            <ComboBoxField
-              id="parent_id"
-              name="parent_id"
-              label="Parent Category"
-              description="Select a parent category if this is a subcategory"
-              placeholder="Select parent category..."
-              searchPlaceholder="Search categories..."
-              emptyMessage="No categories found."
-              options={[
-                { value: "", label: "No parent (Root category)" },
-                ...(Array.isArray(workoutCategories?.data) && workoutCategories !== undefined
-                  ? workoutCategories.data
-                      .filter(
-                        (category: WorkoutCategory) =>
-                          // In edit mode, exclude the current category from parent options
-                          !isEdit || category.id !== defaultValues?.id,
-                      )
-                      .map((category: WorkoutCategory) => ({
-                        value: String(category.id),
-                        label: category.name,
-                      }))
-                  : []),
-              ]}
-              value={String(form.data.parent_id ?? "")}
-              onChange={(value: string) => form.setData("parent_id", value)}
-              error={form.errors.parent_id as string}
-              disabled={form.processing}
-              allowClear
-            />
+      {/* Name Field */}
+      <InputField
+        id="name"
+        name="name"
+        type="text"
+        value={String(form.data.name ?? "")}
+        onChange={(event) => form.setData("name", event.target.value)}
+        error={form.errors.name as string}
+        label="Name"
+        placeholder="e.g., Upper Body, Lower Body, etc."
+        required
+        disabled={form.processing}
+      />
 
-            <InputField
-              id="name"
-              name="name"
-              type="text"
-              value={String(form.data.name ?? "")}
-              onChange={(event) => form.setData("name", event.target.value)}
-              error={form.errors.name as string}
-              label="Name"
-              placeholder="e.g., Upper Body, Lower Body, etc."
-              required
-              disabled={form.processing}
-            />
-
-            <TextareaField
-              id="description"
-              name="description"
-              className="min-h-[96px]"
-              placeholder="Describe the workout category's purpose and responsibilities..."
-              value={String(form.data.description ?? "")}
-              onChange={(event) => form.setData("description", event.target.value)}
-              error={form.errors.description as string}
-              label="Description"
-              disabled={form.processing}
-            />
-          </div>
-
-          <DialogFooter className="flex items-center space-x-1">
-            <DialogClose asChild>
-              <Button
-                type="button"
-                variant="outline"
-                disabled={form.processing}
-                className="cursor-pointer hover:bg-gray-100 hover:text-gray-800"
-              >
-                Cancel
-              </Button>
-            </DialogClose>
-
-            <Button
-              type="submit"
-              variant="default"
-              disabled={form.processing}
-              className="flex cursor-pointer items-center gap-2 font-semibold"
-            >
-              {form.processing ? (
-                <>
-                  <Spinner />
-                  {isEdit ? "Saving Changes..." : "Creating Workout Category..."}
-                </>
-              ) : (
-                <>
-                  <FolderKanban className="h-4 w-4" />
-                  {isEdit ? "Save Changes" : "Create Workout Category"}
-                </>
-              )}
-            </Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
+      {/* Description Field */}
+      <TextareaField
+        id="description"
+        name="description"
+        className="min-h-[96px]"
+        placeholder="Describe the workout category's purpose and responsibilities..."
+        value={String(form.data.description ?? "")}
+        onChange={(event) => form.setData("description", event.target.value)}
+        error={form.errors.description as string}
+        label="Description"
+        disabled={form.processing}
+      />
+    </FormDialog>
   );
 }

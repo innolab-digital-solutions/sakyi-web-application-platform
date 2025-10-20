@@ -24,7 +24,7 @@ export interface WorkoutCategoriesResponse {
   };
 }
 
-export type WorkoutCategoryApiResponse = ApiResponse<WorkoutCategoriesResponse>;
+export type WorkoutCategoryApiResponse = ApiResponse<WorkoutCategory[]> | undefined;
 
 export type WorkoutCategoryFormProperties = {
   mode: "create" | "edit";

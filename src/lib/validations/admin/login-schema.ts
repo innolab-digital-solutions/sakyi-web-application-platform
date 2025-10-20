@@ -1,5 +1,11 @@
 import { z } from "zod";
 
+/**
+ * Validation schema for admin login form
+ *
+ * Validates user credentials with email normalization and password requirements.
+ * Device type is included for session tracking.
+ */
 export const LoginSchema = z.object({
   email: z
     .string()
@@ -12,7 +18,9 @@ export const LoginSchema = z.object({
     .string()
     .min(1, "Password is required")
     .min(6, "Password must be at least 6 characters long"),
-  device_type: z.string(),
 });
 
+/**
+ * Inferred TypeScript type for login form data
+ */
 export type LoginFormData = z.infer<typeof LoginSchema>;

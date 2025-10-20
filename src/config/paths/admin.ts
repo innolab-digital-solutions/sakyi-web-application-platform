@@ -1,16 +1,20 @@
 /**
- * Administrative dashboard routes
- * Protected routes requiring authentication and admin privileges
+ * Admin dashboard route paths
  *
- * @returns The administrative dashboard route paths
+ * Protected routes requiring authentication and appropriate permissions.
+ * All routes are prefixed with `/admin`.
  */
 export const ADMIN_PATHS = {
+  /** Admin root - redirects to overview or login based on auth */
   ROOT: "/admin",
 
+  /** Admin login page */
   LOGIN: "/admin/login",
 
+  /** Main dashboard overview */
   OVERVIEW: "/admin/overview",
 
+  /** Program management routes */
   PROGRAMS: {
     LIST: "/admin/programs",
     CREATE: "/admin/programs/create",
@@ -18,27 +22,25 @@ export const ADMIN_PATHS = {
     DETAIL: (id: string | number) => `/admin/programs/${id}`,
   },
 
+  /** Role and permission management routes */
   ROLES: {
     LIST: "/admin/roles",
     ASSIGN_PERMISSIONS: (id: string | number) => `/admin/roles/${id}/assign-permissions`,
   },
 
+  /** Workout category management routes */
   WORKOUT_CATEGORIES: {
     LIST: "/admin/workout-categories",
   },
 
+  /** Unit of measurement management routes */
   UNITS: {
     LIST: "/admin/units",
-    CREATE: "/admin/units/create",
-    EDIT: (id: string | number) => `/admin/units/${id}/edit`,
-    DETAIL: (id: string | number) => `/admin/units/${id}`,
   },
 
+  /** Food category management routes */
   FOOD_CATEGORIES: {
     LIST: "/admin/food-categories",
-    CREATE: "/admin/food-categories/create",
-    EDIT: (id: string | number) => `/admin/food-categories/${id}/edit`,
-    DETAIL: (id: string | number) => `/admin/food-categories/${id}`,
   },
 
   FOOD_ITEMS: {

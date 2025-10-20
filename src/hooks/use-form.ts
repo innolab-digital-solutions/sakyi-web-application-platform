@@ -1,16 +1,23 @@
+/* eslint-disable no-commented-code/no-commented-code */
 "use client";
 
 import { useMutation } from "@tanstack/react-query";
 import { useCallback, useRef, useState } from "react";
 import { z, ZodType } from "zod";
 
-import { useQueryManager } from "@/hooks/use-query-manager";
+import { useQueryCache } from "@/hooks/use-query-cache";
 import { http } from "@/lib/api/client";
 import { ApiError, ApiResponse } from "@/types/shared/api";
 
+/**
+ * Form configuration options
+ */
 type FormOptions<TSchema extends ZodType> = {
+  /** Zod schema for form validation */
   validate?: TSchema;
+  /** Default values for form fields */
   defaults?: Partial<z.infer<TSchema>>;
+  /** TanStack Query integration options */
   tanstack?: {
     queryKey?: string[];
     invalidateQueries?: string[] | string[][];
@@ -22,15 +29,47 @@ type FormOptions<TSchema extends ZodType> = {
   };
 };
 
+/**
+ * Form submission callback options
+ */
 type SubmitOptions<T> = {
   onSuccess?: (response: ApiResponse<T>) => void;
   onError?: (error: ApiError) => void;
 };
 
+/**
+ * Form field errors map
+ */
 type Errors<T> = Partial<Record<keyof T | string, string>>;
 
 /**
- * Form state management hook with validation
+ * Form state management hook with validation and submission
+ *
+ * Provides comprehensive form functionality including:
+ * - Zod schema validation with field-level errors
+ * - Dirty state tracking for unsaved changes
+ * - TanStack Query integration for mutations
+ * - Automatic query invalidation after success
+ * - Request cancellation support
+ * - Field-level and form-level error handling
+ *
+ * @template TSchema - Zod schema type for validation
+ * @param initial - Initial form data values
+ * @param options - Form configuration options
+ * @returns Form state, handlers, and HTTP method shortcuts
+ *
+ * @example
+ * Basic usage with validation:
+ * const form = useForm({ name: '', email: '' }, {
+ *   validate: UserSchema,
+ *   tanstack: {
+ *     invalidateQueries: ['users'],
+ *     mutationOptions: {
+ *       onSuccess: () => toast.success('User created!'),
+ *       onError: (error) => toast.error(error.message)
+ *     }
+ *   }
+ * });
  */
 export const useForm = <TSchema extends ZodType>(
   initial: z.infer<TSchema>,
@@ -38,24 +77,39 @@ export const useForm = <TSchema extends ZodType>(
 ) => {
   type T = z.infer<TSchema> & Record<string, unknown>;
 
-  const queryManager = useQueryManager();
+  const queryCache = useQueryCache();
 
-  // Core form state
+  // ============================================================================
+  // State Management
+  // ============================================================================
+
+  /** Current form field values */
   const [data, setDataState] = useState<T>(initial as T);
+
+  /** Default values for reset functionality */
   const [defaults, setDefaultsState] = useState<T>(initial as T);
+
+  /** Field-level validation errors */
   const [errors, setErrors] = useState<Errors<T>>({});
+
+  /** Processing state for manual submissions (non-TanStack) */
   const [processing, setProcessing] = useState(false);
+
+  /** Tracks if form has unsaved changes */
   const [isDirty, setIsDirty] = useState(false);
 
-  // Request cancellation controller
+  /** AbortController for request cancellation */
   const abortController = useRef<AbortController | null>(null);
+
+  // ============================================================================
+  // TanStack Query Mutation
+  // ============================================================================
 
   /**
    * TanStack Query mutation for form submissions
    *
-   * Handles form submission with error handling and query invalidation.
-   * Authentication is handled automatically via session cookies.
-   * Automatically manages request cancellation and state updates on success/error.
+   * Handles form submission with automatic error handling, query invalidation,
+   * and state management. Authentication is handled via session cookies.
    */
   const formMutation = useMutation({
     mutationFn: async ({
@@ -67,7 +121,6 @@ export const useForm = <TSchema extends ZodType>(
       url: string;
       data: T;
     }) => {
-      // Forms should NEVER show error pages - always handle inline
       const response = await http[method as keyof typeof http]<T>(url, formData, {
         throwOnError: false,
       });
@@ -81,13 +134,12 @@ export const useForm = <TSchema extends ZodType>(
     onSuccess: (response) => {
       options.tanstack?.mutationOptions?.onSuccess?.(response);
 
-      // Invalidate specified queries
       if (options.tanstack?.invalidateQueries) {
         for (const queryKey of options.tanstack.invalidateQueries) {
           if (Array.isArray(queryKey)) {
-            queryManager.invalidateQueries(queryKey);
+            queryCache.invalidateQueries(queryKey);
           } else {
-            queryManager.invalidateQueries([queryKey]);
+            queryCache.invalidateQueries([queryKey]);
           }
         }
       }
@@ -109,11 +161,21 @@ export const useForm = <TSchema extends ZodType>(
     },
   });
 
+  // ============================================================================
+  // Form Field Management
+  // ============================================================================
+
   /**
-   * Updates form field values
+   * Update form field values
    *
-   * @param keyOrData - Field name to update or partial data object
-   * @param value - New field value (when keyOrData is a string)
+   * Automatically tracks dirty state by comparing with defaults.
+   *
+   * @param keyOrData - Single field name or partial data object
+   * @param value - New value (required when keyOrData is a field name)
+   *
+   * @example
+   * Single field: form.setData('email', 'user@example.com')
+   * Multiple fields: form.setData({ email: 'user@example.com', name: 'John' })
    */
   const setData = useCallback(
     <K extends keyof T>(keyOrData: K | Partial<T>, value?: T[K]) => {
@@ -131,18 +193,22 @@ export const useForm = <TSchema extends ZodType>(
   );
 
   /**
-   * Resets form fields to their default values
+   * Reset form fields to default values
    *
-   * @param fields - Specific fields to reset (resets all if none provided)
+   * Clears all errors and updates dirty state.
+   *
+   * @param fields - Specific fields to reset (resets all if omitted)
+   *
+   * @example
+   * Reset all: form.reset()
+   * Reset specific: form.reset('email', 'name')
    */
   const reset = useCallback(
     (...fields: (keyof T)[]) => {
       if (fields.length === 0) {
-        // Reset all fields
         setDataState(defaults);
         setIsDirty(false);
       } else {
-        // Reset only specified fields
         setDataState((previous) => {
           const next = { ...previous } as T;
           for (const f of fields) next[f] = defaults[f];
@@ -155,9 +221,61 @@ export const useForm = <TSchema extends ZodType>(
   );
 
   /**
-   * Clears validation errors
+   * Update default values for form fields
    *
-   * @param fields - Specific error fields to clear (clears all if none provided)
+   * Useful after successful submission or data loading.
+   *
+   * @param field - Field name, partial data, or omit to use current data
+   * @param value - New default value (when field is a string)
+   *
+   * @example
+   * Use current data: form.setDefaults()
+   * Set single field: form.setDefaults('email', 'new@example.com')
+   * Set multiple: form.setDefaults({ email: 'new@example.com', name: 'Jane' })
+   */
+  const setDefaults = useCallback(
+    (field?: keyof T | Partial<T>, value?: T[keyof T]) => {
+      if (!field) {
+        setDefaultsState(data);
+      } else if (typeof field === "string") {
+        setDefaultsState((previous) => ({ ...previous, [field]: value }) as T);
+      } else {
+        setDefaultsState((previous) => ({ ...previous, ...(field as Partial<T>) }) as T);
+      }
+    },
+    [data],
+  );
+
+  // ============================================================================
+  // Error Handling
+  // ============================================================================
+
+  /**
+   * Set validation errors for form fields
+   *
+   * @param field - Field name, multiple errors object, or string key
+   * @param message - Error message (required when field is a string)
+   *
+   * @example
+   * Single field: form.setError('email', 'Invalid email')
+   * Multiple: form.setError({ email: 'Invalid', name: 'Required' })
+   */
+  const setError = useCallback((field: keyof T | string | Errors<T>, message?: string) => {
+    if (typeof field === "string" && message) {
+      setErrors((previous) => ({ ...previous, [field]: message }));
+    } else {
+      setErrors((previous) => ({ ...previous, ...(field as Errors<T>) }));
+    }
+  }, []);
+
+  /**
+   * Clear validation errors
+   *
+   * @param fields - Specific fields to clear (clears all if omitted)
+   *
+   * @example
+   * Clear all: form.clearErrors()
+   * Clear specific: form.clearErrors('email', 'name')
    */
   const clearErrors = useCallback((...fields: (keyof T | string)[]) => {
     if (fields.length === 0) {
@@ -165,62 +283,20 @@ export const useForm = <TSchema extends ZodType>(
     } else {
       setErrors((previous) => {
         const next = { ...previous };
-
-        // Remove specified error fields
         for (const f of fields) delete next[f];
         return next;
       });
     }
   }, []);
 
+  // ============================================================================
+  // Validation
+  // ============================================================================
+
   /**
-   * Sets validation errors for form fields
+   * Run Zod schema validation on current form data
    *
-   * @param field - Field name or error object to set
-   * @param message - Error message (when field is a string)
-   */
-  const setError = useCallback((field: keyof T | string | Errors<T>, message?: string) => {
-    if (typeof field === "string" && message) {
-      // Set single field error
-      setErrors((previous) => ({ ...previous, [field]: message }));
-    } else {
-      // Merge multiple errors
-      setErrors((previous) => ({ ...previous, ...(field as Errors<T>) }));
-    }
-  }, []);
-
-  /**
-   * Cancels the current form submission request
-   */
-  const cancel = useCallback(() => {
-    abortController.current?.abort();
-    setProcessing(false);
-  }, []);
-
-  /**
-   * Updates the default values for form fields
-   *
-   * @param field - Field name or partial data object
-   * @param value - New default value (when field is a string)
-   */
-  const setDefaults = useCallback(
-    (field?: keyof T | Partial<T>, value?: T[keyof T]) => {
-      if (!field) {
-        // Set current data as new defaults
-        setDefaultsState(data);
-      } else if (typeof field === "string") {
-        // Set single field default
-        setDefaultsState((previous) => ({ ...previous, [field]: value }) as T);
-      } else {
-        // Merge multiple defaults
-        setDefaultsState((previous) => ({ ...previous, ...(field as Partial<T>) }) as T);
-      }
-    },
-    [data],
-  );
-
-  /**
-   * Runs Zod validation on current form data
+   * Converts Zod validation errors to field-level error format.
    *
    * @returns True if validation passes, false otherwise
    */
@@ -229,7 +305,6 @@ export const useForm = <TSchema extends ZodType>(
 
     const result = options.validate.safeParse(data);
     if (!result.success) {
-      // Convert Zod errors to form error format
       const zodErrors: Errors<T> = {};
       for (const error of result.error.issues) {
         const path = error.path.join(".") as keyof T;
@@ -242,12 +317,39 @@ export const useForm = <TSchema extends ZodType>(
     return true;
   }, [data, options.validate]);
 
+  // ============================================================================
+  // Request Management
+  // ============================================================================
+
   /**
-   * Submits form data to the specified endpoint
+   * Cancel the current form submission
    *
-   * @param method - HTTP method for the request
+   * Aborts the HTTP request and updates processing state.
+   */
+  const cancel = useCallback(() => {
+    abortController.current?.abort();
+    setProcessing(false);
+  }, []);
+
+  // ============================================================================
+  // Form Submission
+  // ============================================================================
+
+  /**
+   * Submit form data to API endpoint
+   *
+   * Handles validation, submission, and error processing. Uses TanStack Query
+   * mutation when configured, otherwise falls back to manual HTTP request.
+   *
+   * @param method - HTTP method to use
    * @param url - API endpoint URL
-   * @param submitOptions - Additional submission options
+   * @param submitOptions - Success/error callbacks
+   *
+   * @example
+   * form.submit('post', '/api/users', {
+   *   onSuccess: (res) => toast.success(res.message),
+   *   onError: (err) => toast.error(err.message)
+   * });
    */
   const submit = useCallback(
     async (
@@ -257,10 +359,9 @@ export const useForm = <TSchema extends ZodType>(
     ) => {
       clearErrors();
 
-      // Validate form data before submission
       if (!runValidation()) return;
 
-      // If TanStack Query is configured and it's a mutation method, use TanStack Query
+      /** Use TanStack Query mutation for write operations when configured */
       if (
         options.tanstack &&
         (method === "post" || method === "put" || method === "patch" || method === "delete")
@@ -279,28 +380,23 @@ export const useForm = <TSchema extends ZodType>(
         return;
       }
 
-      // Fallback to manual request for GET/DELETE or when TanStack Query is not configured
+      /** Fallback to manual HTTP request */
       setProcessing(true);
       abortController.current = new AbortController();
 
       try {
-        // Request options (session auth handled automatically via cookies)
         const requestOptions = {
           signal: abortController.current.signal,
         };
 
-        // Execute appropriate HTTP method (GET/DELETE don't send body data)
-        // Forms should NEVER show error pages - always handle errors inline
         const response = await (method === "get" || method === "delete"
           ? http[method]<T>(url, { ...requestOptions, throwOnError: false })
           : http[method]<T>(url, data, { ...requestOptions, throwOnError: false }));
 
         if (response.status === "error") {
-          // Handle API validation errors
           setErrors((response.errors || {}) as Errors<T>);
           submitOptions.onError?.(response as ApiError);
         } else {
-          // Handle successful submission
           submitOptions.onSuccess?.(response);
           setErrors({});
           setIsDirty(false);
@@ -312,6 +408,16 @@ export const useForm = <TSchema extends ZodType>(
     [data, runValidation, clearErrors, options, formMutation],
   );
 
+  // ============================================================================
+  // HTTP Method Shortcuts
+  // ============================================================================
+
+  /**
+   * Submit form using GET method
+   *
+   * @param url - API endpoint URL
+   * @param options - Success/error callbacks
+   */
   const get = useCallback(
     (url: string, options_?: SubmitOptions<T>) => {
       return submit("get", url, options_);
@@ -319,6 +425,12 @@ export const useForm = <TSchema extends ZodType>(
     [submit],
   );
 
+  /**
+   * Submit form using POST method
+   *
+   * @param url - API endpoint URL
+   * @param options - Success/error callbacks
+   */
   const post = useCallback(
     (url: string, options_?: SubmitOptions<T>) => {
       return submit("post", url, options_);
@@ -326,6 +438,12 @@ export const useForm = <TSchema extends ZodType>(
     [submit],
   );
 
+  /**
+   * Submit form using PUT method
+   *
+   * @param url - API endpoint URL
+   * @param options - Success/error callbacks
+   */
   const put = useCallback(
     (url: string, options_?: SubmitOptions<T>) => {
       return submit("put", url, options_);
@@ -333,6 +451,12 @@ export const useForm = <TSchema extends ZodType>(
     [submit],
   );
 
+  /**
+   * Submit form using PATCH method
+   *
+   * @param url - API endpoint URL
+   * @param options - Success/error callbacks
+   */
   const patch = useCallback(
     (url: string, options_?: SubmitOptions<T>) => {
       return submit("patch", url, options_);
@@ -340,6 +464,12 @@ export const useForm = <TSchema extends ZodType>(
     [submit],
   );
 
+  /**
+   * Submit form using DELETE method
+   *
+   * @param url - API endpoint URL
+   * @param options - Success/error callbacks
+   */
   const del = useCallback(
     (url: string, options_?: SubmitOptions<T>) => {
       return submit("delete", url, options_);
@@ -367,8 +497,8 @@ export const useForm = <TSchema extends ZodType>(
     cancel,
     submit,
 
-    // Query management
-    queryManager,
+    // Query cache management
+    queryCache,
 
     // HTTP method shortcuts
     get,

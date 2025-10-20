@@ -24,7 +24,7 @@ export interface FoodCategoriesResponse {
   };
 }
 
-export type FoodCategoryApiResponse = ApiResponse<FoodCategoriesResponse>;
+export type FoodCategoryApiResponse = ApiResponse<FoodCategory[]> | undefined;
 
 export type FoodCategoryFormProperties = {
   mode: "create" | "edit";

@@ -1,4 +1,4 @@
-import { FileQuestionMark, Trash2 } from "lucide-react";
+import { Trash2, TriangleAlert } from "lucide-react";
 import React, { useState } from "react";
 import { toast } from "sonner";
 
@@ -6,7 +6,7 @@ import ConfirmationDialog from "@/components/shared/confirmation-dialog";
 import { Button } from "@/components/ui/button";
 import { ENDPOINTS } from "@/config/endpoints";
 import { useRequest } from "@/hooks/use-request";
-import { WorkoutCategory } from "@/types/admin/workout-category";
+import { WorkoutCategory, WorkoutCategoryApiResponse } from "@/types/admin/workout-category";
 import { cn } from "@/utils/shared/cn";
 
 interface WorkoutCategoryDeletionDialogProperties {
@@ -30,6 +30,22 @@ export default function WorkoutCategoryDeletionDialog({
         invalidateQueries: ["admin-workout-categories"],
         mutationOptions: {
           onSuccess: () => {
+            // Optimistic cache update - remove the deleted workout category from the list
+            request.queryCache.setQueryData<WorkoutCategoryApiResponse>(
+              ["admin-workout-categories"],
+              (previous) => {
+                if (!previous || previous.status !== "success" || !Array.isArray(previous.data)) {
+                  return previous;
+                }
+
+                return {
+                  ...previous,
+                  data: previous.data.filter((wc) => wc.id !== workoutCategory.id),
+                } as WorkoutCategoryApiResponse;
+              },
+              { all: true },
+            );
+
             closeDeleteDialog();
             toast.success("Workout category deleted successfully.");
           },
@@ -59,9 +75,9 @@ export default function WorkoutCategoryDeletionDialog({
       </Button>
 
       <ConfirmationDialog
-        title="Delete Workout Category Confirmation"
+        title="Delete Workout Category"
         description={`Permanently delete the workout category "${workoutCategory.name}"? This action cannot be undone.`}
-        icon={FileQuestionMark}
+        icon={TriangleAlert}
         variant="destructive"
         confirmText="Yes, Delete It"
         cancelText="No, Keep It"

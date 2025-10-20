@@ -1,27 +1,15 @@
-"use client";
-
 import { rolesTableColumns } from "@/components/admin/features/roles/role-table-columns";
-import DataTable from "@/components/shared/table/data-table";
+import ResourceTable from "@/components/admin/shared/resource-table";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ENDPOINTS } from "@/config/endpoints";
-import { useTable } from "@/hooks/use-table";
 import { Role } from "@/types/admin/role";
 
 export default function RoleTable() {
-  const { data, searchConfig, paginationConfig, sortingConfig, serverConfig } = useTable<Role>({
-    endpoint: ENDPOINTS.ADMIN.ROLES.INDEX,
-    queryKey: ["admin-roles"],
-    defaultSort: { field: "id", direction: "desc" },
-  });
-
   return (
-    <DataTable
+    <ResourceTable<Role>
+      endpoint={ENDPOINTS.ADMIN.ROLES.INDEX}
+      queryKey={["admin-roles"]}
       columns={rolesTableColumns}
-      data={data}
-      search={searchConfig}
-      pagination={paginationConfig}
-      sorting={sortingConfig}
-      server={serverConfig}
       skeleton={{
         customSkeletons: {
           name: (
@@ -44,10 +32,7 @@ export default function RoleTable() {
           ),
         },
       }}
-      ui={{
-        emptyMessage: "No roles found. Create your first role to get started.",
-        showColumnVisibility: false,
-      }}
+      emptyMessage="No roles found. Create your first role to get started."
     />
   );
 }

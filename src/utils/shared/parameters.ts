@@ -1,5 +1,8 @@
 import { ListQueryParameters, SortDirection } from "@/types/shared/parameters";
 
+/**
+ * Default pagination and sorting parameters for list/table views
+ */
 export const DEFAULT_LIST_PARAMS: Required<
   Pick<ListQueryParameters, "page" | "per_page" | "sort" | "direction">
 > & {
@@ -13,11 +16,7 @@ export const DEFAULT_LIST_PARAMS: Required<
 };
 
 /**
- * Safely converts a string value to a positive number with fallback
- *
- * @param value - The string value to convert
- * @param fallback - The fallback number to use if conversion fails
- * @returns A positive finite number or the fallback value
+ * Safely converts string to positive number
  */
 const toNumber = (value: string | null | undefined, fallback: number): number => {
   if (value === null || value === undefined) return fallback;
@@ -26,11 +25,7 @@ const toNumber = (value: string | null | undefined, fallback: number): number =>
 };
 
 /**
- * Validates and normalizes sort direction parameter
- *
- * @param value - The direction value to validate
- * @param fallback - The fallback direction if validation fails
- * @returns A valid sort direction ("asc" or "desc")
+ * Validates and normalizes sort direction
  */
 const toDirection = (value: string | null | undefined, fallback: SortDirection): SortDirection => {
   return value === "asc" || value === "desc" ? value : fallback;
@@ -39,9 +34,13 @@ const toDirection = (value: string | null | undefined, fallback: SortDirection):
 /**
  * Parses URL search parameters into structured list query parameters
  *
- * @param searchParameters - URLSearchParams object containing query string parameters
- * @param defaults - Default values to use for missing or invalid parameters
- * @returns Parsed and validated list query parameters with any additional filters
+ * Extracts standard pagination/sorting parameters and preserves any
+ * additional filter parameters. Validates and applies fallback values
+ * for invalid inputs.
+ *
+ * @param searchParameters - URL search parameters to parse
+ * @param defaults - Default values for missing/invalid parameters
+ * @returns Parsed and validated list query parameters with filters
  */
 export const parseListParameters = (
   searchParameters: URLSearchParams | Readonly<URLSearchParams> | undefined,
@@ -57,7 +56,7 @@ export const parseListParameters = (
 
   const base: ListQueryParameters = { page, per_page, sort, direction, search };
 
-  // Include any additional filter parameters beyond the standard ones
+  // Preserve additional filter parameters
   for (const [key, value] of searchParameters.entries()) {
     if (!(key in base)) base[key] = value;
   }
@@ -66,28 +65,31 @@ export const parseListParameters = (
 };
 
 /**
- * Converts list query parameters into a URL query string
+ * Converts list query parameters to URL query string
  *
- * @param parameters - The list query parameters to serialize
- * @returns URL-encoded query string (without leading "?")
+ * Serializes parameters, skipping undefined, null, and empty string values
+ * to keep URLs clean.
+ *
+ * @param parameters - Parameters to serialize
+ * @returns URL-encoded query string without leading "?"
  */
 export const serializeParameters = (parameters: ListQueryParameters): string => {
   const query = new URLSearchParams();
   for (const [key, value] of Object.entries(parameters)) {
     if (value === undefined || value === null) continue;
     const stringValue = String(value);
-    if (stringValue === "") continue; // Skip empty strings
+    if (stringValue === "") continue;
     query.set(key, stringValue);
   }
   return query.toString();
 };
 
 /**
- * Merges list parameters with default values, ensuring all required fields are present
+ * Merges parameters with default values
  *
- * @param parameters - The parameters to merge with defaults
- * @param defaults - Default values to use for missing parameters
- * @returns Complete list parameters with defaults applied
+ * @param parameters - Parameters to merge
+ * @param defaults - Default values to fill in
+ * @returns Complete parameters with defaults applied
  */
 export const withDefaults = (
   parameters: ListQueryParameters,
@@ -100,12 +102,15 @@ export const withDefaults = (
 };
 
 /**
- * Merges current parameters with updates and applies validation rules
+ * Merges and validates parameter updates
  *
- * @param current - Current list query parameters
- * @param updates - Parameter updates to apply
- * @param defaults - Default values for validation and fallbacks
- * @returns Normalized and validated merged parameters
+ * Combines current parameters with updates, applies defaults, and validates
+ * values to ensure page/per_page are positive and direction is valid.
+ *
+ * @param current - Current parameters
+ * @param updates - Updates to apply
+ * @param defaults - Default values for validation
+ * @returns Merged and validated parameters
  */
 export const mergeParameters = (
   current: ListQueryParameters,
@@ -114,14 +119,45 @@ export const mergeParameters = (
 ): ListQueryParameters => {
   const merged = { ...withDefaults(current, defaults), ...updates } as ListQueryParameters;
 
-  // Ensure page and per_page are positive values
+  // Validate and normalize
   if (merged.page && merged.page < 1) merged.page = 1;
   if (merged.per_page && merged.per_page < 1) merged.per_page = defaults.per_page;
-
-  // Validate sort direction
   if (merged.direction !== "asc" && merged.direction !== "desc")
     merged.direction = defaults.direction;
+
   return merged;
+};
+
+/**
+ * Appends default list parameters to a path
+ *
+ * Adds standard pagination and sorting parameters to a path for consistent
+ * navigation to list/table pages. Skips if path already has query parameters.
+ *
+ * @param path - Base path to append parameters to
+ * @param options - Optional parameter overrides
+ * @returns Path with default query parameters
+ */
+export const addDefaultListParameters = (
+  path: string,
+  options?: {
+    page?: number;
+    per_page?: number;
+    sort?: string;
+    direction?: "asc" | "desc";
+  },
+): string => {
+  if (path.includes("?")) {
+    return path;
+  }
+
+  const parameters = new URLSearchParams();
+  parameters.set("page", String(options?.page ?? DEFAULT_LIST_PARAMS.page));
+  parameters.set("per_page", String(options?.per_page ?? DEFAULT_LIST_PARAMS.per_page));
+  parameters.set("sort", options?.sort ?? DEFAULT_LIST_PARAMS.sort);
+  parameters.set("direction", options?.direction ?? DEFAULT_LIST_PARAMS.direction);
+
+  return `${path}?${parameters.toString()}`;
 };
 
 /**

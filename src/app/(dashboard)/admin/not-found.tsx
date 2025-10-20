@@ -1,9 +1,9 @@
-import { Home } from "lucide-react";
+import { ArrowLeft, LayoutDashboard } from "lucide-react";
 
 import { ErrorPage } from "@/components/shared/error-page";
 import { PATHS } from "@/config/paths";
 
-export default function NotFound() {
+export default function AdminNotFound() {
   return (
     <ErrorPage
       code="404 Not Found"
@@ -13,10 +13,16 @@ export default function NotFound() {
       description="The page you are looking for could not be found. It may have been removed, renamed, or is temporarily unavailable."
       actions={[
         {
-          label: "Go to Home",
-          href: PATHS.PUBLIC.HOME,
-          icon: Home,
-          variant: "default",
+          label: "Go Back",
+          onClick: () => globalThis.history.back(),
+          icon: ArrowLeft,
+          variant: "outline",
+        },
+        {
+          label: "Go to Dashboard",
+          href: PATHS.ADMIN.OVERVIEW,
+          icon: LayoutDashboard,
+          variant: "outline",
         },
       ]}
     />

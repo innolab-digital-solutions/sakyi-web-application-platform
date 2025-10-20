@@ -1,13 +1,32 @@
+/* eslint-disable no-commented-code/no-commented-code */
 import { ADMIN_ENDPOINTS } from "@/config/endpoints/admin";
 import { AUTH_ENDPOINTS } from "@/config/endpoints/auth";
 import { META_ENDPOINTS } from "@/config/endpoints/meta";
 import { PUBLIC_ENDPOINTS } from "@/config/endpoints/public";
 
 /**
- * API Endpoints Configuration
- * Contains all API endpoints that are accessible throughout the application.
+ * API endpoint configuration
  *
- * @returns The API endpoints configuration
+ * Centralized API endpoint constants organized by domain.
+ * Use these constants with the HTTP client instead of hardcoding URLs.
+ *
+ * Endpoint types:
+ * - **AUTH**: Laravel Sanctum authentication endpoints
+ * - **ADMIN**: Protected admin resource endpoints
+ * - **META**: Metadata and lookup endpoints
+ * - **PUBLIC**: Publicly accessible endpoints
+ *
+ * @example
+ * ```ts
+ * // Fetch data
+ * const response = await http.get(ENDPOINTS.ADMIN.ROLES.INDEX);
+ *
+ * // With dynamic ID
+ * await http.put(ENDPOINTS.ADMIN.ROLES.UPDATE(roleId), data);
+ *
+ * // Auth endpoints
+ * await http.post(ENDPOINTS.AUTH.LOGIN, credentials);
+ * ```
  */
 export const ENDPOINTS = {
   AUTH: AUTH_ENDPOINTS,

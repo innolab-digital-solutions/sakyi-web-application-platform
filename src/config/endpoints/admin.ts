@@ -1,12 +1,21 @@
 /**
- * Administrative API endpoints
- * Protected endpoints requiring authentication and admin privileges
+ * Admin API endpoints
  *
- * @returns The administrative API endpoints
+ * RESTful API endpoints for admin resources. All endpoints require authentication
+ * and appropriate permissions.
+ *
+ * Naming convention follows Laravel resource controller actions:
+ * - **INDEX**: List all resources (GET)
+ * - **SHOW**: Get single resource (GET)
+ * - **STORE**: Create new resource (POST)
+ * - **UPDATE**: Update existing resource (PUT/PATCH)
+ * - **DESTROY**: Delete resource (DELETE)
  */
 export const ADMIN_ENDPOINTS = {
+  /** Dashboard overview data */
   OVERVIEW: "/admin/overview",
 
+  /** Program management endpoints */
   PROGRAMS: {
     INDEX: "/admin/programs",
     SHOW: (id: string | number) => `/admin/programs/${id}`,
@@ -15,6 +24,7 @@ export const ADMIN_ENDPOINTS = {
     DESTROY: (id: string | number) => `/admin/programs/${id}`,
   },
 
+  /** Role and permission management endpoints */
   ROLES: {
     INDEX: "/admin/roles",
     SHOW: (id: string | number) => `/admin/roles/${id}`,
@@ -24,6 +34,7 @@ export const ADMIN_ENDPOINTS = {
     DESTROY: (id: string | number) => `/admin/roles/${id}`,
   },
 
+  /** Workout category endpoints */
   WORKOUT_CATEGORIES: {
     INDEX: "/admin/workout-categories",
     SHOW: (id: string | number) => `/admin/workout-categories/${id}`,
@@ -32,6 +43,7 @@ export const ADMIN_ENDPOINTS = {
     DESTROY: (id: string | number) => `/admin/workout-categories/${id}`,
   },
 
+  /** Unit of measurement endpoints */
   UNITS: {
     INDEX: "/admin/units",
     SHOW: (id: string | number) => `/admin/units/${id}`,
@@ -40,6 +52,7 @@ export const ADMIN_ENDPOINTS = {
     DESTROY: (id: string | number) => `/admin/units/${id}`,
   },
 
+  /** Food category endpoints */
   FOOD_CATEGORIES: {
     INDEX: "/admin/food-categories",
     SHOW: (id: string | number) => `/admin/food-categories/${id}`,

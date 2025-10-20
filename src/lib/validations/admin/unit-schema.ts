@@ -1,5 +1,11 @@
 import { z } from "zod";
 
+/**
+ * Validation schema for unit of measurement creation/update
+ *
+ * Validates unit name and abbreviation with trimming and whitespace checks.
+ * Abbreviation is limited to 10 characters (e.g., "kg", "ml", "tbsp").
+ */
 export const CreateUnitSchema = z.object({
   name: z
     .string()

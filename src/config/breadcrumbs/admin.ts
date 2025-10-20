@@ -3,25 +3,36 @@ import { Breadcrumbs } from "@/types/shared/breadcrumb";
 
 /**
  * Admin breadcrumb configuration
- * Defines the breadcrumb navigation structure for all admin routes.
  *
- * @returns The admin breadcrumb configuration
+ * Defines breadcrumb trails for admin dashboard routes.
+ * Each key is a route path, value is an array of breadcrumb items.
+ *
+ * Breadcrumb structure:
+ * - Items without `href` are non-clickable (current page or section header)
+ * - Items with `href` are clickable navigation links
+ * - Use `:id` placeholder for dynamic routes (replaced at runtime)
+ *
+ * Convention:
+ * 1. "Admin Control Panel" (root)
+ * 2. Section name (from sidebar groups)
+ * 3. Page name (clickable if not current page)
  */
 export const adminBreadcrumbs: Breadcrumbs = {
-  // Overview
+  /** Dashboard overview page */
   "/admin/overview": [
     { label: "Admin Control Panel" },
     { label: "Dashboard & Insights" },
     { label: "Overview", href: PATHS.ADMIN.OVERVIEW },
   ],
 
-  // Roles
+  /** Roles list page */
   "/admin/roles": [
     { label: "Admin Control Panel" },
     { label: "Administration & Access Control" },
     { label: "Roles & Permissions", href: PATHS.ADMIN.ROLES.LIST },
   ],
 
+  /** Assign permissions to role page (dynamic: :id replaced at runtime) */
   "/admin/roles/:id/assign-permissions": [
     { label: "Admin Control Panel" },
     { label: "Administration & Access Control" },
@@ -29,6 +40,7 @@ export const adminBreadcrumbs: Breadcrumbs = {
     { label: "Assign Permissions" },
   ],
 
+  /** Workout categories list page */
   "/admin/workout-categories": [
     { label: "Admin Control Panel" },
     { label: "Health Data & Plans" },
@@ -36,6 +48,7 @@ export const adminBreadcrumbs: Breadcrumbs = {
     { label: "Workout Categories", href: PATHS.ADMIN.WORKOUT_CATEGORIES.LIST },
   ],
 
+  /** Units list page */
   "/admin/units": [
     { label: "Admin Control Panel" },
     { label: "Health Data & Plans" },
@@ -43,6 +56,7 @@ export const adminBreadcrumbs: Breadcrumbs = {
     { label: "Units", href: PATHS.ADMIN.UNITS.LIST },
   ],
 
+  /** Food categories list page */
   "/admin/food-categories": [
     { label: "Admin Control Panel" },
     { label: "Health Data & Plans" },

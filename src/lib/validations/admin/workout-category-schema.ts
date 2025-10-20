@@ -1,5 +1,11 @@
 import { z } from "zod";
 
+/**
+ * Validation schema for workout category creation/update
+ *
+ * Supports hierarchical categories with optional parent_id.
+ * Name is required and trimmed, description is optional.
+ */
 export const WorkoutCategorySchema = z.object({
   parent_id: z.string().or(z.number()).optional().nullable(),
   name: z

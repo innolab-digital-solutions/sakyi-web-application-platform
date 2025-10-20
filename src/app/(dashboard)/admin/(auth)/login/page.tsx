@@ -1,17 +1,21 @@
+import type { Metadata } from "next";
 import Image from "next/image";
-import React from "react";
 
 import LoginForm from "@/components/admin/auth/login-form";
 import { Card } from "@/components/ui/card";
 
+export const metadata: Metadata = {
+  title: "Admin Login | SaKyi Health & Wellness",
+  description: "Access your admin dashboard to manage health services and wellness programs.",
+};
+
 export default function LoginPage() {
   return (
     <main className="relative flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-4">
-      {/* Main Container */}
       <div className="relative z-10 mx-auto w-full max-w-6xl">
         <Card className="overflow-hidden rounded-lg border-0 bg-white/95 p-0 shadow-lg backdrop-blur-xl">
           <div className="grid min-h-[600px] grid-cols-1 lg:grid-cols-2">
-            {/* Left Side - Logo and Branding */}
+            {/* Login Form Logo and Title Section (Left Side) */}
             <div className="from-primary/90 via-primary to-accent/90 relative hidden flex-col items-center justify-center overflow-hidden bg-gradient-to-br p-8 text-white lg:flex lg:p-12">
               <div className="relative z-10 space-y-10 text-center">
                 <div className="flex justify-center">
@@ -19,7 +23,7 @@ export default function LoginPage() {
                     <div className="flex h-full w-full items-center justify-center rounded-lg bg-white shadow-inner">
                       <Image
                         src="/images/logo.jpg"
-                        alt="SaKyi Health & Wellness"
+                        alt="SaKyi Health & Wellness Logo"
                         width={56}
                         height={56}
                         className="rounded-md object-cover"
@@ -48,7 +52,7 @@ export default function LoginPage() {
               </div>
             </div>
 
-            {/* Right Side - Login Form */}
+            {/* Login Form Input Section (Right Side) */}
             <div className="flex flex-col justify-center p-8 lg:p-12">
               <LoginForm />
             </div>
@@ -56,7 +60,6 @@ export default function LoginPage() {
         </Card>
       </div>
 
-      {/* Bottom Branding */}
       <div className="absolute bottom-6 left-1/2 -translate-x-1/2 transform">
         <p className="text-center text-xs text-gray-500">
           © 2025 SaKyi Health & Wellness. All rights reserved.

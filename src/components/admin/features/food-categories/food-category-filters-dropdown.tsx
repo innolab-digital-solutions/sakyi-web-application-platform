@@ -34,7 +34,14 @@ export default function FoodCategoryFiltersDropdown({
   const searchParameters = useSearchParams();
 
   const replaceParameters = (next: URLSearchParams) => {
+    // Always reset to page 1 when filtering changes
     next.set("page", "1");
+
+    // Ensure required parameters are present
+    if (!next.has("per_page")) next.set("per_page", "10");
+    if (!next.has("sort")) next.set("sort", "id");
+    if (!next.has("direction")) next.set("direction", "desc");
+
     const query = next.toString();
     const url = query ? `${pathname}?${query}` : pathname;
     router.replace(url, { scroll: false });
@@ -50,9 +57,16 @@ export default function FoodCategoryFiltersDropdown({
 
   const clearFilters = () => {
     if (isLoading) return;
-    const next = new URLSearchParams(searchParameters.toString());
-    next.delete("only");
-    replaceParameters(next);
+    // Reset to default parameters only - remove all filter parameters
+    const next = new URLSearchParams();
+    next.set("page", "1");
+    next.set("per_page", searchParameters.get("per_page") || "10");
+    next.set("sort", searchParameters.get("sort") || "id");
+    next.set("direction", searchParameters.get("direction") || "desc");
+    // Don't call replaceParameters as it might add the filter back
+    const query = next.toString();
+    const url = query ? `${pathname}?${query}` : pathname;
+    router.replace(url, { scroll: false });
   };
 
   const currentOnly = searchParameters.get("only");

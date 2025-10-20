@@ -1,7 +1,16 @@
 import * as React from "react";
 
+/** Breakpoint for mobile devices (below 768px) */
 const MOBILE_BREAKPOINT = 768;
 
+/**
+ * Detect if the current viewport is mobile size
+ *
+ * Uses matchMedia API to detect viewport width changes and determine
+ * if the screen size is below the mobile breakpoint (768px).
+ *
+ * @returns True if viewport width is below 768px, false otherwise
+ */
 export const useIsMobile = () => {
   const [isMobile, setIsMobile] = React.useState<boolean | undefined>();
 

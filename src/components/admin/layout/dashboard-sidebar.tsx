@@ -4,7 +4,7 @@ import { ChevronDown } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import {
   Sidebar,
@@ -18,8 +18,13 @@ import {
 } from "@/components/ui/sidebar";
 import { adminNavigation } from "@/config/navigation";
 import { useAuth } from "@/context/auth-context";
-import { filterNavByPermission, getActiveAdminNav } from "@/utils/admin/navigation";
+import {
+  filterNavByPermission,
+  getActiveAdminNav,
+  isAdminListPage,
+} from "@/utils/admin/navigation";
 import { cn } from "@/utils/shared/cn";
+import { addDefaultListParameters } from "@/utils/shared/parameters";
 
 export default function DashboardSidebar() {
   const pathname = usePathname();
@@ -38,6 +43,11 @@ export default function DashboardSidebar() {
   const filtered = filterNavByPermission(adminNavigation, can);
 
   const items = getActiveAdminNav(pathname, filtered);
+
+  // Helper function to get href with default parameters for admin list pages
+  const getHref = useCallback((path: string): string => {
+    return isAdminListPage(path) ? addDefaultListParameters(path) : path;
+  }, []);
 
   useEffect(() => {
     const activeGroups: Record<string, boolean> = {};
@@ -65,7 +75,7 @@ export default function DashboardSidebar() {
                   src="/images/logo.jpg"
                   alt="logo"
                   fill
-                  className="object-cover transition-transform duration-200 hover:scale-110"
+                  className="object-cover"
                   sizes="100px"
                 />
               </div>
@@ -121,7 +131,7 @@ export default function DashboardSidebar() {
                                 item.subitems.map((subitem) => (
                                   <SidebarMenuItem key={subitem.name}>
                                     <Link
-                                      href={subitem.path}
+                                      href={getHref(subitem.path)}
                                       className={cn(
                                         "hover:bg-accent hover:text-accent-foreground flex items-center rounded-sm px-3 py-2 text-sm transition-colors",
                                         subitem.active && "bg-accent text-accent-foreground",
@@ -140,7 +150,7 @@ export default function DashboardSidebar() {
                     ) : (
                       <SidebarMenuItem>
                         <Link
-                          href={item.path}
+                          href={getHref(item.path)}
                           className={cn(
                             "hover:bg-accent hover:text-accent-foreground flex items-center rounded-sm px-3 py-2 transition-colors",
                             item.active && "bg-accent text-accent-foreground",

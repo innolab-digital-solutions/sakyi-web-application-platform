@@ -1,4 +1,4 @@
-import { FileQuestionMark, Trash2 } from "lucide-react";
+import { Trash2, TriangleAlert } from "lucide-react";
 import React, { useState } from "react";
 import { toast } from "sonner";
 
@@ -6,7 +6,7 @@ import ConfirmationDialog from "@/components/shared/confirmation-dialog";
 import { Button } from "@/components/ui/button";
 import { ENDPOINTS } from "@/config/endpoints";
 import { useRequest } from "@/hooks/use-request";
-import { FoodCategory } from "@/types/admin/food-category";
+import { FoodCategory, FoodCategoryApiResponse } from "@/types/admin/food-category";
 import { cn } from "@/utils/shared/cn";
 
 interface FoodCategoryDeletionDialogProperties {
@@ -30,6 +30,22 @@ export default function FoodCategoryDeletionDialog({
         invalidateQueries: ["admin-food-categories"],
         mutationOptions: {
           onSuccess: () => {
+            // Optimistic cache update - remove the deleted food category from the list
+            request.queryCache.setQueryData<FoodCategoryApiResponse>(
+              ["admin-food-categories"],
+              (previous) => {
+                if (!previous || previous.status !== "success" || !Array.isArray(previous.data)) {
+                  return previous;
+                }
+
+                return {
+                  ...previous,
+                  data: previous.data.filter((fc) => fc.id !== foodCategory.id),
+                } as FoodCategoryApiResponse;
+              },
+              { all: true },
+            );
+
             closeDeleteDialog();
             toast.success("Food category deleted successfully.");
           },
@@ -59,9 +75,9 @@ export default function FoodCategoryDeletionDialog({
       </Button>
 
       <ConfirmationDialog
-        title="Delete Food Category Confirmation"
-        description={`Permanently delete the role "${foodCategory.name}"? This action cannot be undone.`}
-        icon={FileQuestionMark}
+        title="Delete Food Category"
+        description={`Permanently delete the food category "${foodCategory.name}"? This action cannot be undone.`}
+        icon={TriangleAlert}
         variant="destructive"
         confirmText="Yes, Delete It"
         cancelText="No, Keep It"
