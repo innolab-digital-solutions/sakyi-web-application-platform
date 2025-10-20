@@ -31,7 +31,7 @@ type FormDialogProperties = {
   submittingLabel?: string;
 };
 
-export function FormDialog({
+export default function FormDialog({
   trigger,
   open,
   onOpenChange,

@@ -1,20 +1,21 @@
 "use client";
 
-import { ShieldCheck } from "lucide-react";
+import { ClipboardList } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect } from "react";
 import { toast } from "sonner";
 
+import FileUploadField from "@/components/shared/forms/file-upload-field";
 import FormDialog from "@/components/shared/forms/form-dialog";
 import InputField from "@/components/shared/forms/input-field";
 import TextareaField from "@/components/shared/forms/textarea-field";
 import { ENDPOINTS } from "@/config/endpoints";
 import { useForm } from "@/hooks/use-form";
-import { RoleSchema } from "@/lib/validations/admin/role-schema";
-import { Role, RoleApiResponse, RoleFormProperties } from "@/types/admin/role";
+import { ProgramSchema } from "@/lib/validations/admin/program-schema";
+import { Program, ProgramApiResponse, ProgramFormProperties } from "@/types/admin/program";
 import { buildDefaultListUrl } from "@/utils/shared/parameters";
 
-export default function RoleForm({
+export default function ProgramForm({
   mode,
   trigger,
   defaultValues,
@@ -22,7 +23,7 @@ export default function RoleForm({
   onOpenChange,
   title,
   description,
-}: RoleFormProperties) {
+}: ProgramFormProperties) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParameters = useSearchParams();
@@ -32,6 +33,12 @@ export default function RoleForm({
 
   const dialogOpen = isControlled ? open : uncontrolledOpen;
   const isEdit = mode === "edit";
+
+  const onFileReject = React.useCallback((file: File, message: string) => {
+    toast(message, {
+      description: `"${file.name.length > 20 ? `${file.name.slice(0, 20)}...` : file.name}" has been rejected`,
+    });
+  }, []);
 
   const handleDialogOpenChange = (value: boolean) => {
     if (isControlled) {
@@ -47,29 +54,34 @@ export default function RoleForm({
 
   const form = useForm(
     {
-      name: "",
+      title: "",
       description: "",
+      thumbnail: undefined as unknown as File | null,
+      duration_value: 1,
+      duration_unit: "days" as "days" | "weeks" | "months",
+      price: 0,
+      status: "active" as "active" | "inactive" | "archived",
     },
     {
-      validate: RoleSchema,
+      validate: ProgramSchema,
       tanstack: {
-        invalidateQueries: ["admin-roles"],
+        invalidateQueries: ["admin-programs"],
         mutationOptions: {
           onSuccess: (response) => {
-            form.queryCache.setQueryData<RoleApiResponse>(
-              ["admin-roles"],
+            form.queryCache.setQueryData<ProgramApiResponse>(
+              ["admin-programs"],
               (previous) => {
-                const base: RoleApiResponse =
+                const base: ProgramApiResponse =
                   previous && previous.status === "success" && Array.isArray(previous.data)
                     ? previous
                     : ({
                         status: "success",
-                        data: [] as Role[],
+                        data: [] as Program[],
                         message: previous?.message ?? "",
-                      } as RoleApiResponse);
+                      } as ProgramApiResponse);
 
-                const updatedFromServer = (response as RoleApiResponse)?.data;
-                const baseData = (base?.data as Role[]) ?? [];
+                const updatedFromServer = (response as ProgramApiResponse)?.data;
+                const baseData = (base?.data as Program[]) ?? [];
 
                 if (isEdit && defaultValues) {
                   const existing = baseData.find((r) => r.id === defaultValues.id);
@@ -78,7 +90,7 @@ export default function RoleForm({
                     (existing
                       ? {
                           ...existing,
-                          name: String(form.data.name ?? ""),
+                          title: String(form.data.title ?? ""),
                           description: String(form.data.description ?? ""),
                         }
                       : undefined);
@@ -86,13 +98,13 @@ export default function RoleForm({
                   return {
                     ...base,
                     data: baseData.map((r) => (r.id === defaultValues.id ? next : r)),
-                  } as RoleApiResponse;
+                  } as ProgramApiResponse;
                 }
 
                 if (!isEdit && updatedFromServer) {
-                  return { ...base, data: [updatedFromServer, ...baseData] } as RoleApiResponse;
+                  return { ...base, data: [updatedFromServer, ...baseData] } as ProgramApiResponse;
                 }
-                return base as RoleApiResponse;
+                return base as ProgramApiResponse;
               },
               { all: true },
             );
@@ -117,25 +129,25 @@ export default function RoleForm({
   useEffect(() => {
     if (isEdit && defaultValues) {
       form.setData({
-        name: defaultValues.name ?? "",
+        title: defaultValues.title ?? "",
         description: defaultValues.description ?? "",
       });
     } else {
       form.setData({
-        name: "",
+        title: "",
         description: "",
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [defaultValues?.id, defaultValues?.name, defaultValues?.description, isEdit]);
+  }, [defaultValues?.id, defaultValues?.title, defaultValues?.description, isEdit]);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     if (isEdit && defaultValues?.id) {
-      form.put(ENDPOINTS.ADMIN.ROLES.UPDATE(defaultValues.id));
+      form.put(ENDPOINTS.ADMIN.PROGRAMS.UPDATE(defaultValues.id));
     } else {
-      form.post(ENDPOINTS.ADMIN.ROLES.STORE);
+      form.post(ENDPOINTS.ADMIN.PROGRAMS.STORE);
     }
   };
 
@@ -145,30 +157,41 @@ export default function RoleForm({
       open={dialogOpen}
       onOpenChange={handleDialogOpenChange}
       onClose={() => form.reset()}
-      title={title ?? (isEdit ? "Edit Role Details" : "Create a New Role")}
+      title={title ?? (isEdit ? "Edit Program Details" : "Create a New Program")}
       description={
         description ??
         (isEdit
           ? "Edit the name or description of this role. Changes will update user access and permissions."
           : "Create a role with a name and description to manage user access and permissions.")
       }
-      icon={<ShieldCheck className="h-5 w-5" />}
+      icon={<ClipboardList className="h-5 w-5" />}
       onSubmit={handleSubmit}
       processing={form.processing}
       isEdit={isEdit}
-      submitLabel={isEdit ? "Save Changes" : "Create Role"}
-      submittingLabel={isEdit ? "Saving Changes..." : "Creating Role..."}
+      submitLabel={isEdit ? "Save Changes" : "Create Program"}
+      submittingLabel={isEdit ? "Saving Changes..." : "Creating Program..."}
     >
-      {/* Name Field */}
+      <FileUploadField
+        id="program-thumbnail"
+        label="Thumbnail"
+        value={form.data.thumbnail}
+        onChange={(v) => form.setData("thumbnail", v as File | null)}
+        maxFiles={1}
+        maxSize={2 * 1024 * 1024}
+        onFileReject={onFileReject}
+        required
+      />
+
+      {/* Title Field */}
       <InputField
-        id="name"
-        name="name"
+        id="title"
+        name="title"
         type="text"
-        value={String(form.data.name ?? "")}
-        onChange={(event) => form.setData("name", event.target.value)}
-        error={form.errors.name as string}
-        label="Name"
-        placeholder="e.g., Administrator, Moderator, etc."
+        value={String(form.data.title ?? "")}
+        onChange={(event) => form.setData("title", event.target.value)}
+        error={form.errors.title as string}
+        label="Title"
+        placeholder="Program title"
         required
         disabled={form.processing}
       />
