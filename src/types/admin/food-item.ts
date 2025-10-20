@@ -41,11 +41,7 @@ export interface FoodItemsResponse {
   };
 }
 
-export type FoodItemApiResponse = {
-  status: string;
-  message: string;
-  data: FoodItem;
-};
+export type FoodItemApiResponse = ApiResponse<FoodItem[]>;
 
 export type FoodItemsListApiResponse = ApiResponse<FoodItemsResponse>;
 
@@ -54,6 +50,7 @@ export type FoodItemFormProperties = {
   trigger?: React.ReactNode;
   defaultValues?: Partial<FoodItem>;
   open?: boolean;
+  title?: string;
   onOpenChange?: (open: boolean) => void;
   name?: string;
   description?: string;
