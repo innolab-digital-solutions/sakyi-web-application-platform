@@ -29,6 +29,7 @@ type FormDialogProperties = {
   isEdit?: boolean;
   submitLabel?: string;
   submittingLabel?: string;
+  disabled?: boolean;
 };
 
 export default function FormDialog({
@@ -45,6 +46,7 @@ export default function FormDialog({
   isEdit = false,
   submitLabel,
   submittingLabel,
+  disabled = false,
 }: FormDialogProperties) {
   const [uncontrolledOpen, setUncontrolledOpen] = React.useState(false);
   const isControlled = typeof open === "boolean" && typeof onOpenChange === "function";
@@ -100,7 +102,7 @@ export default function FormDialog({
             <Button
               type="submit"
               variant="default"
-              disabled={processing}
+              disabled={processing || disabled}
               className="flex cursor-pointer items-center gap-2 font-semibold"
             >
               {processing ? (

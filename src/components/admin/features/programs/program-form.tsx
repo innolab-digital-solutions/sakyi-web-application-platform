@@ -129,25 +129,29 @@ export default function ProgramForm({
 
   useEffect(() => {
     if (isEdit && defaultValues) {
-      form.setData({
+      const newData = {
         title: defaultValues.title ?? "",
         description: defaultValues.description ?? "",
-        thumbnail: undefined, // No file for edit mode initially
+        thumbnail: undefined as File | undefined,
         duration_value: Number(defaultValues.duration_value) || 1,
         duration_unit: (defaultValues.duration_unit as "days" | "weeks" | "months") ?? "days",
         price: Number(defaultValues.price) || 0,
         status: (defaultValues.status as "active" | "inactive" | "archived") ?? "active",
-      });
+      };
+
+      form.setDataAndDefaults(newData);
     } else {
-      form.setData({
+      const newData = {
         title: "",
         description: "",
-        thumbnail: undefined,
+        thumbnail: undefined as File | undefined,
         duration_value: 1,
-        duration_unit: "days",
+        duration_unit: "days" as "days" | "weeks" | "months",
         price: 0,
-        status: "active",
-      });
+        status: "active" as "active" | "inactive" | "archived",
+      };
+
+      form.setDataAndDefaults(newData);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [defaultValues?.id, defaultValues?.title, defaultValues?.description, isEdit]);
@@ -181,6 +185,7 @@ export default function ProgramForm({
       isEdit={isEdit}
       submitLabel={isEdit ? "Save Changes" : "Create Program"}
       submittingLabel={isEdit ? "Saving Changes..." : "Creating Program..."}
+      disabled={isEdit && !form.isDirty}
     >
       <FileUploadField
         id="program-thumbnail"

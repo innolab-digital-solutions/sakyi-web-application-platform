@@ -36,7 +36,7 @@ export const UpdateWorkoutCategorySchema = BaseWorkoutCategorySchema.extend({
   parent_id: z.number().nullable().optional(),
 });
 
-// Default schema (create mode)
+// Default schema
 export const WorkoutCategorySchema = CreateWorkoutCategorySchema;
 
 export type WorkoutCategoryFormData = z.infer<typeof WorkoutCategorySchema>;

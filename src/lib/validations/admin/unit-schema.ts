@@ -35,7 +35,7 @@ export const CreateUnitSchema = BaseUnitSchema;
  */
 export const UpdateUnitSchema = BaseUnitSchema;
 
-// Default schema (create mode)
+// Default schema
 export const UnitSchema = CreateUnitSchema;
 
 export type UnitFormData = z.infer<typeof UnitSchema>;

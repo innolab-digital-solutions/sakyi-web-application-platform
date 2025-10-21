@@ -36,7 +36,7 @@ export const UpdateFoodCategorySchema = BaseFoodCategorySchema.extend({
   parent_id: z.number().nullable().optional(),
 });
 
-// Default schema (create mode)
+// Default schema
 export const FoodCategorySchema = CreateFoodCategorySchema;
 
 export type FoodCategoryFormData = z.infer<typeof FoodCategorySchema>;

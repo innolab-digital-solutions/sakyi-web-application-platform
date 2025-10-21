@@ -40,7 +40,7 @@ export const AssignPermissionsSchema = z.object({
   permissions: z.array(z.string()).optional().default([]),
 });
 
-// Default schema (create mode)
+// Default schema
 export const RoleSchema = CreateRoleSchema;
 
 export type RoleFormData = z.infer<typeof RoleSchema>;

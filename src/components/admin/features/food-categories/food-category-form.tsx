@@ -130,17 +130,21 @@ export default function FoodCategoryForm({
 
   useEffect(() => {
     if (isEdit && defaultValues) {
-      form.setData({
+      const newData = {
         parent_id: defaultValues.parent?.id ?? "",
         name: defaultValues.name ?? "",
         description: defaultValues.description ?? "",
-      });
+      };
+
+      form.setDataAndDefaults(newData);
     } else {
-      form.setData({
+      const newData = {
         parent_id: "",
         name: "",
         description: "",
-      });
+      };
+
+      form.setDataAndDefaults(newData);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
@@ -180,6 +184,7 @@ export default function FoodCategoryForm({
       isEdit={isEdit}
       submitLabel={isEdit ? "Save Changes" : "Create Food Category"}
       submittingLabel={isEdit ? "Saving Changes..." : "Creating Food Category..."}
+      disabled={isEdit && !form.isDirty}
     >
       {/* Parent Category Field */}
       <ComboBoxField

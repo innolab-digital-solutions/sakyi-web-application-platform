@@ -50,7 +50,7 @@ export const EditProgramSchema = BaseProgramSchema.extend({
   thumbnail: ThumbnailSchema.optional(),
 });
 
-// Default schema (create mode)
+// Default schema
 export const ProgramSchema = CreateProgramSchema;
 
 export type ProgramFormData = z.infer<typeof ProgramSchema>;

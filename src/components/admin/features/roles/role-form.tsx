@@ -116,15 +116,19 @@ export default function RoleForm({
 
   useEffect(() => {
     if (isEdit && defaultValues) {
-      form.setData({
+      const newData = {
         name: defaultValues.name ?? "",
         description: defaultValues.description ?? "",
-      });
+      };
+
+      form.setDataAndDefaults(newData);
     } else {
-      form.setData({
+      const newData = {
         name: "",
         description: "",
-      });
+      };
+
+      form.setDataAndDefaults(newData);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [defaultValues?.id, defaultValues?.name, defaultValues?.description, isEdit]);
@@ -158,6 +162,7 @@ export default function RoleForm({
       isEdit={isEdit}
       submitLabel={isEdit ? "Save Changes" : "Create Role"}
       submittingLabel={isEdit ? "Saving Changes..." : "Creating Role..."}
+      disabled={isEdit && !form.isDirty}
     >
       {/* Name Field */}
       <InputField
