@@ -93,6 +93,11 @@ export default function ProgramForm({
                           ...existing,
                           title: String(form.data.title ?? ""),
                           description: String(form.data.description ?? ""),
+                          thumbnail: form.data.thumbnail as File | undefined,
+                          duration_value: Number(form.data.duration_value ?? 1),
+                          duration_unit: form.data.duration_unit as "days" | "weeks" | "months",
+                          price: Number(form.data.price ?? 0),
+                          status: form.data.status as "active" | "inactive" | "archived",
                         }
                       : undefined);
                   if (!next) return base;
@@ -132,7 +137,7 @@ export default function ProgramForm({
       const newData = {
         title: defaultValues.title ?? "",
         description: defaultValues.description ?? "",
-        thumbnail: undefined as File | undefined,
+        thumbnail: defaultValues.thumbnail_url || undefined,
         duration_value: Number(defaultValues.duration_value) || 1,
         duration_unit: (defaultValues.duration_unit as "days" | "weeks" | "months") ?? "days",
         price: Number(defaultValues.price) || 0,
@@ -187,18 +192,19 @@ export default function ProgramForm({
       submittingLabel={isEdit ? "Saving Changes..." : "Creating Program..."}
       disabled={isEdit && !form.isDirty}
     >
+      {/* Thumbnail Field  */}
       <FileUploadField
         id="program-thumbnail"
         label="Thumbnail"
-        description="JPG, PNG, JPEG, or WEBP • max 2MB"
-        value={form.data.thumbnail}
-        onChange={(v) => form.setData("thumbnail", v as File | undefined)}
+        value={form.data.thumbnail as File | undefined}
+        onChange={(file) => form.setData("thumbnail", file as File | undefined)}
         maxFiles={1}
         maxSize={2 * 1024 * 1024}
         onFileReject={onFileReject}
         required={!isEdit}
         error={form.errors.thumbnail as string}
       />
+
       {/* Title Field */}
       <InputField
         id="title"
@@ -212,6 +218,7 @@ export default function ProgramForm({
         required
         disabled={form.processing}
       />
+
       {/* Description Field */}
       <TextareaField
         id="description"
@@ -259,6 +266,7 @@ export default function ProgramForm({
         required
         disabled={form.processing}
       />
+
       {/* Duration & Price Row */}
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <InputField

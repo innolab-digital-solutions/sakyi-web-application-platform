@@ -29,15 +29,30 @@ export interface FileUploadFieldProperties {
   disabled?: boolean;
   multiple?: boolean;
   mode?: Mode;
+  // Controlled value from the form: if multiple=false -> File | null; if true -> File[]
   value?: File | File[] | null;
   defaultValue?: File[];
-  onChange?: (value: File | File[] | null) => void;
+  // Convenience callback that adapts to single/multiple selection
+  onChange?: (value: File | File[] | null | undefined) => void;
+  // Raw callback mirroring Dice UI's onValueChange (always File[])
+  onValueChange?: (files: File[]) => void;
   accept?: string;
   maxFiles?: number;
   maxSize?: number;
   onFileReject?: (file: File, message: string) => void;
   onFileAccept?: (file: File) => void;
   onAccept?: (files: File[]) => void;
+  onFileValidate?: (file: File) => string | null | undefined;
+  onUpload?: (
+    files: File[],
+    options: {
+      onProgress: (file: File, progress: number) => void;
+      onSuccess: (file: File) => void;
+      onError: (file: File, error: Error) => void;
+    },
+  ) => Promise<void> | void;
+  dir?: "ltr" | "rtl";
+  name?: string;
   containerClassName?: string;
   labelClassName?: string;
   descriptionClassName?: string;
@@ -58,12 +73,17 @@ export function FileUploadField({
   value,
   defaultValue,
   onChange,
+  onValueChange,
   accept,
   maxFiles,
   maxSize,
   onFileReject,
   onFileAccept,
   onAccept,
+  onFileValidate,
+  onUpload,
+  dir,
+  name,
   containerClassName,
   labelClassName,
   descriptionClassName,
@@ -85,14 +105,19 @@ export function FileUploadField({
 
   const handleValueChange = React.useCallback(
     (files: File[]) => {
-      if (!onChange) return;
-      if (computedMultiple) {
-        onChange(files);
-      } else {
-        onChange(files[0] ?? undefined);
+      // Always notify raw consumer first (Dice UI parity)
+      onValueChange?.(files);
+
+      // Then adapt for the convenience onChange callback
+      if (onChange) {
+        if (computedMultiple) {
+          onChange(files);
+        } else {
+          onChange(files[0] ?? undefined);
+        }
       }
     },
-    [onChange, computedMultiple],
+    [onChange, onValueChange, computedMultiple],
   );
 
   const hasError = Boolean(error);
@@ -153,6 +178,10 @@ export function FileUploadField({
           disabled={disabled}
           multiple={false}
           invalid={hasError}
+          onFileValidate={onFileValidate}
+          onUpload={onUpload}
+          dir={dir}
+          name={name}
         >
           <div className="flex items-center gap-4">
             <FileUploadDropzone
@@ -258,6 +287,8 @@ export function FileUploadField({
         onFileReject={onFileReject}
         onFileAccept={onFileAccept}
         onAccept={onAccept}
+        onFileValidate={onFileValidate}
+        onUpload={onUpload}
         accept={computedAccept}
         maxFiles={computedMaxFiles}
         maxSize={maxSize}
@@ -266,6 +297,8 @@ export function FileUploadField({
         invalid={hasError}
         aria-invalid={hasError}
         aria-describedby={cn(error && `${id}-error`, description && `${id}-description`)}
+        dir={dir}
+        name={name}
       >
         <FileUploadDropzone
           className={cn(
@@ -297,7 +330,7 @@ export function FileUploadField({
 
         <FileUploadList className={cn(listClassName)}>
           {(normalizedValue ?? []).map((file, index) => (
-            <FileUploadItem key={index} value={file}>
+            <FileUploadItem key={`${file.name}-${file.size}-${index}`} value={file}>
               <FileUploadItemPreview />
               <FileUploadItemMetadata />
               <FileUploadItemDelete asChild>
@@ -313,6 +346,16 @@ export function FileUploadField({
             </FileUploadItem>
           ))}
         </FileUploadList>
+
+        {/* Description */}
+        {description && (
+          <p
+            className={cn("text-muted-foreground text-sm", descriptionClassName)}
+            id={`${id}-description`}
+          >
+            {description}
+          </p>
+        )}
 
         {hasError && (
           <p
