@@ -12,7 +12,10 @@ import TextareaField from "@/components/shared/forms/textarea-field";
 import { ENDPOINTS } from "@/config/endpoints";
 import { useForm } from "@/hooks/use-form";
 import { useRequest } from "@/hooks/use-request";
-import { CreateFoodCategorySchema } from "@/lib/validations/admin/food-category-schema";
+import {
+  CreateFoodCategorySchema,
+  UpdateFoodCategorySchema,
+} from "@/lib/validations/admin/food-category-schema";
 import {
   FoodCategory,
   FoodCategoryApiResponse,
@@ -60,7 +63,7 @@ export default function FoodCategoryForm({
       description: "",
     },
     {
-      validate: CreateFoodCategorySchema,
+      validate: isEdit ? UpdateFoodCategorySchema : CreateFoodCategorySchema,
       tanstack: {
         invalidateQueries: ["admin-food-categories", "meta-food-categories"],
         mutationOptions: {

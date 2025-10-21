@@ -79,7 +79,7 @@ export function FileUploadField({
   // Normalize external value to File[] for the underlying component
   const normalizedValue = React.useMemo<File[] | undefined>(() => {
     if (value === undefined) return;
-    if (value == undefined) return [];
+    if (value === null) return [];
     return Array.isArray(value) ? value : value ? [value] : [];
   }, [value]);
 
@@ -97,8 +97,19 @@ export function FileUploadField({
 
   const hasError = Boolean(error);
 
+  // Avatar preview URL lifecycle must be managed via hooks at the top level
+  const avatarFile = isAvatar ? normalizedValue?.[0] : undefined;
+  const previewUrl = React.useMemo(
+    () => (avatarFile ? URL.createObjectURL(avatarFile) : undefined),
+    [avatarFile],
+  );
+  React.useEffect(() => {
+    return () => {
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
+    };
+  }, [previewUrl]);
+
   if (isAvatar) {
-    const avatarFile = normalizedValue?.[0];
     return (
       <div className={cn("space-y-2", containerClassName)}>
         {label && (
@@ -153,14 +164,19 @@ export function FileUploadField({
               )}
             >
               {avatarFile ? (
-                <FileUploadItem value={avatarFile} asChild>
-                  <div className="group relative size-full overflow-hidden rounded-full">
-                    <FileUploadItemPreview className="size-full rounded-full object-cover" />
-                    <div className="absolute inset-0 hidden items-center justify-center bg-black/40 group-hover:flex">
-                      <span className="text-xs text-white">Change</span>
-                    </div>
+                <div className="group relative size-full overflow-hidden rounded-full">
+                  {previewUrl && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={previewUrl}
+                      alt="Avatar preview"
+                      className="size-full rounded-full object-cover"
+                    />
+                  )}
+                  <div className="absolute inset-0 hidden items-center justify-center bg-black/40 group-hover:flex">
+                    <span className="text-xs text-white">Change</span>
                   </div>
-                </FileUploadItem>
+                </div>
               ) : (
                 <div className="flex flex-col items-center justify-center text-center">
                   <ImagePlus className="text-muted-foreground size-6" />
@@ -183,11 +199,10 @@ export function FileUploadField({
               </p>
               {avatarFile && (
                 <div className="flex items-center gap-2">
-                  <FileUploadItem value={avatarFile} asChild>
-                    <div className="text-sm">
-                      <FileUploadItemMetadata size="sm" />
-                    </div>
-                  </FileUploadItem>
+                  <div className="text-muted-foreground text-sm">
+                    <span className="text-foreground font-medium">{avatarFile.name}</span>
+                    <span className="ml-2 text-xs">{Math.round(avatarFile.size / 1024)} KB</span>
+                  </div>
                   <FileUploadClear asChild>
                     <Button variant="ghost" size="sm" disabled={disabled}>
                       Remove
@@ -234,15 +249,6 @@ export function FileUploadField({
         </Label>
       )}
 
-      {description && (
-        <p
-          className={cn("text-muted-foreground text-sm", descriptionClassName)}
-          id={`${id}-description`}
-        >
-          {description}
-        </p>
-      )}
-
       <FileUpload
         id={id}
         className="w-full"
@@ -263,23 +269,27 @@ export function FileUploadField({
       >
         <FileUploadDropzone
           className={cn(
-            "bg-background rounded-md border border-dashed p-4 text-center transition-colors",
-            "hover:bg-accent/10",
+            "cursor-pointer rounded-md border-dashed bg-neutral-50 p-4 text-center transition-colors hover:bg-neutral-100",
             "data-[invalid=true]:border-red-500",
             dropzoneClassName,
           )}
         >
           <div className="flex flex-col items-center gap-1 text-center">
-            <div className="flex items-center justify-center rounded-full border p-2.5">
-              <Upload className="text-muted-foreground size-6" />
+            <div className="flex items-center justify-center rounded-md border p-2.5">
+              <Upload className="text-muted-foreground size-4" />
             </div>
-            <p className="text-sm font-medium">Drag & drop files here</p>
+            <p className="mt-3 text-sm font-medium">Drag & drop files here</p>
+
             <p className="text-muted-foreground text-xs">
-              {computedMultiple ? "Or click to browse (multiple)" : "Or click to browse (single)"}
+              {description ?? "Drag & drop files here"}
             </p>
           </div>
           <FileUploadTrigger asChild>
-            <Button variant="outline" size="sm" className="mt-2 w-fit">
+            <Button
+              variant="outline"
+              size="sm"
+              className="mt-2 w-fit cursor-pointer hover:bg-gray-100 hover:text-gray-800"
+            >
               Browse files
             </Button>
           </FileUploadTrigger>
@@ -291,7 +301,11 @@ export function FileUploadField({
               <FileUploadItemPreview />
               <FileUploadItemMetadata />
               <FileUploadItemDelete asChild>
-                <Button variant="ghost" size="icon" className="size-7">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="cursor-pointer hover:bg-red-100 hover:text-red-800"
+                >
                   <X />
                   <span className="sr-only">Delete</span>
                 </Button>

@@ -10,7 +10,7 @@ import InputField from "@/components/shared/forms/input-field";
 import TextareaField from "@/components/shared/forms/textarea-field";
 import { ENDPOINTS } from "@/config/endpoints";
 import { useForm } from "@/hooks/use-form";
-import { RoleSchema } from "@/lib/validations/admin/role-schema";
+import { CreateRoleSchema, UpdateRoleSchema } from "@/lib/validations/admin/role-schema";
 import { Role, RoleApiResponse, RoleFormProperties } from "@/types/admin/role";
 import { buildDefaultListUrl } from "@/utils/shared/parameters";
 
@@ -51,7 +51,7 @@ export default function RoleForm({
       description: "",
     },
     {
-      validate: RoleSchema,
+      validate: isEdit ? UpdateRoleSchema : CreateRoleSchema,
       tanstack: {
         invalidateQueries: ["admin-roles"],
         mutationOptions: {

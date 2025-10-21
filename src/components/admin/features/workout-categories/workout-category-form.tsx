@@ -12,7 +12,10 @@ import TextareaField from "@/components/shared/forms/textarea-field";
 import { ENDPOINTS } from "@/config/endpoints";
 import { useForm } from "@/hooks/use-form";
 import { useRequest } from "@/hooks/use-request";
-import { WorkoutCategorySchema } from "@/lib/validations/admin/workout-category-schema";
+import {
+  CreateWorkoutCategorySchema,
+  UpdateWorkoutCategorySchema,
+} from "@/lib/validations/admin/workout-category-schema";
 import {
   WorkoutCategory,
   WorkoutCategoryApiResponse,
@@ -65,7 +68,7 @@ export default function WorkoutCategoryForm({
       description: "",
     },
     {
-      validate: WorkoutCategorySchema,
+      validate: isEdit ? UpdateWorkoutCategorySchema : CreateWorkoutCategorySchema,
       tanstack: {
         invalidateQueries: ["admin-workout-categories", "meta-workout-categories"],
         mutationOptions: {

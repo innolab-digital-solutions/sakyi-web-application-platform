@@ -91,7 +91,7 @@ export default function FormDialog({
                 type="button"
                 variant="outline"
                 disabled={processing}
-                className="cursor-pointer hover:bg-gray-100 hover:text-gray-800"
+                className="cursor-pointer bg-gray-100 hover:bg-gray-50 hover:text-gray-800"
               >
                 Cancel
               </Button>
