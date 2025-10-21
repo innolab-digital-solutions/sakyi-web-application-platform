@@ -40,17 +40,14 @@ const ThumbnailSchema = z
     "Thumbnail must be a JPG, PNG, JPEG, or WEBP image",
   );
 
-// Schema for edit mode - thumbnail can be File or URL string
-const EditThumbnailSchema = z.union([ThumbnailSchema, z.string().url("Invalid thumbnail URL")]);
-
-// Schema for creating new programs (thumbnail required)
+// Schema for creating new programs (thumbnail required as a File)
 export const CreateProgramSchema = BaseProgramSchema.extend({
   thumbnail: ThumbnailSchema,
 });
 
-// Schema for editing existing programs (thumbnail optional)
+// Schema for editing existing programs (thumbnail can be File or URL string and is optional)
 export const EditProgramSchema = BaseProgramSchema.extend({
-  thumbnail: EditThumbnailSchema.optional(),
+  thumbnail: ThumbnailSchema.or(z.string().url("Invalid thumbnail URL")).optional(),
 });
 
 // Default schema

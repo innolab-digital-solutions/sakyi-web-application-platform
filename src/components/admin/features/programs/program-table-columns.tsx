@@ -6,6 +6,7 @@ import Image from "next/image";
 import React from "react";
 
 import ProgramDeletionDialog from "@/components/admin/features/programs/program-deletion-dialog";
+import ProgramForm from "@/components/admin/features/programs/program-form";
 import SortableHeader from "@/components/shared/table/sortable-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -153,17 +154,20 @@ export const programsTableColumns: ColumnDef<Program>[] = [
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
-              <Button
-                asChild
-                variant="outline"
-                className="group hover:!bg-accent/10 hover:!text-accent flex w-full items-center gap-1.5 !border-none text-sm font-medium text-gray-700 shadow-none hover:!ring-0"
-                aria-label="Edit program"
-              >
-                <span className="flex items-center gap-1.5">
-                  <SquarePen className="group-hover:text-accent h-4 w-4 transition-colors duration-150" />
-                  <span>Edit</span>
-                </span>
-              </Button>
+              <ProgramForm
+                mode="edit"
+                defaultValues={program}
+                trigger={
+                  <Button
+                    variant="outline"
+                    className="hover:!bg-accent/10 group hover:!text-accent hover:!ring-none flex w-full !cursor-pointer items-center justify-start gap-1.5 !border-none text-sm font-medium text-gray-700 shadow-none"
+                    aria-label="Edit program"
+                  >
+                    <SquarePen className="group-hover:text-accent h-4 w-4 transition-colors duration-150" />
+                    <span>Edit Program</span>
+                  </Button>
+                }
+              />
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
