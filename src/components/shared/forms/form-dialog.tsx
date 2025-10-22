@@ -70,10 +70,10 @@ export default function FormDialog({
       {trigger ? <DialogTrigger asChild>{trigger}</DialogTrigger> : undefined}
       <DialogContent
         showCloseButton={false}
-        className="w-[95vw] max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl"
+        className="flex max-h-[90vh] w-[95vw] max-w-md flex-col sm:max-w-lg md:max-w-xl lg:max-w-2xl"
       >
-        <form onSubmit={onSubmit} className="w-full p-2.5">
-          <DialogHeader>
+        <form onSubmit={onSubmit} className="flex min-h-0 w-full flex-1 flex-col p-4">
+          <DialogHeader className="flex-shrink-0">
             <DialogTitle className="text-md mb-1 flex items-center gap-2 font-bold">
               {icon}
               {title}
@@ -85,9 +85,11 @@ export default function FormDialog({
             ) : undefined}
           </DialogHeader>
 
-          <div className="space-y-5 py-5">{children}</div>
+          <div className="scrollbar-hide min-h-0 flex-1 space-y-5 overflow-y-auto px-1 py-5">
+            {children}
+          </div>
 
-          <DialogFooter className="flex items-center space-x-1">
+          <DialogFooter className="flex flex-shrink-0 items-center space-x-1">
             <DialogClose asChild>
               <Button
                 type="button"

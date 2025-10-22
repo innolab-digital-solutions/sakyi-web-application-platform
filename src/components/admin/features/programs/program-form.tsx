@@ -35,12 +35,6 @@ export default function ProgramForm({
   const dialogOpen = isControlled ? open : uncontrolledOpen;
   const isEdit = mode === "edit";
 
-  const onFileReject = React.useCallback((file: File, message: string) => {
-    toast(message, {
-      description: `"${file.name.length > 20 ? `${file.name.slice(0, 20)}...` : file.name}" has been rejected`,
-    });
-  }, []);
-
   const handleDialogOpenChange = (value: boolean) => {
     if (isControlled) {
       onOpenChange?.(value);
@@ -57,7 +51,7 @@ export default function ProgramForm({
     {
       title: "",
       description: "",
-      thumbnail: undefined as File | undefined,
+      thumbnail: undefined as File | string | undefined,
       duration_value: 1,
       duration_unit: "days" as "days" | "weeks" | "months",
       price: 0,
@@ -149,7 +143,7 @@ export default function ProgramForm({
       const newData = {
         title: "",
         description: "",
-        thumbnail: undefined as File | undefined,
+        thumbnail: undefined as File | string | undefined,
         duration_value: 1,
         duration_unit: "days" as "days" | "weeks" | "months",
         price: 0,
@@ -196,11 +190,10 @@ export default function ProgramForm({
       <FileUploadField
         id="program-thumbnail"
         label="Thumbnail"
-        value={form.data.thumbnail as File | undefined}
+        value={form.data.thumbnail}
         onChange={(file) => form.setData("thumbnail", file as File | undefined)}
-        maxFiles={1}
         maxSize={2 * 1024 * 1024}
-        onFileReject={onFileReject}
+        accept="image/jpg,image/jpeg,image/png,image/webp"
         required={!isEdit}
         error={form.errors.thumbnail as string}
       />
@@ -246,23 +239,6 @@ export default function ProgramForm({
         onChange={(event) => form.setData("price", Number(event.target.value))}
         error={form.errors.price as string}
         label="Price"
-        required
-        disabled={form.processing}
-      />
-
-      {/* Status Field */}
-      <SelectField
-        id="status"
-        name="status"
-        label="Status"
-        value={String(form.data.status)}
-        onChange={(v) => form.setData("status", v as "active" | "inactive" | "archived")}
-        error={form.errors.status as string}
-        options={[
-          { value: "active", label: "Active" },
-          { value: "inactive", label: "Inactive" },
-          { value: "archived", label: "Archived" },
-        ]}
         required
         disabled={form.processing}
       />

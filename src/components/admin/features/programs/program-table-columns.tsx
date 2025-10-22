@@ -72,8 +72,8 @@ export const programsTableColumns: ColumnDef<Program>[] = [
                 alt={title}
                 fill
                 className="object-cover"
-                sizes="48px"
-                priority={false}
+                sizes="(max-width: 768px) 48px, 48px"
+                unoptimized={thumbnailUrl.startsWith("http")}
               />
             ) : (
               <div className="text-muted-foreground/50 flex h-full w-full items-center justify-center text-xs font-medium">
