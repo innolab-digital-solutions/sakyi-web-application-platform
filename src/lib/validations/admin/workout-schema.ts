@@ -33,4 +33,4 @@ export const WorkoutSchema = z.object({
     .transform((value) => (value?.trim() ? value.trim() : undefined)),
 });
 
-export type WorkoutFormData = z.infer<typeof CreateWorkoutSchema>;
+export type WorkoutFormData = z.infer<typeof WorkoutSchema>;
