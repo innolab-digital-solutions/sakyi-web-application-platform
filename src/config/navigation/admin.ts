@@ -251,10 +251,10 @@ export const adminNavigation: NavGroup[] = [
           },
           {
             name: "Workout Items",
-            path: "/admin/workouts/items",
+            path: PATHS.ADMIN.WORKOUTS.LIST,
             params: {},
             active: false,
-            permission: "",
+            permission: "workouts.view",
           },
         ],
       },

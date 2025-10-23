@@ -43,6 +43,14 @@ export const ADMIN_ENDPOINTS = {
     DESTROY: (id: string | number) => `/admin/workout-categories/${id}`,
   },
 
+  WORKOUTS: {
+    INDEX: "/admin/workouts",
+    SHOW: (id: string | number) => `/admin/workouts/${id}`,
+    STORE: "/admin/workouts",
+    UPDATE: (id: string | number) => `/admin/workouts/${id}`,
+    DESTROY: (id: string | number) => `/admin/workouts/${id}`,
+  },
+
   /** Unit of measurement endpoints */
   UNITS: {
     INDEX: "/admin/units",

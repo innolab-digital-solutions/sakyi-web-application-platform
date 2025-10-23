@@ -33,6 +33,13 @@ export const ADMIN_PATHS = {
     LIST: "/admin/workout-categories",
   },
 
+  WORKOUTS: {
+    LIST: "/admin/workouts",
+    CREATE: "/admin/workouts/create",
+    EDIT: (id: string | number) => `/admin/workouts/${id}/edit`,
+    DETAIL: (id: string | number) => `/admin/workouts/${id}`,
+  },
+
   /** Unit of measurement management routes */
   UNITS: {
     LIST: "/admin/units",
