@@ -78,15 +78,15 @@ export default function OurPrograms() {
              <div className="flex h-full flex-col gap-6">
                {/* Image - Top (Full Width) */}
                <div className="relative w-full overflow-hidden rounded-xl bg-slate-100">
-                 <div className="aspect-[4/3] w-full">
-                   <Image
-                     src={programs[0].image}
-                     alt={programs[0].title}
-                     width={400}
-                     height={300}
-                     className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                   />
-                 </div>
+                 <Image
+                   src={programs[0].image}
+                   alt={programs[0].title}
+                   width={600}
+                   height={400}
+                   className="h-auto w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                   quality={90}
+                   priority
+                 />
                </div>
 
                {/* Content - Bottom (Full Width) */}
@@ -126,20 +126,21 @@ export default function OurPrograms() {
                  data-aos="fade-up"
                  data-aos-delay={`${(index + 1) * 150 + 400}`}
                >
-                 <div className="flex h-full gap-4">
-                   {/* Image - Left Side (Half Width, Full Height) */}
-                   <div className="relative w-1/2 overflow-hidden rounded-xl bg-slate-100">
+                 <div className="flex h-full flex-col gap-4 lg:flex-row lg:gap-4">
+                   {/* Image - Top on mobile, Left on desktop */}
+                   <div className="relative w-full overflow-hidden rounded-xl bg-slate-100 lg:w-1/2 lg:h-full">
                      <Image
                        src={program.image}
                        alt={program.title}
-                       width={200}
-                       height={200}
-                       className="h-auto w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                       width={400}
+                       height={300}
+                       className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                       quality={90}
                      />
                    </div>
 
-                   {/* Content - Right Side (Half Width) */}
-                   <div className="flex w-1/2 flex-col justify-center space-y-3">
+                   {/* Content - Bottom on mobile, Right on desktop */}
+                   <div className="flex w-full flex-col justify-center space-y-3 lg:w-1/2">
                      <h3
                        className="text-lg font-bold text-slate-900"
                        style={{ fontFamily: "Poppins, sans-serif" }}
