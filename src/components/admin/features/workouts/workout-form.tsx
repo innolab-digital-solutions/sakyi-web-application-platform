@@ -135,30 +135,32 @@ export default function WorkoutForm({
   );
 
   useEffect(() => {
-    if (isEdit && defaultValues) {
-      form.setData({
-        workout_category_id: defaultValues.category?.id ?? "",
-        name: defaultValues.name ?? "",
-        description: defaultValues.description ?? "",
-        difficulty: defaultValues.difficulty ?? undefined,
-      });
-    } else {
-      form.setData({
-        workout_category_id: "",
-        name: "",
-        description: "",
-        difficulty: undefined,
-      });
+    if (dialogOpen) {
+      // <- run whenever dialog opens
+      if (isEdit && defaultValues) {
+        form.setData({
+          workout_category_id: defaultValues.category?.id ?? "",
+          name: defaultValues.name ?? "",
+          description: defaultValues.description ?? "",
+          difficulty: defaultValues.difficulty ?? "beginner",
+          equipment: defaultValues.equipment ?? "",
+          gif_path: defaultValues.gif_path ?? "",
+          video_url: defaultValues.video_url ?? "",
+        });
+      } else {
+        form.setData({
+          workout_category_id: "",
+          name: "",
+          description: "",
+          difficulty: "beginner",
+          equipment: "",
+          gif_path: "",
+          video_url: "",
+        });
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    defaultValues?.id,
-    defaultValues?.category?.id,
-    defaultValues?.name,
-    defaultValues?.description,
-    defaultValues?.difficulty,
-    isEdit,
-  ]);
+  }, [dialogOpen, defaultValues]);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
