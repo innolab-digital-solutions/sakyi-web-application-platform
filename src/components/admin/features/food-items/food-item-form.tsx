@@ -134,33 +134,27 @@ export default function FoodItemForm({
   );
 
   useEffect(() => {
-    if (isEdit && defaultValues) {
-      form.setData({
-        name: defaultValues.name ?? "",
-        description: defaultValues.description ?? "",
-        calories_per_unit: defaultValues.calories_per_unit ?? 0,
-        food_category_id: defaultValues.category?.id ?? 0,
-        unit_id: defaultValues.unit?.id ?? 0,
-      });
-    } else {
-      form.setData({
-        name: "",
-        description: "",
-        calories_per_unit: 0,
-        food_category_id: 0,
-        unit_id: 0,
-      });
+    if (dialogOpen) {
+      if (isEdit && defaultValues) {
+        form.setData({
+          name: defaultValues.name ?? "",
+          description: defaultValues.description ?? "",
+          calories_per_unit: defaultValues.calories_per_unit ?? 0,
+          food_category_id: defaultValues.category?.id ?? 0,
+          unit_id: defaultValues.unit?.id ?? 0,
+        });
+      } else {
+        form.setData({
+          name: "",
+          description: "",
+          calories_per_unit: 0,
+          food_category_id: 0,
+          unit_id: 0,
+        });
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    defaultValues?.id,
-    defaultValues?.name,
-    defaultValues?.description,
-    defaultValues?.calories_per_unit,
-    defaultValues?.category?.id,
-    defaultValues?.unit?.id,
-    isEdit,
-  ]);
+  }, [dialogOpen, defaultValues]);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
