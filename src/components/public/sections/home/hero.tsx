@@ -14,7 +14,7 @@ export default function Hero() {
       <div className="absolute -bottom-40 -left-40 h-80 w-80 rounded-full bg-gradient-to-br from-[#4bc4db]/10 to-[#0c96c4]/10 blur-3xl"></div>
       <div className="absolute top-1/2 left-1/2 h-96 w-96 -translate-x-1/2 -translate-y-1/2 transform rounded-full bg-gradient-to-br from-[#35bec5]/5 to-[#0c96c4]/5 blur-3xl"></div>
     </div>
-    <div className="relative mx-auto max-w-7xl px-4 pt-20 sm:px-6 lg:px-8">
+    <div className="relative mx-auto max-w-7xl px-4 pt-20 pb-16 sm:px-6 lg:px-8">
       <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
         {/* Left Column - Clean Content */}
         <div className="space-y-8" data-aos="fade-up" data-aos-duration="1000">
@@ -82,7 +82,7 @@ export default function Hero() {
           <div className="relative">
             {/* Main Image */}
             <div className="group relative overflow-hidden rounded-3xl shadow-2xl">
-              <div className="aspect-[3/4] w-full">
+              <div className="aspect-[4/5] w-full sm:aspect-[3/4]">
                 <Image
                   src="/images/hero-image.jpg"
                   alt="Woman doing yoga meditation for wellness and mental health"
@@ -96,7 +96,7 @@ export default function Hero() {
 
             {/* Floating Cards */}
             <div
-              className="absolute -top-6 -left-6 animate-pulse rounded-2xl border border-slate-200/50 bg-white/90 p-4 shadow-xl backdrop-blur-sm hover:animate-bounce"
+              className="absolute -top-6 -left-2 sm:-left-4 lg:-left-6 animate-pulse rounded-2xl border border-slate-200/50 bg-white/90 p-4 shadow-xl backdrop-blur-sm hover:animate-bounce"
               data-aos="fade-up"
               data-aos-delay="400"
               style={{
@@ -125,7 +125,7 @@ export default function Hero() {
             </div>
 
             <div
-              className="absolute -right-6 -bottom-6 animate-pulse rounded-2xl border border-slate-200/50 bg-white/90 p-4 shadow-xl backdrop-blur-sm hover:animate-bounce"
+              className="absolute -right-2 sm:-right-4 lg:-right-6 -bottom-6 animate-pulse rounded-2xl border border-slate-200/50 bg-white/90 p-4 shadow-xl backdrop-blur-sm hover:animate-bounce"
               data-aos="fade-up"
               data-aos-delay="600"
               style={{

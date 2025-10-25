@@ -36,7 +36,7 @@ export default function AboutPreview() {
 
             {/* Floating Stats */}
             <div
-              className="absolute -top-6 -right-6 animate-pulse rounded-2xl border border-slate-200/50 bg-white/95 p-6 shadow-xl backdrop-blur-sm hover:animate-bounce"
+              className="absolute -top-6 -right-4 sm:-right-5 lg:-right-6 animate-pulse rounded-2xl border border-slate-200/50 bg-white/95 p-6 shadow-xl backdrop-blur-sm hover:animate-bounce"
               data-aos="fade-up"
               data-aos-delay="600"
               style={{ animation: "float 6s ease-in-out infinite" }}
@@ -58,7 +58,7 @@ export default function AboutPreview() {
             </div>
 
             <div
-              className="absolute -bottom-6 -left-6 animate-pulse rounded-2xl border border-slate-200/50 bg-white/95 p-6 shadow-xl backdrop-blur-sm hover:animate-bounce"
+              className="absolute -bottom-6 -left-4 sm:-left-5 lg:-left-6 animate-pulse rounded-2xl border border-slate-200/50 bg-white/95 p-6 shadow-xl backdrop-blur-sm hover:animate-bounce"
               data-aos="fade-up"
               data-aos-delay="800"
               style={{ animation: "float 8s ease-in-out infinite" }}

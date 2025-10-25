@@ -117,8 +117,10 @@ export default function Navbar() {
       </div>
 
       {/* Clean Mobile Navigation */}
-      {isMenuOpen && (
-        <div className="border-t border-slate-100 bg-white md:hidden">
+      <div className={`overflow-hidden transition-all duration-300 ease-in-out md:hidden ${
+        isMenuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+      }`}>
+        <div className="border-t border-slate-100 bg-white">
           <div className="space-y-3 px-4 py-4">
             {[
               { href: "/", label: "Home" },
@@ -126,18 +128,22 @@ export default function Navbar() {
               { href: "/programs", label: "Programs" },
               { href: "/blog", label: "Blog" },
               { href: "/contact", label: "Contact" },
-            ].map((item) => {
+            ].map((item, index) => {
               const isActive = item.href === "/";
               return (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`block py-2 text-sm font-medium transition-colors ${
+                  className={`block py-2 text-sm font-medium transition-all duration-300 ease-in-out ${
                     isActive
                       ? "rounded-lg bg-gradient-to-r from-[#35bec5]/10 via-[#4bc4db]/10 to-[#0c96c4]/10 px-3 text-slate-900"
-                      : "text-slate-600 hover:text-slate-900"
+                      : "text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-lg px-3"
                   }`}
-                  style={{ fontFamily: "Inter, sans-serif" }}
+                  style={{ 
+                    fontFamily: "Inter, sans-serif",
+                    animationDelay: `${index * 50}ms`,
+                    animation: isMenuOpen ? "slideInDown 0.3s ease-out forwards" : "none"
+                  }}
                   onClick={() => setIsMenuOpen(false)}
                 >
                   {item.label}
@@ -162,7 +168,7 @@ export default function Navbar() {
             </div>
           </div>
         </div>
-      )}
+      </div>
     </div>
   </nav>
   );
