@@ -95,10 +95,13 @@ export default function WorkoutForm({
                     (existing
                       ? {
                           ...existing,
-                          name: form.data.name,
-                          description: form.data.description,
+                          name: String(form.data.name),
+                          description: String(form.data.description),
                           difficulty: form.data.difficulty,
                           category: defaultValues.category,
+                          equipment: form.data.equipment,
+                          gif_path: form.data.gif_path,
+                          video_url: form.data.video_url,
                         }
                       : undefined);
                   if (!next) return base;
