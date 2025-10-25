@@ -4,6 +4,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { CornerDownRight, Network, SquarePen } from "lucide-react";
 import React from "react";
 
+import DisabledTooltip from "@/components/shared/disabled-tooltip";
 import SortableHeader from "@/components/shared/table/sortable-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -62,16 +63,25 @@ export const foodCategoriesTableColumns: ColumnDef<FoodCategory>[] = [
           <FoodCategoryForm
             mode="edit"
             defaultValues={foodCategory}
-            trigger={
-              <Button
-                variant="ghost"
-                size="sm"
-                className="hover:bg-accent/10 hover:text-accent text-accent flex cursor-pointer items-center justify-center text-sm font-semibold"
-              >
-                <SquarePen className="h-2 w-2" />
-                <span>Edit</span>
-              </Button>
-            }
+            trigger={(() => {
+              const isEditable = Boolean(foodCategory.actions?.editable);
+              const disabledReason = isEditable
+                ? undefined
+                : "You don't have permission to edit this category.";
+              return (
+                <DisabledTooltip reason={disabledReason}>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="hover:bg-accent/10 hover:text-accent text-accent flex cursor-pointer items-center justify-center text-sm font-semibold"
+                    disabled={!isEditable}
+                  >
+                    <SquarePen className="h-2 w-2" />
+                    <span>Edit</span>
+                  </Button>
+                </DisabledTooltip>
+              );
+            })()}
           />
 
           <FoodCategoryDeletionDialog foodCategory={foodCategory} />

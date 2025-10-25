@@ -6,6 +6,7 @@ import React from "react";
 
 import WorkoutCategoryDeletionDialog from "@/components/admin/features/workout-categories/workout-category-deletion-dialog";
 import WorkoutCategoryForm from "@/components/admin/features/workout-categories/workout-category-form";
+import DisabledTooltip from "@/components/shared/disabled-tooltip";
 import SortableHeader from "@/components/shared/table/sortable-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -61,16 +62,25 @@ export const workoutCategoryTableColumns: ColumnDef<WorkoutCategory>[] = [
           <WorkoutCategoryForm
             mode="edit"
             defaultValues={workoutCategory}
-            trigger={
-              <Button
-                variant="ghost"
-                size="sm"
-                className="hover:bg-accent/10 hover:text-accent text-accent flex cursor-pointer items-center justify-center text-sm font-semibold"
-              >
-                <SquarePen className="h-2 w-2" />
-                <span>Edit</span>
-              </Button>
-            }
+            trigger={(() => {
+              const isEditable = Boolean(workoutCategory.actions?.editable);
+              const disabledReason = isEditable
+                ? undefined
+                : "You don't have permission to edit this category.";
+              return (
+                <DisabledTooltip reason={disabledReason}>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="hover:bg-accent/10 hover:text-accent text-accent flex cursor-pointer items-center justify-center text-sm font-semibold"
+                    disabled={!isEditable}
+                  >
+                    <SquarePen className="h-2 w-2" />
+                    <span>Edit</span>
+                  </Button>
+                </DisabledTooltip>
+              );
+            })()}
           />
 
           <WorkoutCategoryDeletionDialog workoutCategory={workoutCategory} />

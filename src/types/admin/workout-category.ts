@@ -13,6 +13,10 @@ export interface WorkoutCategory {
   description: string | null;
   parent: WorkoutCategoryChild | null;
   children: WorkoutCategoryChild[];
+  actions?: {
+    editable?: boolean;
+    deletable?: boolean;
+  };
 }
 
 export interface WorkoutCategoriesResponse {

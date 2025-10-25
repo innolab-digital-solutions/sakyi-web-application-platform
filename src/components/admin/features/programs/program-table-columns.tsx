@@ -7,6 +7,7 @@ import React from "react";
 
 import ProgramDeletionDialog from "@/components/admin/features/programs/program-deletion-dialog";
 import ProgramForm from "@/components/admin/features/programs/program-form";
+import DisabledTooltip from "@/components/shared/disabled-tooltip";
 import SortableHeader from "@/components/shared/table/sortable-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -157,16 +158,25 @@ export const programsTableColumns: ColumnDef<Program>[] = [
               <ProgramForm
                 mode="edit"
                 defaultValues={program}
-                trigger={
-                  <Button
-                    variant="outline"
-                    className="hover:!bg-accent/10 group hover:!text-accent hover:!ring-none flex w-full !cursor-pointer items-center justify-start gap-1.5 !border-none text-sm font-medium text-gray-700 shadow-none"
-                    aria-label="Edit program"
-                  >
-                    <SquarePen className="group-hover:text-accent h-4 w-4 transition-colors duration-150" />
-                    <span>Edit Program</span>
-                  </Button>
-                }
+                trigger={(() => {
+                  const isEditable = Boolean(program.actions?.editable);
+                  const disabledReason = isEditable
+                    ? undefined
+                    : "You don't have permission to edit this program.";
+                  return (
+                    <DisabledTooltip reason={disabledReason}>
+                      <Button
+                        variant="outline"
+                        className="hover:!bg-accent/10 group hover:!text-accent hover:!ring-none flex w-full !cursor-pointer items-center justify-start gap-1.5 !border-none text-sm font-medium text-gray-700 shadow-none"
+                        aria-label="Edit program"
+                        disabled={!isEditable}
+                      >
+                        <SquarePen className="group-hover:text-accent h-4 w-4 transition-colors duration-150" />
+                        <span>Edit Program</span>
+                      </Button>
+                    </DisabledTooltip>
+                  );
+                })()}
               />
             </DropdownMenuItem>
             <DropdownMenuSeparator />

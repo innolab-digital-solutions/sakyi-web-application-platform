@@ -21,6 +21,7 @@ export const ADMIN_ENDPOINTS = {
     SHOW: (id: string | number) => `/admin/programs/${id}`,
     STORE: "/admin/programs",
     UPDATE: (id: string | number) => `/admin/programs/${id}`,
+    CHANGE_STATUS: (id: string | number) => `/admin/programs/${id}/status`,
     DESTROY: (id: string | number) => `/admin/programs/${id}`,
   },
 

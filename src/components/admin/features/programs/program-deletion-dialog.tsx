@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { toast } from "sonner";
 
 import ConfirmationDialog from "@/components/shared/confirmation-dialog";
+import DisabledTooltip from "@/components/shared/disabled-tooltip";
 import { Button } from "@/components/ui/button";
 import { ENDPOINTS } from "@/config/endpoints";
 import { useRequest } from "@/hooks/use-request";
@@ -58,17 +59,27 @@ export default function ProgramDeletionDialog({
 
   return (
     <>
-      <Button
-        variant="outline"
-        className={`hover:!bg-destructive/10 text-destructive group hover:text-destructive-900 hover:!ring-none flex w-full !cursor-pointer items-center justify-start gap-1.5 !border-none text-sm font-medium shadow-none ${className ?? ""}`}
-        onClick={() => setShowDeleteDialog(true)}
-        disabled={request.loading}
-        type="button"
-        aria-label="Delete program"
-      >
-        <Trash2 className="group-hover:text-destructive-900 text-destructive h-4 w-4 transition-colors duration-150" />
-        <span>Delete Program</span>
-      </Button>
+      {(() => {
+        const isLoading = request.loading;
+        const isDisabled = isLoading;
+        const disabledReason = isLoading ? "Deleting in progress. Please wait." : undefined;
+
+        return (
+          <DisabledTooltip reason={disabledReason}>
+            <Button
+              variant="outline"
+              className={`hover:!bg-destructive/10 text-destructive group hover:text-destructive-900 hover:!ring-none flex w-full !cursor-pointer items-center justify-start gap-1.5 !border-none text-sm font-medium shadow-none ${className ?? ""}`}
+              onClick={() => setShowDeleteDialog(true)}
+              disabled={isDisabled}
+              type="button"
+              aria-label="Delete program"
+            >
+              <Trash2 className="group-hover:text-destructive-900 text-destructive h-4 w-4 transition-colors duration-150" />
+              <span>Delete Program</span>
+            </Button>
+          </DisabledTooltip>
+        );
+      })()}
 
       <ConfirmationDialog
         title="Delete Program"

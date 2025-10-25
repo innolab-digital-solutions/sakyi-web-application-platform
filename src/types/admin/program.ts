@@ -12,6 +12,10 @@ export interface Program {
   price: string;
   status: "active" | "inactive" | "archived";
   currency: string;
+  actions?: {
+    editable?: boolean;
+    deletable?: boolean;
+  };
 }
 
 export interface ProgramsResponse {

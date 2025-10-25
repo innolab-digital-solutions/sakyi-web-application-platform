@@ -8,8 +8,10 @@ export interface Role {
   description: string | null;
   has_permissions: boolean;
   permissions: Permission | Permission[];
-  created_at?: string;
-  updated_at?: string;
+  actions?: {
+    editable?: boolean;
+    deletable?: boolean;
+  };
 }
 
 export interface RolesResponse {

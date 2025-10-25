@@ -4,8 +4,10 @@ export interface Unit {
   id: number;
   name: string;
   abbreviation: string | null;
-  created_at?: string;
-  updated_at?: string;
+  actions?: {
+    editable?: boolean;
+    deletable?: boolean;
+  };
 }
 
 export interface UnitsResponse {

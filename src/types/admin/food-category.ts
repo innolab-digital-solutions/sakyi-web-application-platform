@@ -13,6 +13,10 @@ export interface FoodCategory {
   description: string | null;
   parent: FoodCategoryChild | null;
   children: FoodCategoryChild[];
+  actions?: {
+    editable?: boolean;
+    deletable?: boolean;
+  };
 }
 
 export interface FoodCategoriesResponse {
