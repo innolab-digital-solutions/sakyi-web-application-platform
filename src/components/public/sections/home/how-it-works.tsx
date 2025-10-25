@@ -1,4 +1,4 @@
-import { ArrowRight,CheckCircle, Heart, Users } from "lucide-react";
+import { ArrowRight, Heart } from "lucide-react";
 import Link from "next/link";
 
 export default function HowItWorks() {
@@ -46,76 +46,92 @@ export default function HowItWorks() {
       </div>
 
       {/* Steps Grid */}
-      <div className="mt-16 grid gap-8 md:grid-cols-3">
+      <div className="mt-16 grid gap-8 lg:grid-cols-3">
         {[
           {
-            step: "1",
-            icon: Heart,
+            step: "01",
             title: "Choose Your Program",
             description:
               "Select the wellness plan that fits your goals — from mental focus to healthy living.",
+            color: "from-[#35bec5] to-[#4bc4db]",
+            illustration: (
+              <div className="relative mb-6">
+                <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-2xl bg-gradient-to-br from-[#35bec5]/10 to-[#4bc4db]/10">
+                  <Heart className="h-12 w-12 text-[#35bec5]" />
+                </div>
+                <div className="absolute -top-2 -right-2 flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-r from-[#35bec5] to-[#4bc4db] text-white shadow-lg">
+                  <span className="text-sm font-bold">01</span>
+                </div>
+              </div>
+            ),
           },
           {
-            step: "2",
-            icon: Users,
+            step: "02", 
             title: "Complete Your Profile",
             description:
               "Share your personal details and preferences so our doctors can customize your plan.",
+            color: "from-[#4bc4db] to-[#0c96c4]",
+            illustration: (
+              <div className="relative mb-6">
+                <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-2xl bg-gradient-to-br from-[#4bc4db]/10 to-[#0c96c4]/10">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-r from-[#4bc4db] to-[#0c96c4]">
+                    <div className="h-6 w-6 rounded-full bg-white"></div>
+                  </div>
+                </div>
+                <div className="absolute -top-2 -right-2 flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-r from-[#4bc4db] to-[#0c96c4] text-white shadow-lg">
+                  <span className="text-sm font-bold">02</span>
+                </div>
+              </div>
+            ),
           },
           {
-            step: "3",
-            icon: CheckCircle,
-            title: "Start Your Weekly Guidance",
+            step: "03",
+            title: "Start Your Weekly Guidance", 
             description:
               "Receive personalized weekly plans, feedback, and lifestyle recommendations directly from your doctor.",
+            color: "from-[#0c96c4] to-[#35bec5]",
+            illustration: (
+              <div className="relative mb-6">
+                <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-2xl bg-gradient-to-br from-[#0c96c4]/10 to-[#35bec5]/10">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-r from-[#0c96c4] to-[#35bec5]">
+                    <div className="flex space-x-1">
+                      <div className="h-2 w-2 rounded-full bg-white"></div>
+                      <div className="h-2 w-2 rounded-full bg-white"></div>
+                      <div className="h-2 w-2 rounded-full bg-white"></div>
+                    </div>
+                  </div>
+                </div>
+                <div className="absolute -top-2 -right-2 flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-r from-[#0c96c4] to-[#35bec5] text-white shadow-lg">
+                  <span className="text-sm font-bold">03</span>
+                </div>
+              </div>
+            ),
           },
         ].map((step, index) => (
           <div
             key={index}
-            className="group relative overflow-hidden rounded-2xl border border-slate-200/50 bg-white/80 p-8 text-center shadow-sm backdrop-blur-sm transition-all duration-300 hover:bg-white/90 hover:shadow-lg"
+            className="group relative rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-sm transition-all duration-300 hover:shadow-md"
             data-aos="fade-up"
             data-aos-delay={`${index * 200}`}
           >
-            {/* Gradient Background on Hover */}
-            <div className="absolute inset-0 bg-gradient-to-br from-[#35bec5]/5 to-[#0c96c4]/5 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
+            {/* Illustration */}
+            {step.illustration}
 
             {/* Content */}
-            <div className="relative z-10">
-              {/* Step Number Badge */}
-              <div className="mb-6">
-                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-r from-[#35bec5] to-[#0c96c4] text-white shadow-lg">
-                  <span
-                    className="text-xl font-bold"
-                    style={{ fontFamily: "Poppins, sans-serif" }}
-                  >
-                    {step.step}
-                  </span>
-                </div>
-              </div>
+            <div className="space-y-4">
+              <h3
+                className="text-xl font-bold text-slate-900"
+                style={{ fontFamily: "Poppins, sans-serif" }}
+              >
+                {step.title}
+              </h3>
 
-              {/* Icon with Enhanced Design */}
-              <div className="mb-6">
-                <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-[#35bec5]/10 to-[#0c96c4]/10 shadow-sm transition-transform duration-300 group-hover:scale-110">
-                  <step.icon className="h-10 w-10 text-[#35bec5]" />
-                </div>
-              </div>
-
-              {/* Content */}
-              <div className="space-y-4">
-                <h3
-                  className="text-xl font-bold text-slate-900 transition-colors duration-300 group-hover:text-[#35bec5]"
-                  style={{ fontFamily: "Poppins, sans-serif" }}
-                >
-                  {step.title}
-                </h3>
-
-                <p
-                  className="leading-relaxed text-slate-600"
-                  style={{ fontFamily: "Inter, sans-serif" }}
-                >
-                  {step.description}
-                </p>
-              </div>
+              <p
+                className="text-slate-600"
+                style={{ fontFamily: "Inter, sans-serif" }}
+              >
+                {step.description}
+              </p>
             </div>
           </div>
         ))}
