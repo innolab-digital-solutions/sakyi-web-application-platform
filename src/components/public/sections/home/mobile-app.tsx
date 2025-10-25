@@ -6,12 +6,12 @@ export default function MobileApp() {
     <section id="app" className="relative overflow-hidden bg-slate-50 py-24">
     {/* Background Elements */}
     <div className="absolute inset-0 overflow-hidden">
-      <div className="absolute top-1/3 -right-32 h-64 w-64 rounded-full bg-gradient-to-br from-[#35bec5]/5 to-[#0c96c4]/5 blur-3xl"></div>
-      <div className="absolute bottom-1/3 -left-32 h-64 w-64 rounded-full bg-gradient-to-br from-[#4bc4db]/5 to-[#35bec5]/5 blur-3xl"></div>
+      <div className="absolute top-1/3 -right-20 h-40 w-40 rounded-full bg-gradient-to-br from-[#35bec5]/5 to-[#0c96c4]/5 blur-3xl sm:-right-28 sm:h-56 sm:w-56 lg:-right-32 lg:h-64 lg:w-64"></div>
+      <div className="absolute bottom-1/3 -left-20 h-40 w-40 rounded-full bg-gradient-to-br from-[#4bc4db]/5 to-[#35bec5]/5 blur-3xl sm:-left-28 sm:h-56 sm:w-56 lg:-left-32 lg:h-64 lg:w-64"></div>
     </div>
 
     <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      <div className="grid items-center gap-12 lg:grid-cols-2">
+      <div className="grid items-center gap-8 lg:grid-cols-2 lg:gap-12">
         {/* Left Column - Text Content */}
         <div className="space-y-8" data-aos="fade-right">
           <div className="space-y-6">
@@ -26,7 +26,7 @@ export default function MobileApp() {
             </div>
 
             <h2
-              className="text-3xl leading-tight font-bold sm:text-4xl lg:text-5xl"
+              className="text-2xl leading-tight font-bold sm:text-3xl sm:leading-tight lg:text-4xl xl:text-5xl"
               style={{ fontFamily: "Poppins, sans-serif" }}
             >
               Your Wellness Journey,{" "}
@@ -39,7 +39,7 @@ export default function MobileApp() {
             </h2>
 
             <p
-              className="text-base leading-relaxed text-slate-600"
+              className="text-sm leading-relaxed text-slate-600 sm:text-base"
               style={{ fontFamily: "Inter, sans-serif" }}
             >
               Stay on track with SaKyi&apos;s mobile app — receive your weekly doctor updates,
@@ -48,7 +48,7 @@ export default function MobileApp() {
           </div>
 
           {/* App Store Buttons */}
-          <div className="flex flex-col gap-4 sm:flex-row">
+          <div className="flex flex-col gap-4 sm:flex-row sm:gap-6">
             <Link
               href="#app"
               className="group relative inline-flex items-center justify-center rounded-full bg-slate-900 px-6 py-3 text-base font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
@@ -78,10 +78,10 @@ export default function MobileApp() {
 
         {/* Right Column - App Mockups */}
         <div className="relative" data-aos="fade-left">
-          <div className="flex justify-center space-x-6">
+          <div className="flex justify-center items-center space-x-2 sm:space-x-4 lg:space-x-6">
             {/* First Phone Mockup - Dashboard Screen */}
-            <div className="group relative">
-              <div className="h-[500px] w-[240px] rotate-12 transform overflow-hidden rounded-3xl bg-white shadow-2xl">
+            <div className="group relative z-10">
+              <div className="h-[400px] w-[180px] rotate-12 transform overflow-hidden rounded-3xl bg-white shadow-2xl sm:h-[450px] sm:w-[200px] sm:rotate-12 lg:h-[500px] lg:w-[240px] lg:rotate-12">
                 {/* Phone Status Bar */}
                 <div className="flex items-center justify-between bg-white px-4 py-2">
                   <div className="flex items-center space-x-1">
@@ -183,8 +183,8 @@ export default function MobileApp() {
             </div>
 
             {/* Second Phone Mockup - Progress Screen */}
-            <div className="group relative -translate-y-8">
-              <div className="h-[500px] w-[240px] -rotate-12 transform overflow-hidden rounded-3xl bg-white shadow-2xl">
+            <div className="group relative z-0 -translate-y-8 sm:-translate-y-10 lg:-translate-y-12">
+              <div className="h-[400px] w-[180px] -rotate-12 transform overflow-hidden rounded-3xl bg-white shadow-2xl sm:h-[450px] sm:w-[200px] sm:-rotate-12 lg:h-[500px] lg:w-[240px] lg:-rotate-12">
                 {/* Phone Status Bar */}
                 <div className="flex items-center justify-between bg-white px-4 py-2">
                   <div className="flex items-center space-x-1">
