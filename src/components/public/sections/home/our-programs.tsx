@@ -177,12 +177,11 @@ export default function OurPrograms() {
          <div className="mt-12 text-center" data-aos="fade-up" data-aos-delay="800">
            <Link
              href="#programs"
-             className="group relative inline-flex items-center justify-center rounded-full bg-gradient-to-r from-[#35bec5] via-[#4bc4db] to-[#0c96c4] px-6 py-3 text-base font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
+             className="group inline-flex items-center justify-center rounded-full bg-gradient-to-r from-[#35bec5] via-[#4bc4db] to-[#0c96c4] px-6 py-3 text-base font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
              style={{ fontFamily: "Inter, sans-serif" }}
            >
              <span className="relative z-10">Explore All Programs</span>
-             <ArrowRight className="ml-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
-             <div className="absolute inset-0 rounded-full bg-gradient-to-r from-[#0c96c4] via-[#4bc4db] to-[#35bec5] opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
+             <ArrowRight className="ml-2 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
            </Link>
          </div>
        </div>
