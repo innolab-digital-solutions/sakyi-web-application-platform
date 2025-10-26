@@ -48,7 +48,7 @@ export default function ArticleInsights() {
               >
                 Expert Insights for{" "}
                 <span
-                  className="bg-gradient-to-r from-[#35bec5] via-[#4bc4db] to-[#0c96c4] bg-clip-text text-transparent"
+                  className="text-brand-gradient bg-clip-text text-transparent"
                   style={{ fontFamily: "Poppins, sans-serif" }}
                 >
                   Your Wellness Journey
@@ -143,7 +143,7 @@ export default function ArticleInsights() {
             <div className="mt-12 text-center" data-aos="fade-up" data-aos-delay="600">
               <Link
                 href="#blog"
-                className="group inline-flex items-center justify-center rounded-full bg-gradient-to-r from-[#35bec5] via-[#4bc4db] to-[#0c96c4] px-6 py-3 text-base font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
+                className="group inline-flex items-center justify-center rounded-full bg-brand-gradient px-6 py-3 text-base font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
                 style={{ fontFamily: "Inter, sans-serif" }}
               >
                 <span className="relative z-10">View All Articles</span>

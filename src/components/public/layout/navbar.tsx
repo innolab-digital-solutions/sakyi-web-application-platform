@@ -7,11 +7,16 @@ Smartphone,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import React, {  useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import { publicNavigation } from "@/config/navigation/public";
+import { getActivePublicNav } from "@/utils/public/navigation";
 
 export default function Navbar() {
+  const pathname = usePathname();
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
@@ -27,6 +32,7 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const items = getActivePublicNav(pathname, publicNavigation);
   return (
     <nav
     className={`fixed top-0 z-50 w-full transition-all duration-300 animate-fade-in ${
@@ -57,32 +63,25 @@ export default function Navbar() {
 
         {/* Clean Desktop Navigation */}
         <div className="hidden items-center space-x-8 md:flex">
-          {[
-            { href: "/", label: "Home" },
-            { href: "/about", label: "About" },
-            { href: "/programs", label: "Programs" },
-            { href: "/blog", label: "Blog" },
-            { href: "/contact", label: "Contact" },
-          ].map((item) => {
-            const isActive = item.href === "/";
+            {items.map((item) => {
             return (
               <Link
-                key={item.href}
-                href={item.href}
+                key={item.path}
+                href={item.path}
                 className={`group relative text-sm font-medium transition-all duration-300 ${
-                  isActive ? "text-slate-900" : "text-slate-600 hover:text-slate-900"
+                  item.active ? "text-slate-900" : "text-slate-600 hover:text-slate-900"
                 }`}
                 style={{ fontFamily: "Inter, sans-serif" }}
               >
-                <span className="relative z-10">{item.label}</span>
+                <span className="relative z-10">{item.name}</span>
                 <span
-                  className={`absolute inset-x-0 -bottom-1 h-0.5 bg-gradient-to-r from-[#35bec5] via-[#4bc4db] to-[#0c96c4] transition-all duration-300 ${
-                    isActive ? "w-full" : "w-0 group-hover:w-full"
+                  className={`absolute inset-x-0 -bottom-1 h-0.5 bg-brand-gradient transition-all duration-300 ${
+                    item.active ? "w-full" : "w-0 group-hover:w-full"
                   }`}
                 ></span>
                 <span
                   className={`absolute inset-0 rounded-lg bg-gradient-to-r from-[#35bec5]/5 via-[#4bc4db]/5 to-[#0c96c4]/5 transition-opacity duration-300 ${
-                    isActive ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+                    item.active ? "opacity-100" : "opacity-0 group-hover:opacity-100"
                   }`}
                 ></span>
               </Link>
@@ -99,7 +98,7 @@ export default function Navbar() {
                 appSection.scrollIntoView({ behavior: "smooth" });
               }
             }}
-            className="inline-flex items-center rounded-full bg-gradient-to-r from-[#35bec5] via-[#4bc4db] to-[#0c96c4] px-4 py-2 text-sm font-medium text-white shadow-none transition-all duration-300 hover:scale-105 hover:shadow-none"
+            className="inline-flex items-center rounded-full bg-brand-gradient px-4 py-2 text-sm font-medium text-white shadow-none transition-all duration-300 hover:scale-105 hover:shadow-none"
             style={{ fontFamily: "Inter, sans-serif" }}
           >
             <Smartphone className="mr-2 h-4 w-4" />
@@ -124,20 +123,13 @@ export default function Navbar() {
       }`}>
         <div className="border-t border-slate-100 bg-white">
           <div className="space-y-3 px-4 py-4">
-            {[
-              { href: "/", label: "Home" },
-              { href: "/about", label: "About" },
-              { href: "/programs", label: "Programs" },
-              { href: "/blog", label: "Blog" },
-              { href: "/contact", label: "Contact" },
-            ].map((item, index) => {
-              const isActive = item.href === "/";
+            {items.map((item, index) => {
               return (
                 <Link
-                  key={item.href}
-                  href={item.href}
+                  key={item.path}
+                  href={item.path}
                   className={`block py-2 text-sm font-medium transition-all duration-300 ease-in-out ${
-                    isActive
+                    item.active
                       ? "rounded-lg bg-gradient-to-r from-[#35bec5]/10 via-[#4bc4db]/10 to-[#0c96c4]/10 px-3 text-slate-900"
                       : "text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-lg px-3"
                   }`}
@@ -148,7 +140,7 @@ export default function Navbar() {
                   }}
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  {item.label}
+                  {item.name}
                 </Link>
               );
             })}
@@ -161,7 +153,7 @@ export default function Navbar() {
                     appSection.scrollIntoView({ behavior: "smooth" });
                   }
                 }}
-                className="inline-flex w-full items-center justify-center rounded-full bg-gradient-to-r from-[#35bec5] via-[#4bc4db] to-[#0c96c4] px-4 py-2 text-sm font-medium text-white shadow-none transition-all duration-300 hover:scale-105 hover:shadow-xl"
+                className="inline-flex w-full items-center justify-center rounded-full bg-brand-gradient px-4 py-2 text-sm font-medium text-white shadow-none transition-all duration-300 hover:scale-105 hover:shadow-xl"
                 style={{ fontFamily: "Inter, sans-serif" }}
               >
                 <Smartphone className="mr-2 h-4 w-4" />

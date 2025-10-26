@@ -164,6 +164,7 @@
     @apply bg-background text-foreground;
   }
 }
+
 @layer utilities {
   .scrollbar-thin {
     scrollbar-width: thin;
@@ -292,4 +293,31 @@
 
 .animate-fade-in {
   animation: fadeIn 0.8s ease-out 0.2s both;
+}
+
+/* Brand Gradient Classes */
+.bg-brand-gradient {
+  background: linear-gradient(to right, #35bec5, #4bc4db, #0c96c4);
+}
+
+.text-brand-gradient {
+  background: linear-gradient(to right, #35bec5, #4bc4db, #0c96c4);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.border-brand-gradient {
+  border-image: linear-gradient(to right, #35bec5, #4bc4db, #0c96c4) 1;
+}
+
+.hover-brand-gradient:hover {
+  background: linear-gradient(to right, #35bec5, #4bc4db, #0c96c4);
+}
+
+.hover-text-brand-gradient:hover {
+  background: linear-gradient(to right, #35bec5, #4bc4db, #0c96c4);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }

@@ -29,7 +29,7 @@ export default function JoinCommunity() {
           >
             Be Part of a{" "}
             <span
-              className="bg-gradient-to-r from-[#35bec5] via-[#4bc4db] to-[#0c96c4] bg-clip-text text-transparent"
+              className="text-brand-gradient bg-clip-text text-transparent"
               style={{ fontFamily: "Poppins, sans-serif" }}
             >
               Wellness Revolution
@@ -184,7 +184,7 @@ export default function JoinCommunity() {
             <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
               <Link
                 href="#programs"
-                className="group inline-flex items-center justify-center rounded-full bg-gradient-to-r from-[#35bec5] via-[#4bc4db] to-[#0c96c4] px-8 py-4 text-base font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
+                className="group inline-flex items-center justify-center rounded-full bg-brand-gradient px-8 py-4 text-base font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
                 style={{ fontFamily: "Inter, sans-serif" }}
               >
                 <span className="relative z-10">Start Your Journey</span>

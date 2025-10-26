@@ -31,7 +31,7 @@ export default function MobileApp() {
             >
               Your Wellness Journey,{" "}
               <span
-                className="bg-gradient-to-r from-[#35bec5] via-[#4bc4db] to-[#0c96c4] bg-clip-text text-transparent"
+                className="text-brand-gradient bg-clip-text text-transparent"
                 style={{ fontFamily: "Poppins, sans-serif" }}
               >
                 Always With You
@@ -61,7 +61,7 @@ export default function MobileApp() {
             </Link>
             <Link
               href="#app"
-              className="group relative inline-flex items-center justify-center rounded-full bg-gradient-to-r from-[#35bec5] via-[#4bc4db] to-[#0c96c4] px-6 py-3 text-base font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
+              className="group relative inline-flex items-center justify-center rounded-full bg-brand-gradient px-6 py-3 text-base font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
               style={{ fontFamily: "Inter, sans-serif" }}
             >
               <svg className="mr-2 h-5 w-5" viewBox="0 0 24 24" fill="currentColor">

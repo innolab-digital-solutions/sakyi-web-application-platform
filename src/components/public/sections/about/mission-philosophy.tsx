@@ -28,7 +28,7 @@ export default function MissionPhilosophy() {
           >
             Empowering Wellness Through{" "}
             <span
-              className="bg-gradient-to-r from-[#35bec5] via-[#4bc4db] to-[#0c96c4] bg-clip-text text-transparent"
+              className="text-brand-gradient bg-clip-text text-transparent"
               style={{ fontFamily: "Poppins, sans-serif" }}
             >
               Compassionate Innovation

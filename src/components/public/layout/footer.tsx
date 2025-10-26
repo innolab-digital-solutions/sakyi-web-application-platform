@@ -23,12 +23,11 @@ export default function Footer() {
                   alt="SaKyi Logo"
                   width={48}
                   height={48}
-                  className="h-12 w-auto transition-transform duration-300 group-hover:scale-110"
+                  className="h-12 w-auto"
                 />
-                <div className="absolute -inset-2 rounded-full bg-gradient-to-r from-[#35bec5]/20 to-[#0c96c4]/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
               </div>
               <span
-                className="bg-gradient-to-r from-slate-900 to-[#35bec5] bg-clip-text text-2xl font-bold text-transparent transition-all duration-300 group-hover:from-[#35bec5] group-hover:to-[#0c96c4]"
+                className="text-brand-gradient bg-clip-text text-2xl font-bold text-transparent"
                 style={{ fontFamily: "Poppins, sans-serif" }}
               >
                 SaKyi Health & Wellness

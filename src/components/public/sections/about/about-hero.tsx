@@ -23,7 +23,7 @@ export default function AboutHero() {
             >
               Transforming Healthcare Through{" "}
               <span
-                className="bg-gradient-to-r from-[#35bec5] via-[#4bc4db] to-[#0c96c4] bg-clip-text text-transparent"
+                className="text-brand-gradient bg-clip-text text-transparent"
                 style={{ fontFamily: "Poppins, sans-serif" }}
               >
                 Personalized Wellness
@@ -41,82 +41,49 @@ export default function AboutHero() {
 
             {/* Stats Row */}
             <div className="grid grid-cols-2 gap-4">
-              <div 
-                className="group relative overflow-hidden rounded-xl border border-slate-200 bg-gradient-to-br from-white to-slate-50 p-4 text-center transition-all duration-700 ease-out hover:scale-[1.02] hover:shadow-xl hover:border-[#35bec5]/30 hover:bg-gradient-to-br hover:from-[#35bec5]/5 hover:to-[#0c96c4]/5"
-                data-aos="fade-up"
-                data-aos-delay="100"
-                style={{ transitionDelay: '0ms' }}
-              >
+              {[
+                {
+                  value: "10K+",
+                  label: "Lives Transformed",
+                  delay: 100,
+                },
+                {
+                  value: "98%",
+                  label: "Success Rate",
+                  delay: 200,
+                },
+                {
+                  value: "50+",
+                  label: "Expert Doctors",
+                  delay: 300,
+                },
+                {
+                  value: "24/7",
+                  label: "Support Available",
+                  delay: 400,
+                },
+              ].map((stat, index) => (
                 <div
-                  className="text-2xl font-bold text-[#35bec5] transition-colors duration-700 ease-out group-hover:text-[#0c96c4]"
-                  style={{ fontFamily: "Poppins, sans-serif", transitionDelay: '200ms' }}
+                  key={index}
+                  className="group relative overflow-hidden rounded-xl border border-slate-200 bg-gradient-to-br from-white to-slate-50 p-4 text-center !transition-all !duration-300 !ease-out hover:scale-[1.02] hover:shadow-xl hover:border-[#35bec5]/30 hover:bg-gradient-to-br hover:from-[#35bec5]/5 hover:to-[#0c96c4]/5"
+                  data-aos="fade-up"
+                  data-aos-delay={stat.delay}
+                  style={{ transitionDelay: '0ms' }}
                 >
-                  10K+
+                  <div
+                    className="text-2xl font-bold text-[#35bec5] transition-colors duration-700 ease-out group-hover:text-[#0c96c4]"
+                    style={{ fontFamily: "Poppins, sans-serif", transitionDelay: '200ms' }}
+                  >
+                    {stat.value}
+                  </div>
+                  <div
+                    className="text-xs text-slate-600 transition-colors duration-700 ease-out group-hover:text-slate-700"
+                    style={{ fontFamily: "Inter, sans-serif", transitionDelay: '300ms' }}
+                  >
+                    {stat.label}
+                  </div>
                 </div>
-                <div
-                  className="text-xs text-slate-600 transition-colors duration-700 ease-out group-hover:text-slate-700"
-                  style={{ fontFamily: "Inter, sans-serif", transitionDelay: '300ms' }}
-                >
-                  Lives Transformed
-                </div>
-              </div>
-              <div 
-                className="group relative overflow-hidden rounded-xl border border-slate-200 bg-gradient-to-br from-white to-slate-50 p-4 text-center transition-all duration-700 ease-out hover:scale-[1.02] hover:shadow-xl hover:border-[#35bec5]/30 hover:bg-gradient-to-br hover:from-[#35bec5]/5 hover:to-[#0c96c4]/5"
-                data-aos="fade-up"
-                data-aos-delay="200"
-                style={{ transitionDelay: '0ms' }}
-              >
-                <div
-                  className="text-2xl font-bold text-[#35bec5] transition-colors duration-700 ease-out group-hover:text-[#0c96c4]"
-                  style={{ fontFamily: "Poppins, sans-serif", transitionDelay: '200ms' }}
-                >
-                  98%
-                </div>
-                <div
-                  className="text-xs text-slate-600 transition-colors duration-700 ease-out group-hover:text-slate-700"
-                  style={{ fontFamily: "Inter, sans-serif", transitionDelay: '300ms' }}
-                >
-                  Success Rate
-                </div>
-              </div>
-              <div 
-                className="group relative overflow-hidden rounded-xl border border-slate-200 bg-gradient-to-br from-white to-slate-50 p-4 text-center transition-all duration-700 ease-out hover:scale-[1.02] hover:shadow-xl hover:border-[#35bec5]/30 hover:bg-gradient-to-br hover:from-[#35bec5]/5 hover:to-[#0c96c4]/5"
-                data-aos="fade-up"
-                data-aos-delay="300"
-                style={{ transitionDelay: '0ms' }}
-              >
-                <div
-                  className="text-2xl font-bold text-[#35bec5] transition-colors duration-700 ease-out group-hover:text-[#0c96c4]"
-                  style={{ fontFamily: "Poppins, sans-serif", transitionDelay: '200ms' }}
-                >
-                  50+
-                </div>
-                <div
-                  className="text-xs text-slate-600 transition-colors duration-700 ease-out group-hover:text-slate-700"
-                  style={{ fontFamily: "Inter, sans-serif", transitionDelay: '300ms' }}
-                >
-                  Expert Doctors
-                </div>
-              </div>
-              <div 
-                className="group relative overflow-hidden rounded-xl border border-slate-200 bg-gradient-to-br from-white to-slate-50 p-4 text-center transition-all duration-700 ease-out hover:scale-[1.02] hover:shadow-xl hover:border-[#35bec5]/30 hover:bg-gradient-to-br hover:from-[#35bec5]/5 hover:to-[#0c96c4]/5"
-                data-aos="fade-up"
-                data-aos-delay="400"
-                style={{ transitionDelay: '0ms' }}
-              >
-                <div
-                  className="text-2xl font-bold text-[#35bec5] transition-colors duration-700 ease-out group-hover:text-[#0c96c4]"
-                  style={{ fontFamily: "Poppins, sans-serif", transitionDelay: '200ms' }}
-                >
-                  24/7
-                </div>
-                <div
-                  className="text-xs text-slate-600 transition-colors duration-700 ease-out group-hover:text-slate-700"
-                  style={{ fontFamily: "Inter, sans-serif", transitionDelay: '300ms' }}
-                >
-                  Support Available
-                </div>
-              </div>
+              ))}
             </div>
           </div>
 
