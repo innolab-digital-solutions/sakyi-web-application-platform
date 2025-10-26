@@ -31,7 +31,7 @@ export default function Footer() {
                 className="bg-gradient-to-r from-slate-900 to-[#35bec5] bg-clip-text text-2xl font-bold text-transparent transition-all duration-300 group-hover:from-[#35bec5] group-hover:to-[#0c96c4]"
                 style={{ fontFamily: "Poppins, sans-serif" }}
               >
-                SaKyi
+                SaKyi Health & Wellness
               </span>
             </Link>
 

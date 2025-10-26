@@ -81,6 +81,8 @@ export default function MobileApp() {
           <div className="flex justify-center items-center space-x-2 sm:space-x-4 lg:space-x-6">
             {/* First Phone Mockup - Dashboard Screen */}
             <div className="group relative z-10">
+              {/* Glow effect */}
+              <div className="absolute inset-0 -z-10 h-[400px] w-[180px] rotate-12 transform rounded-3xl bg-gradient-to-r from-[#35bec5]/20 to-[#0c96c4]/20 blur-xl sm:h-[450px] sm:w-[200px] lg:h-[500px] lg:w-[240px]"></div>
               <div className="h-[400px] w-[180px] rotate-12 transform overflow-hidden rounded-3xl bg-white shadow-2xl sm:h-[450px] sm:w-[200px] sm:rotate-12 lg:h-[500px] lg:w-[240px] lg:rotate-12">
                 {/* Phone Status Bar */}
                 <div className="flex items-center justify-between bg-white px-4 py-2">
@@ -178,12 +180,12 @@ export default function MobileApp() {
                   </div>
                 </div>
               </div>
-              {/* Glow effect */}
-              <div className="absolute inset-0 -z-10 rounded-3xl bg-gradient-to-r from-[#35bec5]/20 to-[#0c96c4]/20 blur-xl"></div>
             </div>
 
             {/* Second Phone Mockup - Progress Screen */}
             <div className="group relative z-0 -translate-y-8 sm:-translate-y-10 lg:-translate-y-12">
+              {/* Glow effect */}
+              <div className="absolute inset-0 -z-10 h-[400px] w-[180px] -rotate-12 transform rounded-3xl bg-gradient-to-r from-[#4bc4db]/20 to-[#35bec5]/20 blur-xl sm:h-[450px] sm:w-[200px] lg:h-[500px] lg:w-[240px]"></div>
               <div className="h-[400px] w-[180px] -rotate-12 transform overflow-hidden rounded-3xl bg-white shadow-2xl sm:h-[450px] sm:w-[200px] sm:-rotate-12 lg:h-[500px] lg:w-[240px] lg:-rotate-12">
                 {/* Phone Status Bar */}
                 <div className="flex items-center justify-between bg-white px-4 py-2">
@@ -297,8 +299,6 @@ export default function MobileApp() {
                   </div>
                 </div>
               </div>
-              {/* Glow effect */}
-              <div className="absolute inset-0 -z-10 rounded-3xl bg-gradient-to-r from-[#4bc4db]/20 to-[#35bec5]/20 blur-xl"></div>
             </div>
           </div>
         </div>

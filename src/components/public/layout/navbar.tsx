@@ -97,7 +97,7 @@ export default function Navbar() {
                 appSection.scrollIntoView({ behavior: "smooth" });
               }
             }}
-            className="inline-flex items-center rounded-lg bg-gradient-to-r from-[#35bec5] via-[#4bc4db] to-[#0c96c4] px-4 py-2 text-sm font-medium text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
+            className="inline-flex items-center rounded-full bg-gradient-to-r from-[#35bec5] via-[#4bc4db] to-[#0c96c4] px-4 py-2 text-sm font-medium text-white shadow-none transition-all duration-300 hover:scale-105 hover:shadow-none"
             style={{ fontFamily: "Inter, sans-serif" }}
           >
             <Smartphone className="mr-2 h-4 w-4" />
@@ -159,7 +159,7 @@ export default function Navbar() {
                     appSection.scrollIntoView({ behavior: "smooth" });
                   }
                 }}
-                className="inline-flex w-full items-center justify-center rounded-lg bg-gradient-to-r from-[#35bec5] via-[#4bc4db] to-[#0c96c4] px-4 py-2 text-sm font-medium text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
+                className="inline-flex w-full items-center justify-center rounded-full bg-gradient-to-r from-[#35bec5] via-[#4bc4db] to-[#0c96c4] px-4 py-2 text-sm font-medium text-white shadow-none transition-all duration-300 hover:scale-105 hover:shadow-xl"
                 style={{ fontFamily: "Inter, sans-serif" }}
               >
                 <Smartphone className="mr-2 h-4 w-4" />
