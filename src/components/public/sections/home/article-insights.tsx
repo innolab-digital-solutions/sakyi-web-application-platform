@@ -75,19 +75,21 @@ export default function ArticleInsights() {
                 >
                   {/* Image */}
                   <div className="mb-6 overflow-hidden rounded-xl">
-                    <Image
-                      src={
-                        index === 0
-                          ? "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
-                          : index === 1
-                            ? "https://images.unsplash.com/photo-1490645935967-10de6ba17061?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
-                            : "https://images.unsplash.com/photo-1541781774459-1c4f39c59df4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
-                      }
-                      alt={post.title}
-                      width={400}
-                      height={250}
-                      className="h-48 w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                    />
+                    <div className="aspect-[16/10] w-full">
+                      <Image
+                        src={
+                          index === 0
+                            ? "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
+                            : index === 1
+                              ? "https://images.unsplash.com/photo-1490645935967-10de6ba17061?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
+                              : "https://images.unsplash.com/photo-1541781774459-1c4f39c59df4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
+                        }
+                        alt={post.title}
+                        width={600}
+                        height={375}
+                        className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                      />
+                    </div>
                   </div>
   
                   {/* Content */}

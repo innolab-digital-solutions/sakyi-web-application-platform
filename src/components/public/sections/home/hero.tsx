@@ -96,7 +96,7 @@ export default function Hero() {
 
             {/* Floating Cards */}
             <div
-              className="absolute -top-6 -left-2 sm:-left-4 lg:-left-6 animate-pulse rounded-2xl border border-slate-200/50 bg-white/90 p-4 shadow-xl backdrop-blur-sm hover:animate-bounce"
+              className="absolute -top-6 -left-2 sm:-left-4 lg:-top-4 lg:-left-6 animate-pulse rounded-2xl border border-slate-200/50 bg-white/90 p-4 shadow-xl backdrop-blur-sm hover:animate-bounce"
               data-aos="fade-up"
               data-aos-delay="400"
               style={{
