@@ -1,0 +1,68 @@
+import { ArrowRight } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import React from "react";
+
+interface Program {
+  title: string;
+  description: string;
+  readTime?: string;
+  image: string;
+  href?: string;
+}
+
+interface ProgramCardProperties {
+  program: Program;
+  index?: number;
+  className?: string;
+}
+
+export default function ProgramCard({ program, index = 0, className = "" }: ProgramCardProperties) {
+  return (
+    <div
+      className={`group relative rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-all duration-300 hover:shadow-md ${className}`}
+      data-aos="fade-up"
+      data-aos-delay={`${index * 200}`}
+    >
+      <div className="flex h-full flex-col gap-6">
+        {/* Image - Top (Full Width) */}
+        <div className="relative w-full overflow-hidden rounded-xl bg-slate-100">
+          <Image
+            src={program.image}
+            alt={program.title}
+            width={600}
+            height={400}
+            className="h-auto w-full object-cover transition-transform duration-300 group-hover:scale-105"
+            quality={90}
+          />
+        </div>
+
+        {/* Content - Bottom (Full Width) */}
+        <div className="flex w-full flex-col justify-center space-y-4">
+          <h3
+            className="text-xl font-bold text-slate-900"
+            style={{ fontFamily: "Poppins, sans-serif" }}
+          >
+            {program.title}
+          </h3>
+
+          <p className="text-slate-600" style={{ fontFamily: "Inter, sans-serif" }}>
+            {program.description}
+          </p>
+
+          {/* CTA Link */}
+          <div className="pt-2">
+            <Link
+              href={program.href || "#programs"}
+              className="group/link inline-flex items-center text-sm font-medium text-[#35bec5] transition-all duration-300 hover:text-[#0c96c4]"
+              style={{ fontFamily: "Inter, sans-serif" }}
+            >
+              <span>Learn More</span>
+              <ArrowRight className="ml-2 h-3 w-3 transition-transform duration-300 group-hover/link:translate-x-1" />
+            </Link>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

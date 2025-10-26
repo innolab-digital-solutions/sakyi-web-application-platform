@@ -1,7 +1,7 @@
 import { ArrowRight, Sparkles } from "lucide-react";
 import Link from "next/link";
 
-import BlogCard from "@/components/public/blog-card";
+import BlogCard from "@/components/public/shared/blog-card";
 
 export default function ArticleInsights() {
   

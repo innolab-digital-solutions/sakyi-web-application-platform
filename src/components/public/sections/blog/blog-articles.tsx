@@ -1,5 +1,5 @@
-import BlogCard from "@/components/public/blog-card";
-import BlogPagination from "@/components/public/sections/blog/blog-pagination";
+import BlogCard from "@/components/public/shared/blog-card";
+import Pagination from "@/components/public/shared/pagination";
 
 // Dummy blog data
 const blogPosts = [
@@ -126,7 +126,7 @@ export default function BlogArticles() {
         </div>
       </div>
 
-      <BlogPagination currentPage={1} totalPages={10} />
+      <Pagination currentPage={1} totalPages={10} />
     </section>
   );
 }

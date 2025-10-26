@@ -2,6 +2,8 @@ import { ArrowRight,Award } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
+import ProgramCard from "@/components/public/shared/program-card";
+
 export default function OurPrograms() {
   const programs = [
     {
@@ -70,52 +72,7 @@ export default function OurPrograms() {
          {/* Asymmetric Program Cards Layout */}
          <div className="grid gap-8 lg:grid-cols-2">
            {/* Left Column - Single Large Card with Side-by-Side Layout */}
-           <div
-             className="group relative rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-all duration-300 hover:shadow-md"
-             data-aos="fade-up"
-             data-aos-delay="200"
-           >
-             <div className="flex h-full flex-col gap-6">
-               {/* Image - Top (Full Width) */}
-               <div className="relative w-full overflow-hidden rounded-xl bg-slate-100">
-                 <Image
-                   src={programs[0].image}
-                   alt={programs[0].title}
-                   width={600}
-                   height={400}
-                   className="h-auto w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                   quality={90}
-                   priority
-                 />
-               </div>
-
-               {/* Content - Bottom (Full Width) */}
-               <div className="flex w-full flex-col justify-center space-y-4">
-                 <h3
-                   className="text-xl font-bold text-slate-900"
-                   style={{ fontFamily: "Poppins, sans-serif" }}
-                 >
-                   {programs[0].title}
-                 </h3>
-
-                 <p className="text-slate-600" style={{ fontFamily: "Inter, sans-serif" }}>
-                   {programs[0].description}
-                 </p>
-
-                 {/* CTA Link */}
-                 <div className="pt-2">
-                   <Link
-                     href="#programs"
-                     className="group/link inline-flex items-center text-sm font-medium text-[#35bec5] transition-all duration-300 hover:text-[#0c96c4]"
-                     style={{ fontFamily: "Inter, sans-serif" }}
-                   >
-                     <span>Learn More</span>
-                     <ArrowRight className="ml-2 h-3 w-3 transition-transform duration-300 group-hover/link:translate-x-1" />
-                   </Link>
-                 </div>
-               </div>
-             </div>
-           </div>
+     <ProgramCard program={programs[0]} />
 
            {/* Right Column - Two Cards with Side-by-Side Layout */}
            <div className="grid gap-6">
