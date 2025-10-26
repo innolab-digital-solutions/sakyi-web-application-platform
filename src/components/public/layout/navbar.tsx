@@ -14,21 +14,23 @@ import { Button } from "@/components/ui/button";
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
 
-    useEffect(() => {
-      const handleScroll = () => {
-        const scrollTop = window.scrollY;
-        setIsScrolled(scrollTop > 50);
-      };
-  
-      window.addEventListener("scroll", handleScroll);
-      return () => window.removeEventListener("scroll", handleScroll);
-    }, []);
+  useEffect(() => {
+    setIsMounted(true);
+    const handleScroll = () => {
+      const scrollTop = window.scrollY;
+      setIsScrolled(scrollTop > 50);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
     <nav
-    className={`fixed top-0 z-50 w-full transition-all duration-300 ${
-      isScrolled
+    className={`fixed top-0 z-50 w-full transition-all duration-300 animate-fade-in ${
+      isMounted && isScrolled
         ? "border-b border-slate-200 bg-white/95 shadow-sm backdrop-blur-md"
         : "bg-slate-50/80 backdrop-blur-sm"
     }`}
