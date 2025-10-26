@@ -56,10 +56,10 @@ export default function HowItWorks() {
             color: "from-[#35bec5] to-[#4bc4db]",
             illustration: (
               <div className="relative mb-6">
-                <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-2xl bg-gradient-to-br from-[#35bec5]/10 to-[#4bc4db]/10">
-                  <Heart className="h-12 w-12 text-[#35bec5]" />
+                <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-2xl bg-gradient-to-br from-[#35bec5]/10 to-[#4bc4db]/10 transition-all duration-300 group-hover:scale-105 group-hover:shadow-lg">
+                  <Heart className="h-12 w-12 text-[#35bec5] transition-transform duration-300 group-hover:scale-110" />
                 </div>
-                <div className="absolute -top-2 -right-2 flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-r from-[#35bec5] to-[#4bc4db] text-white shadow-lg">
+                <div className="absolute -top-2 -right-2 flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-r from-[#35bec5] to-[#4bc4db] text-white shadow-lg transition-all duration-300 group-hover:scale-110 group-hover:shadow-xl">
                   <span className="text-sm font-bold">01</span>
                 </div>
               </div>
@@ -73,12 +73,12 @@ export default function HowItWorks() {
             color: "from-[#4bc4db] to-[#0c96c4]",
             illustration: (
               <div className="relative mb-6">
-                <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-2xl bg-gradient-to-br from-[#4bc4db]/10 to-[#0c96c4]/10">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-r from-[#4bc4db] to-[#0c96c4]">
-                    <div className="h-6 w-6 rounded-full bg-white"></div>
+                <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-2xl bg-gradient-to-br from-[#4bc4db]/10 to-[#0c96c4]/10 transition-all duration-300 group-hover:scale-105 group-hover:shadow-lg">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-r from-[#4bc4db] to-[#0c96c4] transition-transform duration-300 group-hover:scale-110">
+                    <div className="h-6 w-6 rounded-full bg-white transition-transform duration-300 group-hover:scale-110"></div>
                   </div>
                 </div>
-                <div className="absolute -top-2 -right-2 flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-r from-[#4bc4db] to-[#0c96c4] text-white shadow-lg">
+                <div className="absolute -top-2 -right-2 flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-r from-[#4bc4db] to-[#0c96c4] text-white shadow-lg transition-all duration-300 group-hover:scale-110 group-hover:shadow-xl">
                   <span className="text-sm font-bold">02</span>
                 </div>
               </div>
@@ -92,16 +92,16 @@ export default function HowItWorks() {
             color: "from-[#0c96c4] to-[#35bec5]",
             illustration: (
               <div className="relative mb-6">
-                <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-2xl bg-gradient-to-br from-[#0c96c4]/10 to-[#35bec5]/10">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-r from-[#0c96c4] to-[#35bec5]">
+                <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-2xl bg-gradient-to-br from-[#0c96c4]/10 to-[#35bec5]/10 transition-all duration-300 group-hover:scale-105 group-hover:shadow-lg">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-r from-[#0c96c4] to-[#35bec5] transition-transform duration-300 group-hover:scale-110">
                     <div className="flex space-x-1">
-                      <div className="h-2 w-2 rounded-full bg-white"></div>
-                      <div className="h-2 w-2 rounded-full bg-white"></div>
-                      <div className="h-2 w-2 rounded-full bg-white"></div>
+                      <div className="h-2 w-2 rounded-full bg-white transition-transform duration-300 group-hover:scale-110"></div>
+                      <div className="h-2 w-2 rounded-full bg-white transition-transform duration-300 group-hover:scale-110"></div>
+                      <div className="h-2 w-2 rounded-full bg-white transition-transform duration-300 group-hover:scale-110"></div>
                     </div>
                   </div>
                 </div>
-                <div className="absolute -top-2 -right-2 flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-r from-[#0c96c4] to-[#35bec5] text-white shadow-lg">
+                <div className="absolute -top-2 -right-2 flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-r from-[#0c96c4] to-[#35bec5] text-white shadow-lg transition-all duration-300 group-hover:scale-110 group-hover:shadow-xl">
                   <span className="text-sm font-bold">03</span>
                 </div>
               </div>
@@ -110,7 +110,7 @@ export default function HowItWorks() {
         ].map((step, index) => (
           <div
             key={index}
-            className="group relative rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-sm transition-all duration-300 hover:shadow-md"
+            className="group relative rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-sm !transition-all hover:border-[#35bec5]/50 overflow-hidden"
             data-aos="fade-up"
             data-aos-delay={`${index * 200}`}
           >
