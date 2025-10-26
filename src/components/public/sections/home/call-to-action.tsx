@@ -59,7 +59,7 @@ export default function CallToAction() {
 
               <Link
                 href="#contact"
-                className="group inline-flex items-center justify-center rounded-full border border-slate-300 bg-white px-6 py-3 text-base font-semibold text-slate-700 transition-all duration-300 hover:border-[#35bec5] hover:bg-slate-50"
+                className="group inline-flex items-center justify-center gap-2 rounded-full border border-slate-300 bg-white px-6 py-3 text-base font-semibold text-slate-700 shadow-sm transition-all duration-300 hover:scale-105 hover:shadow-lg hover:border-[#35bec5] hover:text-[#35bec5]"
                 style={{ fontFamily: "Inter, sans-serif" }}
               >
                         <Mail className="mr-2 h-5 w-5" />

@@ -62,7 +62,7 @@ export default function Hero() {
 
             <Link
               href="#about"
-              className="group inline-flex items-center justify-center rounded-full border border-slate-300 bg-white px-6 py-3 text-base font-semibold text-slate-700 transition-all duration-300 hover:border-[#35bec5] hover:bg-slate-50"
+              className="group inline-flex items-center justify-center gap-2 rounded-full border border-slate-300 bg-white px-6 py-3 text-base font-semibold text-slate-700 shadow-sm transition-all duration-300 hover:scale-105 hover:shadow-lg hover:border-[#35bec5] hover:text-[#35bec5]"
               style={{ fontFamily: "Inter, sans-serif" }}
             >
               <Brain className="mr-2 h-5 w-5" />
@@ -100,7 +100,7 @@ export default function Hero() {
               data-aos="fade-up"
               data-aos-delay="400"
               style={{
-                animation: "float 6s ease-in-out infinite",
+                animation: "float 4s ease-in-out infinite",
               }}
             >
               <div className="flex items-center space-x-3">
@@ -129,7 +129,7 @@ export default function Hero() {
               data-aos="fade-up"
               data-aos-delay="600"
               style={{
-                animation: "float 8s ease-in-out infinite",
+                animation: "float 6s ease-in-out infinite",
               }}
             >
               <div className="flex items-center space-x-3">
