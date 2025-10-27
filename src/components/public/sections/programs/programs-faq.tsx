@@ -1,4 +1,4 @@
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, HelpCircle } from "lucide-react";
 
 import {
   Collapsible,
@@ -50,9 +50,19 @@ export default function ProgramsFAQ() {
         <div className="absolute bottom-1/4 -left-32 h-64 w-64 rounded-full bg-gradient-to-br from-[#4bc4db]/5 to-[#35bec5]/5 blur-3xl"></div>
       </div>
 
-      <div className="relative mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+      <div className="relative mx-auto max-w-4xl px-6 lg:px-8">
         {/* Section Header */}
         <div className="mb-16 text-center">
+          <div className="mb-6 inline-flex items-center space-x-2 rounded-full bg-gradient-to-r from-[#35bec5]/10 to-[#0c96c4]/10 px-4 py-2">
+            <HelpCircle className="h-4 w-4 text-[#35bec5]" />
+            <span
+              className="text-sm font-medium text-[#35bec5]"
+              style={{ fontFamily: "Inter, sans-serif" }}
+            >
+              FAQ
+            </span>
+          </div>
+
           <h2
             className="mb-6 text-3xl font-bold text-slate-900 sm:text-4xl lg:text-5xl"
             style={{ fontFamily: "Poppins, sans-serif" }}
@@ -108,37 +118,6 @@ export default function ProgramsFAQ() {
               </div>
             </Collapsible>
           ))}
-        </div>
-
-        {/* Contact CTA */}
-        <div className="mt-16 text-center">
-          <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
-            <h3
-              className="mb-4 text-xl font-bold text-slate-900"
-              style={{ fontFamily: "Poppins, sans-serif" }}
-              data-aos="fade-up"
-            >
-              Still Have Questions?
-            </h3>
-            <p
-              className="mb-6 text-slate-600"
-              style={{ fontFamily: "Inter, sans-serif" }}
-              data-aos="fade-up"
-              data-aos-delay="200"
-            >
-              Our wellness experts are here to help. Book a free consultation to get personalized answers to all your questions.
-            </p>
-            <a
-              href="/contact"
-              className="group inline-flex items-center gap-2 rounded-full bg-brand-gradient px-8 py-4 text-white font-semibold transition-all duration-300 hover:shadow-lg hover:scale-105"
-              style={{ fontFamily: "Inter, sans-serif" }}
-              data-aos="fade-up"
-              data-aos-delay="400"
-            >
-              Get Free Consultation
-              <ChevronDown className="h-4 w-4 rotate-[-90deg] transition-transform duration-300 group-hover:translate-x-1" />
-            </a>
-          </div>
         </div>
       </div>
     </section>

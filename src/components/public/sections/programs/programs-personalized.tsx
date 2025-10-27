@@ -1,4 +1,4 @@
-import { CheckCircle, Heart, Shield, Star, Target } from "lucide-react";
+import { CheckCircle, Heart, Shield, Star, Target, User } from "lucide-react";
 import Image from "next/image";
 
 export default function ProgramsPersonalized() {
@@ -10,25 +10,39 @@ export default function ProgramsPersonalized() {
         <div className="absolute bottom-1/4 -left-32 h-64 w-64 rounded-full bg-gradient-to-br from-[#4bc4db]/5 to-[#35bec5]/5 blur-3xl"></div>
       </div>
 
-      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
         <div className="grid items-center gap-16 lg:grid-cols-2">
           {/* Left Column - Content */}
           <div className="space-y-8" data-aos="fade-right">
+            {/* Section Header */}
             <div className="space-y-6">
-              <h2
-                className="text-3xl font-bold text-slate-900 sm:text-4xl lg:text-5xl"
-                style={{ fontFamily: "Poppins, sans-serif" }}
-              >
-                Personalized{" "}
+              <div className="inline-flex items-center space-x-2 rounded-full bg-gradient-to-r from-[#35bec5]/10 to-[#0c96c4]/10 px-4 py-2">
+                <User className="h-4 w-4 text-[#35bec5]" />
                 <span
-                  className="bg-gradient-to-r from-[#35bec5] via-[#4bc4db] to-[#0c96c4] bg-clip-text text-transparent"
+                  className="text-sm font-medium text-[#35bec5]"
+                  style={{ fontFamily: "Inter, sans-serif" }}
+                >
+                  Personalized Care
+                </span>
+              </div>
+
+              <h2 className="text-3xl leading-tight font-bold sm:text-4xl lg:text-5xl">
+                <span
+                  className="block text-slate-900"
                   style={{ fontFamily: "Poppins, sans-serif" }}
                 >
-                  Wellness Plans
+                  Personalized{" "}
+                  <span
+                    className="text-brand-gradient bg-clip-text text-transparent"
+                    style={{ fontFamily: "Poppins, sans-serif" }}
+                  >
+                    Wellness Plans
+                  </span>
                 </span>
               </h2>
+
               <p
-                className="text-lg leading-relaxed text-slate-600"
+                className="max-w-2xl text-lg leading-relaxed text-slate-600"
                 style={{ fontFamily: "Inter, sans-serif" }}
               >
                 Every individual is unique, and so should be their wellness journey. Our personalized approach 
@@ -37,66 +51,49 @@ export default function ProgramsPersonalized() {
             </div>
 
             {/* Features List */}
-            <div className="space-y-6">
-              <div className="flex items-start gap-4">
-                <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-r from-[#35bec5] to-[#4bc4db]">
-                  <Target className="h-6 w-6 text-white" />
+            <div className="space-y-4">
+              {[
+                {
+                  icon: Target,
+                  title: "Goal-Oriented Approach",
+                  description: "We start by understanding your specific health goals and create a roadmap to achieve them.",
+                },
+                {
+                  icon: Heart,
+                  title: "Lifestyle Integration",
+                  description: "Your program fits seamlessly into your daily routine, making sustainable change possible.",
+                },
+                {
+                  icon: Shield,
+                  title: "Medical Supervision",
+                  description: "Certified doctors monitor your progress and adjust your plan as needed for optimal results.",
+                },
+              ].map((feature, index) => (
+                <div
+                  key={index}
+                  className="group flex items-start space-x-3 rounded-lg p-3 transition-all duration-300 hover:bg-white/50"
+                  data-aos="fade-up"
+                  data-aos-delay={`${index * 200 + 400}`}
+                >
+                  <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-gradient-to-r from-[#35bec5] to-[#0c96c4] shadow-lg">
+                    <feature.icon className="h-5 w-5 text-white" />
+                  </div>
+                  <div className="flex-1">
+                    <h3
+                      className="mb-1 text-base font-semibold text-slate-900"
+                      style={{ fontFamily: "Poppins, sans-serif" }}
+                    >
+                      {feature.title}
+                    </h3>
+                    <p
+                      className="text-sm text-slate-600"
+                      style={{ fontFamily: "Inter, sans-serif" }}
+                    >
+                      {feature.description}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <h3
-                    className="mb-2 text-lg font-semibold text-slate-900"
-                    style={{ fontFamily: "Poppins, sans-serif" }}
-                  >
-                    Goal-Oriented Approach
-                  </h3>
-                  <p
-                    className="text-slate-600"
-                    style={{ fontFamily: "Inter, sans-serif" }}
-                  >
-                    We start by understanding your specific health goals and create a roadmap to achieve them.
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-4">
-                <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-r from-[#4bc4db] to-[#0c96c4]">
-                  <Heart className="h-6 w-6 text-white" />
-                </div>
-                <div>
-                  <h3
-                    className="mb-2 text-lg font-semibold text-slate-900"
-                    style={{ fontFamily: "Poppins, sans-serif" }}
-                  >
-                    Lifestyle Integration
-                  </h3>
-                  <p
-                    className="text-slate-600"
-                    style={{ fontFamily: "Inter, sans-serif" }}
-                  >
-                    Your program fits seamlessly into your daily routine, making sustainable change possible.
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-4">
-                <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-r from-[#35bec5] to-[#0c96c4]">
-                  <Shield className="h-6 w-6 text-white" />
-                </div>
-                <div>
-                  <h3
-                    className="mb-2 text-lg font-semibold text-slate-900"
-                    style={{ fontFamily: "Poppins, sans-serif" }}
-                  >
-                    Medical Supervision
-                  </h3>
-                  <p
-                    className="text-slate-600"
-                    style={{ fontFamily: "Inter, sans-serif" }}
-                  >
-                    Certified doctors monitor your progress and adjust your plan as needed for optimal results.
-                  </p>
-                </div>
-              </div>
+              ))}
             </div>
 
             {/* Stats */}
@@ -166,9 +163,9 @@ export default function ProgramsPersonalized() {
                 <div className="absolute inset-0 bg-gradient-to-br from-[#35bec5]/5 to-[#0c96c4]/5"></div>
               </div>
 
-              {/* Floating Cards */}
+              {/* Floating Cards with Movement Animation */}
               <div
-                className="absolute -top-6 -left-2 sm:-left-4 lg:-top-4 lg:-left-6 rounded-2xl border border-slate-200/50 bg-white/90 p-4 shadow-xl backdrop-blur-sm"
+                className="absolute -top-6 -left-2 sm:-left-4 lg:-top-4 lg:-left-6 animate-pulse rounded-2xl border border-slate-200/50 bg-white/90 p-4 shadow-xl backdrop-blur-sm hover:animate-bounce"
                 data-aos="fade-up"
                 data-aos-delay="400"
                 style={{
@@ -176,8 +173,8 @@ export default function ProgramsPersonalized() {
                 }}
               >
                 <div className="flex items-center space-x-3">
-                  <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-r from-[#35bec5] to-[#4bc4db]">
-                    <CheckCircle className="h-6 w-6 text-white" />
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-r from-[#35bec5] to-[#4bc4db]">
+                    <CheckCircle className="h-5 w-5 text-white" />
                   </div>
                   <div>
                     <div
@@ -197,7 +194,7 @@ export default function ProgramsPersonalized() {
               </div>
 
               <div
-                className="absolute -right-2 sm:-right-4 lg:-right-6 -bottom-6 rounded-2xl border border-slate-200/50 bg-white/90 p-4 shadow-xl backdrop-blur-sm"
+                className="absolute -right-2 sm:-right-4 lg:-right-6 -bottom-6 animate-pulse rounded-2xl border border-slate-200/50 bg-white/90 p-4 shadow-xl backdrop-blur-sm hover:animate-bounce"
                 data-aos="fade-up"
                 data-aos-delay="600"
                 style={{
@@ -205,8 +202,8 @@ export default function ProgramsPersonalized() {
                 }}
               >
                 <div className="flex items-center space-x-3">
-                  <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-r from-[#4bc4db] to-[#0c96c4]">
-                    <Star className="h-6 w-6 text-white" />
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-r from-[#4bc4db] to-[#0c96c4]">
+                    <Star className="h-5 w-5 text-white" />
                   </div>
                   <div>
                     <div

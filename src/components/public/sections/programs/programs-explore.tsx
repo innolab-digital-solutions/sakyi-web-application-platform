@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, Shield } from "lucide-react";
+import { ChevronDown, Grid3X3 } from "lucide-react";
 import { useState } from "react";
 
 import ProgramCard from "@/components/public/shared/program-card";
@@ -64,9 +64,19 @@ export default function ProgramsExplore() {
 
   return (
     <section id="programs" className="relative overflow-hidden bg-white py-24">
-      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
         {/* Section Header */}
         <div className="mb-16 text-center">
+          <div className="mb-6 inline-flex items-center space-x-2 rounded-full bg-gradient-to-r from-[#35bec5]/10 to-[#0c96c4]/10 px-4 py-2">
+            <Grid3X3 className="h-4 w-4 text-[#35bec5]" />
+            <span
+              className="text-sm font-medium text-[#35bec5]"
+              style={{ fontFamily: "Inter, sans-serif" }}
+            >
+              Our Programs
+            </span>
+          </div>
+
           <h2
             className="mb-6 text-3xl font-bold text-slate-900 sm:text-4xl lg:text-5xl"
             style={{ fontFamily: "Poppins, sans-serif" }}
@@ -105,16 +115,13 @@ export default function ProgramsExplore() {
         {/* Show More / Show Less Button */}
         {programs.length > initialPrograms && (
           <div className="mt-12 text-center">
-            <button
-              onClick={() => setShowAll(!showAll)}
-              className="group inline-flex items-center gap-2 rounded-full border-2 border-[#35bec5] bg-white px-8 py-4 text-[#35bec5] font-semibold transition-all duration-300 hover:bg-[#35bec5] hover:text-white hover:shadow-lg hover:scale-105"
+<button
+        onClick={() => setShowAll(!showAll)}
+              className="group inline-flex items-center justify-center rounded-full bg-brand-gradient px-6 py-3 text-base font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
               style={{ fontFamily: "Inter, sans-serif" }}
-              data-aos="fade-up"
-              data-aos-delay="400"
             >
-              <Shield className="h-5 w-5" />
               {showAll ? `Show Less` : `Show All ${programs.length} Programs`}
-              <ArrowRight className={`h-5 w-5 transition-transform duration-300 ${showAll ? 'rotate-180' : 'group-hover:translate-x-1'}`} />
+              <ChevronDown className={`ml-2 h-5 w-5 transition-transform duration-300 ${showAll && 'rotate-180'}`} />
             </button>
           </div>
         )}

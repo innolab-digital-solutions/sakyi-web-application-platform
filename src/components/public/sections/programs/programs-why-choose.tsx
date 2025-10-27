@@ -1,4 +1,4 @@
-import { Award, Heart, Shield, Star, Users, Zap } from "lucide-react";
+import { Award, CheckCircle,Heart, Shield, Star, Users, Zap } from "lucide-react";
 
 export default function ProgramsWhyChoose() {
   const benefits = [
@@ -42,9 +42,19 @@ export default function ProgramsWhyChoose() {
 
   return (
     <section className="relative overflow-hidden bg-white py-24">
-      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
         {/* Section Header */}
         <div className="mb-16 text-center">
+          <div className="mb-6 inline-flex items-center space-x-2 rounded-full bg-gradient-to-r from-[#35bec5]/10 to-[#0c96c4]/10 px-4 py-2">
+            <CheckCircle className="h-4 w-4 text-[#35bec5]" />
+            <span
+              className="text-sm font-medium text-[#35bec5]"
+              style={{ fontFamily: "Inter, sans-serif" }}
+            >
+              Why Choose SaKyi
+            </span>
+          </div>
+
           <h2
             className="mb-6 text-3xl font-bold text-slate-900 sm:text-4xl lg:text-5xl"
             style={{ fontFamily: "Poppins, sans-serif" }}
@@ -74,14 +84,16 @@ export default function ProgramsWhyChoose() {
           {benefits.map((benefit, index) => (
             <div
               key={index}
-              className="group rounded-2xl border border-slate-200 bg-white p-8 shadow-sm transition-all duration-300 hover:shadow-lg hover:scale-105"
+              className="group relative rounded-2xl border border-slate-200 bg-white p-8 shadow-sm transition-all duration-300 hover:border-[#35bec5]/50 hover:shadow-lg overflow-hidden"
               data-aos="fade-up"
               data-aos-delay={`${index * 200}`}
+              data-aos-duration="800"
+              data-aos-easing="ease-out"
             >
               {/* Icon */}
               <div className="mb-6">
-                <div className={`inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-r ${benefit.color} shadow-lg`}>
-                  <benefit.icon className="h-8 w-8 text-white" />
+                <div className={`inline-flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-r ${benefit.color} shadow-lg transition-all duration-500 group-hover:scale-105 group-hover:shadow-xl`}>
+                  <benefit.icon className="h-6 w-6 text-white transition-transform duration-500 group-hover:scale-110" />
                 </div>
               </div>
 
@@ -101,10 +113,8 @@ export default function ProgramsWhyChoose() {
                 </p>
               </div>
 
-              {/* Hover Effect */}
-              <div className="mt-6 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                <div className="h-1 w-0 bg-gradient-to-r from-[#35bec5] to-[#0c96c4] transition-all duration-500 group-hover:w-full"></div>
-              </div>
+              {/* Hover Effect - Background Gradient */}
+              <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-[#35bec5]/5 to-[#0c96c4]/5 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
             </div>
           ))}
         </div>
