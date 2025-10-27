@@ -8,12 +8,12 @@ import { z } from "zod";
  */
 export const CreateBlogCategorySchema = z.object({
   parent_id: z.string().or(z.number()).optional().nullable(),
-  title: z
+  name: z
     .string()
-    .min(1, "Category title is required")
-    .max(255, "Category title must not exceed 255 characters")
+    .min(1, "Category name is required")
+    .max(255, "Category name must not exceed 255 characters")
     .trim()
-    .refine((title) => title.length > 0, "Category title cannot be empty or contain only spaces"),
+    .refine((name) => name.length > 0, "Category name cannot be empty or contain only spaces"),
   slug: z
     .string()
     .min(1, "Slug is required")

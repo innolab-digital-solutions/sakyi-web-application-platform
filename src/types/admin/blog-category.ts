@@ -3,13 +3,13 @@ import { Pagination } from "@/types/shared/common";
 
 export interface BlogCategoryChild {
   id: number;
-  title: string;
+  name: string;
   slug: string;
 }
 
 export interface BlogCategory {
   id: number;
-  title: string;
+  name: string;
   slug: string;
   parent: BlogCategoryChild | null;
   children: BlogCategoryChild[];
@@ -32,5 +32,5 @@ export type BlogCategoryFormProperties = {
   defaultValues?: Partial<BlogCategory>;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
-  title?: string;
+  name?: string;
 };

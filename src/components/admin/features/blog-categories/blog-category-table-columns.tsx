@@ -13,11 +13,11 @@ import BlogCategoryForm from "./blog-category-form";
 
 export const blogCategoriesTableColumns: ColumnDef<BlogCategory>[] = [
   {
-    accessorKey: "title",
+    accessorKey: "name",
     header: ({ column }) => <SortableHeader column={column}>Category</SortableHeader>,
     cell: ({ row }) => {
-      const title = row.getValue("title") as string;
-      return <div className="text-foreground text-sm font-semibold">{title}</div>;
+      const name = row.getValue("name") as string;
+      return <div className="text-foreground text-sm font-semibold">{name}</div>;
     },
   },
   {

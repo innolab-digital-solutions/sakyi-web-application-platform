@@ -76,7 +76,7 @@ export default function BlogCategoryDeletionDialog({
 
       <ConfirmationDialog
         title="Delete Blog Category"
-        description={`Permanently delete the blog category "${blogCategory.title}"? This action cannot be undone.`}
+        description={`Permanently delete the blog category "${blogCategory.name}"? This action cannot be undone.`}
         icon={TriangleAlert}
         variant="destructive"
         confirmText="Yes, Delete It"

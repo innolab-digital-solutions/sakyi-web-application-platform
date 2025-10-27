@@ -23,7 +23,7 @@ export default function BlogCategoryForm({
   defaultValues,
   open,
   onOpenChange,
-  title,
+  name,
 }: BlogCategoryFormProperties) {
   const router = useRouter();
   const pathname = usePathname();
@@ -43,7 +43,7 @@ export default function BlogCategoryForm({
 
   const form = useForm(
     {
-      title: "",
+      name: "",
       slug: "",
       description: "",
     },
@@ -75,7 +75,7 @@ export default function BlogCategoryForm({
                     (existing
                       ? {
                           ...existing,
-                          title: String(form.data.title ?? ""),
+                          name: String(form.data.name ?? ""),
                           slug: String(form.data.slug ?? ""),
                           description: String(form.data.description ?? ""),
                         }
@@ -115,18 +115,18 @@ export default function BlogCategoryForm({
   useEffect(() => {
     if (isEdit && defaultValues) {
       form.setData({
-        title: defaultValues.title ?? "",
+        name: defaultValues.name ?? "",
         slug: defaultValues.slug ?? "",
       });
     } else {
       form.setData({
-        title: "",
+        name: "",
         slug: "",
         description: "",
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [defaultValues?.id, defaultValues?.title, defaultValues?.slug, isEdit]);
+  }, [defaultValues?.id, defaultValues?.name, defaultValues?.slug, isEdit]);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -144,7 +144,7 @@ export default function BlogCategoryForm({
       open={dialogOpen}
       onOpenChange={handleDialogOpenChange}
       onClose={() => form.reset()}
-      title={title ?? (isEdit ? "Edit Blog Category" : "Create a New Blog Category")}
+      title={name ?? (isEdit ? "Edit Blog Category" : "Create a New Blog Category")}
       icon={<FolderKanban className="h-5 w-5" />}
       onSubmit={handleSubmit}
       processing={form.processing}
@@ -152,15 +152,15 @@ export default function BlogCategoryForm({
       submitLabel={isEdit ? "Save Changes" : "Create Blog Category"}
       submittingLabel={isEdit ? "Saving Changes..." : "Creating Blog Category..."}
     >
-      {/* Title Field */}
+      {/* name Field */}
       <InputField
-        id="title"
-        name="title"
+        id="name"
+        name="name"
         type="text"
-        value={String(form.data.title ?? "")}
-        onChange={(event) => form.setData("title", event.target.value)}
-        error={form.errors.title as string}
-        label="Title"
+        value={String(form.data.name ?? "")}
+        onChange={(event) => form.setData("name", event.target.value)}
+        error={form.errors.name as string}
+        label="Name"
         placeholder="e.g., Technology, Health, Food..."
         required
         disabled={form.processing}
