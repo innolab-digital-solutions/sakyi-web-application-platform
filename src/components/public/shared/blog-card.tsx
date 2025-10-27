@@ -71,7 +71,7 @@ export default function BlogCard({ blog, index = 0, className = "" }: BlogCardPr
         {/* CTA */}
         <div className="pt-2">
           <Link
-            href={blog.href || `/blog/${blog.title.toLowerCase().replaceAll(/\s+/g, '-').replaceAll(/[^\w-]/g, '')}`}
+            href= "blog/example"
             className="group/link inline-flex items-center text-base font-medium text-slate-900 transition-all duration-300 hover:text-[#35bec5]"
             style={{ fontFamily: "Inter, sans-serif" }}
           >

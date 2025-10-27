@@ -55,7 +55,7 @@ export default function ProgramCard({ program, index = 0, className = "" }: Prog
           {/* CTA Link */}
           <div className="pt-2">
             <Link
-              href={program.href || "#programs"}
+              href="programs/example"
               className="group/link inline-flex items-center text-sm font-medium text-[#35bec5] transition-all duration-300 hover:text-[#0c96c4]"
               style={{ fontFamily: "Inter, sans-serif" }}
             >
