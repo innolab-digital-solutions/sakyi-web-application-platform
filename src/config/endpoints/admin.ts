@@ -68,4 +68,13 @@ export const ADMIN_ENDPOINTS = {
     UPDATE: (id: string | number) => `/admin/food-items/${id}`,
     DESTROY: (id: string | number) => `/admin/food-items/${id}`,
   },
+
+  /** Blog category endpoints */
+  BLOG_CATEGORIES: {
+    INDEX: "/admin/blog-categories",
+    SHOW: (id: string | number) => `/admin/blog-categories/${id}`,
+    STORE: "/admin/blog-categories",
+    UPDATE: (id: string | number) => `/admin/blog-categories/${id}`,
+    DESTROY: (id: string | number) => `/admin/blog-categories/${id}`,
+  },
 } as const;

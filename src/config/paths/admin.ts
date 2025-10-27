@@ -49,4 +49,8 @@ export const ADMIN_PATHS = {
     EDIT: (id: string | number) => `/admin/food-items/${id}/edit`,
     DETAIL: (id: string | number) => `/admin/food-items/${id}`,
   },
+
+  BLOG_CATEGORIES: {
+    LIST: "/admin/blog-categories",
+  },
 } as const;
