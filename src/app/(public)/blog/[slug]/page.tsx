@@ -1,4 +1,5 @@
 import { ArrowRight, BookOpen, ChevronRight, MessageCircle } from "lucide-react";
+import { Metadata } from "next";
 import Link from "next/link";
 
 import BlogDetailContent from "@/components/public/sections/blog/blog-detail-content";
@@ -102,8 +103,110 @@ interface BlogDetailPageProperties {
   };
 }
 
+// Generate metadata for blog posts
+export async function generateMetadata({ params }: BlogDetailPageProperties): Promise<Metadata> {
+  const post = blogData[params.slug as keyof typeof blogData];
+
+  if (!post) {
+    return {
+      title: "Blog Post Not Found | SaKyi Health & Wellness",
+      description: "The requested blog post could not be found.",
+    };
+  }
+
+  const title = `${post.title} | SaKyi Journal`;
+  const description = post.description;
+  const url = `https://sakyihealthandwellness.com/blog/${params.slug}`;
+
+  return {
+    title,
+    description,
+    keywords: [
+      post.category.toLowerCase(),
+      "wellness blog",
+      "health tips",
+      "mental wellness",
+      "mindfulness",
+      "nutrition advice",
+      "holistic health",
+      "wellness insights",
+      "healthy living",
+      "medical advice",
+    ],
+    authors: [{ name: "SaKyi Health & Wellness Team" }],
+    creator: "SaKyi Health & Wellness",
+    publisher: "SaKyi Health & Wellness",
+    formatDetection: {
+      email: false,
+      address: false,
+      telephone: false,
+    },
+    metadataBase: new URL("https://sakyihealthandwellness.com"),
+    alternates: {
+      canonical: url,
+    },
+    openGraph: {
+      title,
+      description,
+      url,
+      siteName: "SaKyi Health & Wellness",
+      images: [
+        {
+          url: post.image,
+          width: 1200,
+          height: 630,
+          alt: post.imageAlt,
+        },
+      ],
+      locale: "en_US",
+      type: "article",
+      publishedTime: new Date(post.date).toISOString(),
+      authors: ["SaKyi Health & Wellness Team"],
+      section: post.category,
+      tags: [post.category, "wellness", "health", "mental health"],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [post.image],
+      creator: "@sakyiwellness",
+      site: "@sakyiwellness",
+    },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-video-preview": -1,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+      },
+    },
+  };
+}
+
 export default function BlogDetailPage({ params }: BlogDetailPageProperties) {
   const post = blogData[params.slug as keyof typeof blogData];
+
+  if (!post) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="text-center">
+          <h1 className="mb-4 text-4xl font-bold text-slate-900">Post Not Found</h1>
+          <p className="mb-8 text-lg text-slate-600">The requested blog post could not be found.</p>
+          <Link
+            href="/blog"
+            className="bg-brand-gradient inline-flex items-center gap-2 rounded-full px-6 py-3 font-semibold text-white transition-all duration-300 hover:scale-105 hover:shadow-lg"
+          >
+            <BookOpen className="h-5 w-5" />
+            Back to Blog
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen">

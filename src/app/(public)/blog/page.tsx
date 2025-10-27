@@ -1,4 +1,5 @@
 import { ArrowRight, BookOpen, ChevronRight, MessageCircle } from "lucide-react";
+import { Metadata } from "next";
 import Link from "next/link";
 import React from "react";
 
@@ -6,6 +7,73 @@ import BlogArticles from "@/components/public/sections/blog/blog-articles";
 import BlogEditorsPick from "@/components/public/sections/blog/blog-editors-pick";
 import BlogHero from "@/components/public/sections/blog/blog-hero";
 import CallToAction from "@/components/public/sections/call-to-action";
+
+export const metadata: Metadata = {
+  title: "SaKyi Journal - Wellness Blog with Expert Health & Wellness Tips",
+  description:
+    "Discover evidence-based wellness insights, mindfulness practices, and healthy living tips from our certified medical team. Your trusted source for mental health, nutrition, and holistic wellness advice.",
+  keywords: [
+    "wellness blog",
+    "health tips",
+    "mental wellness",
+    "mindfulness",
+    "nutrition advice",
+    "holistic health",
+    "wellness insights",
+    "healthy living",
+    "wellness articles",
+    "medical advice",
+  ],
+  authors: [{ name: "SaKyi Health & Wellness Team" }],
+  creator: "SaKyi Health & Wellness",
+  publisher: "SaKyi Health & Wellness",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  metadataBase: new URL("https://sakyihealthandwellness.com"),
+  alternates: {
+    canonical: "/blog",
+  },
+  openGraph: {
+    title: "SaKyi Journal - Wellness Blog with Expert Health & Wellness Tips",
+    description:
+      "Discover evidence-based wellness insights, mindfulness practices, and healthy living tips from our certified medical team. Your trusted source for mental health, nutrition, and holistic wellness advice.",
+    url: "https://sakyihealthandwellness.com/blog",
+    siteName: "SaKyi Health & Wellness",
+    images: [
+      {
+        url: "/images/og-blog.jpg",
+        width: 1200,
+        height: 630,
+        alt: "SaKyi Journal - Wellness Blog and Health Tips",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "SaKyi Journal - Wellness Blog with Expert Health & Wellness Tips",
+    description:
+      "Discover evidence-based wellness insights, mindfulness practices, and healthy living tips from our certified medical team. Your trusted source for mental health, nutrition, and holistic wellness advice.",
+    images: ["/images/og-blog.jpg"],
+    creator: "@sakyiwellness",
+    site: "@sakyiwellness",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+};
 
 export default function BlogPage() {
   return (

@@ -1,4 +1,5 @@
 import { ArrowRight, ChevronRight, Phone, Users } from "lucide-react";
+import { Metadata } from "next";
 import Link from "next/link";
 
 import AboutApproach from "@/components/public/sections/about/about-approach";
@@ -7,6 +8,73 @@ import AboutImpact from "@/components/public/sections/about/about-impact";
 import AboutMission from "@/components/public/sections/about/about-mission";
 import AboutTeam from "@/components/public/sections/about/about-team";
 import CallToAction from "@/components/public/sections/call-to-action";
+
+export const metadata: Metadata = {
+  title: "About SaKyi Health & Wellness - Our Mission, Team & Holistic Approach",
+  description:
+    "Learn about SaKyi's mission to transform lives through personalized wellness. Meet our certified medical team and discover our evidence-based approach to holistic health and wellness.",
+  keywords: [
+    "about sakyi",
+    "wellness mission",
+    "holistic health approach",
+    "certified medical team",
+    "wellness experts",
+    "health transformation",
+    "medical professionals",
+    "wellness philosophy",
+    "evidence-based care",
+    "personalized wellness",
+  ],
+  authors: [{ name: "SaKyi Health & Wellness Team" }],
+  creator: "SaKyi Health & Wellness",
+  publisher: "SaKyi Health & Wellness",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  metadataBase: new URL("https://sakyihealthandwellness.com"),
+  alternates: {
+    canonical: "/about",
+  },
+  openGraph: {
+    title: "About SaKyi Health & Wellness - Our Mission, Team & Holistic Approach",
+    description:
+      "Learn about SaKyi's mission to transform lives through personalized wellness. Meet our certified medical team and discover our evidence-based approach to holistic health and wellness.",
+    url: "https://sakyihealthandwellness.com/about",
+    siteName: "SaKyi Health & Wellness",
+    images: [
+      {
+        url: "/images/og-about.jpg",
+        width: 1200,
+        height: 630,
+        alt: "About SaKyi Health & Wellness - Our Mission and Team",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "About SaKyi Health & Wellness - Our Mission, Team & Holistic Approach",
+    description:
+      "Learn about SaKyi's mission to transform lives through personalized wellness. Meet our certified medical team and discover our evidence-based approach to holistic health and wellness.",
+    images: ["/images/og-about.jpg"],
+    creator: "@sakyiwellness",
+    site: "@sakyiwellness",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+};
 
 export default function AboutPage() {
   return (

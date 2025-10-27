@@ -1,10 +1,78 @@
 import { ArrowRight, CheckCircle, ChevronRight, Phone } from "lucide-react";
+import { Metadata } from "next";
 import Link from "next/link";
 
 import CallToAction from "@/components/public/sections/call-to-action";
 import ContactDetails from "@/components/public/sections/contact/contact-details";
 import ContactForm from "@/components/public/sections/contact/contact-form";
 import ContactHero from "@/components/public/sections/contact/contact-hero";
+
+export const metadata: Metadata = {
+  title: "Contact SaKyi Health & Wellness - Get Your Free Consultation Today",
+  description:
+    "Ready to start your wellness journey? Contact our certified medical team for a free consultation. Get personalized health advice and discover the perfect wellness program for your needs.",
+  keywords: [
+    "contact sakyi",
+    "wellness consultation",
+    "free consultation",
+    "health advice",
+    "wellness programs",
+    "medical consultation",
+    "health assessment",
+    "wellness coaching",
+    "personalized health",
+    "wellness support",
+  ],
+  authors: [{ name: "SaKyi Health & Wellness Team" }],
+  creator: "SaKyi Health & Wellness",
+  publisher: "SaKyi Health & Wellness",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  metadataBase: new URL("https://sakyihealthandwellness.com"),
+  alternates: {
+    canonical: "/contact",
+  },
+  openGraph: {
+    title: "Contact SaKyi Health & Wellness - Get Your Free Consultation Today",
+    description:
+      "Ready to start your wellness journey? Contact our certified medical team for a free consultation. Get personalized health advice and discover the perfect wellness program for your needs.",
+    url: "https://sakyihealthandwellness.com/contact",
+    siteName: "SaKyi Health & Wellness",
+    images: [
+      {
+        url: "/images/og-contact.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Contact SaKyi Health & Wellness - Free Consultation",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Contact SaKyi Health & Wellness - Get Your Free Consultation Today",
+    description:
+      "Ready to start your wellness journey? Contact our certified medical team for a free consultation. Get personalized health advice and discover the perfect wellness program for your needs.",
+    images: ["/images/og-contact.jpg"],
+    creator: "@sakyiwellness",
+    site: "@sakyiwellness",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+};
 
 export default function ContactPage() {
   return (
