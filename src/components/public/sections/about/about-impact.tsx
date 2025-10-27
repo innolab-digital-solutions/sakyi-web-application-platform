@@ -1,4 +1,4 @@
-import { ArrowRight, Heart, Shield, Star, Users } from "lucide-react";
+import {  Heart, Shield, Star, Users } from "lucide-react";
 
 const impactStats = [
   {
@@ -138,50 +138,6 @@ export default function AboutImpact() {
                 </p>
               </div>
             ))}
-          </div>
-        </div>
-
-        {/* CTA Section */}
-        <div className="rounded-3xl border border-slate-200 bg-gradient-to-br from-[#35bec5] to-[#0c96c4] p-12 text-center">
-          <h3
-            className="mb-6 text-2xl font-bold text-white sm:text-3xl"
-            style={{ fontFamily: "Poppins, sans-serif" }}
-            data-aos="fade-up"
-          >
-            Ready to Start Your Wellness Journey?
-          </h3>
-          <p
-            className="mx-auto mb-8 max-w-2xl text-lg text-white/90"
-            style={{ fontFamily: "Inter, sans-serif" }}
-            data-aos="fade-up"
-            data-aos-delay="200"
-          >
-            Join thousands of people who have transformed their lives with our personalized wellness programs. 
-            Your journey to optimal health starts here.
-          </p>
-          <div
-            className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center"
-            data-aos="fade-up"
-            data-aos-delay="400"
-          >
-            <a
-              href="/programs"
-              className="group inline-flex items-center gap-2 rounded-full bg-white px-8 py-4 text-[#35bec5] font-semibold transition-all duration-300 hover:bg-slate-50 hover:shadow-lg hover:scale-105"
-              style={{ fontFamily: "Inter, sans-serif" }}
-            >
-              <Heart className="h-5 w-5" />
-              Explore Programs
-              <ArrowRight className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
-            </a>
-            <a
-              href="/contact"
-              className="group inline-flex items-center gap-2 rounded-full border-2 border-white px-8 py-4 text-white font-semibold transition-all duration-300 hover:bg-white hover:text-[#35bec5] hover:shadow-lg hover:scale-105"
-              style={{ fontFamily: "Inter, sans-serif" }}
-            >
-              <Shield className="h-5 w-5" />
-              Get Free Consultation
-              <ArrowRight className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
-            </a>
           </div>
         </div>
       </div>
