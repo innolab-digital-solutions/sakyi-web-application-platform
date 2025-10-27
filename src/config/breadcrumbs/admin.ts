@@ -70,4 +70,12 @@ export const adminBreadcrumbs: Breadcrumbs = {
     { label: "Food & Nutrition" },
     { label: "Food Items", href: PATHS.ADMIN.FOOD_ITEMS.LIST },
   ],
+
+  /** Blog categories list page */
+  "/admin/blog-categories": [
+    { label: "Admin Control Panel" },
+    { label: "Content Management" },
+    { label: "Blog" },
+    { label: "Blog Categories", href: PATHS.ADMIN.BLOG_CATEGORIES.LIST },
+  ],
 };
