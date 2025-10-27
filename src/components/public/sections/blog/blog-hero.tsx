@@ -1,6 +1,6 @@
 "use client";
 
-import { PenTool,Sparkles } from "lucide-react";
+import { ChevronDown, PenTool,Sparkles } from "lucide-react";
 
 import { smoothScrollTo } from "@/utils/smooth-scroll";
 
@@ -49,18 +49,16 @@ export default function BlogHero() {
             Discover evidence-based insights to support your journey toward holistic wellbeing.
           </p>
 
-          {/* CTA Button */}
-          <div className="mt-12" data-aos="fade-up" data-aos-delay="400">
+           {/* CTA Button */}
+           <div className="mt-12 flex flex-col items-center gap-4 sm:flex-row sm:justify-center" data-aos="fade-up" data-aos-delay="400">
             <button
-              onClick={() => smoothScrollTo('articles', 80)}
-              className="group inline-flex items-center gap-2 rounded-full bg-brand-gradient px-8 py-4 text-white font-semibold transition-all duration-300 hover:shadow-lg hover:scale-105"
+              onClick={() => smoothScrollTo('programs', 80)}
+              className="group inline-flex items-center gap-2 rounded-full bg-brand-gradient px-6 py-3 text-white font-semibold transition-all duration-300 hover:shadow-lg hover:scale-105"
               style={{ fontFamily: "Inter, sans-serif" }}
             >
               <Sparkles className="h-5 w-5" />
-              Explore Articles
-              <svg className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-              </svg>
+              Explore All Articles
+              <ChevronDown className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
             </button>
           </div>
         </div>

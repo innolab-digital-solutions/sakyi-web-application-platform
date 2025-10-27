@@ -1,3 +1,5 @@
+import { BookOpen } from "lucide-react";
+
 import BlogCard from "@/components/public/shared/blog-card";
 import Pagination from "@/components/public/shared/pagination";
 
@@ -76,12 +78,23 @@ const categories = ["All", "Wellness", "Nutrition", "Mindfulness", "Lifestyle"];
 export default function BlogArticles() {
   return (
     <section id="articles" className="relative overflow-hidden bg-white py-24">
-      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
         {/* Section Header */}
-        <div className="mb-12 space-y-6 text-center">
+        <div className="mb-16 text-center">
+          <div className="mb-6 inline-flex items-center space-x-2 rounded-full bg-gradient-to-r from-[#35bec5]/10 to-[#0c96c4]/10 px-4 py-2">
+            <BookOpen className="h-4 w-4 text-[#35bec5]" />
+            <span
+              className="text-sm font-medium text-[#35bec5]"
+              style={{ fontFamily: "Inter, sans-serif" }}
+            >
+              Latest Articles
+            </span>
+          </div>
+
           <h2
-            className="text-3xl leading-tight font-bold sm:text-4xl lg:text-5xl"
+            className="mb-6 text-3xl font-bold text-slate-900 sm:text-4xl lg:text-5xl"
             style={{ fontFamily: "Poppins, sans-serif" }}
+            data-aos="fade-up"
           >
             Latest{" "}
             <span
@@ -92,8 +105,10 @@ export default function BlogArticles() {
             </span>
           </h2>
           <p
-            className="mx-auto max-w-2xl text-lg leading-relaxed text-slate-600"
+            className="mx-auto max-w-3xl text-lg leading-relaxed text-slate-600"
             style={{ fontFamily: "Inter, sans-serif" }}
+            data-aos="fade-up"
+            data-aos-delay="200"
           >
             Stay updated with our latest expert insights on wellness, nutrition, mindfulness, and
             healthy living. Get practical tips and inspiring stories to help you thrive on your
@@ -106,10 +121,10 @@ export default function BlogArticles() {
           {categories.map((category) => (
             <button
               key={category}
-              className={`rounded-full px-6 py-3 text-sm font-medium transition-all duration-300 ${
+              className={`rounded-full px-6 py-3 text-sm font-medium transition-all duration-500 ease-out ${
                 category === "All"
                   ? "bg-brand-gradient text-white shadow-lg"
-                  : "bg-slate-100 text-slate-700 hover:bg-gradient-to-r hover:from-[#35bec5] hover:to-[#0c96c4] hover:text-white hover:shadow-lg"
+                  : "bg-slate-100 text-slate-700 hover:bg-gradient-to-r hover:from-[#35bec5] hover:to-[#0c96c4] hover:text-white hover:shadow-lg hover:scale-105"
               }`}
               style={{ fontFamily: "Inter, sans-serif" }}
             >
