@@ -3,7 +3,7 @@ import Image from "next/image";
 
 export default function ContactHero() {
   return (
-    <section className="relative overflow-hidden bg-slate-50 py-24">
+    <section className="relative overflow-hidden bg-slate-50 py-24 sm:py-32">
       {/* Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-1/4 -right-32 h-64 w-64 rounded-full bg-gradient-to-br from-[#35bec5]/5 to-[#0c96c4]/5 blur-3xl"></div>
@@ -14,6 +14,12 @@ export default function ContactHero() {
         <div className="grid gap-16 lg:grid-cols-2 lg:items-center">
           {/* Left Column - Content */}
           <div className="space-y-8" data-aos="fade-right">
+            {/* Badge */}
+            <div className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#35bec5]/10 to-[#0c96c4]/10 px-4 py-2 text-sm font-medium text-[#35bec5]">
+              <MessageCircle className="h-4 w-4" />
+              <span style={{ fontFamily: "Inter, sans-serif" }}>Get in Touch</span>
+            </div>
+
             {/* Main Headline */}
             <h1
               className="text-4xl leading-tight font-bold sm:text-5xl lg:text-6xl"

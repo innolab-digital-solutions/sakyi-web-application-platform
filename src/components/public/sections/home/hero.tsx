@@ -14,10 +14,16 @@ export default function Hero() {
       <div className="absolute -bottom-40 -left-40 h-80 w-80 rounded-full bg-gradient-to-br from-[#4bc4db]/10 to-[#0c96c4]/10 blur-3xl"></div>
       <div className="absolute top-1/2 left-1/2 h-96 w-96 -translate-x-1/2 -translate-y-1/2 transform rounded-full bg-gradient-to-br from-[#35bec5]/5 to-[#0c96c4]/5 blur-3xl"></div>
     </div>
-    <div className="relative mx-auto max-w-7xl px-4 pt-20 pb-16 sm:px-6 lg:px-8">
+    <div className="relative mx-auto max-w-7xl px-4 pt-24 pb-20 sm:px-6 lg:px-8">
       <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
         {/* Left Column - Clean Content */}
         <div className="space-y-8" data-aos="fade-up" data-aos-duration="1000">
+          {/* Badge */}
+          <div className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#35bec5]/10 to-[#0c96c4]/10 px-4 py-2 text-sm font-medium text-[#35bec5]">
+            <Heart className="h-4 w-4" />
+            <span style={{ fontFamily: "Inter, sans-serif" }}>Transform Your Life</span>
+          </div>
+
           {/* Balanced Headline */}
           <div className="space-y-6">
             <h1 className="space-y-2 text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl lg:text-6xl">

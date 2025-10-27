@@ -3,7 +3,7 @@ import Image from "next/image";
 
 export default function AboutHero() {
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-slate-50 via-white to-blue-50/30 py-24">
+    <section className="relative overflow-hidden bg-gradient-to-br from-slate-50 via-white to-blue-50/30 py-24 sm:py-32">
       {/* Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-40 -right-40 h-80 w-80 rounded-full bg-gradient-to-br from-[#35bec5]/10 to-[#4bc4db]/10 blur-3xl"></div>

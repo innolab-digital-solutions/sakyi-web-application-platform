@@ -33,7 +33,7 @@ export default function HomePage() {
         actions={
           <>
             <Link
-              href="#programs"
+              href="/programs"
               className="group inline-flex items-center gap-2 rounded-full border-2 border-white bg-white px-8 py-4 font-semibold text-[#35bec5] transition-all duration-300 hover:scale-105 hover:bg-slate-50 hover:shadow-lg"
               style={{ fontFamily: "Inter, sans-serif" }}
             >
@@ -43,12 +43,12 @@ export default function HomePage() {
             </Link>
 
             <Link
-              href="#contact"
+              href="/contact"
               className="group inline-flex items-center gap-2 rounded-full border-2 border-white px-8 py-4 font-semibold text-white transition-all duration-300 hover:scale-105 hover:bg-white hover:text-[#35bec5] hover:shadow-lg"
               style={{ fontFamily: "Inter, sans-serif" }}
             >
               <Mail className="mr-2 h-5 w-5" />
-              <span>Contact Us</span>
+              <span>Get Free Consultation</span>
               <ChevronRight className="ml-2 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
             </Link>
           </>
