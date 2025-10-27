@@ -14,4 +14,6 @@ export const META_ENDPOINTS = {
 
   /** Food categories for dropdowns */
   FOOD_CATEGORIES: "/meta/food-categories",
+  FOOD_ITEMS: "/meta/food-items",
+  UNITS: "/meta/units",
 } as const;

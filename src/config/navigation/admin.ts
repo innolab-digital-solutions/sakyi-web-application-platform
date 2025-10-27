@@ -227,10 +227,10 @@ export const adminNavigation: NavGroup[] = [
           },
           {
             name: "Food Items",
-            path: "/admin/nutrition/items",
+            path: PATHS.ADMIN.FOOD_ITEMS.LIST,
             params: {},
             active: false,
-            permission: "",
+            permission: "food-items.view",
           },
         ],
       },

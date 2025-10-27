@@ -12,7 +12,7 @@ export default function CreateButton({ label, className, ...properties }: Create
   return (
     <Button
       variant="default"
-      className={cn("flex items-center gap-2 font-semibold", className)}
+      className={cn("flex cursor-pointer items-center gap-2 font-semibold", className)}
       {...properties}
     >
       <Plus className="h-4 w-4" />

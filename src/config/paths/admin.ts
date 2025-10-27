@@ -42,4 +42,11 @@ export const ADMIN_PATHS = {
   FOOD_CATEGORIES: {
     LIST: "/admin/food-categories",
   },
+
+  FOOD_ITEMS: {
+    LIST: "/admin/food-items",
+    CREATE: "/admin/food-items/create",
+    EDIT: (id: string | number) => `/admin/food-items/${id}/edit`,
+    DETAIL: (id: string | number) => `/admin/food-items/${id}`,
+  },
 } as const;
