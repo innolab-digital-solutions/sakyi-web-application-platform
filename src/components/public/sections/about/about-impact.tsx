@@ -1,44 +1,30 @@
-import {  Heart, Shield, Star, Users } from "lucide-react";
+import { Heart, Shield, Star, TrendingUp,Users } from "lucide-react";
+import Image from "next/image";
 
 const impactStats = [
   {
-    icon: <Users className="h-8 w-8 text-[#35bec5]" />,
+    icon: <Users className="h-6 w-6 text-white" />,
     value: "10,000+",
     label: "Lives Transformed",
     description: "People who have achieved their wellness goals with our programs",
   },
   {
-    icon: <Star className="h-8 w-8 text-[#35bec5]" />,
+    icon: <Star className="h-6 w-6 text-white" />,
     value: "4.9★",
     label: "Average Rating",
     description: "Client satisfaction rating across all our programs",
   },
   {
-    icon: <Heart className="h-8 w-8 text-[#35bec5]" />,
+    icon: <Heart className="h-6 w-6 text-white" />,
     value: "95%",
     label: "Success Rate",
     description: "Clients who achieve their primary wellness objectives",
   },
   {
-    icon: <Shield className="h-8 w-8 text-[#35bec5]" />,
+    icon: <Shield className="h-6 w-6 text-white" />,
     value: "98%",
     label: "Would Recommend",
     description: "Clients who would recommend SaKyi to friends and family",
-  },
-];
-
-const achievements = [
-  {
-    title: "Certified Healthcare Excellence",
-    description: "Recognized by the National Wellness Association for outstanding patient care and innovative treatment approaches.",
-  },
-  {
-    title: "Evidence-Based Practice Award",
-    description: "Awarded for our commitment to integrating the latest medical research into personalized wellness programs.",
-  },
-  {
-    title: "Patient-Centered Care Recognition",
-    description: "Honored for our holistic approach that treats the whole person, not just symptoms.",
   },
 ];
 
@@ -51,93 +37,170 @@ export default function AboutImpact() {
         <div className="absolute bottom-1/4 -left-32 h-64 w-64 rounded-full bg-gradient-to-br from-[#4bc4db]/5 to-[#35bec5]/5 blur-3xl"></div>
       </div>
 
-      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        {/* Section Header */}
-        <div className="mb-16 text-center" data-aos="fade-up">
-          <h2
-            className="text-3xl leading-tight font-bold text-slate-900 sm:text-4xl lg:text-5xl"
-            style={{ fontFamily: "Poppins, sans-serif" }}
+      <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
+        <div className="grid items-center gap-16 lg:grid-cols-2">
+          {/* Left Column - Visual */}
+          <div
+            className="relative"
+            data-aos="fade-right"
+            data-aos-duration="1000"
+            data-aos-delay="200"
           >
-            Our{" "}
-            <span
-              className="bg-gradient-to-r from-[#35bec5] via-[#4bc4db] to-[#0c96c4] bg-clip-text text-transparent"
-              style={{ fontFamily: "Poppins, sans-serif" }}
-            >
-              Impact
-            </span>
-          </h2>
-          <p
-            className="mx-auto mt-4 max-w-3xl text-lg leading-relaxed text-slate-600"
-            style={{ fontFamily: "Inter, sans-serif" }}
-          >
-            The numbers speak for themselves. Our evidence-based approach and personalized care 
-            have helped thousands of people achieve lasting wellness and transform their lives.
-          </p>
-        </div>
-
-        {/* Impact Stats */}
-        <div className="mb-20 grid gap-8 md:grid-cols-2 lg:grid-cols-4">
-          {impactStats.map((stat, index) => (
-            <div
-              key={index}
-              className="rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-sm transition-all duration-300 hover:shadow-md"
-              data-aos="fade-up"
-              data-aos-delay={`${index * 100}`}
-            >
-              <div className="mb-6 flex justify-center">{stat.icon}</div>
-              <div
-                className="mb-2 text-3xl font-bold text-slate-900"
-                style={{ fontFamily: "Poppins, sans-serif" }}
-              >
-                {stat.value}
+            <div className="relative">
+              <div className="aspect-[3/4] w-full">
+                <div className="group relative h-full overflow-hidden rounded-3xl shadow-2xl">
+                  <Image
+                    src="https://images.unsplash.com/photo-1607962837359-5e7e89f86776?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1170"
+                    alt="SaKyi Impact - Lives Transformed Through Wellness"
+                    width={600}
+                    height={600}
+                    className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    quality={95}
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 40vw"
+                  />
+                  {/* Subtle dark overlay that disappears on hover */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-slate-900/20 to-slate-800/10 transition-opacity duration-300 group-hover:opacity-0"></div>
+                  {/* Brand gradient overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-[#35bec5]/5 to-[#0c96c4]/5"></div>
+                </div>
               </div>
-              <div
-                className="mb-3 text-lg font-semibold text-slate-700"
-                style={{ fontFamily: "Poppins, sans-serif" }}
-              >
-                {stat.label}
-              </div>
-              <p
-                className="text-sm text-slate-600"
-                style={{ fontFamily: "Inter, sans-serif" }}
-              >
-                {stat.description}
-              </p>
-            </div>
-          ))}
-        </div>
 
-        {/* Achievements */}
-        <div className="mb-16">
-          <h3
-            className="mb-12 text-center text-2xl font-bold text-slate-900"
-            style={{ fontFamily: "Poppins, sans-serif" }}
-            data-aos="fade-up"
-          >
-            Recognition & Achievements
-          </h3>
-          <div className="grid gap-8 md:grid-cols-3">
-            {achievements.map((achievement, index) => (
+              {/* Floating Cards with Movement Animation */}
               <div
-                key={index}
-                className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm transition-all duration-300 hover:shadow-md"
+                className="absolute -top-6 -left-2 sm:-left-4 lg:-top-4 lg:-left-6 animate-pulse rounded-2xl border border-slate-200/50 bg-white/90 p-4 shadow-xl backdrop-blur-sm hover:animate-bounce"
                 data-aos="fade-up"
-                data-aos-delay={`${index * 200}`}
+                data-aos-delay="400"
+                style={{
+                  animation: "float 4s ease-in-out infinite",
+                }}
               >
-                <h4
-                  className="mb-4 text-lg font-bold text-slate-900"
-                  style={{ fontFamily: "Poppins, sans-serif" }}
-                >
-                  {achievement.title}
-                </h4>
-                <p
-                  className="text-slate-600"
+                <div className="flex items-center space-x-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-r from-[#35bec5] to-[#4bc4db]">
+                    <Users className="h-5 w-5 text-white" />
+                  </div>
+                  <div>
+                    <div
+                      className="text-sm font-semibold text-slate-900"
+                      style={{ fontFamily: "Inter, sans-serif" }}
+                    >
+                      10K+ Lives
+                    </div>
+                    <div
+                      className="text-xs text-slate-600"
+                      style={{ fontFamily: "Inter, sans-serif" }}
+                    >
+                      Transformed
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div
+                className="absolute -right-2 sm:-right-4 lg:-right-6 -bottom-6 animate-pulse rounded-2xl border border-slate-200/50 bg-white/90 p-4 shadow-xl backdrop-blur-sm hover:animate-bounce"
+                data-aos="fade-up"
+                data-aos-delay="600"
+                style={{
+                  animation: "float 6s ease-in-out infinite",
+                }}
+              >
+                <div className="flex items-center space-x-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-r from-[#4bc4db] to-[#0c96c4]">
+                    <Star className="h-5 w-5 text-white" />
+                  </div>
+                  <div>
+                    <div
+                      className="text-sm font-semibold text-slate-900"
+                      style={{ fontFamily: "Inter, sans-serif" }}
+                    >
+                      4.9★ Rating
+                    </div>
+                    <div
+                      className="text-xs text-slate-600"
+                      style={{ fontFamily: "Inter, sans-serif" }}
+                    >
+                      Client Satisfaction
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Column - Content */}
+          <div className="space-y-8" data-aos="fade-left">
+            {/* Section Header */}
+            <div className="space-y-6">
+              <div className="inline-flex items-center space-x-2 rounded-full bg-gradient-to-r from-[#35bec5]/10 to-[#0c96c4]/10 px-4 py-2">
+                <TrendingUp className="h-4 w-4 text-[#35bec5]" />
+                <span
+                  className="text-sm font-medium text-[#35bec5]"
                   style={{ fontFamily: "Inter, sans-serif" }}
                 >
-                  {achievement.description}
-                </p>
+                  Our Impact
+                </span>
               </div>
-            ))}
+
+              <h2 className="text-3xl leading-tight font-bold sm:text-4xl lg:text-5xl">
+                <span
+                  className="block text-slate-900"
+                  style={{ fontFamily: "Poppins, sans-serif" }}
+                >
+                  Making a{" "}
+                  <span
+                    className="text-brand-gradient bg-clip-text text-transparent"
+                    style={{ fontFamily: "Poppins, sans-serif" }}
+                  >
+                    Real Difference
+                  </span>
+                </span>
+              </h2>
+
+              <p
+                className="max-w-2xl text-lg leading-relaxed text-slate-600"
+                style={{ fontFamily: "Inter, sans-serif" }}
+              >
+                The numbers speak for themselves. Our evidence-based approach and personalized care 
+                have helped thousands of people achieve lasting wellness and transform their lives.
+              </p>
+            </div>
+
+            {/* Impact Stats */}
+            <div className="space-y-4">
+              {impactStats.map((stat, index) => (
+                <div
+                  key={index}
+                  className="group flex items-start space-x-3 rounded-lg p-3 transition-all duration-300 hover:bg-slate-50"
+                  data-aos="fade-up"
+                  data-aos-delay={`${index * 200 + 400}`}
+                >
+                  <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-gradient-to-r from-[#35bec5] to-[#0c96c4] shadow-lg">
+                    {stat.icon}
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-baseline space-x-2">
+                      <div
+                        className="text-2xl font-bold text-slate-900"
+                        style={{ fontFamily: "Poppins, sans-serif" }}
+                      >
+                        {stat.value}
+                      </div>
+                      <div
+                        className="text-sm font-semibold text-[#35bec5]"
+                        style={{ fontFamily: "Inter, sans-serif" }}
+                      >
+                        {stat.label}
+                      </div>
+                    </div>
+                    <p
+                      className="text-sm text-slate-600"
+                      style={{ fontFamily: "Inter, sans-serif" }}
+                    >
+                      {stat.description}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>

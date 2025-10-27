@@ -37,47 +37,61 @@ export default function AboutPreview() {
               </div>
             </div>
 
-            {/* Floating Stats */}
+            {/* Floating Cards with Movement Animation */}
             <div
-              className="absolute -top-6 -right-4 sm:-right-5 lg:-right-6 animate-pulse rounded-2xl border border-slate-200/50 bg-white/95 p-6 shadow-xl backdrop-blur-sm hover:animate-bounce"
+              className="absolute -top-6 -left-2 sm:-left-4 lg:-top-4 lg:-left-6 animate-pulse rounded-2xl border border-slate-200/50 bg-white/90 p-4 shadow-xl backdrop-blur-sm hover:animate-bounce"
               data-aos="fade-up"
-              data-aos-delay="600"
-              style={{ animation: "float 6s ease-in-out infinite" }}
+              data-aos-delay="400"
+              style={{
+                animation: "float 4s ease-in-out infinite",
+              }}
             >
-              <div className="text-center">
-                <div
-                  className="text-2xl font-bold text-[#35bec5]"
-                  style={{ fontFamily: "Poppins, sans-serif" }}
-                >
-                  10K+
+              <div className="flex items-center space-x-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-r from-[#35bec5] to-[#4bc4db]">
+                  <Users className="h-5 w-5 text-white" />
                 </div>
-                <div
-                  className="text-sm text-slate-600"
-                  style={{ fontFamily: "Inter, sans-serif" }}
-                >
-                  Happy Clients
+                <div>
+                  <div
+                    className="text-sm font-semibold text-slate-900"
+                    style={{ fontFamily: "Inter, sans-serif" }}
+                  >
+                    10K+ Lives
+                  </div>
+                  <div
+                    className="text-xs text-slate-600"
+                    style={{ fontFamily: "Inter, sans-serif" }}
+                  >
+                    Transformed
+                  </div>
                 </div>
               </div>
             </div>
 
             <div
-              className="absolute -bottom-6 -left-4 sm:-left-5 lg:-left-6 animate-pulse rounded-2xl border border-slate-200/50 bg-white/95 p-6 shadow-xl backdrop-blur-sm hover:animate-bounce"
+              className="absolute -right-2 sm:-right-4 lg:-right-6 -bottom-6 animate-pulse rounded-2xl border border-slate-200/50 bg-white/90 p-4 shadow-xl backdrop-blur-sm hover:animate-bounce"
               data-aos="fade-up"
-              data-aos-delay="800"
-              style={{ animation: "float 8s ease-in-out infinite" }}
+              data-aos-delay="600"
+              style={{
+                animation: "float 6s ease-in-out infinite",
+              }}
             >
-              <div className="text-center">
-                <div
-                  className="text-2xl font-bold text-[#0c96c4]"
-                  style={{ fontFamily: "Poppins, sans-serif" }}
-                >
-                  98%
+              <div className="flex items-center space-x-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-r from-[#4bc4db] to-[#0c96c4]">
+                  <TrendingUp className="h-5 w-5 text-white" />
                 </div>
-                <div
-                  className="text-sm text-slate-600"
-                  style={{ fontFamily: "Inter, sans-serif" }}
-                >
-                  Success Rate
+                <div>
+                  <div
+                    className="text-sm font-semibold text-slate-900"
+                    style={{ fontFamily: "Inter, sans-serif" }}
+                  >
+                    98% Success
+                  </div>
+                  <div
+                    className="text-xs text-slate-600"
+                    style={{ fontFamily: "Inter, sans-serif" }}
+                  >
+                    Rate
+                  </div>
                 </div>
               </div>
             </div>
