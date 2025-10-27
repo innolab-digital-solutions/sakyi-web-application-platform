@@ -218,6 +218,7 @@ export default function FoodItemForm({
         id="calories_per_unit"
         name="calories_per_unit"
         type="number"
+        step={0.01}
         min={0}
         value={String(form.data.calories_per_unit ?? "")}
         onChange={(event) => form.setData("calories_per_unit", Number(event.target.value))}
@@ -268,7 +269,7 @@ export default function FoodItemForm({
               }))
             : []
         }
-        value={String(form.data.unit_id ?? 0)}
+        value={String(form.data.unit_id ?? "")}
         onChange={(value: string) => form.setData("unit_id", Number(value))}
         error={form.errors.unit_id as string}
         required
