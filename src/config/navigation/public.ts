@@ -13,6 +13,26 @@ export const publicNavigation: NavItem[] = [
     path: PATHS.PUBLIC.HOME,
     active: false,
   },
+  {
+    name: "About",
+    path: PATHS.PUBLIC.ABOUT,
+    active: false,
+  },
+  {
+    name: "Programs",
+    path: PATHS.PUBLIC.PROGRAMS,
+    active: false,
+  },
+  {
+    name: "Blog",
+    path: PATHS.PUBLIC.BLOG,
+    active: false,
+  },
+  {
+    name: "Contact",
+    path: PATHS.PUBLIC.CONTACT,
+    active: false,
+  },
 ];
 
 /**
