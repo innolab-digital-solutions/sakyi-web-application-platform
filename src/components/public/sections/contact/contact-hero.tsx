@@ -1,5 +1,9 @@
+"use client";
+
 import { ChevronRight,MessageCircle } from "lucide-react";
 import Image from "next/image";
+
+import { smoothScrollTo } from "@/utils/smooth-scroll";
 
 export default function ContactHero() {
   return (
@@ -45,23 +49,23 @@ export default function ContactHero() {
 
             {/* CTA Button */}
             <div className="flex flex-col gap-4 sm:flex-row sm:gap-6">
-              <a
-                href="#contact-form"
+              <button
+                onClick={() => smoothScrollTo('contact-form', 80)}
                 className="group inline-flex items-center justify-center rounded-full bg-brand-gradient px-6 py-3 text-base font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
                 style={{ fontFamily: "Inter, sans-serif" }}
               >
                 Send Us a Message
                 <MessageCircle className="ml-2 h-5 w-5 transition-transform duration-300" />
-              </a>
+              </button>
               
-              <a
-                href="#contact-details"
+              <button
+                onClick={() => smoothScrollTo('contact-details', 80)}
                 className="group inline-flex items-center justify-center gap-2 rounded-full border border-slate-300 bg-white px-6 py-3 text-base font-semibold text-slate-700 shadow-sm transition-all duration-300 hover:scale-105 hover:shadow-lg hover:border-[#35bec5] hover:text-[#35bec5]"
                 style={{ fontFamily: "Inter, sans-serif" }}
               >
                 View Contact Info
                 <ChevronRight className="ml-2 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
-              </a>
+              </button>
             </div>
           </div>
 
@@ -81,6 +85,8 @@ export default function ContactHero() {
                 />
               </div>
               
+              {/* Subtle dark overlay that disappears on hover */}
+              <div className="absolute inset-0 bg-gradient-to-br from-slate-900/20 to-slate-800/10 transition-opacity duration-300 group-hover:opacity-0"></div>
               {/* Image Overlay */}
               <div className="absolute inset-0 bg-gradient-to-t from-slate-900/20 to-transparent"></div>
               

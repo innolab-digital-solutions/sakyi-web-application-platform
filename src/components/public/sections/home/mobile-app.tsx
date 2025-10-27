@@ -39,7 +39,7 @@ export default function MobileApp() {
             </h2>
 
             <p
-              className="text-sm leading-relaxed text-slate-600 sm:text-base"
+              className="text-lg leading-relaxed text-slate-600"
               style={{ fontFamily: "Inter, sans-serif" }}
             >
               Stay on track with SaKyi&apos;s mobile app — receive your weekly doctor updates,
@@ -50,7 +50,7 @@ export default function MobileApp() {
           {/* App Store Buttons */}
           <div className="flex flex-col gap-4 sm:flex-row sm:gap-6">
             <Link
-              href="#app"
+              href="/contact"
               className="group relative inline-flex items-center justify-center rounded-full bg-slate-900 px-6 py-3 text-base font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
               style={{ fontFamily: "Inter, sans-serif" }}
             >
@@ -60,7 +60,7 @@ export default function MobileApp() {
               Download on App Store
             </Link>
             <Link
-              href="#app"
+              href="/contact"
               className="group relative inline-flex items-center justify-center rounded-full bg-brand-gradient px-6 py-3 text-base font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
               style={{ fontFamily: "Inter, sans-serif" }}
             >

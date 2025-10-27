@@ -27,7 +27,7 @@ export default function BlogCard({ blog, index = 0, className = "" }: BlogCardPr
     >
       {/* Image */}
       <div className="mb-6 overflow-hidden rounded-xl">
-        <div className="aspect-[16/10] w-full">
+        <div className="group/image relative aspect-[16/10] w-full">
           <Image
             src={blog.image}
             alt={blog.imageAlt}
@@ -35,6 +35,8 @@ export default function BlogCard({ blog, index = 0, className = "" }: BlogCardPr
             height={375}
             className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
           />
+          {/* Subtle dark overlay that disappears on hover */}
+          <div className="absolute inset-0 bg-gradient-to-br from-slate-900/20 to-slate-800/10 transition-opacity duration-300 group-hover:opacity-0"></div>
         </div>
       </div>
 
@@ -69,7 +71,7 @@ export default function BlogCard({ blog, index = 0, className = "" }: BlogCardPr
         {/* CTA */}
         <div className="pt-2">
           <Link
-            href={blog.href || "#blog"}
+            href={blog.href || `/blog/${blog.title.toLowerCase().replaceAll(/\s+/g, '-').replaceAll(/[^\w-]/g, '')}`}
             className="group/link inline-flex items-center text-base font-medium text-slate-900 transition-all duration-300 hover:text-[#35bec5]"
             style={{ fontFamily: "Inter, sans-serif" }}
           >

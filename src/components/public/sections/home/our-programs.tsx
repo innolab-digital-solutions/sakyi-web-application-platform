@@ -60,7 +60,7 @@ export default function OurPrograms() {
            </h2>
 
            <p
-             className="mx-auto max-w-3xl text-base leading-relaxed text-slate-600"
+             className="mx-auto max-w-3xl text-lg leading-relaxed text-slate-600"
              style={{ fontFamily: "Inter, sans-serif" }}
            >
              Discover our comprehensive range of wellness programs, each carefully crafted by
@@ -94,6 +94,8 @@ export default function OurPrograms() {
                        className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                        quality={90}
                      />
+                     {/* Subtle dark overlay that disappears on hover */}
+                     <div className="absolute inset-0 bg-gradient-to-br from-slate-900/20 to-slate-800/10 transition-opacity duration-300 group-hover:opacity-0"></div>
                    </div>
 
                    {/* Content - Bottom on mobile, Right on desktop */}
@@ -115,7 +117,7 @@ export default function OurPrograms() {
                      {/* CTA Link */}
                      <div className="pt-2">
                        <Link
-                         href="#programs"
+                         href="/programs"
                          className="group/link inline-flex items-center text-sm font-medium text-[#35bec5] transition-all duration-300 hover:text-[#0c96c4]"
                          style={{ fontFamily: "Inter, sans-serif" }}
                        >
@@ -133,7 +135,7 @@ export default function OurPrograms() {
          {/* Clean CTA */}
          <div className="mt-12 text-center" data-aos="fade-up" data-aos-delay="800">
            <Link
-             href="#programs"
+             href="/programs"
              className="group inline-flex items-center justify-center rounded-full bg-brand-gradient px-6 py-3 text-base font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
              style={{ fontFamily: "Inter, sans-serif" }}
            >

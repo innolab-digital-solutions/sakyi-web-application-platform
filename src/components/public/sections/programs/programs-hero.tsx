@@ -1,5 +1,9 @@
+"use client";
+
 import { ArrowRight, Heart, Shield, Sparkles } from "lucide-react";
 import Link from "next/link";
+
+import { smoothScrollTo } from "@/utils/smooth-scroll";
 
 export default function ProgramsHero() {
   return (
@@ -106,15 +110,15 @@ export default function ProgramsHero() {
 
           {/* CTA Buttons */}
           <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center" data-aos="fade-up" data-aos-delay="600">
-            <Link
-              href="#programs"
+            <button
+              onClick={() => smoothScrollTo('programs', 80)}
               className="group inline-flex items-center gap-2 rounded-full bg-brand-gradient px-8 py-4 text-white font-semibold transition-all duration-300 hover:shadow-lg hover:scale-105"
               style={{ fontFamily: "Inter, sans-serif" }}
             >
               <Heart className="h-5 w-5" />
               Explore All Programs
               <ArrowRight className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
-            </Link>
+            </button>
 
             <Link
               href="/contact"

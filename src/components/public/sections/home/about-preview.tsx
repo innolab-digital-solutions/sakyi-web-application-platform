@@ -30,6 +30,9 @@ export default function AboutPreview() {
                   height={600}
                   className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                 />
+                {/* Subtle dark overlay that disappears on hover */}
+                <div className="absolute inset-0 bg-gradient-to-br from-slate-900/20 to-slate-800/10 transition-opacity duration-300 group-hover:opacity-0"></div>
+                {/* Brand gradient overlay */}
                 <div className="absolute inset-0 bg-gradient-to-br from-[#35bec5]/5 to-[#0c96c4]/5"></div>
               </div>
             </div>
@@ -111,7 +114,7 @@ export default function AboutPreview() {
             </h2>
 
             <p
-              className="max-w-2xl text-base leading-relaxed text-slate-600"
+              className="max-w-2xl text-lg leading-relaxed text-slate-600"
               style={{ fontFamily: "Inter, sans-serif" }}
             >
               We combine medical expertise with personalized wellness strategies to help you
@@ -172,7 +175,7 @@ export default function AboutPreview() {
           {/* Clean CTA */}
           <div className="pt-4" data-aos="fade-up" data-aos-delay="800">
             <Link
-              href="#programs"
+              href="/programs"
               className="group inline-flex items-center justify-center rounded-full bg-brand-gradient px-6 py-3 text-base font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
               style={{ fontFamily: "Inter, sans-serif" }}
             >

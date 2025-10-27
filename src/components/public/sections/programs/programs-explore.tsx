@@ -63,7 +63,7 @@ export default function ProgramsExplore() {
   const displayedPrograms = showAll ? programs : programs.slice(0, initialPrograms);
 
   return (
-    <section className="relative overflow-hidden bg-white py-24">
+    <section id="programs" className="relative overflow-hidden bg-white py-24">
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="mb-16 text-center">

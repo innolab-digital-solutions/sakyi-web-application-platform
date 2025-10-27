@@ -34,15 +34,17 @@ export default function BlogEditorsPick() {
         <div className="rounded-3xl border border-slate-200 bg-white shadow-xl overflow-hidden">
           <div className="grid lg:grid-cols-2">
             {/* Image */}
-            <div className="relative h-80 lg:h-auto">
+            <div className="group relative h-80 lg:h-auto overflow-hidden">
               <Image
                 src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
                 alt="Editor's pick article"
                 width={600}
                 height={400}
-                className="h-full w-full object-cover"
+                className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                 priority
               />
+              {/* Subtle dark overlay that disappears on hover */}
+              <div className="absolute inset-0 bg-gradient-to-br from-slate-900/20 to-slate-800/10 transition-opacity duration-300 group-hover:opacity-0"></div>
               <div className="absolute top-6 left-6">
                 <span className="inline-flex items-center rounded-full bg-brand-gradient px-4 py-2 text-sm font-medium text-white">
                   Editor&apos;s Choice

@@ -37,7 +37,7 @@ export default function HowItWorks() {
         </h2>
 
         <p
-          className="mx-auto max-w-2xl text-base leading-relaxed text-slate-600"
+          className="mx-auto max-w-2xl text-lg leading-relaxed text-slate-600"
           style={{ fontFamily: "Inter, sans-serif" }}
         >
           Join thousands who&apos;ve transformed their lives with our proven 3-step process. Get
@@ -140,7 +140,7 @@ export default function HowItWorks() {
       {/* CTA */}
       <div className="mt-12 text-center" data-aos="fade-up" data-aos-delay="600">
         <Link
-          href="#app"
+          href="/contact"
           className="group inline-flex items-center justify-center rounded-full bg-brand-gradient px-6 py-3 text-base font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
               style={{ fontFamily: "Inter, sans-serif" }}
         >

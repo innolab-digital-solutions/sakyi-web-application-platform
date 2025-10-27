@@ -1,4 +1,8 @@
+"use client";
+
 import { Sparkles } from "lucide-react";
+
+import { smoothScrollTo } from "@/utils/smooth-scroll";
 
 export default function BlogHero() {
   return (
@@ -44,6 +48,21 @@ export default function BlogHero() {
             Your trusted space for wellness inspiration, mindfulness practices, and healthy living tips. 
             Discover evidence-based insights to support your journey toward holistic wellbeing.
           </p>
+
+          {/* CTA Button */}
+          <div className="mt-12" data-aos="fade-up" data-aos-delay="400">
+            <button
+              onClick={() => smoothScrollTo('articles', 80)}
+              className="group inline-flex items-center gap-2 rounded-full bg-brand-gradient px-8 py-4 text-white font-semibold transition-all duration-300 hover:shadow-lg hover:scale-105"
+              style={{ fontFamily: "Inter, sans-serif" }}
+            >
+              <Sparkles className="h-5 w-5" />
+              Explore Articles
+              <svg className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>
+            </button>
+          </div>
         </div>
       </div>
     </section>

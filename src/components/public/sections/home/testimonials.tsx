@@ -156,7 +156,7 @@ export default function Testimonials() {
         </h2>
 
         <p
-          className="mx-auto max-w-2xl text-base leading-relaxed text-slate-600"
+          className="mx-auto max-w-2xl text-lg leading-relaxed text-slate-600"
           style={{ fontFamily: "Inter, sans-serif" }}
         >
           Real stories from people who have transformed their lives through our wellness

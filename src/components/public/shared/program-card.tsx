@@ -26,7 +26,7 @@ export default function ProgramCard({ program, index = 0, className = "" }: Prog
     >
       <div className="flex h-full flex-col gap-6">
         {/* Image - Top (Full Width) */}
-        <div className="relative w-full overflow-hidden rounded-xl bg-slate-100">
+        <div className="group/image relative w-full overflow-hidden rounded-xl bg-slate-100">
           <Image
             src={program.image}
             alt={program.title}
@@ -35,6 +35,8 @@ export default function ProgramCard({ program, index = 0, className = "" }: Prog
             className="h-auto w-full object-cover transition-transform duration-300 group-hover:scale-105"
             quality={90}
           />
+          {/* Subtle dark overlay that disappears on hover */}
+          <div className="absolute inset-0 bg-gradient-to-br from-slate-900/20 to-slate-800/10 transition-opacity duration-300 group-hover:opacity-0"></div>
         </div>
 
         {/* Content - Bottom (Full Width) */}

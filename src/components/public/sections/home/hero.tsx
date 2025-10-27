@@ -1,6 +1,9 @@
+"use client";
+
 import { ArrowRight, Brain, ChevronRight, Heart, Shield } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
+
+import { smoothScrollTo } from "@/utils/smooth-scroll";
 
 export default function Hero() {
   return (
@@ -56,25 +59,25 @@ export default function Hero() {
 
           {/* Clean CTA Buttons */}
           <div className="flex flex-col gap-4 sm:flex-row">
-            <Link
-              href="#programs"
+            <button
+              onClick={() => smoothScrollTo('programs', 80)}
               className="group inline-flex items-center justify-center rounded-full bg-brand-gradient px-6 py-3 text-base font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
               style={{ fontFamily: "Inter, sans-serif" }}
             >
               <Heart className="mr-2 h-5 w-5" />
               Start Your Journey
               <ArrowRight className="ml-2 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
-            </Link>
+            </button>
 
-            <Link
-              href="#about"
+            <button
+              onClick={() => smoothScrollTo('about', 80)}
               className="group inline-flex items-center justify-center gap-2 rounded-full border border-slate-300 bg-white px-6 py-3 text-base font-semibold text-slate-700 shadow-sm transition-all duration-300 hover:scale-105 hover:shadow-lg hover:border-[#35bec5] hover:text-[#35bec5]"
               style={{ fontFamily: "Inter, sans-serif" }}
             >
               <Brain className="mr-2 h-5 w-5" />
               Learn More
               <ChevronRight className="ml-2 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
-            </Link>
+            </button>
           </div>
         </div>
 
@@ -97,6 +100,9 @@ export default function Hero() {
                   className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                 />
               </div>
+              {/* Subtle dark overlay that disappears on hover */}
+              <div className="absolute inset-0 bg-gradient-to-br from-slate-900/20 to-slate-800/10 transition-opacity duration-300 group-hover:opacity-0"></div>
+              {/* Brand gradient overlay */}
               <div className="absolute inset-0 bg-gradient-to-br from-[#35bec5]/5 to-[#0c96c4]/5"></div>
             </div>
 

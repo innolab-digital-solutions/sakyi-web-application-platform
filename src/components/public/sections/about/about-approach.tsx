@@ -90,16 +90,19 @@ export default function AboutApproach() {
 
           {/* Right Column - Visual */}
           <div className="relative" data-aos="fade-left">
-            <div className="relative overflow-hidden rounded-3xl shadow-2xl">
+            <div className="group relative overflow-hidden rounded-3xl shadow-2xl">
               <div className="aspect-[4/3] w-full">
                 <Image
                   src="/images/our-approach.jpg"
                   alt="SaKyi Wellness Approach - Holistic Health Methodology"
                   width={600}
                   height={450}
-                  className="h-full w-full object-cover"
+                  className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                 />
               </div>
+              {/* Subtle dark overlay that disappears on hover */}
+              <div className="absolute inset-0 bg-gradient-to-br from-slate-900/20 to-slate-800/10 transition-opacity duration-300 group-hover:opacity-0"></div>
+              {/* Brand gradient overlay */}
               <div className="absolute inset-0 bg-gradient-to-br from-[#35bec5]/10 to-[#0c96c4]/10"></div>
             </div>
 

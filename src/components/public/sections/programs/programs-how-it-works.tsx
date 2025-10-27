@@ -1,4 +1,8 @@
+"use client";
+
 import { ArrowRight, CheckCircle, MessageCircle, Target, Users } from "lucide-react";
+
+import { smoothScrollTo } from "@/utils/smooth-scroll";
 
 export default function ProgramsHowItWorks() {
   const steps = [
@@ -151,8 +155,8 @@ export default function ProgramsHowItWorks() {
                 Book Free Consultation
                 <ArrowRight className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
               </a>
-              <a
-                href="#programs"
+              <button
+                onClick={() => smoothScrollTo('programs', 80)}
                 className="group inline-flex items-center gap-2 rounded-full border-2 border-[#35bec5] bg-white px-8 py-4 text-[#35bec5] font-semibold transition-all duration-300 hover:bg-[#35bec5] hover:text-white hover:shadow-lg hover:scale-105"
                 style={{ fontFamily: "Inter, sans-serif" }}
                 data-aos="fade-up"
@@ -160,7 +164,7 @@ export default function ProgramsHowItWorks() {
               >
                 View All Programs
                 <ArrowRight className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
-              </a>
+              </button>
             </div>
           </div>
         </div>

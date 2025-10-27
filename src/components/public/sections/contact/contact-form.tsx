@@ -56,7 +56,7 @@ form.post("/api/contact", {
           </h2>
 
           <p
-            className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-slate-600"
+            className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-slate-600"
             style={{ fontFamily: "Inter, sans-serif" }}
           >
             Have a question or want to learn more about our wellness programs? 

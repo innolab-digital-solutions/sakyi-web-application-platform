@@ -75,7 +75,7 @@ const categories = ["All", "Wellness", "Nutrition", "Mindfulness", "Lifestyle"];
 
 export default function BlogArticles() {
   return (
-    <section className="relative overflow-hidden bg-white py-24">
+    <section id="articles" className="relative overflow-hidden bg-white py-24">
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="mb-12 space-y-6 text-center">
@@ -92,7 +92,7 @@ export default function BlogArticles() {
             </span>
           </h2>
           <p
-            className="mx-auto max-w-2xl text-base leading-relaxed text-slate-600"
+            className="mx-auto max-w-2xl text-lg leading-relaxed text-slate-600"
             style={{ fontFamily: "Inter, sans-serif" }}
           >
             Stay updated with our latest expert insights on wellness, nutrition, mindfulness, and
