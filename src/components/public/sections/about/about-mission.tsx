@@ -15,9 +15,10 @@ export default function AboutMission() {
           {/* Left Column - Visual */}
           <div
             className="relative"
-            data-aos="fade-right"
-            data-aos-duration="1000"
+            data-aos="zoom-in"
+            data-aos-duration="1200"
             data-aos-delay="200"
+            data-aos-easing="ease-out-cubic"
           >
             <div className="relative">
               <div className="aspect-[3/4] w-full">
@@ -41,8 +42,10 @@ export default function AboutMission() {
               {/* Floating Cards with Movement Animation */}
               <div
                 className="absolute -top-6 -left-2 sm:-left-4 lg:-top-4 lg:-left-6 animate-pulse rounded-2xl border border-slate-200/50 bg-white/90 p-4 shadow-xl backdrop-blur-sm hover:animate-bounce"
-                data-aos="fade-up"
-                data-aos-delay="400"
+              data-aos="bounce-in"
+              data-aos-delay="400"
+              data-aos-duration="1000"
+              data-aos-easing="ease-out-back"
                 style={{
                   animation: "float 4s ease-in-out infinite",
                 }}
@@ -70,8 +73,10 @@ export default function AboutMission() {
 
               <div
                 className="absolute -right-2 sm:-right-4 lg:-right-6 -bottom-6 animate-pulse rounded-2xl border border-slate-200/50 bg-white/90 p-4 shadow-xl backdrop-blur-sm hover:animate-bounce"
-                data-aos="fade-up"
-                data-aos-delay="600"
+              data-aos="bounce-in"
+              data-aos-delay="600"
+              data-aos-duration="1000"
+              data-aos-easing="ease-out-back"
                 style={{
                   animation: "float 6s ease-in-out infinite",
                 }}
@@ -100,7 +105,7 @@ export default function AboutMission() {
           </div>
 
           {/* Right Column - Content */}
-          <div className="space-y-8" data-aos="fade-left">
+          <div className="space-y-8" data-aos="slide-up" data-aos-duration="1200" data-aos-delay="300" data-aos-easing="ease-out-cubic">
             {/* Section Header */}
             <div className="space-y-6">
               <div className="inline-flex items-center space-x-2 rounded-full bg-gradient-to-r from-[#35bec5]/10 to-[#0c96c4]/10 px-4 py-2">

@@ -20,9 +20,15 @@ export default function Hero() {
     <div className="relative mx-auto max-w-7xl px-4 pt-24 pb-20 sm:px-6 lg:px-8">
       <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
         {/* Left Column - Clean Content */}
-        <div className="space-y-8" data-aos="fade-up" data-aos-duration="1000">
+        <div className="space-y-8" data-aos="zoom-in" data-aos-duration="1200" data-aos-easing="ease-out-cubic">
           {/* Badge */}
-          <div className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#35bec5]/10 to-[#0c96c4]/10 px-4 py-2 text-sm font-medium text-[#35bec5]">
+          <div 
+            className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#35bec5]/10 to-[#0c96c4]/10 px-4 py-2 text-sm font-medium text-[#35bec5]"
+            data-aos="slide-down"
+            data-aos-delay="200"
+            data-aos-duration="800"
+            data-aos-easing="ease-out-back"
+          >
             <Sparkles className="h-4 w-4" />
             <span style={{ fontFamily: "Inter, sans-serif" }}>Transform Your Life</span>
           </div>
@@ -30,18 +36,33 @@ export default function Hero() {
           {/* Balanced Headline */}
           <div className="space-y-6">
             <h1 className="space-y-2 text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl lg:text-6xl">
-              <span className="block" style={{ fontFamily: "Poppins, sans-serif" }}>
+              <span 
+                className="block" 
+                style={{ fontFamily: "Poppins, sans-serif" }}
+                data-aos="fade-up"
+                data-aos-delay="300"
+                data-aos-duration="1000"
+                data-aos-easing="ease-out-cubic"
+              >
                 Transform Your Life
               </span>
               <span
                 className="block text-brand-gradient bg-clip-text text-transparent"
                 style={{ fontFamily: "Poppins, sans-serif" }}
+                data-aos="fade-up"
+                data-aos-delay="500"
+                data-aos-duration="1000"
+                data-aos-easing="ease-out-cubic"
               >
                 for Good
               </span>
               <span
                 className="block text-2xl font-light text-slate-600 sm:text-3xl"
                 style={{ fontFamily: "Inter, sans-serif" }}
+                data-aos="fade-up"
+                data-aos-delay="700"
+                data-aos-duration="1000"
+                data-aos-easing="ease-out-cubic"
               >
                 with Doctor-Designed Programs
               </span>
@@ -50,6 +71,10 @@ export default function Hero() {
             <p
               className="max-w-2xl text-lg leading-relaxed text-slate-600"
               style={{ fontFamily: "Inter, sans-serif" }}
+              data-aos="slide-up"
+              data-aos-delay="900"
+              data-aos-duration="1000"
+              data-aos-easing="ease-out-cubic"
             >
               Join thousands who&apos;ve achieved their health goals with our proven,
               science-backed programs. Get personalized guidance from certified doctors and
@@ -58,7 +83,13 @@ export default function Hero() {
           </div>
 
           {/* Clean CTA Buttons */}
-          <div className="flex flex-col gap-4 sm:flex-row">
+          <div 
+            className="flex flex-col gap-4 sm:flex-row"
+            data-aos="fade-up"
+            data-aos-delay="1100"
+            data-aos-duration="1000"
+            data-aos-easing="ease-out-cubic"
+          >
             <button
               onClick={() => smoothScrollTo('programs', 80)}
               className="group inline-flex items-center justify-center rounded-full bg-brand-gradient px-6 py-3 text-base font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
@@ -84,9 +115,10 @@ export default function Hero() {
         {/* Right Column - Enhanced Visual */}
         <div
           className="relative"
-          data-aos="fade-left"
-          data-aos-duration="1000"
-          data-aos-delay="200"
+          data-aos="zoom-in"
+          data-aos-duration="1200"
+          data-aos-delay="400"
+          data-aos-easing="ease-out-cubic"
         >
           <div className="relative">
             {/* Main Image */}
@@ -109,8 +141,10 @@ export default function Hero() {
             {/* Floating Cards */}
             <div
               className="absolute -top-6 -left-2 sm:-left-4 lg:-top-4 lg:-left-6 animate-pulse rounded-2xl border border-slate-200/50 bg-white/90 p-4 shadow-xl backdrop-blur-sm hover:animate-bounce"
-              data-aos="fade-up"
-              data-aos-delay="400"
+              data-aos="bounce-in"
+              data-aos-delay="600"
+              data-aos-duration="1000"
+              data-aos-easing="ease-out-back"
               style={{
                 animation: "float 4s ease-in-out infinite",
               }}
@@ -138,8 +172,10 @@ export default function Hero() {
 
             <div
               className="absolute -right-2 sm:-right-4 lg:-right-6 -bottom-6 animate-pulse rounded-2xl border border-slate-200/50 bg-white/90 p-4 shadow-xl backdrop-blur-sm hover:animate-bounce"
-              data-aos="fade-up"
-              data-aos-delay="600"
+              data-aos="bounce-in"
+              data-aos-delay="800"
+              data-aos-duration="1000"
+              data-aos-easing="ease-out-back"
               style={{
                 animation: "float 6s ease-in-out infinite",
               }}

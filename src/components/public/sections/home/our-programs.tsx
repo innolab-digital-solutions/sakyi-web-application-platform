@@ -36,8 +36,14 @@ export default function OurPrograms() {
 
        <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
          {/* Section Header */}
-         <div className="mb-16 text-center" data-aos="fade-up" data-aos-duration="1000">
-           <div className="mb-6 inline-flex items-center space-x-2 rounded-full bg-gradient-to-r from-[#35bec5]/10 to-[#0c96c4]/10 px-4 py-2">
+         <div className="mb-16 text-center" data-aos="zoom-in" data-aos-duration="1200" data-aos-easing="ease-out-cubic">
+           <div 
+             className="mb-6 inline-flex items-center space-x-2 rounded-full bg-gradient-to-r from-[#35bec5]/10 to-[#0c96c4]/10 px-4 py-2"
+             data-aos="slide-down"
+             data-aos-delay="200"
+             data-aos-duration="800"
+             data-aos-easing="ease-out-back"
+           >
              <Award className="h-4 w-4 text-[#35bec5]" />
              <span
                className="text-sm font-medium text-[#35bec5]"
@@ -48,12 +54,23 @@ export default function OurPrograms() {
            </div>
 
            <h2 className="mb-6 text-3xl leading-tight font-bold sm:text-4xl lg:text-5xl">
-             <span className="block text-slate-900" style={{ fontFamily: "Poppins, sans-serif" }}>
+             <span 
+               className="block text-slate-900" 
+               style={{ fontFamily: "Poppins, sans-serif" }}
+               data-aos="fade-up"
+               data-aos-delay="300"
+               data-aos-duration="1000"
+               data-aos-easing="ease-out-cubic"
+             >
                Transform Your Life with
              </span>
              <span
                className="block text-brand-gradient bg-clip-text text-transparent"
                style={{ fontFamily: "Poppins, sans-serif" }}
+               data-aos="fade-up"
+               data-aos-delay="500"
+               data-aos-duration="1000"
+               data-aos-easing="ease-out-cubic"
              >
                Doctor-Designed Programs
              </span>
@@ -62,6 +79,10 @@ export default function OurPrograms() {
            <p
              className="mx-auto max-w-3xl text-lg leading-relaxed text-slate-600"
              style={{ fontFamily: "Inter, sans-serif" }}
+             data-aos="slide-up"
+             data-aos-delay="700"
+             data-aos-duration="1000"
+             data-aos-easing="ease-out-cubic"
            >
              Discover our comprehensive range of wellness programs, each carefully crafted by
              certified medical professionals to help you achieve lasting health transformation with
@@ -72,7 +93,9 @@ export default function OurPrograms() {
          {/* Asymmetric Program Cards Layout */}
          <div className="grid gap-8 lg:grid-cols-2">
            {/* Left Column - Single Large Card with Side-by-Side Layout */}
-     <ProgramCard program={programs[0]} />
+     <div data-aos="flip-up" data-aos-delay="400" data-aos-duration="1000" data-aos-easing="ease-out-cubic">
+       <ProgramCard program={programs[0]} />
+     </div>
 
            {/* Right Column - Two Cards with Side-by-Side Layout */}
            <div className="grid gap-6">
@@ -80,8 +103,10 @@ export default function OurPrograms() {
                <div
                  key={index + 1}
                  className="group relative rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition-all duration-300 hover:shadow-md"
-                 data-aos="fade-up"
-                 data-aos-delay={`${(index + 1) * 150 + 400}`}
+                 data-aos="slide-up"
+                 data-aos-delay={`${(index + 1) * 150 + 500}`}
+                 data-aos-duration="1000"
+                 data-aos-easing="ease-out-cubic"
                >
                  <div className="flex h-full flex-col gap-4 lg:flex-row lg:gap-4">
                    {/* Image - Top on mobile, Left on desktop */}

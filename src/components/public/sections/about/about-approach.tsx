@@ -36,10 +36,16 @@ export default function AboutApproach() {
       <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
         <div className="grid items-center gap-16 lg:grid-cols-2">
           {/* Left Column - Content */}
-          <div className="space-y-8" data-aos="fade-right">
+          <div className="space-y-8" data-aos="slide-up" data-aos-duration="1200" data-aos-easing="ease-out-cubic">
             {/* Section Header */}
             <div className="space-y-6">
-              <div className="inline-flex items-center space-x-2 rounded-full bg-gradient-to-r from-[#35bec5]/10 to-[#0c96c4]/10 px-4 py-2">
+              <div 
+                className="inline-flex items-center space-x-2 rounded-full bg-gradient-to-r from-[#35bec5]/10 to-[#0c96c4]/10 px-4 py-2"
+                data-aos="slide-down"
+                data-aos-delay="200"
+                data-aos-duration="800"
+                data-aos-easing="ease-out-back"
+              >
                 <Zap className="h-4 w-4 text-[#35bec5]" />
                 <span
                   className="text-sm font-medium text-[#35bec5]"

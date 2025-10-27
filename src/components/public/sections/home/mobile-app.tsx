@@ -13,9 +13,15 @@ export default function MobileApp() {
     <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <div className="grid items-center gap-8 lg:grid-cols-2 lg:gap-12">
         {/* Left Column - Text Content */}
-        <div className="space-y-8" data-aos="fade-right">
+        <div className="space-y-8" data-aos="slide-up" data-aos-duration="1200" data-aos-easing="ease-out-cubic">
           <div className="space-y-6">
-            <div className="inline-flex items-center space-x-2 rounded-full bg-gradient-to-r from-[#35bec5]/10 to-[#0c96c4]/10 px-4 py-2">
+            <div 
+              className="inline-flex items-center space-x-2 rounded-full bg-gradient-to-r from-[#35bec5]/10 to-[#0c96c4]/10 px-4 py-2"
+              data-aos="slide-down"
+              data-aos-delay="200"
+              data-aos-duration="800"
+              data-aos-easing="ease-out-back"
+            >
               <Smartphone className="h-4 w-4 text-[#35bec5]" />
               <span
                 className="text-sm font-medium text-[#35bec5]"
@@ -29,10 +35,21 @@ export default function MobileApp() {
               className="text-2xl leading-tight font-bold sm:text-3xl sm:leading-tight lg:text-4xl xl:text-5xl"
               style={{ fontFamily: "Poppins, sans-serif" }}
             >
-              Your Wellness Journey,{" "}
+              <span
+                data-aos="fade-up"
+                data-aos-delay="300"
+                data-aos-duration="1000"
+                data-aos-easing="ease-out-cubic"
+              >
+                Your Wellness Journey,{" "}
+              </span>
               <span
                 className="text-brand-gradient bg-clip-text text-transparent"
                 style={{ fontFamily: "Poppins, sans-serif" }}
+                data-aos="fade-up"
+                data-aos-delay="500"
+                data-aos-duration="1000"
+                data-aos-easing="ease-out-cubic"
               >
                 Always With You
               </span>
@@ -41,6 +58,10 @@ export default function MobileApp() {
             <p
               className="text-lg leading-relaxed text-slate-600"
               style={{ fontFamily: "Inter, sans-serif" }}
+              data-aos="slide-up"
+              data-aos-delay="700"
+              data-aos-duration="1000"
+              data-aos-easing="ease-out-cubic"
             >
               Stay on track with SaKyi&apos;s mobile app — receive your weekly doctor updates,
               complete daily tasks, and monitor your health progress anytime, anywhere.
@@ -77,7 +98,7 @@ export default function MobileApp() {
         </div>
 
         {/* Right Column - App Mockups */}
-        <div className="relative" data-aos="fade-left">
+        <div className="relative" data-aos="zoom-in" data-aos-duration="1200" data-aos-delay="400" data-aos-easing="ease-out-cubic">
           <div className="flex justify-center items-center space-x-2 sm:space-x-4 lg:space-x-6">
             {/* First Phone Mockup - Dashboard Screen */}
             <div className="group relative z-10">
