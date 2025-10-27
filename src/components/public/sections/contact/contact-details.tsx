@@ -1,4 +1,4 @@
-import { Clock,Mail, MapPin, Phone } from "lucide-react";
+import { Clock, Mail, MapPin, Phone, Users } from "lucide-react";
 
 export default function ContactDetails() {
   const contactInfo = [
@@ -40,12 +40,23 @@ export default function ContactDetails() {
         <div className="absolute bottom-1/4 -left-32 h-64 w-64 rounded-full bg-gradient-to-br from-[#4bc4db]/5 to-[#35bec5]/5 blur-3xl"></div>
       </div>
 
-      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
         {/* Section Header */}
-        <div className="text-center" data-aos="fade-up" data-aos-duration="1000">
+        <div className="mb-16 text-center">
+          <div className="mb-6 inline-flex items-center space-x-2 rounded-full bg-gradient-to-r from-[#35bec5]/10 to-[#0c96c4]/10 px-4 py-2">
+            <Users className="h-4 w-4 text-[#35bec5]" />
+            <span
+              className="text-sm font-medium text-[#35bec5]"
+              style={{ fontFamily: "Inter, sans-serif" }}
+            >
+              Contact Details
+            </span>
+          </div>
+
           <h2
-            className="text-3xl leading-tight font-bold sm:text-4xl lg:text-5xl"
+            className="mb-6 text-3xl font-bold text-slate-900 sm:text-4xl lg:text-5xl"
             style={{ fontFamily: "Poppins, sans-serif" }}
+            data-aos="fade-up"
           >
             Our{" "}
             <span
@@ -57,8 +68,10 @@ export default function ContactDetails() {
           </h2>
 
           <p
-            className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-slate-600"
+            className="mx-auto max-w-3xl text-lg leading-relaxed text-slate-600"
             style={{ fontFamily: "Inter, sans-serif" }}
+            data-aos="fade-up"
+            data-aos-delay="200"
           >
             Connect with our wellness experts through multiple channels. Whether you prefer 
             email, phone, or visiting our center, we&apos;re here to support your health journey.

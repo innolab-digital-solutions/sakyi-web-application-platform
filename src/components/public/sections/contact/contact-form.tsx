@@ -1,6 +1,6 @@
 "use client";
 
-import { Send } from "lucide-react";
+import { MessageCircle,Send } from "lucide-react";
 import { toast } from "sonner";
 
 import { InputField } from "@/components/shared/forms/input-field";
@@ -39,12 +39,23 @@ form.post("/api/contact", {
         <div className="absolute bottom-1/4 -left-32 h-64 w-64 rounded-full bg-gradient-to-br from-[#4bc4db]/5 to-[#35bec5]/5 blur-3xl"></div>
       </div>
 
-      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
         {/* Section Header */}
-        <div className="text-center">
+        <div className="mb-16 text-center">
+          <div className="mb-6 inline-flex items-center space-x-2 rounded-full bg-gradient-to-r from-[#35bec5]/10 to-[#0c96c4]/10 px-4 py-2">
+            <MessageCircle className="h-4 w-4 text-[#35bec5]" />
+            <span
+              className="text-sm font-medium text-[#35bec5]"
+              style={{ fontFamily: "Inter, sans-serif" }}
+            >
+              Contact Form
+            </span>
+          </div>
+
           <h2
-            className="text-3xl leading-tight font-bold sm:text-4xl lg:text-5xl"
+            className="mb-6 text-3xl font-bold text-slate-900 sm:text-4xl lg:text-5xl"
             style={{ fontFamily: "Poppins, sans-serif" }}
+            data-aos="fade-up"
           >
             Send Us a{" "}
             <span
@@ -56,8 +67,10 @@ form.post("/api/contact", {
           </h2>
 
           <p
-            className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-slate-600"
+            className="mx-auto max-w-3xl text-lg leading-relaxed text-slate-600"
             style={{ fontFamily: "Inter, sans-serif" }}
+            data-aos="fade-up"
+            data-aos-delay="200"
           >
             Have a question or want to learn more about our wellness programs? 
             Fill out the form below and we&apos;ll get back to you as soon as possible.
