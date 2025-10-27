@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, Brain, ChevronRight, Heart, Shield } from "lucide-react";
+import { ArrowRight, Brain, ChevronRight, Heart, Shield, Sparkles } from "lucide-react";
 import Image from "next/image";
 
 import { smoothScrollTo } from "@/utils/smooth-scroll";
@@ -23,7 +23,7 @@ export default function Hero() {
         <div className="space-y-8" data-aos="fade-up" data-aos-duration="1000">
           {/* Badge */}
           <div className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#35bec5]/10 to-[#0c96c4]/10 px-4 py-2 text-sm font-medium text-[#35bec5]">
-            <Heart className="h-4 w-4" />
+            <Sparkles className="h-4 w-4" />
             <span style={{ fontFamily: "Inter, sans-serif" }}>Transform Your Life</span>
           </div>
 

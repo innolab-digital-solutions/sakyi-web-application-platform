@@ -1,4 +1,4 @@
-import { ArrowRight, Heart } from "lucide-react";
+import { ArrowRight, Heart, Settings } from "lucide-react";
 import Link from "next/link";
 
 export default function HowItWorks() {
@@ -14,7 +14,7 @@ export default function HowItWorks() {
       {/* Section Header */}
       <div className="space-y-6 text-center">
         <div className="inline-flex items-center space-x-2 rounded-full bg-gradient-to-r from-[#35bec5]/10 to-[#0c96c4]/10 px-4 py-2">
-          <Heart className="h-4 w-4 text-[#35bec5]" />
+          <Settings className="h-4 w-4 text-[#35bec5]" />
           <span
             className="text-sm font-medium text-[#35bec5]"
             style={{ fontFamily: "Inter, sans-serif" }}

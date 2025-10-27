@@ -1,4 +1,4 @@
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight, BookOpen } from "lucide-react";
 import Link from "next/link";
 
 import BlogCard from "@/components/public/shared/blog-card";
@@ -38,7 +38,7 @@ export default function ArticleInsights() {
             {/* Section Header */}
             <div className="space-y-6 text-center">
               <div className="inline-flex items-center space-x-2 rounded-full bg-gradient-to-r from-[#35bec5]/10 to-[#0c96c4]/10 px-4 py-2">
-                <Sparkles className="h-4 w-4 text-[#35bec5]" />
+                <BookOpen className="h-4 w-4 text-[#35bec5]" />
                 <span
                   className="text-sm font-medium text-[#35bec5]"
                   style={{ fontFamily: "Inter, sans-serif" }}

@@ -1,27 +1,5 @@
-import { Heart, Lightbulb, Target, Users } from "lucide-react";
-
-const values = [
-  {
-    icon: <Target className="h-8 w-8 text-[#35bec5]" />,
-    title: "Our Mission",
-    description: "To empower individuals with personalized, evidence-based wellness programs that transform their health and enhance their quality of life through holistic care.",
-  },
-  {
-    icon: <Heart className="h-8 w-8 text-[#35bec5]" />,
-    title: "Our Vision",
-    description: "A world where everyone has access to comprehensive wellness care that addresses the whole person—mind, body, and spirit—for lasting health and happiness.",
-  },
-  {
-    icon: <Lightbulb className="h-8 w-8 text-[#35bec5]" />,
-    title: "Our Philosophy",
-    description: "We believe that true wellness comes from understanding the interconnectedness of physical, mental, and emotional health, and treating each person as a unique individual.",
-  },
-  {
-    icon: <Users className="h-8 w-8 text-[#35bec5]" />,
-    title: "Our Commitment",
-    description: "To provide compassionate, expert care that respects your journey, celebrates your progress, and supports you every step of the way toward optimal wellness.",
-  },
-];
+import { Compass,Heart, Lightbulb, Target } from "lucide-react";
+import Image from "next/image";
 
 export default function AboutMission() {
   return (
@@ -32,82 +10,178 @@ export default function AboutMission() {
         <div className="absolute bottom-1/4 -left-32 h-64 w-64 rounded-full bg-gradient-to-br from-[#4bc4db]/5 to-[#35bec5]/5 blur-3xl"></div>
       </div>
 
-      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        {/* Section Header */}
-        <div className="mb-16 text-center" data-aos="fade-up">
-          <h2
-            className="text-3xl leading-tight font-bold text-slate-900 sm:text-4xl lg:text-5xl"
-            style={{ fontFamily: "Poppins, sans-serif" }}
+      <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
+        <div className="grid items-center gap-16 lg:grid-cols-2">
+          {/* Left Column - Visual */}
+          <div
+            className="relative"
+            data-aos="fade-right"
+            data-aos-duration="1000"
+            data-aos-delay="200"
           >
-            Our{" "}
-            <span
-              className="bg-gradient-to-r from-[#35bec5] via-[#4bc4db] to-[#0c96c4] bg-clip-text text-transparent"
-              style={{ fontFamily: "Poppins, sans-serif" }}
-            >
-              Mission & Philosophy
-            </span>
-          </h2>
-          <p
-            className="mx-auto mt-4 max-w-3xl text-lg leading-relaxed text-slate-600"
-            style={{ fontFamily: "Inter, sans-serif" }}
-          >
-            At SaKyi, we&apos;re driven by a deep commitment to holistic wellness and personalized care. 
-            Our mission, vision, and philosophy guide everything we do.
-          </p>
-        </div>
+            <div className="relative">
+              <div className="aspect-[3/4] w-full">
+                <div className="group relative h-full overflow-hidden rounded-3xl shadow-2xl">
+                  <Image
+                    src="/images/mission.jpg"
+                    alt="SaKyi Mission & Philosophy - Holistic Wellness Approach"
+                    width={600}
+                    height={600}
+                    className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    quality={95}
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 40vw"
+                  />
+                  {/* Subtle dark overlay that disappears on hover */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-slate-900/20 to-slate-800/10 transition-opacity duration-300 group-hover:opacity-0"></div>
+                  {/* Brand gradient overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-[#35bec5]/5 to-[#0c96c4]/5"></div>
+                </div>
+              </div>
 
-        {/* Values Grid */}
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
-          {values.map((value, index) => (
-            <div
-              key={index}
-              className="rounded-2xl border border-slate-200 bg-slate-50 p-8 text-center shadow-sm transition-all duration-300 hover:shadow-md"
-              data-aos="fade-up"
-              data-aos-delay={`${index * 100}`}
-            >
-              <div className="mb-6 flex justify-center">{value.icon}</div>
-              <h3
-                className="mb-4 text-xl font-bold text-slate-900"
-                style={{ fontFamily: "Poppins, sans-serif" }}
+              {/* Floating Cards with Movement Animation */}
+              <div
+                className="absolute -top-6 -left-2 sm:-left-4 lg:-top-4 lg:-left-6 animate-pulse rounded-2xl border border-slate-200/50 bg-white/90 p-4 shadow-xl backdrop-blur-sm hover:animate-bounce"
+                data-aos="fade-up"
+                data-aos-delay="400"
+                style={{
+                  animation: "float 4s ease-in-out infinite",
+                }}
               >
-                {value.title}
-              </h3>
-              <p className="text-slate-600" style={{ fontFamily: "Inter, sans-serif" }}>
-                {value.description}
+                <div className="flex items-center space-x-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-r from-[#35bec5] to-[#4bc4db]">
+                    <Target className="h-5 w-5 text-white" />
+                  </div>
+                  <div>
+                    <div
+                      className="text-sm font-semibold text-slate-900"
+                      style={{ fontFamily: "Inter, sans-serif" }}
+                    >
+                      Our Mission
+                    </div>
+                    <div
+                      className="text-xs text-slate-600"
+                      style={{ fontFamily: "Inter, sans-serif" }}
+                    >
+                      Empowering Lives
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div
+                className="absolute -right-2 sm:-right-4 lg:-right-6 -bottom-6 animate-pulse rounded-2xl border border-slate-200/50 bg-white/90 p-4 shadow-xl backdrop-blur-sm hover:animate-bounce"
+                data-aos="fade-up"
+                data-aos-delay="600"
+                style={{
+                  animation: "float 6s ease-in-out infinite",
+                }}
+              >
+                <div className="flex items-center space-x-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-r from-[#4bc4db] to-[#0c96c4]">
+                    <Heart className="h-5 w-5 text-white" />
+                  </div>
+                  <div>
+                    <div
+                      className="text-sm font-semibold text-slate-900"
+                      style={{ fontFamily: "Inter, sans-serif" }}
+                    >
+                      Holistic Care
+                    </div>
+                    <div
+                      className="text-xs text-slate-600"
+                      style={{ fontFamily: "Inter, sans-serif" }}
+                    >
+                      Mind, Body, Spirit
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Column - Content */}
+          <div className="space-y-8" data-aos="fade-left">
+            {/* Section Header */}
+            <div className="space-y-6">
+              <div className="inline-flex items-center space-x-2 rounded-full bg-gradient-to-r from-[#35bec5]/10 to-[#0c96c4]/10 px-4 py-2">
+                <Compass className="h-4 w-4 text-[#35bec5]" />
+                <span
+                  className="text-sm font-medium text-[#35bec5]"
+                  style={{ fontFamily: "Inter, sans-serif" }}
+                >
+                  Mission & Philosophy
+                </span>
+              </div>
+
+              <h2 className="text-3xl leading-tight font-bold sm:text-4xl lg:text-5xl">
+                <span
+                  className="block text-slate-900"
+                  style={{ fontFamily: "Poppins, sans-serif" }}
+                >
+                  Our{" "}
+                  <span
+                    className="text-brand-gradient bg-clip-text text-transparent"
+                    style={{ fontFamily: "Poppins, sans-serif" }}
+                  >
+                    Core Values
+                  </span>
+                </span>
+              </h2>
+
+              <p
+                className="max-w-2xl text-lg leading-relaxed text-slate-600"
+                style={{ fontFamily: "Inter, sans-serif" }}
+              >
+                At SaKyi, we&apos;re driven by a deep commitment to holistic wellness and personalized care. 
+                Our mission, vision, and philosophy guide everything we do.
               </p>
             </div>
-          ))}
-        </div>
 
-        {/* Story Section */}
-        <div className="mt-20 rounded-3xl border border-slate-200 bg-gradient-to-br from-slate-50 to-blue-50/30 p-12">
-          <div className="mx-auto max-w-4xl text-center">
-            <h3
-              className="mb-6 text-2xl font-bold text-slate-900 sm:text-3xl"
-              style={{ fontFamily: "Poppins, sans-serif" }}
-              data-aos="fade-up"
-            >
-              Our Story
-            </h3>
-            <p
-              className="mb-8 text-lg leading-relaxed text-slate-600"
-              style={{ fontFamily: "Inter, sans-serif" }}
-              data-aos="fade-up"
-              data-aos-delay="200"
-            >
-              Founded by a team of passionate healthcare professionals, SaKyi was born from a simple yet powerful belief: 
-              that everyone deserves access to comprehensive, personalized wellness care. We&apos;ve seen too many people struggle 
-              with fragmented healthcare that treats symptoms rather than addressing root causes.
-            </p>
-            <p
-              className="text-lg leading-relaxed text-slate-600"
-              style={{ fontFamily: "Inter, sans-serif" }}
-              data-aos="fade-up"
-              data-aos-delay="400"
-            >
-              Today, we&apos;re proud to be at the forefront of holistic wellness, combining cutting-edge medical science 
-              with time-tested healing practices to help thousands of people achieve lasting health and vitality.
-            </p>
+            {/* Mission Statement */}
+            <div className="space-y-4">
+              {[
+                {
+                  icon: Target,
+                  title: "Our Mission",
+                  description: "To empower individuals with personalized, evidence-based wellness programs that transform their health and enhance their quality of life through holistic care.",
+                },
+                {
+                  icon: Heart,
+                  title: "Our Vision", 
+                  description: "A world where everyone has access to comprehensive wellness care that addresses the whole person—mind, body, and spirit—for lasting health and happiness.",
+                },
+                {
+                  icon: Lightbulb,
+                  title: "Our Philosophy",
+                  description: "We believe that true wellness comes from understanding the interconnectedness of physical, mental, and emotional health, and treating each person as a unique individual.",
+                },
+              ].map((item, index) => (
+                <div
+                  key={index}
+                  className="group flex items-start space-x-3 rounded-lg p-3 transition-all duration-300 "
+                  data-aos="fade-up"
+                  data-aos-delay={`${index * 200 + 400}`}
+                >
+                  <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-gradient-to-r from-[#35bec5] to-[#0c96c4] shadow-lg">
+                    <item.icon className="h-5 w-5 text-white" />
+                  </div>
+                  <div className="flex-1">
+                    <h3
+                      className="mb-1 text-base font-semibold text-slate-900"
+                      style={{ fontFamily: "Poppins, sans-serif" }}
+                    >
+                      {item.title}
+                    </h3>
+                    <p
+                      className="text-sm text-slate-600"
+                      style={{ fontFamily: "Inter, sans-serif" }}
+                    >
+                      {item.description}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>

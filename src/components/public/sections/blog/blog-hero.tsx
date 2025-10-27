@@ -1,6 +1,6 @@
 "use client";
 
-import { Sparkles } from "lucide-react";
+import { PenTool,Sparkles } from "lucide-react";
 
 import { smoothScrollTo } from "@/utils/smooth-scroll";
 
@@ -17,7 +17,7 @@ export default function BlogHero() {
         <div className="text-center">
           {/* Badge */}
           <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#35bec5]/10 to-[#0c96c4]/10 px-4 py-2 text-sm font-medium text-[#35bec5]">
-            <Sparkles className="h-4 w-4" />
+            <PenTool className="h-4 w-4" />
             <span style={{ fontFamily: "Inter, sans-serif" }}>Editorial</span>
           </div>
 
