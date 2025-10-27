@@ -1,24 +1,17 @@
+import AboutApproach from "@/components/public/sections/about/about-approach";
 import AboutHero from "@/components/public/sections/about/about-hero";
-import JoinCommunity from "@/components/public/sections/about/join-community";
-import MeetTheTeam from "@/components/public/sections/about/meet-the-team";
-import MissionPhilosophy from "@/components/public/sections/about/mission-philosophy";
-import OurApproach from "@/components/public/sections/about/our-approach";
-import OurImpact from "@/components/public/sections/about/our-impact";
+import AboutImpact from "@/components/public/sections/about/about-impact";
+import AboutMission from "@/components/public/sections/about/about-mission";
+import AboutTeam from "@/components/public/sections/about/about-team";
 
 export default function AboutPage() {
   return (
     <>
       <AboutHero />
-
-      <MissionPhilosophy />
-
-      <OurApproach />
-
-      <MeetTheTeam />
-
-      <OurImpact />
-
-      <JoinCommunity />
+      <AboutMission />
+      <AboutApproach />
+      <AboutTeam />
+      <AboutImpact />
     </>
   );
 }
