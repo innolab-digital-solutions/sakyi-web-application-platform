@@ -185,7 +185,8 @@ export const useForm = <TSchema extends ZodType>(
             ? ({ ...previous, [keyOrData]: value } as T)
             : ({ ...previous, ...(keyOrData as Partial<T>) } as T);
 
-        setIsDirty(JSON.stringify(next) !== JSON.stringify(defaults));
+        const isDirty = JSON.stringify(next) !== JSON.stringify(defaults);
+        setIsDirty(isDirty);
         return next;
       });
     },
@@ -245,6 +246,20 @@ export const useForm = <TSchema extends ZodType>(
     },
     [data],
   );
+
+  /**
+   * Set both data and defaults atomically to prevent dirty state issues
+   *
+   * This is useful when initializing forms with existing data to ensure
+   * the dirty state is calculated correctly.
+   *
+   * @param newData - The data to set for both current values and defaults
+   */
+  const setDataAndDefaults = useCallback((newData: Partial<T>) => {
+    setDataState(newData as T);
+    setDefaultsState(newData as T);
+    setIsDirty(false);
+  }, []);
 
   // ============================================================================
   // Error Handling
@@ -488,6 +503,7 @@ export const useForm = <TSchema extends ZodType>(
     setData,
     reset,
     setDefaults,
+    setDataAndDefaults,
 
     // Error handling methods
     setError,

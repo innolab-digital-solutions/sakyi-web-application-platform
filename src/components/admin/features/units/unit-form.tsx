@@ -5,11 +5,11 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect } from "react";
 import { toast } from "sonner";
 
-import { FormDialog } from "@/components/shared/forms/form-dialog";
-import { InputField } from "@/components/shared/forms/input-field";
+import FormDialog from "@/components/shared/forms/form-dialog";
+import InputField from "@/components/shared/forms/input-field";
 import { ENDPOINTS } from "@/config/endpoints";
 import { useForm } from "@/hooks/use-form";
-import { CreateUnitSchema } from "@/lib/validations/admin/unit-schema";
+import { CreateUnitSchema, UpdateUnitSchema } from "@/lib/validations/admin/unit-schema";
 import { Unit, UnitApiResponse, UnitFormProperties } from "@/types/admin/unit";
 import { buildDefaultListUrl } from "@/utils/shared/parameters";
 
@@ -43,7 +43,7 @@ export default function UnitForm({
       abbreviation: defaultValues?.abbreviation ?? "",
     },
     {
-      validate: CreateUnitSchema,
+      validate: isEdit ? UpdateUnitSchema : CreateUnitSchema,
       tanstack: {
         invalidateQueries: ["admin-units"],
         mutationOptions: {
@@ -110,15 +110,19 @@ export default function UnitForm({
 
   useEffect(() => {
     if (isEdit && defaultValues) {
-      form.setData({
+      const newData = {
         name: defaultValues.name ?? "",
         abbreviation: defaultValues.abbreviation ?? "",
-      });
+      };
+
+      form.setDataAndDefaults(newData);
     } else {
-      form.setData({
+      const newData = {
         name: "",
         abbreviation: "",
-      });
+      };
+
+      form.setDataAndDefaults(newData);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [defaultValues?.id, defaultValues?.name, defaultValues?.abbreviation, isEdit]);
@@ -151,6 +155,7 @@ export default function UnitForm({
       isEdit={isEdit}
       submitLabel={isEdit ? "Save Changes" : "Create Unit"}
       submittingLabel={isEdit ? "Saving Changes..." : "Creating Unit..."}
+      disabled={isEdit && !form.isDirty}
     >
       {/* Name Field */}
       <InputField

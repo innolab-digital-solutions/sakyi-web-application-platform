@@ -139,8 +139,23 @@ export const client = async <T>(
     if (typeof body === "string" || body instanceof FormData || body instanceof URLSearchParams) {
       requestBody = body;
     } else {
-      requestBody = JSON.stringify(body);
-      requestHeaders["Content-Type"] = "application/json";
+      // Check if object contains File objects and convert to FormData
+      const hasFile = Object.values(body).some((value) => value instanceof File);
+
+      if (hasFile) {
+        const formDataObject = new FormData();
+        for (const [key, value] of Object.entries(body)) {
+          if (value instanceof File) {
+            formDataObject.append(key, value);
+          } else if (value !== null && value !== undefined) {
+            formDataObject.append(key, String(value));
+          }
+        }
+        requestBody = formDataObject;
+      } else {
+        requestBody = JSON.stringify(body);
+        requestHeaders["Content-Type"] = "application/json";
+      }
     }
   }
 

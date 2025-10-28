@@ -6,13 +6,16 @@ import React, { useEffect } from "react";
 import { toast } from "sonner";
 
 import { ComboBoxField } from "@/components/shared/forms/combo-box-field";
-import { FormDialog } from "@/components/shared/forms/form-dialog";
-import { InputField } from "@/components/shared/forms/input-field";
-import { TextareaField } from "@/components/shared/forms/textarea-field";
+import FormDialog from "@/components/shared/forms/form-dialog";
+import InputField from "@/components/shared/forms/input-field";
+import TextareaField from "@/components/shared/forms/textarea-field";
 import { ENDPOINTS } from "@/config/endpoints";
 import { useForm } from "@/hooks/use-form";
 import { useRequest } from "@/hooks/use-request";
-import { CreateFoodCategorySchema } from "@/lib/validations/admin/food-category-schema";
+import {
+  CreateFoodCategorySchema,
+  UpdateFoodCategorySchema,
+} from "@/lib/validations/admin/food-category-schema";
 import {
   FoodCategory,
   FoodCategoryApiResponse,
@@ -60,7 +63,7 @@ export default function FoodCategoryForm({
       description: "",
     },
     {
-      validate: CreateFoodCategorySchema,
+      validate: isEdit ? UpdateFoodCategorySchema : CreateFoodCategorySchema,
       tanstack: {
         invalidateQueries: ["admin-food-categories", "meta-food-categories"],
         mutationOptions: {
@@ -127,17 +130,21 @@ export default function FoodCategoryForm({
 
   useEffect(() => {
     if (isEdit && defaultValues) {
-      form.setData({
+      const newData = {
         parent_id: defaultValues.parent?.id ?? "",
         name: defaultValues.name ?? "",
         description: defaultValues.description ?? "",
-      });
+      };
+
+      form.setDataAndDefaults(newData);
     } else {
-      form.setData({
+      const newData = {
         parent_id: "",
         name: "",
         description: "",
-      });
+      };
+
+      form.setDataAndDefaults(newData);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
@@ -177,6 +184,7 @@ export default function FoodCategoryForm({
       isEdit={isEdit}
       submitLabel={isEdit ? "Save Changes" : "Create Food Category"}
       submittingLabel={isEdit ? "Saving Changes..." : "Creating Food Category..."}
+      disabled={isEdit && !form.isDirty}
     >
       {/* Parent Category Field */}
       <ComboBoxField

@@ -68,16 +68,6 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProperties>(
           </Label>
         )}
 
-        {/* Description */}
-        {description && (
-          <p
-            className={cn("text-muted-foreground text-sm", descriptionClassName)}
-            id={`${id}-description`}
-          >
-            {description}
-          </p>
-        )}
-
         {/* Input Container */}
         <div className="relative">
           <Input
@@ -117,6 +107,16 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProperties>(
             </Button>
           )}
         </div>
+
+        {/* Description */}
+        {description && (
+          <p
+            className={cn("text-muted-foreground text-sm", descriptionClassName)}
+            id={`${id}-description`}
+          >
+            {description}
+          </p>
+        )}
 
         {/* Error Message */}
         {error && (

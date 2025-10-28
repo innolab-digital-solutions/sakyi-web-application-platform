@@ -6,6 +6,7 @@ import Link from "next/link";
 
 import RoleDeletionDialog from "@/components/admin/features/roles/role-deletion-dialog";
 import RoleForm from "@/components/admin/features/roles/role-form";
+import DisabledTooltip from "@/components/shared/disabled-tooltip";
 import SortableHeader from "@/components/shared/table/sortable-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -165,6 +166,7 @@ export const rolesTableColumns: ColumnDef<Role>[] = [
                 variant="outline"
                 className="hover:!bg-accent/10 hover:!text-accent group flex w-full !cursor-pointer items-center justify-start gap-1.5 !border-none text-sm font-medium text-gray-700 shadow-none hover:!ring-0"
                 aria-label={hasPermissions ? "Manage permissions" : "Assign permissions"}
+                disabled={!role.actions?.editable}
               >
                 <Link href={PATHS.ADMIN.ROLES.ASSIGN_PERMISSIONS(role.id)}>
                   <FileKey className="group-hover:text-accent h-4 w-4 transition-colors duration-150" />
@@ -176,16 +178,25 @@ export const rolesTableColumns: ColumnDef<Role>[] = [
               <RoleForm
                 mode="edit"
                 defaultValues={role}
-                trigger={
-                  <Button
-                    variant="outline"
-                    className="hover:!bg-accent/10 group hover:!text-accent hover:!ring-none flex w-full !cursor-pointer items-center justify-start gap-1.5 !border-none text-sm font-medium text-gray-700 shadow-none"
-                    aria-label="Edit role"
-                  >
-                    <SquarePen className="group-hover:text-accent h-4 w-4 transition-colors duration-150" />
-                    <span>Edit Role</span>
-                  </Button>
-                }
+                trigger={(() => {
+                  const isEditable = Boolean(role.actions?.editable);
+                  const disabledReason = isEditable
+                    ? undefined
+                    : "You don't have permission to edit this role.";
+                  return (
+                    <DisabledTooltip reason={disabledReason}>
+                      <Button
+                        variant="outline"
+                        className="hover:!bg-accent/10 group hover:!text-accent hover:!ring-none flex w-full !cursor-pointer items-center justify-start gap-1.5 !border-none text-sm font-medium text-gray-700 shadow-none"
+                        aria-label="Edit role"
+                        disabled={!isEditable}
+                      >
+                        <SquarePen className="group-hover:text-accent h-4 w-4 transition-colors duration-150" />
+                        <span>Edit Role</span>
+                      </Button>
+                    </DisabledTooltip>
+                  );
+                })()}
               />
             </DropdownMenuItem>
             <DropdownMenuSeparator />

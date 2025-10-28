@@ -1,14 +1,14 @@
 import { z } from "zod";
 
 /**
- * Validation schema for role creation/update
+ * Base validation schema for role fields
  *
  * Validates role name with trimming and whitespace-only prevention.
  * Description is optional and automatically trimmed.
  */
-export const RoleSchema = z.object({
+const BaseRoleSchema = z.object({
   name: z
-    .string()
+    .string("Role name is required")
     .min(1, "Role name is required")
     .max(255, "Role name must not exceed 255 characters")
     .trim()
@@ -20,11 +20,30 @@ export const RoleSchema = z.object({
 });
 
 /**
+ * Validation schema for creating new roles
+ *
+ * Name must be unique across all roles.
+ */
+export const CreateRoleSchema = BaseRoleSchema;
+
+/**
+ * Validation schema for updating existing roles
+ *
+ * Name must be unique but can be the same as the current role.
+ */
+export const UpdateRoleSchema = BaseRoleSchema;
+
+/**
  * Validation schema for assigning permissions to a role
  */
 export const AssignPermissionsSchema = z.object({
   permissions: z.array(z.string()).optional().default([]),
 });
 
+// Default schema
+export const RoleSchema = CreateRoleSchema;
+
 export type RoleFormData = z.infer<typeof RoleSchema>;
+export type CreateRoleFormData = z.infer<typeof CreateRoleSchema>;
+export type UpdateRoleFormData = z.infer<typeof UpdateRoleSchema>;
 export type AssignPermissionsFormData = z.infer<typeof AssignPermissionsSchema>;

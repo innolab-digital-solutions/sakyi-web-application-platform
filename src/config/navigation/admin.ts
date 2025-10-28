@@ -79,7 +79,7 @@ export const adminNavigation: NavGroup[] = [
       {
         name: "Roles & Permissions",
         icon: ShieldCheck,
-        path: "/admin/roles",
+        path: PATHS.ADMIN.ROLES.LIST,
         params: {},
         active: false,
         permission: "roles.view",
@@ -94,10 +94,10 @@ export const adminNavigation: NavGroup[] = [
       {
         name: "Program Management",
         icon: ClipboardList,
-        path: "/admin/programs",
+        path: PATHS.ADMIN.PROGRAMS.LIST,
         params: {},
         active: false,
-        permission: "",
+        permission: "programs.view",
         subitems: [],
       },
       {

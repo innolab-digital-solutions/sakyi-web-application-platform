@@ -5,7 +5,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect } from "react";
 import { toast } from "sonner";
 
-import { FormDialog } from "@/components/shared/forms/form-dialog";
+import FormDialog from "@/components/shared/forms/form-dialog";
 import { InputField } from "@/components/shared/forms/input-field";
 import { ENDPOINTS } from "@/config/endpoints";
 import { useForm } from "@/hooks/use-form";

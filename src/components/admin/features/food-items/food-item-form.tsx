@@ -6,7 +6,7 @@ import React, { useEffect } from "react";
 import { toast } from "sonner";
 
 import { ComboBoxField } from "@/components/shared/forms/combo-box-field";
-import { FormDialog } from "@/components/shared/forms/form-dialog";
+import FormDialog from "@/components/shared/forms/form-dialog";
 import { InputField } from "@/components/shared/forms/input-field";
 import { TextareaField } from "@/components/shared/forms/textarea-field";
 import { ENDPOINTS } from "@/config/endpoints";

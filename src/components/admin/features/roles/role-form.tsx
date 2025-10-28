@@ -5,12 +5,12 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect } from "react";
 import { toast } from "sonner";
 
-import { FormDialog } from "@/components/shared/forms/form-dialog";
-import { InputField } from "@/components/shared/forms/input-field";
-import { TextareaField } from "@/components/shared/forms/textarea-field";
+import FormDialog from "@/components/shared/forms/form-dialog";
+import InputField from "@/components/shared/forms/input-field";
+import TextareaField from "@/components/shared/forms/textarea-field";
 import { ENDPOINTS } from "@/config/endpoints";
 import { useForm } from "@/hooks/use-form";
-import { RoleSchema } from "@/lib/validations/admin/role-schema";
+import { CreateRoleSchema, UpdateRoleSchema } from "@/lib/validations/admin/role-schema";
 import { Role, RoleApiResponse, RoleFormProperties } from "@/types/admin/role";
 import { buildDefaultListUrl } from "@/utils/shared/parameters";
 
@@ -51,7 +51,7 @@ export default function RoleForm({
       description: "",
     },
     {
-      validate: RoleSchema,
+      validate: isEdit ? UpdateRoleSchema : CreateRoleSchema,
       tanstack: {
         invalidateQueries: ["admin-roles"],
         mutationOptions: {
@@ -116,15 +116,19 @@ export default function RoleForm({
 
   useEffect(() => {
     if (isEdit && defaultValues) {
-      form.setData({
+      const newData = {
         name: defaultValues.name ?? "",
         description: defaultValues.description ?? "",
-      });
+      };
+
+      form.setDataAndDefaults(newData);
     } else {
-      form.setData({
+      const newData = {
         name: "",
         description: "",
-      });
+      };
+
+      form.setDataAndDefaults(newData);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [defaultValues?.id, defaultValues?.name, defaultValues?.description, isEdit]);
@@ -158,6 +162,7 @@ export default function RoleForm({
       isEdit={isEdit}
       submitLabel={isEdit ? "Save Changes" : "Create Role"}
       submittingLabel={isEdit ? "Saving Changes..." : "Creating Role..."}
+      disabled={isEdit && !form.isDirty}
     >
       {/* Name Field */}
       <InputField
