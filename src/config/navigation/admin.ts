@@ -1,6 +1,7 @@
 import {
   Activity,
   BarChart3,
+  BookOpen,
   BookOpenCheck,
   CalendarClock,
   ClipboardCheck,
@@ -227,10 +228,10 @@ export const adminNavigation: NavGroup[] = [
           },
           {
             name: "Food Items",
-            path: "/admin/nutrition/items",
+            path: PATHS.ADMIN.FOOD_ITEMS.LIST,
             params: {},
             active: false,
-            permission: "",
+            permission: "food-items.view",
           },
         ],
       },
@@ -280,6 +281,29 @@ export const adminNavigation: NavGroup[] = [
         active: false,
         permission: "",
         subitems: [],
+      },
+    ],
+  },
+
+  {
+    title: "Content Management",
+    items: [
+      {
+        name: "Blog",
+        icon: BookOpen,
+        path: "/admin/blogs",
+        params: {},
+        active: false,
+        permission: "",
+        subitems: [
+          {
+            name: "Blog Categories",
+            path: PATHS.ADMIN.BLOG_CATEGORIES.LIST,
+            params: {},
+            active: false,
+            permission: "blog-categories.view",
+          },
+        ],
       },
     ],
   },

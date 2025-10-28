@@ -61,4 +61,21 @@ export const ADMIN_ENDPOINTS = {
     UPDATE: (id: string | number) => `/admin/food-categories/${id}`,
     DESTROY: (id: string | number) => `/admin/food-categories/${id}`,
   },
+
+  FOOD_ITEMS: {
+    INDEX: "/admin/food-items",
+    SHOW: (id: string | number) => `/admin/food-items/${id}`,
+    STORE: "/admin/food-items",
+    UPDATE: (id: string | number) => `/admin/food-items/${id}`,
+    DESTROY: (id: string | number) => `/admin/food-items/${id}`,
+  },
+
+  /** Blog category endpoints */
+  BLOG_CATEGORIES: {
+    INDEX: "/admin/blog-categories",
+    SHOW: (id: string | number) => `/admin/blog-categories/${id}`,
+    STORE: "/admin/blog-categories",
+    UPDATE: (id: string | number) => `/admin/blog-categories/${id}`,
+    DESTROY: (id: string | number) => `/admin/blog-categories/${id}`,
+  },
 } as const;
