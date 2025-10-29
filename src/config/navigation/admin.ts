@@ -152,10 +152,10 @@ export const adminNavigation: NavGroup[] = [
         subitems: [
           {
             name: "Forms",
-            path: "/admin/onboarding/forms",
+            path: PATHS.ADMIN.ONBOARDING_FORMS.LIST,
             params: {},
             active: false,
-            permission: "onboarding.forms.view",
+            permission: "onboarding-forms.view",
           },
           {
             name: "Questions",

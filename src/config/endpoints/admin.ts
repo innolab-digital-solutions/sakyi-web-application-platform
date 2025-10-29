@@ -78,4 +78,12 @@ export const ADMIN_ENDPOINTS = {
     UPDATE: (id: string | number) => `/admin/blog-categories/${id}`,
     DESTROY: (id: string | number) => `/admin/blog-categories/${id}`,
   },
+
+  ONBOARDING_FORMS: {
+    INDEX: "/admin/onboarding-forms",
+    SHOW: (id: string | number) => `/admin/onboarding-forms/${id}`,
+    STORE: "/admin/onboarding-forms",
+    UPDATE: (id: string | number) => `/admin/onboarding-forms/${id}`,
+    DESTROY: (id: string | number) => `/admin/onboarding-forms/${id}`,
+  },
 } as const;

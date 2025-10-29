@@ -85,4 +85,11 @@ export const adminBreadcrumbs: Breadcrumbs = {
     { label: "Blog" },
     { label: "Blog Categories", href: PATHS.ADMIN.BLOG_CATEGORIES.LIST },
   ],
+
+  "/admin/onboarding-forms": [
+    { label: "Admin Control Panel" },
+    { label: "Health Data & Plans" },
+    { label: "Onboarding" },
+    { label: "Forms", href: PATHS.ADMIN.ONBOARDING_FORMS.LIST },
+  ],
 };

@@ -50,4 +50,8 @@ export const ADMIN_PATHS = {
   BLOG_CATEGORIES: {
     LIST: "/admin/blog-categories",
   },
+
+  ONBOARDING_FORMS: {
+    LIST: "/admin/onboarding-forms",
+  },
 } as const;

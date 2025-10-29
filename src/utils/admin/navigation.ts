@@ -19,6 +19,7 @@ export const isAdminListPage = (path: string): boolean => {
     /\/admin\/staff$/,
     /\/admin\/programs$/,
     /\/admin\/enrollments$/,
+    /\/admin\/onboarding\/forms$/,
   ];
 
   return listPagePatterns.some((pattern) => pattern.test(path));
