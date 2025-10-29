@@ -19,11 +19,12 @@ export default function Footer() {
             <Link href="/" className="group mb-6 flex items-center justify-center space-x-3">
               <div className="relative">
                 <Image
-                  src="/images/logo-thin.png"
+                  src="/images/logo.png"
                   alt="SaKyi Logo"
                   width={48}
                   height={48}
-                  className="h-12 w-auto"
+                  quality={90}
+                  className="h-10 w-auto"
                 />
               </div>
               <span

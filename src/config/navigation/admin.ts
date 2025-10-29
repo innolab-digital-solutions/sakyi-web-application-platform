@@ -145,7 +145,7 @@ export const adminNavigation: NavGroup[] = [
       {
         name: "Onboarding",
         icon: ListChecks,
-        path: "/admin/onboarding",
+        path: "#",
         params: {},
         active: false,
         permission: "",
@@ -155,7 +155,7 @@ export const adminNavigation: NavGroup[] = [
             path: "/admin/onboarding/forms",
             params: {},
             active: false,
-            permission: "",
+            permission: "onboarding.forms.view",
           },
           {
             name: "Questions",
@@ -176,7 +176,7 @@ export const adminNavigation: NavGroup[] = [
       {
         name: "Health Data",
         icon: Activity,
-        path: "/admin/health-data",
+        path: "#",
         params: {},
         active: false,
         permission: "",
@@ -207,7 +207,7 @@ export const adminNavigation: NavGroup[] = [
       {
         name: "Food & Nutrition",
         icon: Stethoscope,
-        path: "/admin/nutrition",
+        path: "#",
         params: {},
         active: false,
         permission: "",
@@ -238,7 +238,7 @@ export const adminNavigation: NavGroup[] = [
       {
         name: "Workout Library",
         icon: BarChart3,
-        path: "/admin/workouts",
+        path: "#",
         params: {},
         active: false,
         permission: "",
@@ -291,7 +291,7 @@ export const adminNavigation: NavGroup[] = [
       {
         name: "Blog",
         icon: BookOpen,
-        path: "/admin/blogs",
+        path: "#",
         params: {},
         active: false,
         permission: "",
@@ -314,7 +314,7 @@ export const adminNavigation: NavGroup[] = [
       {
         name: "Monitoring",
         icon: MonitorCog,
-        path: "/admin/system",
+        path: "#",
         params: {},
         active: false,
         permission: "",
@@ -345,7 +345,7 @@ export const adminNavigation: NavGroup[] = [
       {
         name: "Platform Settings",
         icon: Settings,
-        path: "/admin/settings",
+        path: "#",
         params: {},
         active: false,
         permission: "",
