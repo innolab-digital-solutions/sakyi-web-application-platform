@@ -8,8 +8,6 @@ export interface OnboardingForm {
   description: string;
   status: string;
   published_at: string | null;
-  created_at: string | null;
-  updated_at: string | null;
   sections: OnboardingFormSection[];
   actions?: {
     editable?: boolean;

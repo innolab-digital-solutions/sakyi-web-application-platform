@@ -1,4 +1,7 @@
-import { ApiResponse } from "../shared/api";
+import { FoodCategory } from "@/types/admin/food-category";
+import { Unit } from "@/types/admin/unit";
+import { ApiResponse } from "@/types/shared/api";
+import { Pagination } from "@/types/shared/common";
 
 export interface FoodItem {
   id: number;
@@ -7,19 +10,8 @@ export interface FoodItem {
   name: string;
   description: string | null;
   calories_per_unit: number;
-  created_at?: string;
-  updated_at?: string;
-
-  // Relations
-  category?: {
-    id: number;
-    name: string;
-  };
-  unit?: {
-    id: number;
-    name: string;
-    abbreviation?: string | null;
-  };
+  category: FoodCategory;
+  unit: Unit;
 }
 
 export interface FoodItemsResponse {
@@ -27,23 +19,11 @@ export interface FoodItemsResponse {
   message: string;
   data: FoodItem[];
   meta: {
-    pagination: {
-      total: number;
-      count: number;
-      per_page: number;
-      current_page: number;
-      total_pages: number;
-      links: {
-        next: string | null;
-        previous: string | null;
-      };
-    };
+    pagination: Pagination;
   };
 }
 
-export type FoodItemApiResponse = ApiResponse<FoodItem[]>;
-
-export type FoodItemsListApiResponse = ApiResponse<FoodItemsResponse>;
+export type FoodItemApiResponse = ApiResponse<FoodItem[]> | undefined;
 
 export type FoodItemFormProperties = {
   mode: "create" | "edit";
