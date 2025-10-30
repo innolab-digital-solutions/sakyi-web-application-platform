@@ -1,6 +1,7 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
+import dayjs from "dayjs";
 import { CalendarDays, SquarePen, Tag } from "lucide-react";
 import React from "react";
 
@@ -62,14 +63,9 @@ export const onboardingFormsTableColumns: ColumnDef<OnboardingForm>[] = [
         );
       }
 
-      const date = new Date(publishedAt);
-      const formatted = Number.isNaN(date.getTime())
-        ? publishedAt
-        : date.toLocaleDateString(undefined, {
-            year: "numeric",
-            month: "short",
-            day: "2-digit",
-          });
+      const formatted = dayjs(publishedAt).isValid()
+        ? dayjs(publishedAt).format("DD-MMMM-YYYY")
+        : publishedAt;
 
       return <div className="text-foreground text-sm font-medium">{formatted}</div>;
     },
