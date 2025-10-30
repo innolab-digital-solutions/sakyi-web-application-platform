@@ -1,23 +1,36 @@
+"use client";
+
 import { ArrowLeft, ClipboardList } from "lucide-react";
-import type { Metadata } from "next";
 import Link from "next/link";
 import React from "react";
 
 import OnboardingForm from "@/components/admin/features/onboarding-forms/onboarding-form";
 import PageHeader from "@/components/admin/shared/page-header";
 import { Button } from "@/components/ui/button";
+import { ENDPOINTS } from "@/config/endpoints";
 import { PATHS } from "@/config/paths";
+import { useRequest } from "@/hooks/use-request";
+import { OnboardingForm as OnboardingFormType } from "@/types/admin/onboarding-form";
 
-export const metadata: Metadata = {
-  title: "Create Onboarding Form",
-};
+export default function EditOnboardingFormPage({
+  params,
+}: {
+  params: Promise<{
+    id: string;
+  }>;
+}) {
+  const resolvedParameters = React.use(params);
 
-export default function CreateOnboardingFormPage() {
+  const { data: onboardingForm } = useRequest({
+    url: ENDPOINTS.ADMIN.ONBOARDING_FORMS.SHOW(resolvedParameters.id),
+    queryKey: ["admin-onboarding-form", resolvedParameters.id],
+  });
+
   return (
     <div className="flex flex-col gap-2">
       <PageHeader
         icon={ClipboardList}
-        title="Create Onboarding Form"
+        title="Edit Onboarding Form"
         description="Design a multi-section onboarding form with customizable questions and attach it to one or more programs."
         actions={
           <Button variant="outline" asChild>
@@ -32,7 +45,7 @@ export default function CreateOnboardingFormPage() {
         }
       />
 
-      <OnboardingForm />
+      <OnboardingForm onboardingForm={onboardingForm?.data as OnboardingFormType} />
     </div>
   );
 }

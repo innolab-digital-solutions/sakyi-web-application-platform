@@ -54,5 +54,6 @@ export const ADMIN_PATHS = {
   ONBOARDING_FORMS: {
     LIST: "/admin/onboarding-forms",
     CREATE: "/admin/onboarding-forms/create",
+    EDIT: (id: string | number) => `/admin/onboarding-forms/create/${id}/edit`,
   },
 } as const;

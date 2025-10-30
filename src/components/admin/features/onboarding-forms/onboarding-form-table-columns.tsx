@@ -3,12 +3,14 @@
 import { ColumnDef } from "@tanstack/react-table";
 import dayjs from "dayjs";
 import { CalendarDays, SquarePen, Tag } from "lucide-react";
+import Link from "next/link";
 import React from "react";
 
 import DisabledTooltip from "@/components/shared/disabled-tooltip";
 import SortableHeader from "@/components/shared/table/sortable-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { PATHS } from "@/config/paths";
 import { OnboardingForm } from "@/types/admin/onboarding-form";
 
 export const onboardingFormsTableColumns: ColumnDef<OnboardingForm>[] = [
@@ -79,6 +81,18 @@ export const onboardingFormsTableColumns: ColumnDef<OnboardingForm>[] = [
 
       return (
         <div className="flex items-center space-x-0.5">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="hover:bg-accent/10 hover:text-accent text-accent flex cursor-pointer items-center justify-center text-sm font-semibold"
+            asChild
+          >
+            <Link href={PATHS.ADMIN.ONBOARDING_FORMS.EDIT(form.id)}>
+              <SquarePen className="h-2 w-2" />
+              <span>Edit</span>
+            </Link>
+          </Button>
+
           <DisabledTooltip
             reason={
               form.actions?.editable ? undefined : "You don't have permission to edit this form."

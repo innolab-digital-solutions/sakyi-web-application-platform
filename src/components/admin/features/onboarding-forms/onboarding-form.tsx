@@ -7,9 +7,7 @@ import React from "react";
 import { toast } from "sonner";
 
 import ComboBoxField from "@/components/shared/forms/combo-box-field";
-import DatepickerField from "@/components/shared/forms/datepicker-field";
 import InputField from "@/components/shared/forms/input-field";
-import SelectField from "@/components/shared/forms/select-field";
 import TextareaField from "@/components/shared/forms/textarea-field";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -24,8 +22,13 @@ import {
   CreateOnboardingFormSchema,
   QuestionTypeEnum,
 } from "@/lib/validations/admin/onboarding-form-schema";
+import { OnboardingForm as OnboardingFormType } from "@/types/admin/onboarding-form";
 
-export default function OnboardingFormCreateForm() {
+export default function OnboardingFormCreateForm({
+  onboardingForm,
+}: {
+  onboardingForm?: OnboardingFormType;
+}) {
   const router = useRouter();
 
   type CreateSection = CreateOnboardingFormInput["sections"][number];
@@ -78,6 +81,53 @@ export default function OnboardingFormCreateForm() {
   );
 
   const [openSections, setOpenSections] = React.useState<boolean[]>([true]);
+
+  // When editing, prefill the form with existing values
+  React.useEffect(() => {
+    if (!onboardingForm) return;
+
+    const mappedSections: CreateOnboardingFormInput["sections"] = Array.isArray(
+      onboardingForm.sections,
+    )
+      ? onboardingForm.sections.map((s, index) => ({
+          title: String((s as unknown as { title?: unknown }).title ?? ""),
+          description: String((s as unknown as { description?: unknown }).description ?? ""),
+          order: Number((s as unknown as { order?: unknown }).order ?? index) || index,
+          questions: Array.isArray((s as unknown as { questions?: unknown }).questions as unknown[])
+            ? (((s as unknown as { questions?: unknown }).questions as unknown[]) ?? []).map(
+                (q) => {
+                  const question = (q ?? {}) as Record<string, unknown>;
+                  return {
+                    question_text: String(
+                      (question.question_text as string | undefined) ??
+                        (question.question as string | undefined) ??
+                        "",
+                    ),
+                    question_type: String(
+                      (question.question_type as string | undefined) ??
+                        (question.type as string | undefined) ??
+                        "text",
+                    ),
+                    required: Boolean((question.required as boolean | undefined) ?? true),
+                    help_text: String((question.help_text as string | undefined) ?? ""),
+                    options: (question.options as Record<string, unknown> | null) ?? null,
+                  } as CreateQuestion;
+                },
+              )
+            : [],
+        }))
+      : [];
+
+    const nextData: CreateOnboardingFormInput = {
+      title: String(onboardingForm.title ?? ""),
+      description: String(onboardingForm.description ?? ""),
+      status: (onboardingForm.status as "draft" | "published" | "archived") ?? "draft",
+      published_at: onboardingForm.published_at ?? null,
+      sections: mappedSections,
+    };
+
+    form.setDataAndDefaults(nextData);
+  }, [onboardingForm]);
 
   React.useEffect(() => {
     const length = Array.isArray(form.data.sections) ? form.data.sections.length : 0;
@@ -221,18 +271,25 @@ export default function OnboardingFormCreateForm() {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    form.post(ENDPOINTS.ADMIN.ONBOARDING_FORMS.STORE, {
-      onSuccess: (response) => {
-        toast.success(response.message);
-        router.push(PATHS.ADMIN.ONBOARDING_FORMS.LIST);
-      },
-    });
+    const isEdit = Boolean(onboardingForm?.id);
+    if (isEdit && onboardingForm?.id) {
+      form.put(ENDPOINTS.ADMIN.ONBOARDING_FORMS.UPDATE(onboardingForm.id), {
+        onSuccess: (response) => {
+          toast.success(response.message);
+          router.push(PATHS.ADMIN.ONBOARDING_FORMS.LIST);
+        },
+      });
+    } else {
+      form.post(ENDPOINTS.ADMIN.ONBOARDING_FORMS.STORE, {
+        onSuccess: (response) => {
+          toast.success(response.message);
+          router.push(PATHS.ADMIN.ONBOARDING_FORMS.LIST);
+        },
+      });
+    }
   };
 
-  const statusOptions = [
-    { value: "draft", label: "Draft" },
-    { value: "published", label: "Published" },
-  ];
+  // status defaults to "draft"; no status input is rendered
 
   const questionTypeOptions = QuestionTypeEnum.options.map((type) => ({
     value: type,
@@ -241,10 +298,18 @@ export default function OnboardingFormCreateForm() {
 
   return (
     <div className="mx-auto w-full">
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-10">
-          {/* Left column: Basics and actions */}
-          <div className="space-y-5 rounded-md border border-gray-200 p-6 lg:sticky lg:top-24 lg:self-start lg:p-6">
+      <form onSubmit={handleSubmit} className="space-y-6 rounded-md border border-gray-200 p-6">
+        {/* Basics */}
+        <div className="space-y-5">
+          <div>
+            <h3 className="text-[15px] font-semibold tracking-tight text-gray-800">
+              Basic information
+            </h3>
+            <p className="text-sm text-gray-500">
+              Provide concise details that help admins identify and manage this onboarding form.
+            </p>
+          </div>
+          <div className="space-y-5">
             <InputField
               id="title"
               name="title"
@@ -266,327 +331,283 @@ export default function OnboardingFormCreateForm() {
               onChange={(event_) => form.setData("description", event_.target.value)}
               error={form.errors.description as string}
             />
+          </div>
+        </div>
 
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              <SelectField
-                id="status"
-                name="status"
-                label="Status"
-                placeholder="Select status"
-                options={statusOptions}
-                value={form.data.status}
-                onChange={(value) =>
-                  form.setData("status", value as "draft" | "published" | "archived")
-                }
-                error={form.errors.status as string}
-                required
-              />
+        <Separator />
 
-              <DatepickerField
-                id="published_at"
-                name="published_at"
-                label="Published date"
-                placeholder="Pick published date (optional)"
-                value={(form.data.published_at as string | null) ?? undefined}
-                onChange={(value) => form.setData("published_at", value)}
-              />
+        {/* Sections */}
+        <div className="space-y-5">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-[15px] font-semibold tracking-tight text-gray-800">Sections</h3>
+              <p className="text-sm text-gray-500">
+                Structure your form into logical groups for clarity and better completion rates.
+              </p>
             </div>
-
-            {/* Summary */}
-            <div className="bg-muted/30 rounded-md border border-dashed p-3 text-sm">
-              <div className="flex items-center justify-between">
-                <span className="text-muted-foreground">Sections</span>
-                <span className="text-foreground font-medium">
-                  {(Array.isArray(form.data.sections) ? form.data.sections : []).length}
-                </span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-muted-foreground">Total questions</span>
-                <span className="text-foreground font-medium">
-                  {(Array.isArray(form.data.sections) ? form.data.sections : []).reduce(
-                    (total, section) =>
-                      total + (Array.isArray(section.questions) ? section.questions.length : 0),
-                    0,
-                  )}
-                </span>
-              </div>
-            </div>
-
-            <div className="hidden justify-start lg:flex">
-              <Button
-                type="submit"
-                variant="default"
-                disabled={form.processing}
-                className="flex cursor-pointer items-center gap-2 font-semibold"
-              >
-                {form.processing ? "Creating..." : "Create Onboarding Form"}
-              </Button>
-            </div>
+            <Button
+              type="button"
+              variant="default"
+              size="sm"
+              onClick={addSection}
+              className="flex cursor-pointer items-center gap-2"
+            >
+              <Plus className="h-3.5 w-3.5" /> Add section
+            </Button>
           </div>
 
-          {/* Right column: Sections */}
-          <div className="space-y-5 rounded-md border border-gray-200 p-6">
-            <div className="flex items-center justify-between">
-              <h3 className="text-[15px] font-semibold tracking-tight text-gray-800">Sections</h3>
-              <Button
-                type="button"
-                variant="default"
-                size="sm"
-                onClick={addSection}
-                className="flex cursor-pointer items-center gap-2"
+          {(Array.isArray(form.data.sections) ? form.data.sections : [])?.map(
+            (section: CreateSection, sectionIndex: number) => (
+              <Collapsible
+                key={sectionIndex}
+                open={openSections[sectionIndex] ?? true}
+                onOpenChange={(value) => {
+                  setOpenSections((previous) => {
+                    const next = [...previous];
+                    next[sectionIndex] = Boolean(value);
+                    return next;
+                  });
+                }}
+                className="overflow-hidden rounded-md border border-gray-200"
               >
-                <Plus className="h-3.5 w-3.5" /> Add section
-              </Button>
-            </div>
+                <div className="flex items-center justify-between bg-gray-50 px-4 py-3">
+                  <div className="text-sm font-semibold">Section {sectionIndex + 1}</div>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => removeSection(sectionIndex)}
+                      disabled={(form.data.sections as CreateSection[]).length <= 1}
+                      className="hover:bg-destructive/10 hover:text-destructive"
+                      aria-label="Remove section"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                    <CollapsibleTrigger asChild>
+                      <Button type="button" variant="ghost" size="icon" aria-label="Toggle section">
+                        {(openSections[sectionIndex] ?? true) ? (
+                          <ChevronUp className="h-4 w-4" />
+                        ) : (
+                          <ChevronDown className="h-4 w-4" />
+                        )}
+                      </Button>
+                    </CollapsibleTrigger>
+                  </div>
+                </div>
+                <CollapsibleContent>
+                  <div className="space-y-4 px-4 py-5">
+                    <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+                      <InputField
+                        id={`section-${sectionIndex}-title`}
+                        label="Section title"
+                        placeholder="e.g., Personal Information"
+                        value={String(section.title ?? "")}
+                        onChange={(event_) => {
+                          const sections = [
+                            ...(((form.data.sections ??
+                              []) as CreateOnboardingFormInput["sections"]) ?? []),
+                          ];
+                          sections[sectionIndex].title = event_.target.value;
+                          form.setData("sections", sections);
+                        }}
+                      />
+                      <InputField
+                        id={`section-${sectionIndex}-description`}
+                        label="Short description"
+                        placeholder="Optional summary for this section"
+                        value={String(section.description ?? "")}
+                        onChange={(event_) => {
+                          const sections = [
+                            ...(((form.data.sections ??
+                              []) as CreateOnboardingFormInput["sections"]) ?? []),
+                          ];
+                          sections[sectionIndex].description = event_.target.value;
+                          form.setData("sections", sections);
+                        }}
+                      />
+                    </div>
 
-            {(Array.isArray(form.data.sections) ? form.data.sections : [])?.map(
-              (section: CreateSection, sectionIndex: number) => (
-                <Collapsible
-                  key={sectionIndex}
-                  open={openSections[sectionIndex] ?? true}
-                  onOpenChange={(value) => {
-                    setOpenSections((previous) => {
-                      const next = [...previous];
-                      next[sectionIndex] = Boolean(value);
-                      return next;
-                    });
-                  }}
-                  className="rounded-md border border-gray-200"
-                >
-                  <div className="bg-muted/40 flex items-center justify-between rounded-md px-4 py-3">
-                    <div className="text-sm font-semibold">Section {sectionIndex + 1}</div>
-                    <div className="flex items-center gap-2">
+                    <Separator />
+
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h3 className="text-[15px] font-semibold tracking-tight text-gray-800">
+                          Questions
+                        </h3>
+                        <p className="text-sm text-gray-500">
+                          Add questions to your form to collect information from your users.
+                        </p>
+                      </div>
                       <Button
                         type="button"
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => removeSection(sectionIndex)}
-                        disabled={(form.data.sections as CreateSection[]).length <= 1}
-                        className="hover:bg-destructive/10 hover:text-destructive"
-                        aria-label="Remove section"
+                        variant="secondary"
+                        size="sm"
+                        onClick={() => addQuestion(sectionIndex)}
+                        className="flex cursor-pointer items-center gap-2"
                       >
-                        <Trash2 className="h-4 w-4" />
+                        <Plus className="h-3.5 w-3.5" /> Add question
                       </Button>
-                      <CollapsibleTrigger asChild>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon"
-                          aria-label="Toggle section"
-                        >
-                          {(openSections[sectionIndex] ?? true) ? (
-                            <ChevronUp className="h-4 w-4" />
-                          ) : (
-                            <ChevronDown className="h-4 w-4" />
-                          )}
-                        </Button>
-                      </CollapsibleTrigger>
                     </div>
-                  </div>
-                  <CollapsibleContent>
-                    <div className="space-y-4 px-4 pb-5">
-                      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                        <InputField
-                          id={`section-${sectionIndex}-title`}
-                          label="Section title"
-                          placeholder="e.g., Personal Information"
-                          value={String(section.title ?? "")}
-                          onChange={(event_) => {
-                            const sections = [
-                              ...(((form.data.sections ??
-                                []) as CreateOnboardingFormInput["sections"]) ?? []),
-                            ];
-                            sections[sectionIndex].title = event_.target.value;
-                            form.setData("sections", sections);
-                          }}
-                        />
-                        <InputField
-                          id={`section-${sectionIndex}-description`}
-                          label="Short description"
-                          placeholder="Optional summary for this section"
-                          value={String(section.description ?? "")}
-                          onChange={(event_) => {
-                            const sections = [
-                              ...(((form.data.sections ??
-                                []) as CreateOnboardingFormInput["sections"]) ?? []),
-                            ];
-                            sections[sectionIndex].description = event_.target.value;
-                            form.setData("sections", sections);
-                          }}
-                        />
-                      </div>
 
-                      <Separator />
-                      <div className="flex items-center justify-between">
-                        <h4 className="text-sm font-semibold">Questions</h4>
-                        <Button
-                          type="button"
-                          variant="secondary"
-                          size="sm"
-                          onClick={() => addQuestion(sectionIndex)}
-                          className="flex cursor-pointer items-center gap-2"
-                        >
-                          <Plus className="h-3.5 w-3.5" /> Add question
-                        </Button>
-                      </div>
+                    <div className="space-y-5">
+                      {(Array.isArray(section.questions)
+                        ? (section.questions as CreateQuestion[])
+                        : []
+                      ).map((q: CreateQuestion, questionIndex: number) => {
+                        const choices =
+                          ((q.options as Record<string, unknown> | null)?.choices as string[]) ??
+                          [];
+                        const canHaveChoices =
+                          q.question_type === "select" || q.question_type === "multiselect";
+                        return (
+                          <div key={questionIndex} className="space-y-4">
+                            <div className="flex items-start gap-5">
+                              <div className="flex-1 space-y-4">
+                                <InputField
+                                  id={`q-${sectionIndex}-${questionIndex}-text`}
+                                  label="Question"
+                                  placeholder="Ask something..."
+                                  value={String(q.question_text ?? "")}
+                                  onChange={(event_) =>
+                                    updateQuestion(
+                                      sectionIndex,
+                                      questionIndex,
+                                      "question_text",
+                                      event_.target.value,
+                                    )
+                                  }
+                                  required
+                                />
+                                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                                  {/* Type */}
+                                  <ComboBoxField
+                                    id={`q-${sectionIndex}-${questionIndex}-type`}
+                                    label="Type"
+                                    placeholder="Select question type"
+                                    options={questionTypeOptions}
+                                    value={q.question_type}
+                                    onChange={(value) =>
+                                      updateQuestion(
+                                        sectionIndex,
+                                        questionIndex,
+                                        "question_type",
+                                        value,
+                                      )
+                                    }
+                                  />
 
-                      <div className="space-y-3">
-                        {(Array.isArray(section.questions)
-                          ? (section.questions as CreateQuestion[])
-                          : []
-                        ).map((q: CreateQuestion, questionIndex: number) => {
-                          const choices =
-                            ((q.options as Record<string, unknown> | null)?.choices as string[]) ??
-                            [];
-                          const canHaveChoices =
-                            q.question_type === "select" || q.question_type === "multiselect";
-                          return (
-                            <div key={questionIndex} className="rounded-md border p-3">
-                              <div className="flex items-start gap-3">
-                                <div className="flex-1 space-y-2">
+                                  {/* Help text */}
                                   <InputField
-                                    id={`q-${sectionIndex}-${questionIndex}-text`}
-                                    label="Question"
-                                    placeholder="Ask something..."
-                                    value={String(q.question_text ?? "")}
+                                    id={`q-${sectionIndex}-${questionIndex}-help`}
+                                    label="Help text"
+                                    placeholder="Optional hint to guide users"
+                                    value={String(q.help_text ?? "")}
                                     onChange={(event_) =>
                                       updateQuestion(
                                         sectionIndex,
                                         questionIndex,
-                                        "question_text",
+                                        "help_text",
                                         event_.target.value,
                                       )
                                     }
-                                    required
                                   />
-                                  <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-                                    {/* Type */}
-                                    <ComboBoxField
-                                      id={`q-${sectionIndex}-${questionIndex}-type`}
-                                      label="Type"
-                                      placeholder="Select question type"
-                                      options={questionTypeOptions}
-                                      value={q.question_type}
-                                      onChange={(value) =>
-                                        updateQuestion(
-                                          sectionIndex,
-                                          questionIndex,
-                                          "question_type",
-                                          value,
-                                        )
-                                      }
-                                    />
-
-                                    {/* Required */}
-                                    <div className="space-y-2">
-                                      <Label className="text-sm font-medium">Required</Label>
-                                      <div className="flex h-11 items-center gap-2 rounded-md border px-3">
-                                        <Checkbox
-                                          checked={Boolean(q.required)}
-                                          onCheckedChange={(value) =>
-                                            updateQuestion(
-                                              sectionIndex,
-                                              questionIndex,
-                                              "required",
-                                              Boolean(value),
-                                            )
-                                          }
-                                        />
-                                        <span className="text-sm text-gray-700">
-                                          This question is required
-                                        </span>
-                                      </div>
-                                    </div>
-
-                                    {/* Help text */}
-                                    <InputField
-                                      id={`q-${sectionIndex}-${questionIndex}-help`}
-                                      label="Help text"
-                                      placeholder="Optional hint to guide users"
-                                      value={String(q.help_text ?? "")}
-                                      onChange={(event_) =>
-                                        updateQuestion(
-                                          sectionIndex,
-                                          questionIndex,
-                                          "help_text",
-                                          event_.target.value,
-                                        )
-                                      }
-                                    />
-                                  </div>
-
-                                  {/* Choices for select/multiselect */}
-                                  {canHaveChoices && (
-                                    <div className="space-y-2">
-                                      <Label className="text-sm font-medium">Choices</Label>
-                                      <div className="flex flex-wrap items-center gap-2">
-                                        {choices.map((c: string) => (
-                                          <span
-                                            key={c}
-                                            className="bg-muted text-foreground inline-flex items-center gap-1 rounded px-2 py-1 text-xs font-medium"
-                                          >
-                                            {c}
-                                            <button
-                                              type="button"
-                                              aria-label="Remove choice"
-                                              onClick={() =>
-                                                removeChoice(sectionIndex, questionIndex, c)
-                                              }
-                                              className="text-muted-foreground hover:text-foreground"
-                                            >
-                                              <X className="h-3 w-3" />
-                                            </button>
-                                          </span>
-                                        ))}
-                                      </div>
-                                      <div className="flex items-center gap-2">
-                                        <InputField
-                                          id={`q-${sectionIndex}-${questionIndex}-new-choice`}
-                                          placeholder="Add a choice and press Add"
-                                          value={""}
-                                          onChange={() => {}}
-                                          // We use a controlled temp input below; keep this for consistent spacing
-                                          containerClassName="hidden"
-                                        />
-                                        <AddChoiceInline
-                                          onAdd={(value) =>
-                                            addChoice(sectionIndex, questionIndex, value)
-                                          }
-                                        />
-                                      </div>
-                                    </div>
-                                  )}
                                 </div>
-                                <Button
-                                  type="button"
-                                  variant="ghost"
-                                  size="icon"
-                                  onClick={() => removeQuestion(sectionIndex, questionIndex)}
-                                  disabled={(section.questions as CreateQuestion[]).length <= 1}
-                                  className="hover:bg-destructive/10 hover:text-destructive mt-1 shrink-0"
-                                  aria-label="Remove question"
-                                >
-                                  <Trash2 className="h-4 w-4" />
-                                </Button>
+
+                                {/* Toolbar: Required + Delete */}
+                                <div className="flex items-center justify-between">
+                                  <div className="flex items-center gap-2">
+                                    <Checkbox
+                                      checked={Boolean(q.required)}
+                                      onCheckedChange={(value) =>
+                                        updateQuestion(
+                                          sectionIndex,
+                                          questionIndex,
+                                          "required",
+                                          Boolean(value),
+                                        )
+                                      }
+                                    />
+                                    <Label className="text-sm leading-none font-medium">
+                                      This question is required
+                                    </Label>
+                                  </div>
+                                  <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="icon"
+                                    onClick={() => removeQuestion(sectionIndex, questionIndex)}
+                                    disabled={(section.questions as CreateQuestion[]).length <= 1}
+                                    className="hover:bg-destructive/10 hover:text-destructive"
+                                    aria-label="Remove question"
+                                  >
+                                    <Trash2 className="h-4 w-4" />
+                                  </Button>
+                                </div>
+
+                                {/* Choices for select/multiselect */}
+                                {canHaveChoices && (
+                                  <div className="space-y-2">
+                                    <Label className="text-sm font-medium">Choices</Label>
+                                    <div className="flex flex-wrap items-center gap-2">
+                                      {choices.map((c: string) => (
+                                        <span
+                                          key={c}
+                                          className="bg-muted text-foreground inline-flex items-center gap-1 rounded px-2 py-1 text-xs font-medium"
+                                        >
+                                          {c}
+                                          <button
+                                            type="button"
+                                            aria-label="Remove choice"
+                                            onClick={() =>
+                                              removeChoice(sectionIndex, questionIndex, c)
+                                            }
+                                            className="text-muted-foreground hover:text-foreground"
+                                          >
+                                            <X className="h-3 w-3" />
+                                          </button>
+                                        </span>
+                                      ))}
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                      <AddChoiceInline
+                                        onAdd={(value) =>
+                                          addChoice(sectionIndex, questionIndex, value)
+                                        }
+                                      />
+                                    </div>
+                                  </div>
+                                )}
                               </div>
                             </div>
-                          );
-                        })}
-                      </div>
+                            {questionIndex <
+                              (Array.isArray(section.questions) ? section.questions.length : 0) -
+                                1 && <Separator />}
+                          </div>
+                        );
+                      })}
                     </div>
-                  </CollapsibleContent>
-                </Collapsible>
-              ),
-            )}
-          </div>
-
-          {/* close grid container */}
+                  </div>
+                </CollapsibleContent>
+              </Collapsible>
+            ),
+          )}
         </div>
 
-        {/* mobile bottom action (kept for convenience) */}
-        <div className="flex justify-end lg:hidden">
-          <Button type="submit" variant="default" disabled={form.processing}>
-            {form.processing ? "Creating..." : "Create Onboarding Form"}
+        <div className="flex items-center justify-end">
+          <Button
+            type="submit"
+            variant="default"
+            disabled={form.processing || (Boolean(onboardingForm?.id) && !form.isDirty)}
+            className="flex cursor-pointer items-center gap-2 font-semibold"
+          >
+            {form.processing
+              ? onboardingForm?.id
+                ? "Saving..."
+                : "Creating..."
+              : onboardingForm?.id
+                ? "Save Changes"
+                : "Create Onboarding Form"}
           </Button>
         </div>
       </form>
