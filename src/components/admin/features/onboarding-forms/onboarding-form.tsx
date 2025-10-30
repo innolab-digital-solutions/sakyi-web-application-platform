@@ -41,8 +41,61 @@ export default function OnboardingFormCreateForm({
     | "help_text"
     | "options";
 
+  // Build initial data from props to avoid flicker when editing
+  const mappedFromProperties: CreateOnboardingFormInput | null = React.useMemo(() => {
+    if (!onboardingForm) return null;
+    const sections: CreateOnboardingFormInput["sections"] = Array.isArray(onboardingForm.sections)
+      ? onboardingForm.sections.map((s, index) => {
+          const sec = s as unknown as {
+            title?: unknown;
+            description?: unknown;
+            order?: unknown;
+            questions?: unknown;
+          };
+          const questions = Array.isArray(sec.questions as unknown[])
+            ? ((sec.questions as unknown[]) ?? []).map((q) => {
+                const question = (q ?? {}) as Record<string, unknown>;
+                const rawOptions = question.options as unknown;
+                const optionsArray = Array.isArray(rawOptions)
+                  ? (rawOptions.filter((c) => typeof c === "string") as string[])
+                  : null;
+                return {
+                  question_text: String(
+                    (question.question_text as string | undefined) ??
+                      (question.question as string | undefined) ??
+                      "",
+                  ),
+                  question_type: String(
+                    (question.question_type as string | undefined) ??
+                      (question.type as string | undefined) ??
+                      "text",
+                  ),
+                  required: Boolean((question.required as boolean | undefined) ?? true),
+                  help_text: String((question.help_text as string | undefined) ?? ""),
+                  options: optionsArray,
+                } as CreateQuestion;
+              })
+            : [];
+          return {
+            title: String(sec.title ?? ""),
+            description: String(sec.description ?? ""),
+            order: Number(sec.order ?? index) || index,
+            questions,
+          } as CreateSection;
+        })
+      : [];
+
+    return {
+      title: String(onboardingForm.title ?? ""),
+      description: String(onboardingForm.description ?? ""),
+      status: (onboardingForm.status as "draft" | "published" | "archived") ?? "draft",
+      published_at: onboardingForm.published_at ?? null,
+      sections,
+    } as CreateOnboardingFormInput;
+  }, [onboardingForm]);
+
   const form = useForm(
-    {
+    mappedFromProperties ?? {
       title: "",
       description: "",
       status: "draft" as const,
@@ -82,7 +135,7 @@ export default function OnboardingFormCreateForm({
 
   const [openSections, setOpenSections] = React.useState<boolean[]>([true]);
 
-  // When editing, prefill the form with existing values
+  // When editing, keep effect to respond to prop changes (rare) but avoid flicker on first paint
   React.useEffect(() => {
     if (!onboardingForm) return;
 

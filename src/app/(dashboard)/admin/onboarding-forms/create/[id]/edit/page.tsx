@@ -21,10 +21,12 @@ export default function EditOnboardingFormPage({
 }) {
   const resolvedParameters = React.use(params);
 
-  const { data: onboardingForm } = useRequest({
+  const { data: onboardingForm, loading: isLoading } = useRequest({
     url: ENDPOINTS.ADMIN.ONBOARDING_FORMS.SHOW(resolvedParameters.id),
     queryKey: ["admin-onboarding-form", resolvedParameters.id],
   });
+
+  const loadedForm = onboardingForm?.data as OnboardingFormType | undefined;
 
   return (
     <div className="flex flex-col gap-2">
@@ -45,7 +47,15 @@ export default function EditOnboardingFormPage({
         }
       />
 
-      <OnboardingForm onboardingForm={onboardingForm?.data as OnboardingFormType} />
+      {isLoading && (
+        <div className="rounded-md border border-gray-200 p-6">
+          <div className="h-5 w-40 animate-pulse rounded bg-gray-200" />
+          <div className="mt-4 h-10 w-full animate-pulse rounded bg-gray-200" />
+          <div className="mt-3 h-24 w-full animate-pulse rounded bg-gray-200" />
+        </div>
+      )}
+
+      {!isLoading && loadedForm && <OnboardingForm onboardingForm={loadedForm} />}
     </div>
   );
 }
