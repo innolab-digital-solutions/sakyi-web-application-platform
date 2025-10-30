@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Dashboard Overview | SaKyi Health & Wellness",
-  description: "View your dashboard overview with key metrics and insights.",
+  title: "Overview | SaKyi Health & Wellness",
+  description:
+    "Dashboard overview with key metrics, summaries, and insights for your organization.",
 };
 
 export default function OverviewPage() {
