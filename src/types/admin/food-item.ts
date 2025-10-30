@@ -12,6 +12,10 @@ export interface FoodItem {
   calories_per_unit: number;
   category: FoodCategory;
   unit: Unit;
+  actions?: {
+    editable?: boolean;
+    deletable?: boolean;
+  };
 }
 
 export interface FoodItemsResponse {

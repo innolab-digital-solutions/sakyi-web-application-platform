@@ -18,7 +18,7 @@ const DisabledTooltip = React.forwardRef<HTMLSpanElement, DisabledTooltipPropert
   ) => {
     return (
       <Tooltip>
-        <TooltipTrigger asChild>
+        <TooltipTrigger asChild className="!border-transparent !bg-transparent !p-0">
           <span ref={reference} className={cn(className)} {...restProperties}>
             {children}
           </span>

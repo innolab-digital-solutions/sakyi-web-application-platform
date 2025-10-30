@@ -13,6 +13,10 @@ export interface BlogCategory {
   slug: string;
   parent: BlogCategoryChild | null;
   children: BlogCategoryChild[];
+  actions?: {
+    editable?: boolean;
+    deletable?: boolean;
+  };
 }
 
 export interface BlogCategoriesResponse {

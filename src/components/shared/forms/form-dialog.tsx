@@ -72,7 +72,7 @@ export default function FormDialog({
         showCloseButton={false}
         className="flex max-h-[90vh] w-[95vw] max-w-md flex-col rounded-md sm:max-w-lg md:max-w-xl lg:max-w-2xl"
       >
-        <form onSubmit={onSubmit} className="flex min-h-0 w-full flex-1 flex-col p-4">
+        <form onSubmit={onSubmit} className="flex min-h-0 w-full flex-1 flex-col p-2">
           <DialogHeader className="flex-shrink-0">
             <DialogTitle className="text-md mb-1 flex items-center gap-2 font-bold">
               {icon}

@@ -143,7 +143,9 @@ export const rolesTableColumns: ColumnDef<Role>[] = [
       const role = row.original;
       const hasPermissions = role.has_permissions;
 
-      return (
+      return role.name === "Super Admin" ? (
+        <></>
+      ) : (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
@@ -161,18 +163,32 @@ export const rolesTableColumns: ColumnDef<Role>[] = [
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
-              <Button
-                asChild
-                variant="outline"
-                className="hover:!bg-accent/10 hover:!text-accent group flex w-full !cursor-pointer items-center justify-start gap-1.5 !border-none text-sm font-medium text-gray-700 shadow-none hover:!ring-0"
-                aria-label={hasPermissions ? "Manage permissions" : "Assign permissions"}
-                disabled={!role.actions?.editable}
-              >
-                <Link href={PATHS.ADMIN.ROLES.ASSIGN_PERMISSIONS(role.id)}>
-                  <FileKey className="group-hover:text-accent h-4 w-4 transition-colors duration-150" />
-                  <span>Assign Permissions</span>
-                </Link>
-              </Button>
+              {(() => {
+                const isEditable = Boolean(role.actions?.editable);
+                const disabledReason = isEditable
+                  ? undefined
+                  : "You don't have permission to assign permissions for this role.";
+                return (
+                  <DisabledTooltip reason={disabledReason}>
+                    <Button
+                      asChild
+                      variant="outline"
+                      className="hover:!bg-accent/10 hover:!text-accent group flex w-full !cursor-pointer items-center justify-start gap-1.5 !border-none text-sm font-medium text-gray-700 shadow-none hover:!ring-0"
+                      aria-label={hasPermissions ? "Manage permissions" : "Assign permissions"}
+                      disabled={!isEditable}
+                    >
+                      <Link
+                        href={PATHS.ADMIN.ROLES.ASSIGN_PERMISSIONS(role.id)}
+                        aria-disabled={!isEditable}
+                        tabIndex={isEditable ? 0 : -1}
+                      >
+                        <FileKey className="group-hover:text-accent h-4 w-4 transition-colors duration-150" />
+                        <span>Assign Permissions</span>
+                      </Link>
+                    </Button>
+                  </DisabledTooltip>
+                );
+              })()}
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
               <RoleForm
@@ -187,7 +203,7 @@ export const rolesTableColumns: ColumnDef<Role>[] = [
                     <DisabledTooltip reason={disabledReason}>
                       <Button
                         variant="outline"
-                        className="hover:!bg-accent/10 group hover:!text-accent hover:!ring-none flex w-full !cursor-pointer items-center justify-start gap-1.5 !border-none text-sm font-medium text-gray-700 shadow-none"
+                        className="hover:!bg-accent/10 group hover:!text-accent hover:!ring-none flex w-full !cursor-pointer items-center justify-start gap-1.5 !border-none text-sm font-medium text-gray-700 shadow-none disabled:hover:!bg-transparent disabled:hover:!text-inherit"
                         aria-label="Edit role"
                         disabled={!isEditable}
                       >
