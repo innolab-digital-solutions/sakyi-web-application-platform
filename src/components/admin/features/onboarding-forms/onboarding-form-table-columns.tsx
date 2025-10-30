@@ -2,14 +2,23 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import dayjs from "dayjs";
-import { CalendarDays, SquarePen, Tag } from "lucide-react";
+import { CalendarDays, Ellipsis, SquarePen, Tag } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 
+import OnboardingFormDeletionDialog from "@/components/admin/features/onboarding-forms/onboarding-form-deletion-dialog";
 import DisabledTooltip from "@/components/shared/disabled-tooltip";
 import SortableHeader from "@/components/shared/table/sortable-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { PATHS } from "@/config/paths";
 import { OnboardingForm } from "@/types/admin/onboarding-form";
 
@@ -80,52 +89,51 @@ export const onboardingFormsTableColumns: ColumnDef<OnboardingForm>[] = [
       const form = row.original;
 
       return (
-        <div className="flex items-center space-x-0.5">
-          <Button
-            variant="ghost"
-            size="sm"
-            className="hover:bg-accent/10 hover:text-accent text-accent flex cursor-pointer items-center justify-center text-sm font-semibold"
-            asChild
-          >
-            <Link href={PATHS.ADMIN.ONBOARDING_FORMS.EDIT(form.id)}>
-              <SquarePen className="h-2 w-2" />
-              <span>Edit</span>
-            </Link>
-          </Button>
-
-          <DisabledTooltip
-            reason={
-              form.actions?.editable ? undefined : "You don't have permission to edit this form."
-            }
-          >
-            <Button
-              variant="ghost"
-              size="sm"
-              className="hover:bg-accent/10 hover:text-accent text-accent flex cursor-pointer items-center justify-center text-sm font-semibold"
-              disabled={!form.actions?.editable}
-              aria-label="Edit onboarding form"
-            >
-              <SquarePen className="h-2 w-2" />
-              <span>Edit</span>
-            </Button>
-          </DisabledTooltip>
-
-          <DisabledTooltip
-            reason={
-              form.actions?.deletable ? undefined : "You don't have permission to delete this form."
-            }
-          >
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
             <Button
               variant="outline"
-              size="sm"
-              className="hover:bg-destructive/10 hover:text-destructive flex cursor-pointer items-center justify-center text-sm font-semibold"
-              disabled={!form.actions?.deletable}
-              aria-label="Delete onboarding form"
+              size="icon"
+              aria-label="Open actions"
+              className="hover:!text-foreground ml-auto size-8 cursor-pointer items-center justify-center hover:!bg-gray-100"
             >
-              <span>Delete</span>
+              <Ellipsis className="h-5 w-5" />
             </Button>
-          </DisabledTooltip>
-        </div>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" sideOffset={8} className="p-3.5">
+            <DropdownMenuLabel className="text-muted-foreground text-[13px] font-semibold">
+              Onboarding Form Actions
+            </DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem asChild>
+              <DisabledTooltip
+                reason={
+                  form.actions?.editable
+                    ? undefined
+                    : "You don't have permission to edit this onboarding form."
+                }
+              >
+                <Button
+                  variant="outline"
+                  className="hover:!bg-accent/10 group hover:!text-accent hover:!ring-none flex w-full !cursor-pointer items-center justify-start gap-1.5 !rounded-md !border-none text-sm font-medium text-gray-700 shadow-none disabled:hover:!bg-transparent disabled:hover:!text-inherit"
+                  disabled={!Boolean(form.actions?.editable)}
+                >
+                  <Link
+                    href={PATHS.ADMIN.ONBOARDING_FORMS.EDIT(form.id)}
+                    className="flex items-center gap-1.5"
+                  >
+                    <SquarePen className="group-hover:text-accent h-4 w-4 transition-colors duration-150" />
+                    <span>Edit Form</span>
+                  </Link>
+                </Button>
+              </DisabledTooltip>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem asChild>
+              <OnboardingFormDeletionDialog onboardingForm={form} />
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       );
     },
   },

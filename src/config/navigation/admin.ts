@@ -158,14 +158,7 @@ export const adminNavigation: NavGroup[] = [
             permission: "onboarding-forms.view",
           },
           {
-            name: "Questions",
-            path: "/admin/onboarding/questions",
-            params: {},
-            active: false,
-            permission: "",
-          },
-          {
-            name: "Responses",
+            name: "Submissions",
             path: "/admin/onboarding/responses",
             params: {},
             active: false,

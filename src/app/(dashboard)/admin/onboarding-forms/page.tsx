@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { PATHS } from "@/config/paths";
 
 export const metadata: Metadata = {
-  title: "Program Management | SaKyi Health & Wellness",
+  title: "Onboarding Form | SaKyi Health & Wellness",
   description:
     "Manage wellness programs including fitness routines, nutrition plans, and health challenges.",
 };

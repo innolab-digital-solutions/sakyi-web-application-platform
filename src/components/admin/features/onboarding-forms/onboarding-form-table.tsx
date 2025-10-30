@@ -29,8 +29,8 @@ export default function OnboardingFormTable() {
             </div>
           ),
           actions: (
-            <div className="flex items-center justify-end">
-              <Skeleton className="size-8 animate-pulse rounded" />
+            <div className="flex items-center space-x-1">
+              <Skeleton className="h-8 w-8 animate-pulse rounded" />
             </div>
           ),
         },
