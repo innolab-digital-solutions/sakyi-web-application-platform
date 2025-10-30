@@ -70,13 +70,13 @@ export default function DashboardSidebar() {
         <SidebarMenu>
           <SidebarMenuItem>
             <div className="flex items-center gap-3 px-2">
-              <div className="border-border/40 relative h-9 w-9 overflow-hidden rounded-sm border shadow">
+              <div className="border-border/40 relative flex h-9 w-9 items-center justify-center overflow-hidden rounded-sm border shadow">
                 <Image
-                  src="/images/logo.jpg"
+                  src="/images/logo.png"
                   alt="logo"
-                  fill
-                  className="object-cover"
-                  sizes="100px"
+                  className="object-contain"
+                  width={18}
+                  height={18}
                 />
               </div>
               <div className="flex flex-col gap-0.5">

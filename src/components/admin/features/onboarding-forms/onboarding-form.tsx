@@ -97,6 +97,10 @@ export default function OnboardingFormCreateForm({
             ? (((s as unknown as { questions?: unknown }).questions as unknown[]) ?? []).map(
                 (q) => {
                   const question = (q ?? {}) as Record<string, unknown>;
+                  const rawOptions = question.options as unknown;
+                  const optionsArray = Array.isArray(rawOptions)
+                    ? (rawOptions.filter((c) => typeof c === "string") as string[])
+                    : null;
                   return {
                     question_text: String(
                       (question.question_text as string | undefined) ??
@@ -110,7 +114,7 @@ export default function OnboardingFormCreateForm({
                     ),
                     required: Boolean((question.required as boolean | undefined) ?? true),
                     help_text: String((question.help_text as string | undefined) ?? ""),
-                    options: (question.options as Record<string, unknown> | null) ?? null,
+                    options: optionsArray,
                   } as CreateQuestion;
                 },
               )
@@ -203,13 +207,13 @@ export default function OnboardingFormCreateForm({
     sectionIndex: number,
     questionIndex: number,
     key: QuestionEditableKey,
-    value: string | boolean | Record<string, unknown> | null,
+    value: string | boolean | string[] | null,
   ) => {
     const sections = [
       ...(((form.data.sections ?? []) as CreateOnboardingFormInput["sections"]) ?? []),
     ];
     const sec = sections[sectionIndex];
-    const q = sec.questions[questionIndex] as CreateQuestion;
+    const q = sec.questions[questionIndex] as CreateQuestion & { options?: unknown };
     switch (key) {
       case "question_text": {
         q.question_text = String(value ?? "");
@@ -228,8 +232,7 @@ export default function OnboardingFormCreateForm({
         break;
       }
       case "options": {
-        const nextOptions: Record<string, unknown> | null =
-          (value as Record<string, unknown>) ?? null;
+        const nextOptions: string[] | null = (value as string[] | null) ?? null;
         q.options = nextOptions;
         break;
       }
@@ -244,14 +247,14 @@ export default function OnboardingFormCreateForm({
     const sections = [
       ...(((form.data.sections ?? []) as CreateOnboardingFormInput["sections"]) ?? []),
     ];
-    const q = sections[sectionIndex].questions[questionIndex] as CreateQuestion;
-    const current = ((q.options as Record<string, unknown> | null)?.choices as string[]) ?? [];
-    const next = [...new Set([...(current ?? []), choice].filter(Boolean))];
-    const nextOptions: Record<string, unknown> = {
-      ...(q.options ?? ({} as Record<string, unknown>)),
-      choices: next,
+    const q = sections[sectionIndex].questions[questionIndex] as CreateQuestion & {
+      options?: unknown;
     };
-    q.options = nextOptions;
+    const current = (Array.isArray(q.options) ? (q.options as unknown[]) : [])
+      .filter((c) => typeof c === "string")
+      .map(String) as string[];
+    const next = [...new Set([...(current ?? []), choice].filter(Boolean))];
+    q.options = next;
     form.setData("sections", sections);
   };
 
@@ -259,13 +262,13 @@ export default function OnboardingFormCreateForm({
     const sections = [
       ...(((form.data.sections ?? []) as CreateOnboardingFormInput["sections"]) ?? []),
     ];
-    const q = sections[sectionIndex].questions[questionIndex] as CreateQuestion;
-    const current = ((q.options as Record<string, unknown> | null)?.choices as string[]) ?? [];
-    const nextOptions: Record<string, unknown> = {
-      ...(q.options ?? ({} as Record<string, unknown>)),
-      choices: current.filter((c) => c !== choice),
+    const q = sections[sectionIndex].questions[questionIndex] as CreateQuestion & {
+      options?: unknown;
     };
-    q.options = nextOptions;
+    const current = (Array.isArray(q.options) ? (q.options as unknown[]) : [])
+      .filter((c) => typeof c === "string")
+      .map(String) as string[];
+    q.options = current.filter((c) => c !== choice);
     form.setData("sections", sections);
   };
 
@@ -411,6 +414,8 @@ export default function OnboardingFormCreateForm({
                           sections[sectionIndex].title = event_.target.value;
                           form.setData("sections", sections);
                         }}
+                        error={form.errors[`sections.${sectionIndex}.title`] as string}
+                        required
                       />
                       <InputField
                         id={`section-${sectionIndex}-description`}
@@ -425,6 +430,7 @@ export default function OnboardingFormCreateForm({
                           sections[sectionIndex].description = event_.target.value;
                           form.setData("sections", sections);
                         }}
+                        error={form.errors[`sections.${sectionIndex}.description`] as string}
                       />
                     </div>
 
@@ -455,9 +461,9 @@ export default function OnboardingFormCreateForm({
                         ? (section.questions as CreateQuestion[])
                         : []
                       ).map((q: CreateQuestion, questionIndex: number) => {
-                        const choices =
-                          ((q.options as Record<string, unknown> | null)?.choices as string[]) ??
-                          [];
+                        const choices = Array.isArray(q.options)
+                          ? (q.options.filter((c) => typeof c === "string") as string[])
+                          : [];
                         const canHaveChoices =
                           q.question_type === "select" || q.question_type === "multiselect";
                         return (
@@ -478,6 +484,11 @@ export default function OnboardingFormCreateForm({
                                     )
                                   }
                                   required
+                                  error={
+                                    form.errors[
+                                      `sections.${sectionIndex}.questions.${questionIndex}.question_text`
+                                    ] as string
+                                  }
                                 />
                                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                                   {/* Type */}
@@ -495,6 +506,12 @@ export default function OnboardingFormCreateForm({
                                         value,
                                       )
                                     }
+                                    error={
+                                      form.errors[
+                                        `sections.${sectionIndex}.questions.${questionIndex}.question_type`
+                                      ] as string
+                                    }
+                                    required
                                   />
 
                                   {/* Help text */}
@@ -510,6 +527,11 @@ export default function OnboardingFormCreateForm({
                                         "help_text",
                                         event_.target.value,
                                       )
+                                    }
+                                    error={
+                                      form.errors[
+                                        `sections.${sectionIndex}.questions.${questionIndex}.help_text`
+                                      ] as string
                                     }
                                   />
                                 </div>
@@ -575,6 +597,17 @@ export default function OnboardingFormCreateForm({
                                           addChoice(sectionIndex, questionIndex, value)
                                         }
                                       />
+                                      {(form.errors[
+                                        `sections.${sectionIndex}.questions.${questionIndex}.options`
+                                      ] as string) && (
+                                        <p className="text-sm font-medium text-red-600">
+                                          {
+                                            form.errors[
+                                              `sections.${sectionIndex}.questions.${questionIndex}.options`
+                                            ] as string
+                                          }
+                                        </p>
+                                      )}
                                     </div>
                                   </div>
                                 )}
