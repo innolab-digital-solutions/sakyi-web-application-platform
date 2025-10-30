@@ -32,7 +32,7 @@ export const adminBreadcrumbs: Breadcrumbs = {
     { label: "Roles & Permissions", href: PATHS.ADMIN.ROLES.LIST },
   ],
 
-  /** Assign permissions to role page (dynamic: :id replaced at runtime) */
+  /** Assign permissions form page (dynamic: :id replaced at runtime) */
   "/admin/roles/:id/assign-permissions": [
     { label: "Admin Control Panel" },
     { label: "Administration & Access Control" },
@@ -47,12 +47,30 @@ export const adminBreadcrumbs: Breadcrumbs = {
     { label: "Program Management", href: PATHS.ADMIN.PROGRAMS.LIST },
   ],
 
-  /** Workout categories list page */
-  "/admin/workout-categories": [
+  /** Onboarding forms list page */
+  "/admin/onboarding-forms": [
     { label: "Admin Control Panel" },
     { label: "Health Data & Plans" },
-    { label: "Workout Library" },
-    { label: "Workout Categories", href: PATHS.ADMIN.WORKOUT_CATEGORIES.LIST },
+    { label: "Onboarding" },
+    { label: "Forms", href: PATHS.ADMIN.ONBOARDING_FORMS.LIST },
+  ],
+
+  /** Onboarding forms create page */
+  "/admin/onboarding-forms/create": [
+    { label: "Admin Control Panel" },
+    { label: "Health Data & Plans" },
+    { label: "Onboarding" },
+    { label: "Forms", href: PATHS.ADMIN.ONBOARDING_FORMS.LIST },
+    { label: "Create" },
+  ],
+
+  /** Onboarding forms edit page (dynamic: :id replaced at runtime) */
+  "/admin/onboarding-forms/:id/edit": [
+    { label: "Admin Control Panel" },
+    { label: "Health Data & Plans" },
+    { label: "Onboarding" },
+    { label: "Forms", href: PATHS.ADMIN.ONBOARDING_FORMS.LIST },
+    { label: "Edit" },
   ],
 
   /** Units list page */
@@ -71,11 +89,20 @@ export const adminBreadcrumbs: Breadcrumbs = {
     { label: "Food Categories", href: PATHS.ADMIN.FOOD_CATEGORIES.LIST },
   ],
 
+  /** Food items list page */
   "/admin/food-items": [
     { label: "Admin Control Panel" },
     { label: "Health Data & Plans" },
     { label: "Food & Nutrition" },
     { label: "Food Items", href: PATHS.ADMIN.FOOD_ITEMS.LIST },
+  ],
+
+  /** Workout categories list page */
+  "/admin/workout-categories": [
+    { label: "Admin Control Panel" },
+    { label: "Health Data & Plans" },
+    { label: "Workout Library" },
+    { label: "Workout Categories", href: PATHS.ADMIN.WORKOUT_CATEGORIES.LIST },
   ],
 
   /** Blog categories list page */

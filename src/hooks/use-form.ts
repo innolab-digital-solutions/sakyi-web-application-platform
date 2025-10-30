@@ -126,7 +126,13 @@ export const useForm = <TSchema extends ZodType>(
       });
 
       if (response.status === "error") {
-        throw new Error(response.message);
+        const apiError: ApiError = {
+          status: "error",
+          message: response.message,
+          errors: (response as ApiError).errors ?? {},
+        };
+        // Throw full ApiError so onError can map field errors
+        throw apiError as unknown as Error;
       }
 
       return response;
@@ -148,13 +154,14 @@ export const useForm = <TSchema extends ZodType>(
       setIsDirty(false);
     },
     onError: (error: Error) => {
-      const apiError: ApiError = {
-        status: "error",
-        message: error.message,
-        errors: {},
-      };
-      setErrors((apiError.errors || {}) as Errors<T>);
-      options.tanstack?.mutationOptions?.onError?.(apiError);
+      const maybeApiError = error as unknown as ApiError;
+      const fieldErrors = (maybeApiError?.errors || {}) as Errors<T>;
+      setErrors(fieldErrors);
+      options.tanstack?.mutationOptions?.onError?.(
+        maybeApiError?.status
+          ? maybeApiError
+          : { status: "error", message: error.message, errors: fieldErrors },
+      );
     },
     onSettled: () => {
       options.tanstack?.mutationOptions?.onSettled?.();
@@ -409,7 +416,7 @@ export const useForm = <TSchema extends ZodType>(
           : http[method]<T>(url, data, { ...requestOptions, throwOnError: false }));
 
         if (response.status === "error") {
-          setErrors((response.errors || {}) as Errors<T>);
+          setErrors(((response as ApiError).errors || {}) as Errors<T>);
           submitOptions.onError?.(response as ApiError);
         } else {
           submitOptions.onSuccess?.(response);

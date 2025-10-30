@@ -47,11 +47,13 @@ export default function Navbar() {
         {/* Clean Logo */}
         <Link href="/" className="flex items-center space-x-3">
           <Image
-            src="/images/logo-thin.png"
+            src="/images/logo.png"
             alt="SaKyi Logo"
-            width={32}
-            height={32}
-            className="h-8 w-8"
+            width={96}
+            height={96}
+            priority
+            quality={90}
+            className="h-7 w-7"
           />
           <span
             className="text-xl font-semibold text-slate-900"

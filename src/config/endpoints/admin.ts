@@ -15,17 +15,7 @@ export const ADMIN_ENDPOINTS = {
   /** Dashboard overview data */
   OVERVIEW: "/admin/overview",
 
-  /** Program management endpoints */
-  PROGRAMS: {
-    INDEX: "/admin/programs",
-    SHOW: (id: string | number) => `/admin/programs/${id}`,
-    STORE: "/admin/programs",
-    UPDATE: (id: string | number) => `/admin/programs/${id}`,
-    CHANGE_STATUS: (id: string | number) => `/admin/programs/${id}/status`,
-    DESTROY: (id: string | number) => `/admin/programs/${id}`,
-  },
-
-  /** Role and permission management endpoints */
+  /** Role and permissions endpoints */
   ROLES: {
     INDEX: "/admin/roles",
     SHOW: (id: string | number) => `/admin/roles/${id}`,
@@ -35,16 +25,26 @@ export const ADMIN_ENDPOINTS = {
     DESTROY: (id: string | number) => `/admin/roles/${id}`,
   },
 
-  /** Workout category endpoints */
-  WORKOUT_CATEGORIES: {
-    INDEX: "/admin/workout-categories",
-    SHOW: (id: string | number) => `/admin/workout-categories/${id}`,
-    STORE: "/admin/workout-categories",
-    UPDATE: (id: string | number) => `/admin/workout-categories/${id}`,
-    DESTROY: (id: string | number) => `/admin/workout-categories/${id}`,
+  /** Programs endpoints */
+  PROGRAMS: {
+    INDEX: "/admin/programs",
+    SHOW: (id: string | number) => `/admin/programs/${id}`,
+    STORE: "/admin/programs",
+    UPDATE: (id: string | number) => `/admin/programs/${id}`,
+    CHANGE_STATUS: (id: string | number) => `/admin/programs/${id}/status`,
+    DESTROY: (id: string | number) => `/admin/programs/${id}`,
   },
 
-  /** Unit of measurement endpoints */
+  /** Onboarding forms endpoints */
+  ONBOARDING_FORMS: {
+    INDEX: "/admin/onboarding-forms",
+    SHOW: (id: string | number) => `/admin/onboarding-forms/${id}`,
+    STORE: "/admin/onboarding-forms",
+    UPDATE: (id: string | number) => `/admin/onboarding-forms/${id}`,
+    DESTROY: (id: string | number) => `/admin/onboarding-forms/${id}`,
+  },
+
+  /** Units endpoints */
   UNITS: {
     INDEX: "/admin/units",
     SHOW: (id: string | number) => `/admin/units/${id}`,
@@ -53,7 +53,7 @@ export const ADMIN_ENDPOINTS = {
     DESTROY: (id: string | number) => `/admin/units/${id}`,
   },
 
-  /** Food category endpoints */
+  /** Food categories endpoints */
   FOOD_CATEGORIES: {
     INDEX: "/admin/food-categories",
     SHOW: (id: string | number) => `/admin/food-categories/${id}`,
@@ -62,6 +62,7 @@ export const ADMIN_ENDPOINTS = {
     DESTROY: (id: string | number) => `/admin/food-categories/${id}`,
   },
 
+  /** Food items endpoints */
   FOOD_ITEMS: {
     INDEX: "/admin/food-items",
     SHOW: (id: string | number) => `/admin/food-items/${id}`,
@@ -70,7 +71,16 @@ export const ADMIN_ENDPOINTS = {
     DESTROY: (id: string | number) => `/admin/food-items/${id}`,
   },
 
-  /** Blog category endpoints */
+  /** Workout categories endpoints */
+  WORKOUT_CATEGORIES: {
+    INDEX: "/admin/workout-categories",
+    SHOW: (id: string | number) => `/admin/workout-categories/${id}`,
+    STORE: "/admin/workout-categories",
+    UPDATE: (id: string | number) => `/admin/workout-categories/${id}`,
+    DESTROY: (id: string | number) => `/admin/workout-categories/${id}`,
+  },
+
+  /** Blog categories endpoints */
   BLOG_CATEGORIES: {
     INDEX: "/admin/blog-categories",
     SHOW: (id: string | number) => `/admin/blog-categories/${id}`,

@@ -11,42 +11,49 @@ export const ADMIN_PATHS = {
   /** Admin login page */
   LOGIN: "/admin/login",
 
-  /** Main dashboard overview */
+  /** Dashboard overview */
   OVERVIEW: "/admin/overview",
 
-  /** Program management routes */
-  PROGRAMS: {
-    LIST: "/admin/programs",
-  },
-
-  /** Role and permission management routes */
+  /** Role and permissions routes */
   ROLES: {
     LIST: "/admin/roles",
     ASSIGN_PERMISSIONS: (id: string | number) => `/admin/roles/${id}/assign-permissions`,
   },
 
-  /** Workout category management routes */
-  WORKOUT_CATEGORIES: {
-    LIST: "/admin/workout-categories",
+  /** Programs routes */
+  PROGRAMS: {
+    LIST: "/admin/programs",
   },
 
-  /** Unit of measurement management routes */
+  /** Onboarding forms routes */
+  ONBOARDING_FORMS: {
+    LIST: "/admin/onboarding-forms",
+    CREATE: "/admin/onboarding-forms/create",
+    EDIT: (id: string | number) => `/admin/onboarding-forms/${id}/edit`,
+    DETAIL: (id: string | number) => `/admin/onboarding-forms/${id}`,
+  },
+
+  /** Units routes */
   UNITS: {
     LIST: "/admin/units",
   },
 
-  /** Food category management routes */
+  /** Food categories routes */
   FOOD_CATEGORIES: {
     LIST: "/admin/food-categories",
   },
 
+  /** Food items routes */
   FOOD_ITEMS: {
     LIST: "/admin/food-items",
-    CREATE: "/admin/food-items/create",
-    EDIT: (id: string | number) => `/admin/food-items/${id}/edit`,
-    DETAIL: (id: string | number) => `/admin/food-items/${id}`,
   },
 
+  /** Workout categories routes */
+  WORKOUT_CATEGORIES: {
+    LIST: "/admin/workout-categories",
+  },
+
+  /** Blog categories routes */
   BLOG_CATEGORIES: {
     LIST: "/admin/blog-categories",
   },

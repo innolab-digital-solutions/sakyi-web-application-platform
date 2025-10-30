@@ -14,19 +14,23 @@ export default function ProgramTable() {
       columns={programsTableColumns}
       skeleton={{
         customSkeletons: {
-          name: (
-            <div className="flex flex-col gap-2">
-              <div className="flex items-center gap-2">
-                <Skeleton className="bg-muted/60 h-4 w-32 animate-pulse rounded" />
-                <Skeleton className="bg-muted/60 h-5 w-20 animate-pulse rounded-full" />
+          title: (
+            <div className="flex min-w-0 items-start gap-4">
+              <div className="ring-muted-foreground/5 relative size-12 flex-shrink-0 overflow-hidden rounded-md ring-1" />
+              <div className="flex min-w-0 flex-1 flex-col gap-2">
+                <div className="flex items-center gap-2">
+                  <Skeleton className="h-4 w-40 animate-pulse rounded" />
+                  <Skeleton className="h-5 w-16 animate-pulse rounded-full" />
+                </div>
+                <Skeleton className="h-3 w-80 animate-pulse rounded" />
               </div>
-              <Skeleton className="bg-muted/40 h-3 w-96 animate-pulse rounded" />
             </div>
           ),
+          duration_value: <Skeleton className="h-4 w-20 animate-pulse rounded" />,
+          price: <Skeleton className="h-4 w-24 animate-pulse rounded" />,
           actions: (
-            <div className="flex items-center space-x-1">
-              <Skeleton className="bg-muted/60 h-8 w-16 animate-pulse rounded" />
-              <Skeleton className="bg-muted/60 h-8 w-16 animate-pulse rounded" />
+            <div className="flex items-center justify-end">
+              <Skeleton className="size-8 animate-pulse rounded" />
             </div>
           ),
         },
