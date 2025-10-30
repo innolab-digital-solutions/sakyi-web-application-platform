@@ -131,6 +131,7 @@ export default function OnboardingFormCreateForm({
     };
 
     form.setDataAndDefaults(nextData);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [onboardingForm]);
 
   React.useEffect(() => {
@@ -291,8 +292,6 @@ export default function OnboardingFormCreateForm({
       });
     }
   };
-
-  // status defaults to "draft"; no status input is rendered
 
   const questionTypeOptions = QuestionTypeEnum.options.map((type) => ({
     value: type,
