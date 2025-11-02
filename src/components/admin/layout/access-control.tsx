@@ -8,6 +8,7 @@ import LoadingScreen from "@/components/admin/shared/loading-screen";
 import { ErrorPage } from "@/components/shared/error-page";
 import { adminNavigation } from "@/config/navigation";
 import { PATHS } from "@/config/paths";
+import { getRoutePermission, isRouteConfigured } from "@/config/permissions/routes";
 import { useAuth } from "@/context/auth-context";
 
 interface AccessControlProperties {
@@ -50,12 +51,24 @@ const PERMISSION_MAP = buildPermissionMap();
 
 /**
  * Get the required permission for a given route path
+ *
+ * Checks route permissions configuration first, then falls back to
+ * navigation config. Returns permission and whether route was found.
  */
 function getRequiredPermission(pathname: string): {
   permission: string | undefined;
   isMatched: boolean;
 } {
-  // Direct match
+  // Priority 1: Check route permissions configuration
+  const routePermission = getRoutePermission(pathname);
+  if (routePermission !== undefined || isRouteConfigured(pathname)) {
+    return {
+      permission: routePermission,
+      isMatched: true,
+    };
+  }
+
+  // Priority 2: Check navigation configuration
   if (PERMISSION_MAP.has(pathname)) {
     return {
       permission: PERMISSION_MAP.get(pathname),
@@ -63,14 +76,17 @@ function getRequiredPermission(pathname: string): {
     };
   }
 
-  // Check if path starts with any registered route
+  // Check if path starts with any registered route in navigation
   for (const [path, permission] of PERMISSION_MAP.entries()) {
     if (pathname.startsWith(path + "/")) {
-      return { permission, isMatched: true };
+      return {
+        permission,
+        isMatched: true,
+      };
     }
   }
 
-  // Route not in navigation (unlisted route)
+  // Route not found in any configuration
   return { permission: undefined, isMatched: false };
 }
 
@@ -225,16 +241,26 @@ export default function AccessControl({
 
       const { permission: requiredPermission, isMatched } = getRequiredPermission(pathname);
 
-      // Unlisted routes are accessible by default
+      // Secure by default: deny unlisted routes
       if (!isMatched) {
-        setPhase("authenticated");
+        setPermissionDenied(true);
+        setDeniedMessage(
+          "This route is not configured. Please add it to the route permissions configuration.",
+        );
         return;
       }
 
-      // Misconfigured routes (empty permission) are denied
-      if (!requiredPermission || requiredPermission.trim().length === 0) {
+      // If permission is explicitly undefined in route config, allow access (public to authenticated users)
+      // But if permission is empty string, deny access (misconfigured)
+      if (requiredPermission !== undefined && requiredPermission.trim().length === 0) {
         setPermissionDenied(true);
         setDeniedMessage("This page is misconfigured and cannot be accessed at this time.");
+        return;
+      }
+
+      // If no permission required (undefined), allow access
+      if (requiredPermission === undefined) {
+        setPhase("authenticated");
         return;
       }
 

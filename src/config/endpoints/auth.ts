@@ -15,11 +15,11 @@ export const AUTH_ENDPOINTS = {
   CSRF_COOKIE: "/sanctum/csrf-cookie",
 
   /** Authenticate user and establish session */
-  LOGIN: "/auth/spa/login",
+  LOGIN: "/auth/web/login",
 
   /** End current session */
-  LOGOUT: "/auth/spa/logout",
+  LOGOUT: "/auth/web/logout",
 
   /** Get current authenticated user */
-  ME: "/auth/spa/me",
+  ME: "/me",
 } as const;
