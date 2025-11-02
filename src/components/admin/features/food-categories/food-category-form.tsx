@@ -50,8 +50,8 @@ export default function FoodCategoryForm({
   };
 
   const { data: foodCategories } = useRequest({
-    url: `${ENDPOINTS.META.FOOD_CATEGORIES}`,
-    queryKey: ["meta-food-categories"],
+    url: `${ENDPOINTS.LOOKUP.FOOD_CATEGORIES}`,
+    queryKey: ["lookup-food-categories"],
     data: { only: "parent" },
     staleTime: 1000 * 60 * 5,
   });

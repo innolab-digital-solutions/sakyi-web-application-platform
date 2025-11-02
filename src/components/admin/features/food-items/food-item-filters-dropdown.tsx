@@ -40,8 +40,8 @@ export default function FoodItemFiltersDropdown({
     message: string;
     data: FoodCategory[];
   }>({
-    url: ENDPOINTS.META.FOOD_ITEMS,
-    queryKey: ["meta-food-items"],
+    url: ENDPOINTS.LOOKUP.FOOD_ITEMS,
+    queryKey: ["lookup-food-items"],
     staleTime: 1000 * 60 * 5,
   });
 
@@ -50,8 +50,8 @@ export default function FoodItemFiltersDropdown({
     message: string;
     data: Unit[];
   }>({
-    url: ENDPOINTS.META.UNITS,
-    queryKey: ["meta-units"],
+    url: ENDPOINTS.LOOKUP.UNITS,
+    queryKey: ["lookup-units"],
     staleTime: 1000 * 60 * 5,
   });
 

@@ -45,14 +45,14 @@ export default function FoodItemForm({
 
   // Fetch metadata (categories and units)
   const { data: categories } = useRequest({
-    url: ENDPOINTS.META.FOOD_CATEGORIES,
-    queryKey: ["meta-food-categories"],
+    url: ENDPOINTS.LOOKUP.FOOD_CATEGORIES,
+    queryKey: ["lookup-food-categories"],
     staleTime: 1000 * 60 * 5,
   });
 
   const { data: units } = useRequest({
-    url: ENDPOINTS.META.UNITS,
-    queryKey: ["meta-units"],
+    url: ENDPOINTS.LOOKUP.UNITS,
+    queryKey: ["lookup-units"],
     staleTime: 1000 * 60 * 5,
   });
 
