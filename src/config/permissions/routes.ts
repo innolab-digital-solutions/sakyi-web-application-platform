@@ -31,25 +31,25 @@ export const routePermissions: Record<string, string | undefined> = {
   "/admin/programs": "programs.view",
 
   // Onboarding Forms
-  "/admin/onboarding-forms": "onboarding-forms.view",
-  "/admin/onboarding-forms/create": "onboarding-forms.create",
-  "/admin/onboarding-forms/:id/edit": "onboarding-forms.update",
-  "/admin/onboarding-forms/:id": "onboarding-forms.view",
+  "/admin/onboarding-forms": "onboarding.forms.view",
+  "/admin/onboarding-forms/create": "onboarding.forms.create",
+  "/admin/onboarding-forms/:id/edit": "onboarding.forms.update",
+  "/admin/onboarding-forms/:id": "onboarding.forms.view",
 
   // Units
   "/admin/units": "units.view",
 
   // Food Categories
-  "/admin/food-categories": "food-categories.view",
+  "/admin/food-categories": "food.categories.view",
 
   // Food Items
-  "/admin/food-items": "food-items.view",
+  "/admin/food-items": "food.items.view",
 
   // Workout Categories
-  "/admin/workout-categories": "workout-categories.view",
+  "/admin/workout-categories": "workout.categories.view",
 
   // Blog Categories
-  "/admin/blog-categories": "blog-categories.view",
+  "/admin/blog-categories": "blog.categories.view",
 
   // Example route (user's request)
   "/admin/example": "example.view",
