@@ -76,6 +76,27 @@ type Errors<T> = Partial<Record<keyof T | string, string>>;
  *   }
  * });
  */
+
+// Deep clone utility using structuredClone with a recursion fallback
+function deepClone<U>(value: U): U {
+  // Prefer structuredClone when available
+  const sc = (globalThis as unknown as { structuredClone?: (v: unknown) => unknown })
+    .structuredClone;
+  if (typeof sc === "function") return sc(value) as U;
+
+  if (Array.isArray(value)) {
+    return (value as unknown[]).map((v) => deepClone(v)) as unknown as U;
+  }
+  if (value && typeof value === "object") {
+    const result: Record<string, unknown> = {};
+    for (const [key, v] of Object.entries(value as Record<string, unknown>)) {
+      result[key] = deepClone(v);
+    }
+    return result as U;
+  }
+  return value;
+}
+
 export const useForm = <TSchema extends ZodType>(
   initial: z.infer<TSchema>,
   options: FormOptions<TSchema> = {},
@@ -89,10 +110,10 @@ export const useForm = <TSchema extends ZodType>(
   // ============================================================================
 
   /** Current form field values */
-  const [data, setDataState] = useState<T>(initial as T);
+  const [data, setDataState] = useState<T>(deepClone(initial as T));
 
   /** Default values for reset functionality */
-  const [defaults, setDefaultsState] = useState<T>(initial as T);
+  const [defaults, setDefaultsState] = useState<T>(deepClone(initial as T));
 
   /** Field-level validation errors */
   const [errors, setErrors] = useState<Errors<T>>({});
@@ -249,11 +270,15 @@ export const useForm = <TSchema extends ZodType>(
   const setDefaults = useCallback(
     (field?: keyof T | Partial<T>, value?: T[keyof T]) => {
       if (!field) {
-        setDefaultsState(data);
+        setDefaultsState(deepClone(data));
       } else if (typeof field === "string") {
-        setDefaultsState((previous) => ({ ...previous, [field]: value }) as T);
+        setDefaultsState(
+          (previous) => ({ ...deepClone(previous), [field]: deepClone(value) }) as T,
+        );
       } else {
-        setDefaultsState((previous) => ({ ...previous, ...(field as Partial<T>) }) as T);
+        setDefaultsState(
+          (previous) => ({ ...deepClone(previous), ...(deepClone(field) as Partial<T>) }) as T,
+        );
       }
     },
     [data],
@@ -268,8 +293,9 @@ export const useForm = <TSchema extends ZodType>(
    * @param newData - The data to set for both current values and defaults
    */
   const setDataAndDefaults = useCallback((newData: Partial<T>) => {
-    setDataState(newData as T);
-    setDefaultsState(newData as T);
+    const cloned = deepClone(newData) as T;
+    setDataState(cloned);
+    setDefaultsState(deepClone(cloned));
     setIsDirty(false);
   }, []);
 

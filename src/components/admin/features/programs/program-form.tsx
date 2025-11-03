@@ -42,7 +42,7 @@ export default function ProgramFormPage({ program }: ProgramFormPageProperties) 
       description: "",
       thumbnail: undefined as File | string | undefined,
       duration_value: 1,
-      duration_unit: "days" as "days" | "weeks" | "months",
+      duration_unit: program?.duration_unit ?? ("days" as "days" | "weeks" | "months"),
       price: 0,
       status: "draft" as "draft" | "published" | "archived",
       ideals: [{ description: "" }] as Array<IdealInput>,
@@ -54,7 +54,7 @@ export default function ProgramFormPage({ program }: ProgramFormPageProperties) 
     {
       validate: isEdit ? EditProgramSchema : CreateProgramSchema,
       tanstack: {
-        invalidateQueries: ["admin-programs"],
+        invalidateQueries: ["admin-programs", "admin-program"],
         mutationOptions: {
           onSuccess: (response) => {
             router.push(PATHS.ADMIN.PROGRAMS.LIST);
@@ -68,14 +68,24 @@ export default function ProgramFormPage({ program }: ProgramFormPageProperties) 
 
   useEffect(() => {
     if (isEdit && program) {
+      const parseNumber = (value: unknown, fallback = 0): number => {
+        if (typeof value === "number" && Number.isFinite(value)) return value;
+        if (typeof value === "string") {
+          const cleaned = value.replaceAll(/[^0-9.\-]/g, "");
+          const parsed = Number(cleaned);
+          return Number.isNaN(parsed) ? fallback : parsed;
+        }
+        return fallback;
+      };
+
       const newData = {
         title: program.title ?? "",
         description: program.description ?? "",
         thumbnail: program.thumbnail_url || undefined,
-        duration_value: Number(program.duration_value) || 1,
-        duration_unit: (program.duration_unit as "days" | "weeks" | "months") ?? "days",
-        price: Number(program.price) || 0,
-        status: (program.status as "draft" | "published" | "archived") ?? "draft",
+        duration_value: parseNumber(program.duration_value, 1),
+        duration_unit: (program?.duration_unit ?? "days") as "days" | "weeks" | "months",
+        price: parseNumber(program.price, 0),
+        status: (program?.status ?? "draft") as "draft" | "published" | "archived",
         ideals: (program.ideals?.map((ideal) => ({
           id: ideal.id,
           description: ideal.description,
@@ -212,7 +222,7 @@ export default function ProgramFormPage({ program }: ProgramFormPageProperties) 
                 required
               />
 
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <InputField
                   id="duration_value"
                   name="duration_value"
@@ -244,23 +254,23 @@ export default function ProgramFormPage({ program }: ProgramFormPageProperties) 
                   required
                   disabled={form.processing}
                 />
-
-                <InputField
-                  id="price"
-                  name="price"
-                  type="number"
-                  inputMode="decimal"
-                  min={0}
-                  max={999_999}
-                  step="0.01"
-                  value={String(form.data.price ?? 0)}
-                  onChange={(event) => form.setData("price", Number(event.target.value))}
-                  error={form.errors.price as string}
-                  label="Price"
-                  required
-                  disabled={form.processing}
-                />
               </div>
+
+              <InputField
+                id="price"
+                name="price"
+                type="number"
+                inputMode="decimal"
+                min={0}
+                max={999_999}
+                step="0.01"
+                value={String(form.data.price ?? 0)}
+                onChange={(event) => form.setData("price", Number(event.target.value))}
+                error={form.errors.price as string}
+                label="Price"
+                required
+                disabled={form.processing}
+              />
             </div>
           </div>
 
@@ -722,7 +732,7 @@ export default function ProgramFormPage({ program }: ProgramFormPageProperties) 
               </div>
             </Collapsible>
 
-            <Separator className="my-5" />
+            <Separator className="mt-8 mb-7" />
 
             <div className="flex items-center justify-end gap-2">
               <Button
