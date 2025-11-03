@@ -18,7 +18,7 @@ const BaseProgramSchema = z.object({
     .number("Duration value must be a number")
     .int("Duration value must be an integer")
     .min(1, "Duration value must be at least 1")
-    .max(365, "Duration value must not exceed 365 days"),
+    .max(365, "Duration value must not exceed 365"),
   duration_unit: z.enum(["days", "weeks", "months"], {
     message: "Duration unit must be days, weeks, or months",
   }),
@@ -26,9 +26,72 @@ const BaseProgramSchema = z.object({
     .number("Price must be a number")
     .min(0, "Price must be at least 0")
     .max(999_999, "Price must not exceed 999,999"),
-  status: z.enum(["active", "inactive", "archived"], {
-    message: "Status must be active, inactive, or archived",
+  status: z.enum(["draft", "published", "archived"], {
+    message: "Status must be draft, published, or archived",
   }),
+
+  // Relationship arrays (nullable)
+  ideals: z
+    .array(
+      z.object({
+        description: z
+          .string("Description is required")
+          .min(1, "Description is required")
+          .max(255, "Description must not exceed 255 characters"),
+      }),
+    )
+    .nullable()
+    .optional(),
+  key_features: z
+    .array(
+      z.object({
+        feature: z
+          .string("Feature is required")
+          .min(1, "Feature is required")
+          .max(255, "Feature must not exceed 255 characters"),
+      }),
+    )
+    .nullable()
+    .optional(),
+  expected_outcomes: z
+    .array(
+      z.object({
+        outcome: z
+          .string("Outcome is required")
+          .min(1, "Outcome is required")
+          .max(255, "Outcome must not exceed 255 characters"),
+      }),
+    )
+    .nullable()
+    .optional(),
+  structures: z
+    .array(
+      z.object({
+        week: z
+          .string("Week is required")
+          .min(1, "Week is required")
+          .max(50, "Week must not exceed 50 characters"),
+        title: z
+          .string("Title is required")
+          .min(1, "Title is required")
+          .max(255, "Title must not exceed 255 characters"),
+        description: z.string().optional().nullable(),
+      }),
+    )
+    .nullable()
+    .optional(),
+  faqs: z
+    .array(
+      z.object({
+        question: z
+          .string("Question is required")
+          .min(1, "Question is required")
+          .max(255, "Question must not exceed 255 characters"),
+        answer: z.string("Answer is required").min(1, "Answer is required"),
+      }),
+    )
+    .nullable()
+    .optional(),
 });
 
 const ThumbnailSchema = z
@@ -47,7 +110,76 @@ export const CreateProgramSchema = BaseProgramSchema.extend({
 
 // Schema for editing existing programs (thumbnail can be File or URL string and is optional)
 export const EditProgramSchema = BaseProgramSchema.extend({
-  thumbnail: ThumbnailSchema.or(z.string().url("Invalid thumbnail URL")).optional(),
+  // For edit: file optional; allow preexisting URL string to keep current image
+  thumbnail: ThumbnailSchema.or(z.string().url("Invalid thumbnail URL")).optional().nullable(),
+
+  // For edit, ids are allowed for upsert/sync
+  ideals: z
+    .array(
+      z.object({
+        id: z.number().int().positive().optional().nullable(),
+        description: z
+          .string("Description is required")
+          .min(1, "Description is required")
+          .max(255, "Description must not exceed 255 characters"),
+      }),
+    )
+    .nullable()
+    .optional(),
+  key_features: z
+    .array(
+      z.object({
+        id: z.number().int().positive().optional().nullable(),
+        feature: z
+          .string("Feature is required")
+          .min(1, "Feature is required")
+          .max(255, "Feature must not exceed 255 characters"),
+      }),
+    )
+    .nullable()
+    .optional(),
+  expected_outcomes: z
+    .array(
+      z.object({
+        id: z.number().int().positive().optional().nullable(),
+        outcome: z
+          .string("Outcome is required")
+          .min(1, "Outcome is required")
+          .max(255, "Outcome must not exceed 255 characters"),
+      }),
+    )
+    .nullable()
+    .optional(),
+  structures: z
+    .array(
+      z.object({
+        id: z.number().int().positive().optional().nullable(),
+        week: z
+          .string("Week is required")
+          .min(1, "Week is required")
+          .max(50, "Week must not exceed 50 characters"),
+        title: z
+          .string("Title is required")
+          .min(1, "Title is required")
+          .max(255, "Title must not exceed 255 characters"),
+        description: z.string().optional().nullable(),
+      }),
+    )
+    .nullable()
+    .optional(),
+  faqs: z
+    .array(
+      z.object({
+        id: z.number().int().positive().optional().nullable(),
+        question: z
+          .string("Question is required")
+          .min(1, "Question is required")
+          .max(255, "Question must not exceed 255 characters"),
+        answer: z.string("Answer is required").min(1, "Answer is required"),
+      }),
+    )
+    .nullable()
+    .optional(),
 });
 
 // Default schema

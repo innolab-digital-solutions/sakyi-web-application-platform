@@ -55,7 +55,7 @@ export default function ProgramForm({
       duration_value: 1,
       duration_unit: "days" as "days" | "weeks" | "months",
       price: 0,
-      status: "active" as "active" | "inactive" | "archived",
+      status: "draft" as "draft" | "published" | "archived",
     },
     {
       validate: isEdit ? EditProgramSchema : CreateProgramSchema,
@@ -135,7 +135,7 @@ export default function ProgramForm({
         duration_value: Number(defaultValues.duration_value) || 1,
         duration_unit: (defaultValues.duration_unit as "days" | "weeks" | "months") ?? "days",
         price: Number(defaultValues.price) || 0,
-        status: (defaultValues.status as "active" | "inactive" | "archived") ?? "active",
+        status: (defaultValues.status as "draft" | "published" | "archived") ?? "draft",
       };
 
       form.setDataAndDefaults(newData);
@@ -147,7 +147,7 @@ export default function ProgramForm({
         duration_value: 1,
         duration_unit: "days" as "days" | "weeks" | "months",
         price: 0,
-        status: "active" as "active" | "inactive" | "archived",
+        status: "draft" as "draft" | "published" | "archived",
       };
 
       form.setDataAndDefaults(newData);

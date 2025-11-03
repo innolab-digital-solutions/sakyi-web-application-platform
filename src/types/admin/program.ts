@@ -18,7 +18,7 @@ export interface ProgramExpectedOutcome {
 
 export interface ProgramStructure {
   id: number;
-  week: number;
+  week: string;
   title: string;
   description: string;
 }

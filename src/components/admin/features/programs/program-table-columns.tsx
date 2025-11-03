@@ -1,12 +1,12 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { Archive, CheckCircle, Ellipsis, FileEdit, SquarePen } from "lucide-react";
+import { Archive, CheckCircle, Ellipsis, Eye, FileEdit, SquarePen } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
 
 import ProgramDeletionDialog from "@/components/admin/features/programs/program-deletion-dialog";
-import ProgramForm from "@/components/admin/features/programs/program-form";
 import DisabledTooltip from "@/components/shared/disabled-tooltip";
 import SortableHeader from "@/components/shared/table/sortable-header";
 import { Badge } from "@/components/ui/badge";
@@ -19,6 +19,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { PATHS } from "@/config/paths";
 import { Program } from "@/types/admin/program";
 import { cn } from "@/utils/shared/cn";
 
@@ -164,29 +165,41 @@ export const programsTableColumns: ColumnDef<Program>[] = [
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
-              <ProgramForm
-                mode="edit"
-                defaultValues={program}
-                trigger={(() => {
-                  const isEditable = Boolean(program.actions?.editable);
-                  const disabledReason = isEditable
-                    ? undefined
-                    : "You don't have permission to edit this program.";
-                  return (
-                    <DisabledTooltip reason={disabledReason}>
-                      <Button
-                        variant="outline"
-                        className="hover:!bg-accent/10 group hover:!text-accent hover:!ring-none flex w-full !cursor-pointer items-center justify-start gap-1.5 !border-none text-sm font-medium text-gray-700 shadow-none"
-                        aria-label="Edit program"
-                        disabled={!isEditable}
-                      >
+              {(() => {
+                const isEditable = Boolean(program.actions?.editable);
+                const disabledReason = isEditable
+                  ? undefined
+                  : "You don't have permission to edit this program.";
+                return (
+                  <DisabledTooltip reason={disabledReason}>
+                    <Button
+                      asChild
+                      variant="outline"
+                      className="hover:!bg-accent/10 group hover:!text-accent hover:!ring-none flex w-full !cursor-pointer items-center justify-start gap-1.5 !border-none text-sm font-medium text-gray-700 shadow-none"
+                      aria-label="Edit program"
+                      disabled={!isEditable}
+                    >
+                      <Link href={PATHS.ADMIN.PROGRAMS.EDIT(program.id)}>
                         <SquarePen className="group-hover:text-accent h-4 w-4 transition-colors duration-150" />
                         <span>Edit Program</span>
-                      </Button>
-                    </DisabledTooltip>
-                  );
-                })()}
-              />
+                      </Link>
+                    </Button>
+                  </DisabledTooltip>
+                );
+              })()}
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Button
+                asChild
+                variant="outline"
+                className="group hover:!text-foreground hover:!ring-none flex w-full !cursor-pointer items-center justify-start gap-1.5 !border-none text-sm font-medium text-gray-700 shadow-none hover:!bg-gray-100"
+                aria-label="View details"
+              >
+                <Link href={PATHS.ADMIN.PROGRAMS.DETAIL(program.id)}>
+                  <Eye className="h-4 w-4" />
+                  <span>View Details</span>
+                </Link>
+              </Button>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
