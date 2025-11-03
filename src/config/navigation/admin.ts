@@ -286,6 +286,13 @@ export const adminNavigation: NavGroup[] = [
             active: false,
             permission: "blog.categories.view",
           },
+          {
+            name: "Blog Posts",
+            path: PATHS.ADMIN.BLOG_POSTS.LIST,
+            params: {},
+            active: false,
+            permission: "blog.posts.view",
+          },
         ],
       },
     ],

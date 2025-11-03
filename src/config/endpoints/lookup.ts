@@ -6,14 +6,10 @@
  * Requires authentication.
  */
 export const LOOKUP_ENDPOINTS = {
-  /** Available permissions list */
   PERMISSIONS: "/lookup/permissions",
-
-  /** Workout categories for dropdowns */
   WORKOUT_CATEGORIES: "/lookup/workout-categories",
-
-  /** Food categories for dropdowns */
   FOOD_CATEGORIES: "/lookup/food-categories",
   FOOD_ITEMS: "/lookup/food-items",
   UNITS: "/lookup/units",
+  BLOG_CATEGORIES: "/lookup/blog-categories",
 } as const;

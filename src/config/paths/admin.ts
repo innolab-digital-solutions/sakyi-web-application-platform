@@ -57,4 +57,9 @@ export const ADMIN_PATHS = {
   BLOG_CATEGORIES: {
     LIST: "/admin/blog-categories",
   },
+
+  /** Blog posts routes */
+  BLOG_POSTS: {
+    LIST: "/admin/blog-posts",
+  },
 } as const;
