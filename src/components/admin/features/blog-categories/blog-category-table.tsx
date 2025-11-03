@@ -17,8 +17,9 @@ export default function BlogCategoryTable() {
       skeleton={{
         customSkeletons: {
           name: (
-            <div className="flex flex-col gap-2">
-              <Skeleton className="bg-muted/60 h-4 w-32 animate-pulse rounded" />
+            <div className="space-y-2">
+              <Skeleton className="h-4 w-32 animate-pulse rounded" />
+              <Skeleton className="h-3 w-96 animate-pulse rounded" />
             </div>
           ),
           actions: (

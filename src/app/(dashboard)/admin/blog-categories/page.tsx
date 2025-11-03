@@ -1,4 +1,4 @@
-import { FolderKanban } from "lucide-react";
+import { FileText } from "lucide-react";
 import type { Metadata } from "next";
 
 import BlogCategoryForm from "@/components/admin/features/blog-categories/blog-category-form";
@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 export default function FoodCategoryListPage() {
   return (
     <ResourceListPage
-      icon={FolderKanban}
+      icon={FileText}
       title="Blog Categories"
       description="Manage and organize blog categories to structure your content. Easily create, edit, and maintain categories for a better reading experience."
       createTrigger={
