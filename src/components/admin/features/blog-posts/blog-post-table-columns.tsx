@@ -4,17 +4,18 @@ import { ColumnDef } from "@tanstack/react-table";
 import dayjs from "dayjs";
 import { Archive, CalendarDays, CheckCircle, FileEdit, SquarePen } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
 
 import DisabledTooltip from "@/components/shared/disabled-tooltip";
 import SortableHeader from "@/components/shared/table/sortable-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { PATHS } from "@/config/paths";
 import { BlogPost } from "@/types/admin/blog-post";
 import { cn } from "@/utils/shared/cn";
 
 import BlogPostDeletionDialog from "./blog-post-deletion-dialog";
-import BlogPostForm from "./blog-post-form";
 
 const statusMeta = {
   draft: {
@@ -133,29 +134,28 @@ export const blogPostsTableColumns: ColumnDef<BlogPost>[] = [
 
       return (
         <div className="flex items-center space-x-0.5">
-          <BlogPostForm
-            mode="edit"
-            defaultValues={blogPost}
-            trigger={(() => {
-              const isEditable = Boolean(blogPost.actions?.editable);
-              const disabledReason = isEditable
+          <DisabledTooltip
+            reason={
+              blogPost.actions?.editable
                 ? undefined
-                : "You don't have permission to edit this post.";
-              return (
-                <DisabledTooltip reason={disabledReason}>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="hover:bg-accent/10 hover:text-accent text-accent flex cursor-pointer items-center justify-center text-sm font-semibold"
-                    disabled={!isEditable}
-                  >
-                    <SquarePen className="h-2 w-2" />
-                    <span>Edit</span>
-                  </Button>
-                </DisabledTooltip>
-              );
-            })()}
-          />
+                : "You don't have permission to edit this post."
+            }
+          >
+            <Button
+              variant="ghost"
+              size="sm"
+              asChild
+              disabled={!Boolean(blogPost.actions?.editable)}
+            >
+              <Link
+                href={PATHS.ADMIN.BLOG_POSTS.EDIT(blogPost.id)}
+                className="hover:bg-accent/10 hover:text-accent text-accent flex cursor-pointer items-center justify-center text-sm font-semibold disabled:hover:!bg-transparent disabled:hover:!text-inherit"
+              >
+                <SquarePen className="h-2 w-2" />
+                <span>Edit</span>
+              </Link>
+            </Button>
+          </DisabledTooltip>
 
           <BlogPostDeletionDialog blogPost={blogPost} />
         </div>

@@ -18,7 +18,13 @@ const ThumbnailSchema = z
 
 // Schema for creating new blog posts (thumbnail required as a File)
 export const CreateBlogPostSchema = z.object({
-  blog_category_id: z.number("Category is required").int("Category selection is invalid"),
+  blog_category_id: z.preprocess(
+    (value) => (typeof value === "string" ? Number.parseInt(value, 10) : value),
+    z
+      .number("Category is required")
+      .int("Category selection is invalid")
+      .min(1, "Category selection is required"),
+  ),
   thumbnail: ThumbnailSchema,
   title: z
     .string("Title is required")
@@ -32,7 +38,13 @@ export const CreateBlogPostSchema = z.object({
 
 // Schema for editing existing blog posts (thumbnail can be File or string and is required)
 export const EditBlogPostSchema = z.object({
-  blog_category_id: z.number("Category is required").int("Category selection is invalid"),
+  blog_category_id: z.preprocess(
+    (value) => (typeof value === "string" ? Number.parseInt(value, 10) : value),
+    z
+      .number("Category is required")
+      .int("Category selection is invalid")
+      .min(1, "Category selection is required"),
+  ),
   thumbnail: ThumbnailSchema.or(z.string().min(5, "Thumbnail is required")),
   title: z
     .string("Title is required")

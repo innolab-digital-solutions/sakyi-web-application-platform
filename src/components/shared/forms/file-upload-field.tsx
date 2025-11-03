@@ -1,15 +1,13 @@
 /* eslint-disable unicorn/no-null */
 "use client";
 
-import { ImagePlus, Upload, X } from "lucide-react";
+import { Upload, X } from "lucide-react";
 import Image from "next/image";
 import React, { useCallback, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/utils/shared/cn";
-
-type Mode = "default" | "avatar";
 
 const formatFileSize = (bytes: number) => {
   if (bytes === 0) return "0 B";
@@ -60,7 +58,6 @@ export interface FileUploadFieldProperties {
   required?: boolean;
   disabled?: boolean;
   multiple?: boolean;
-  mode?: Mode;
   // Value can be File, File[], string, or null/undefined
   value?: File | File[] | string | null;
   onChange?: (value: File | File[] | null) => void;
@@ -82,7 +79,6 @@ export function FileUploadField({
   required = false,
   disabled = false,
   multiple = false,
-  mode = "default",
   value,
   onChange,
   accept,
@@ -97,11 +93,6 @@ export function FileUploadField({
   const [dragOver, setDragOver] = useState(false);
   const [previewUrls, setPreviewUrls] = useState<Map<File, string>>(new Map());
 
-  const isAvatar = mode === "avatar";
-  const isMultiple = isAvatar ? false : multiple;
-  // For single mode, we don't need maxFiles since it's always 1
-  const computedMaxFiles = isMultiple ? maxFiles : 1;
-
   // Normalize value to array for easier handling
   const normalizedValue = React.useMemo(() => {
     if (!value) return [];
@@ -110,8 +101,8 @@ export function FileUploadField({
     return [value];
   }, [value]);
 
-  // Get existing URL if value is a string
-  const existingUrl = typeof value === "string" ? value : undefined;
+  // Get existing URL if value is a string (and not empty)
+  const existingUrl = typeof value === "string" && value.length > 0 ? value : undefined;
 
   // Create preview URLs for File objects
   React.useEffect(() => {
@@ -147,8 +138,8 @@ export function FileUploadField({
       let filesToProcess = fileArray;
 
       // Check max files
-      if (computedMaxFiles && fileArray.length > computedMaxFiles) {
-        filesToProcess = fileArray.slice(0, computedMaxFiles);
+      if (multiple && maxFiles && fileArray.length > maxFiles) {
+        filesToProcess = fileArray.slice(0, maxFiles);
       }
 
       // Check file size
@@ -173,14 +164,14 @@ export function FileUploadField({
       }
 
       if (onChange) {
-        if (isMultiple) {
-          onChange(filesToProcess);
+        if (multiple) {
+          onChange(filesToProcess.length > 0 ? filesToProcess : null);
         } else {
-          onChange(filesToProcess[0] || undefined);
+          onChange(filesToProcess[0] || null);
         }
       }
     },
-    [disabled, computedMaxFiles, maxSize, accept, onChange, isMultiple],
+    [disabled, multiple, maxFiles, maxSize, accept, onChange],
   );
 
   const handleInputChange = useCallback(
@@ -223,27 +214,24 @@ export function FileUploadField({
   const handleRemove = useCallback(
     (fileToRemove: File) => {
       if (onChange) {
-        if (isMultiple) {
+        if (multiple) {
           const newFiles = normalizedValue.filter((file) => file !== fileToRemove);
-          onChange(newFiles);
+          onChange(newFiles.length > 0 ? newFiles : null);
         } else {
           onChange(null);
         }
       }
     },
-    [onChange, isMultiple, normalizedValue],
+    [onChange, multiple, normalizedValue],
   );
 
   const handleClear = useCallback(() => {
     if (onChange) {
-      onChange(isMultiple ? [] : null);
-    }
-  }, [onChange, isMultiple]);
-
-  // Special handler for avatar mode that handles both files and URLs
-  const handleAvatarClear = useCallback(() => {
-    if (onChange) {
       onChange(null);
+    }
+    // Reset the input element
+    if (inputReference.current) {
+      inputReference.current.value = "";
     }
   }, [onChange]);
 
@@ -254,7 +242,14 @@ export function FileUploadField({
   }, [disabled]);
 
   const hasError = Boolean(error);
-  const hasFiles = normalizedValue.length > 0 || existingUrl;
+  // Only show files if value is actually present (not null, undefined, or empty)
+  const hasFiles = normalizedValue.length > 0 || Boolean(existingUrl);
+  const isSingleMode = !multiple;
+  const hasSingleFile = isSingleMode && hasFiles;
+  const singleFile = isSingleMode && normalizedValue.length > 0 ? normalizedValue[0] : null;
+  const singlePreviewUrl = isSingleMode
+    ? existingUrl || (singleFile ? previewUrls.get(singleFile) : undefined)
+    : undefined;
 
   const getFileIcon = (file: File) => {
     if (file.type.startsWith("image/")) return "🖼️";
@@ -263,124 +258,6 @@ export function FileUploadField({
     if (file.type.startsWith("text/")) return "📄";
     return "📁";
   };
-
-  if (isAvatar) {
-    return (
-      <div className={cn("space-y-2", containerClassName)}>
-        {label && (
-          <Label
-            htmlFor={id}
-            className={cn(
-              "text-sm leading-none font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70",
-              labelClassName,
-            )}
-          >
-            {label}
-            {required && (
-              <span className="ml-1 text-red-500" aria-label="required">
-                *
-              </span>
-            )}
-          </Label>
-        )}
-
-        {description && (
-          <p
-            className={cn("text-muted-foreground text-sm", descriptionClassName)}
-            id={`${id}-description`}
-          >
-            {description}
-          </p>
-        )}
-
-        <div className="flex items-center gap-4">
-          {/* Avatar Preview */}
-          <div
-            className={cn(
-              "relative flex size-24 shrink-0 cursor-pointer items-center justify-center rounded-full border border-dashed transition-colors",
-              "bg-background hover:bg-accent/10",
-              hasError && "border-red-500",
-              disabled && "cursor-not-allowed opacity-50",
-            )}
-            onClick={handleClick}
-          >
-            {hasFiles ? (
-              <div className="group relative size-full overflow-hidden rounded-full">
-                {(existingUrl || previewUrls.get(normalizedValue[0])) && (
-                  <Image
-                    src={existingUrl || previewUrls.get(normalizedValue[0]) || ""}
-                    alt="Preview"
-                    fill
-                    className="rounded-full object-cover"
-                    unoptimized={!existingUrl}
-                  />
-                )}
-                <div className="absolute inset-0 hidden items-center justify-center bg-black/40 group-hover:flex">
-                  <span className="text-xs text-white">Change</span>
-                </div>
-              </div>
-            ) : (
-              <div className="flex flex-col items-center justify-center text-center">
-                <ImagePlus className="text-muted-foreground size-6" />
-                <span className="text-muted-foreground mt-1 text-xs">Upload</span>
-              </div>
-            )}
-          </div>
-
-          {/* File Info */}
-          <div className="space-y-2">
-            <p className="text-sm font-medium">Avatar</p>
-            <p className="text-muted-foreground text-xs">
-              PNG, JPG, GIF up to {maxSize ? formatFileSize(maxSize) : "5MB"}
-            </p>
-            {hasFiles && (
-              <div className="flex items-center gap-2">
-                <div className="text-muted-foreground text-sm">
-                  {normalizedValue[0] ? (
-                    <>
-                      <span className="text-foreground font-medium">{normalizedValue[0].name}</span>
-                      <span className="ml-2 text-xs">
-                        {formatFileSize(normalizedValue[0].size)}
-                      </span>
-                    </>
-                  ) : (
-                    <span className="text-foreground font-medium">Current image</span>
-                  )}
-                </div>
-                <Button variant="ghost" size="sm" disabled={disabled} onClick={handleAvatarClear}>
-                  Remove
-                </Button>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {hasError && (
-          <p
-            className={cn(
-              "animate-in slide-in-from-top-1 text-sm font-medium text-red-600",
-              errorClassName,
-            )}
-            id={`${id}-error`}
-            role="alert"
-          >
-            {error}
-          </p>
-        )}
-
-        <input
-          ref={inputReference}
-          type="file"
-          id={id}
-          accept={accept}
-          multiple={false}
-          disabled={disabled}
-          onChange={handleInputChange}
-          className="sr-only"
-        />
-      </div>
-    );
-  }
 
   return (
     <div className={cn("space-y-2", containerClassName)}>
@@ -409,38 +286,97 @@ export function FileUploadField({
           dragOver && "border-primary/30 bg-accent/30",
           hasError && "border-red-500 !bg-red-50",
           disabled && "cursor-not-allowed opacity-50",
+          hasSingleFile && "aspect-[16/9] border-solid p-0 sm:aspect-[4/3]",
         )}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
         onClick={handleClick}
       >
-        <div className="flex flex-col items-center gap-1 text-center">
-          <div className="flex items-center justify-center rounded-md border p-2.5">
-            <Upload className="text-muted-foreground size-4" />
+        {hasSingleFile ? (
+          // Single file preview - full box, no text
+          <div className="relative h-full w-full">
+            {singleFile && singleFile.type.startsWith("image/") && singlePreviewUrl ? (
+              <Image
+                src={singlePreviewUrl}
+                alt={singleFile.name}
+                fill
+                className="object-cover"
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                quality={90}
+                priority={false}
+                unoptimized={!existingUrl}
+              />
+            ) : existingUrl ? (
+              <Image
+                src={existingUrl}
+                alt="Preview"
+                fill
+                className="object-cover"
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                quality={90}
+                priority={false}
+                unoptimized={!existingUrl.startsWith("blob:")}
+              />
+            ) : singleFile ? (
+              <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
+                <span className="text-7xl">{getFileIcon(singleFile)}</span>
+              </div>
+            ) : null}
+            {/* Overlay with remove button */}
+            <div
+              className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity hover:opacity-100"
+              onClick={(event_) => event_.stopPropagation()}
+            >
+              <Button
+                type="button"
+                variant="destructive"
+                size="sm"
+                className="cursor-pointer shadow-lg"
+                onClick={(event_) => {
+                  event_.stopPropagation();
+                  event_.preventDefault();
+                  handleClear();
+                }}
+                disabled={disabled}
+              >
+                <X className="h-4 w-4" />
+                Remove
+              </Button>
+            </div>
           </div>
-          <p className="mt-3 text-sm font-medium">
-            {dragOver
-              ? isMultiple
-                ? "Drop files here"
-                : "Drop file here"
-              : isMultiple
-                ? "Drag & drop files here"
-                : "Drag & drop file here"}
-          </p>
-          <p className="text-muted-foreground text-xs font-semibold">
-            {getAcceptDescription(accept)} . Max size: {maxSize ? formatFileSize(maxSize) : "2MB"}
-          </p>
-        </div>
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
-          className="mt-2 w-fit cursor-pointer shadow-none hover:bg-gray-100 hover:text-gray-800"
-          disabled={disabled}
-        >
-          Browse files
-        </Button>
+        ) : (
+          // Default upload state
+          <>
+            <div className="flex flex-col items-center gap-1 text-center">
+              <div className="flex items-center justify-center rounded-md border p-2.5">
+                <Upload className="text-muted-foreground size-4" />
+              </div>
+              <p className="mt-3 text-sm font-medium">
+                {dragOver
+                  ? multiple
+                    ? "Drop files here"
+                    : "Drop file here"
+                  : multiple
+                    ? "Drag & drop files here"
+                    : "Drag & drop file here"}
+              </p>
+              <p className="text-muted-foreground text-xs font-semibold">
+                {getAcceptDescription(accept)} . Max size:{" "}
+                {maxSize ? formatFileSize(maxSize) : "2MB"}
+              </p>
+            </div>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="mt-2 w-fit cursor-pointer shadow-none hover:bg-gray-100 hover:text-gray-800"
+              disabled={disabled}
+            >
+              Browse files
+            </Button>
+          </>
+        )}
       </div>
 
       {description && (
@@ -452,8 +388,8 @@ export function FileUploadField({
         </p>
       )}
 
-      {/* File List */}
-      {hasFiles && (
+      {/* File List - Only show for multiple mode */}
+      {multiple && hasFiles && (
         <div className="space-y-2">
           {/* Existing URL preview */}
           {existingUrl && normalizedValue.length === 0 && (
@@ -548,7 +484,7 @@ export function FileUploadField({
         type="file"
         id={id}
         accept={accept}
-        multiple={isMultiple}
+        multiple={multiple}
         disabled={disabled}
         onChange={handleInputChange}
         className="sr-only"

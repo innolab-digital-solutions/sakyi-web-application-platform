@@ -61,5 +61,7 @@ export const ADMIN_PATHS = {
   /** Blog posts routes */
   BLOG_POSTS: {
     LIST: "/admin/blog-posts",
+    CREATE: "/admin/blog-posts/create",
+    EDIT: (id: string | number) => `/admin/blog-posts/${id}/edit`,
   },
 } as const;
