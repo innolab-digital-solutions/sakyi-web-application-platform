@@ -7,9 +7,9 @@ import CreateButton from "@/components/admin/shared/create-button";
 import ResourceListPage from "@/components/admin/shared/resource-list-page";
 
 export const metadata: Metadata = {
-  title: "Units | SaKyi Health & Wellness",
+  title: "Units — SaKyi Health & Wellness",
   description:
-    "Manage and standardize measurement units such as grams, kilograms, and liters for consistent nutrition tracking.",
+    "Standardize measurement units used across nutrition, workouts, and programs for consistent data entry.",
 };
 
 export default function UnitsListPage() {
@@ -17,7 +17,7 @@ export default function UnitsListPage() {
     <ResourceListPage
       icon={Scale}
       title="Units"
-      description="Manage and standardize measurement units such as grams, kilograms, and liters. Units are used throughout the dashboard to ensure consistency in meals, nutrition tracking, and workout planning."
+      description="Define clear names and abbreviations so measurements stay consistent across meals, workouts, and programs."
       createTrigger={<UnitForm mode="create" trigger={<CreateButton label="Add Unit" />} />}
       table={<UnitTable />}
     />

@@ -8,9 +8,8 @@ import { Button } from "@/components/ui/button";
 import { PATHS } from "@/config/paths";
 
 export const metadata: Metadata = {
-  title: "Blog Posts | SaKyi Health & Wellness",
-  description:
-    "Manage and organize blog posts to structure your content. Easily create, edit, and maintain posts for a better reading experience.",
+  title: "Blog Posts — SaKyi Health & Wellness",
+  description: "Create, edit, and publish articles that educate and inspire your audience.",
 };
 
 export default function BlogPostListPage() {
@@ -18,7 +17,7 @@ export default function BlogPostListPage() {
     <ResourceListPage
       icon={NotebookText}
       title="Blog Posts"
-      description="Manage and organize blog posts to structure your content. Easily create, edit, and maintain posts for a better reading experience."
+      description="Draft, review, and publish posts with the right metadata and categories for a great reading experience."
       createTrigger={
         <Button
           asChild

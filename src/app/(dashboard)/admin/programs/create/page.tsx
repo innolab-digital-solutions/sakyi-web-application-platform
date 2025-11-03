@@ -9,16 +9,18 @@ import { Button } from "@/components/ui/button";
 import { PATHS } from "@/config/paths";
 
 export const metadata: Metadata = {
-  title: "Create Program",
+  title: "Create Program — SaKyi Health & Wellness",
+  description:
+    "Set up a new program with the essentials, then add audience, features, outcomes, structure, and FAQs.",
 };
 
 export default function CreateProgramPage() {
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col gap-2">
       <PageHeader
         icon={ClipboardList}
         title="Create Program"
-        description="Create a new program with title, description, duration, pricing, status and related items."
+        description="Set the basics—thumbnail, title, description, duration, and price—then add audience, key features, outcomes, structure, and FAQs."
         actions={
           <Button variant="outline" asChild>
             <Link

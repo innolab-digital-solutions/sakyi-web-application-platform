@@ -7,9 +7,8 @@ import CreateButton from "@/components/admin/shared/create-button";
 import ResourceListPage from "@/components/admin/shared/resource-list-page";
 
 export const metadata: Metadata = {
-  title: "Blog Categories | SaKyi Health & Wellness",
-  description:
-    "Manage and organize blog categories to structure your content, making it easier for readers to find articles by topic or interest.",
+  title: "Blog Categories — SaKyi Health & Wellness",
+  description: "Organize content into clear categories so readers—and search—can find it fast.",
 };
 
 export default function FoodCategoryListPage() {
@@ -17,7 +16,7 @@ export default function FoodCategoryListPage() {
     <ResourceListPage
       icon={FileText}
       title="Blog Categories"
-      description="Manage and organize blog categories to structure your content. Easily create, edit, and maintain categories for a better reading experience."
+      description="Create and maintain categories to structure your content and improve discoverability."
       createTrigger={
         <BlogCategoryForm mode="create" trigger={<CreateButton label="Add Blog Category" />} />
       }

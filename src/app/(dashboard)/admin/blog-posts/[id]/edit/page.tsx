@@ -33,7 +33,7 @@ export default function EditBlogPostPage({
       <PageHeader
         icon={FileText}
         title="Edit Blog Post"
-        description="Edit the blog post details including title, description, content, and category."
+        description="Update title, summary, content, thumbnail, or category to keep your article accurate and up to date."
         actions={
           <Button variant="outline" asChild>
             <Link

@@ -143,11 +143,11 @@ export default function UnitForm({
       open={dialogOpen}
       onOpenChange={handleDialogOpenChange}
       onClose={() => form.reset()}
-      title={isEdit ? "Edit Unit Details" : "Create a New Unit"}
+      title={isEdit ? "Edit Unit" : "Create Unit"}
       description={
         isEdit
-          ? "Edit the name or abbreviation of this unit. Changes will update how measurements are displayed throughout the system."
-          : "Create a unit with a name and abbreviation to standardize measurements across your application."
+          ? "Update the unit’s name or abbreviation. Changes apply everywhere this unit is used."
+          : "Add a unit with a clear name and short abbreviation to standardize measurements across the admin."
       }
       icon={<Scale className="h-5 w-5" />}
       onSubmit={handleSubmit}

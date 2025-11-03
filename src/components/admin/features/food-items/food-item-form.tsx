@@ -1,6 +1,6 @@
 "use client";
 
-import { Salad } from "lucide-react";
+import { Carrot } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect } from "react";
 import { toast } from "sonner";
@@ -172,14 +172,14 @@ export default function FoodItemForm({
       open={dialogOpen}
       onOpenChange={handleDialogOpenChange}
       onClose={() => form.reset()}
-      title={title ?? (isEdit ? "Edit Food Item" : "Create a New Food Item")}
+      title={title ?? (isEdit ? "Edit Food Item" : "Create Food Item")}
       description={
         description ??
         (isEdit
-          ? "Edit the food item's details. Changes will update menus and nutritional information."
-          : "Create a food item with category, unit, calories, and description.")
+          ? "Update the item’s name, category, unit, and nutrition details. Changes apply anywhere this item is referenced."
+          : "Add a food with category, unit, and nutrition info to keep planning accurate and consistent.")
       }
-      icon={<Salad className="h-5 w-5" />}
+      icon={<Carrot className="h-5 w-5" />}
       onSubmit={handleSubmit}
       processing={form.processing}
       isEdit={isEdit}
@@ -237,14 +237,10 @@ export default function FoodItemForm({
         placeholder="Select a category..."
         searchPlaceholder="Search categories..."
         emptyMessage="No categories found."
-        options={
-          Array.isArray(categories?.data)
-            ? categories.data.map((category: FoodCategory) => ({
-                value: String(category.id),
-                label: category.name,
-              }))
-            : []
-        }
+        options={(Array.isArray(categories?.data)
+          ? (categories?.data as unknown as FoodCategory[])
+          : []
+        ).map((category: FoodCategory) => ({ value: String(category.id), label: category.name }))}
         value={String(form.data.food_category_id ?? "")}
         onChange={(value: string) => form.setData("food_category_id", Number(value))}
         error={form.errors.food_category_id as string}
@@ -261,14 +257,9 @@ export default function FoodItemForm({
         placeholder="Select a unit..."
         searchPlaceholder="Search units..."
         emptyMessage="No units found."
-        options={
-          Array.isArray(units?.data)
-            ? units.data.map((unit: Unit) => ({
-                value: String(unit.id),
-                label: unit.name,
-              }))
-            : []
-        }
+        options={(Array.isArray(units?.data) ? (units?.data as unknown as Unit[]) : []).map(
+          (unit: Unit) => ({ value: String(unit.id), label: unit.name }),
+        )}
         value={String(form.data.unit_id ?? "")}
         onChange={(value: string) => form.setData("unit_id", Number(value))}
         error={form.errors.unit_id as string}

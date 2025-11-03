@@ -8,9 +8,9 @@ import { Button } from "@/components/ui/button";
 import { PATHS } from "@/config/paths";
 
 export const metadata: Metadata = {
-  title: "Program Management | SaKyi Health & Wellness",
+  title: "Programs — SaKyi Health & Wellness",
   description:
-    "Manage wellness programs including fitness routines, nutrition plans, and health challenges.",
+    "Create and manage programs with clear outcomes and structure. Keep offerings organized and easy to maintain.",
 };
 
 export default function ProgramsListPage() {
@@ -18,7 +18,7 @@ export default function ProgramsListPage() {
     <ResourceListPage
       icon={ClipboardList}
       title="Program Management"
-      description="Manage all your organization’s health, wellness, coaching, and guardianship programs here. Organize, update, and present services to better serve your clients’ needs."
+      description="Design, organize, and maintain your programs. Publish with clear outcomes and structure so clients know exactly what to expect."
       createTrigger={
         <Button asChild>
           <Link href={PATHS.ADMIN.PROGRAMS.CREATE}>Add Program</Link>

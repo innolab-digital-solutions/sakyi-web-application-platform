@@ -15,14 +15,14 @@ export default function PageHeader({
   actions,
 }: PageHeaderProperties) {
   return (
-    <div className="mb-6 flex items-center justify-between">
+    <div className="mb-4 flex items-center justify-between">
       <div className="flex w-full flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-foreground text-md mb-1 flex items-center gap-2 font-bold">
-            {Icon && <Icon className="h-5 w-5" />}
-            {title}
-          </h1>
-          <p className="text-muted-foreground text-sm font-medium">{description}</p>
+        <div className="flex items-start gap-2">
+          <div className="mt-1">{Icon && <Icon className="h-5 w-5" />}</div>
+          <div className="flex flex-col">
+            <h1 className="text-foreground text-md flex items-center font-bold">{title}</h1>
+            <p className="text-muted-foreground text-sm font-medium">{description}</p>
+          </div>
         </div>
 
         {actions && (

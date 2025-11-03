@@ -159,12 +159,12 @@ export default function BlogCategoryForm({
       open={dialogOpen}
       onOpenChange={handleDialogOpenChange}
       onClose={() => form.reset()}
-      title={title ?? (isEdit ? "Edit Blog Category" : "Create a New Blog Category")}
+      title={title ?? (isEdit ? "Edit Blog Category" : "Create Blog Category")}
       description={
         description ??
         (isEdit
-          ? "Edit the name or description of this blog category. Changes will update blog posts and categories."
-          : "Create a blog category with a name and description to organize your blog posts.")
+          ? "Update the category’s name or description. Changes apply to all posts filed under this category."
+          : "Add a category with a clear name and short description to keep your content structured and discoverable.")
       }
       icon={<FileText className="h-5 w-5" />}
       onSubmit={handleSubmit}

@@ -149,12 +149,12 @@ export default function RoleForm({
       open={dialogOpen}
       onOpenChange={handleDialogOpenChange}
       onClose={() => form.reset()}
-      title={title ?? (isEdit ? "Edit Role" : "Create a New Role")}
+      title={title ?? (isEdit ? "Edit Role" : "Create Role")}
       description={
         description ??
         (isEdit
-          ? "Edit the name or description of this role. Changes will update user access and permissions."
-          : "Create a role with a name and description to manage user access and permissions.")
+          ? "Update the role’s name or description. Changes apply immediately to all members assigned to this role."
+          : "Give this role a clear name and a short description. You can assign permissions after creating it to control what admins can view and manage.")
       }
       icon={<ShieldCheck className="h-5 w-5" />}
       onSubmit={handleSubmit}

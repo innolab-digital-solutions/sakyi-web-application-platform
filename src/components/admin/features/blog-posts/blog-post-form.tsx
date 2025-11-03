@@ -135,9 +135,8 @@ export default function BlogPostForm({ blogPost }: { blogPost?: BlogPost }) {
               <div>
                 <h3 className="text-[15px] font-semibold tracking-tight text-gray-900">Content</h3>
                 <p className="mt-1 text-sm text-gray-500">
-                  Provide the essential information for your blog post, including the category,
-                  title, description, and main content. Well-organized and detailed content helps
-                  engage your audience and enhances the visibility of your post.
+                  Add the essentials—category, title, short summary, and the main content. Keep it
+                  clear and well‑structured to help readers and search discover your post.
                 </p>
               </div>
 

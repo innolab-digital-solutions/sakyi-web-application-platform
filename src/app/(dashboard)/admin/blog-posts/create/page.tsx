@@ -9,7 +9,8 @@ import { Button } from "@/components/ui/button";
 import { PATHS } from "@/config/paths";
 
 export const metadata: Metadata = {
-  title: "Create Blog Post",
+  title: "Create Blog Post — SaKyi Health & Wellness",
+  description: "Add thumbnail, title, summary, content, and category; save as draft or publish.",
 };
 
 export default function CreateBlogPostPage() {
@@ -18,7 +19,7 @@ export default function CreateBlogPostPage() {
       <PageHeader
         icon={FileText}
         title="Create Blog Post"
-        description="Create a new blog post with thumbnail, title, description, content, and category."
+        description="Add a thumbnail, title, short summary, content, and category. Save as draft or publish when ready."
         actions={
           <Button variant="outline" asChild>
             <Link
