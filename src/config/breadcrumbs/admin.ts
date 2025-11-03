@@ -47,6 +47,22 @@ export const adminBreadcrumbs: Breadcrumbs = {
     { label: "Program Management", href: PATHS.ADMIN.PROGRAMS.LIST },
   ],
 
+  /** Programs create page */
+  "/admin/programs/create": [
+    { label: "Admin Control Panel" },
+    { label: "Programs & Clients" },
+    { label: "Program Management", href: PATHS.ADMIN.PROGRAMS.LIST },
+    { label: "Create" },
+  ],
+
+  /** Programs edit page (dynamic: :id replaced at runtime) */
+  "/admin/programs/:id/edit": [
+    { label: "Admin Control Panel" },
+    { label: "Programs & Clients" },
+    { label: "Program Management", href: PATHS.ADMIN.PROGRAMS.LIST },
+    { label: "Edit" },
+  ],
+
   /** Onboarding forms list page */
   "/admin/onboarding-forms": [
     { label: "Admin Control Panel" },

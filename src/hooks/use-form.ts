@@ -124,7 +124,7 @@ export const useForm = <TSchema extends ZodType>(
     }: {
       method: string;
       url: string;
-      data: T;
+      data: T | FormData;
     }) => {
       const response = await http[method as keyof typeof http]<T>(url, formData, {
         throwOnError: false,
@@ -393,12 +393,22 @@ export const useForm = <TSchema extends ZodType>(
         options.tanstack &&
         (method === "post" || method === "put" || method === "patch" || method === "delete")
       ) {
-        const payload =
+        const rawPayload =
           submitOptions.transform || options.transform
-            ? ((submitOptions.transform || options.transform)?.(data) as T)
-            : data;
+            ? ((submitOptions.transform || options.transform)?.(data) as T | FormData)
+            : (data as T | FormData);
+        let requestMethod: typeof method = method;
+        let payload: T | FormData = rawPayload;
+        if (
+          (method === "put" || method === "patch" || method === "delete") &&
+          rawPayload instanceof FormData
+        ) {
+          rawPayload.append("_method", method.toUpperCase());
+          requestMethod = "post";
+          payload = rawPayload;
+        }
         formMutation.mutate(
-          { method, url, data: payload as T },
+          { method: requestMethod, url, data: payload },
           {
             onSuccess: (response) => {
               submitOptions.onSuccess?.(response);
@@ -420,16 +430,33 @@ export const useForm = <TSchema extends ZodType>(
           signal: abortController.current.signal,
         };
 
-        const payload =
+        const rawPayload =
           submitOptions.transform || options.transform
-            ? ((submitOptions.transform || options.transform)?.(data) as unknown)
-            : data;
-        const response = await (method === "get" || method === "delete"
-          ? http[method]<T>(url, { ...requestOptions, throwOnError: false })
-          : http[method]<T>(url, payload as BodyInit | Record<string, unknown> | unknown[], {
-              ...requestOptions,
-              throwOnError: false,
-            }));
+            ? ((submitOptions.transform || options.transform)?.(data) as
+                | BodyInit
+                | Record<string, unknown>
+                | unknown[])
+            : (data as BodyInit | Record<string, unknown> | unknown[]);
+
+        let requestMethod: typeof method = method;
+        let bodyToSend: BodyInit | Record<string, unknown> | unknown[] | undefined = rawPayload;
+        if (
+          (method === "put" || method === "patch" || method === "delete") &&
+          typeof FormData !== "undefined" &&
+          rawPayload instanceof FormData
+        ) {
+          (rawPayload as FormData).append("_method", method.toUpperCase());
+          requestMethod = "post";
+          bodyToSend = rawPayload as FormData;
+        }
+
+        const response = await (requestMethod === "get" || requestMethod === "delete"
+          ? http[requestMethod]<T>(url, { ...requestOptions, throwOnError: false })
+          : http[requestMethod]<T>(
+              url,
+              bodyToSend as BodyInit | Record<string, unknown> | unknown[],
+              { ...requestOptions, throwOnError: false },
+            ));
 
         if (response.status === "error") {
           setErrors(((response as ApiError).errors || {}) as Errors<T>);

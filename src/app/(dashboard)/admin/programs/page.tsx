@@ -1,4 +1,4 @@
-import { ClipboardList } from "lucide-react";
+import { ClipboardList, Plus } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 
@@ -21,7 +21,13 @@ export default function ProgramsListPage() {
       description="Design, organize, and maintain your programs. Publish with clear outcomes and structure so clients know exactly what to expect."
       createTrigger={
         <Button asChild>
-          <Link href={PATHS.ADMIN.PROGRAMS.CREATE}>Add Program</Link>
+          <Link
+            href={PATHS.ADMIN.PROGRAMS.CREATE}
+            className="flex cursor-pointer items-center gap-2 font-semibold"
+          >
+            <Plus className="h-4 w-4" />
+            Add Program
+          </Link>
         </Button>
       }
       table={<ProgramTable />}

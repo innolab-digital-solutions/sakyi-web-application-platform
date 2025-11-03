@@ -281,102 +281,39 @@ export function FileUploadField({
       {/* Dropzone */}
       <div
         className={cn(
-          "relative flex cursor-pointer flex-col items-center justify-center gap-2 overflow-hidden rounded-md border-2 border-dashed bg-neutral-50 p-6 transition-colors",
+          "relative flex min-h-[88px] cursor-pointer items-center gap-3 overflow-hidden rounded-md border-2 border-dashed bg-neutral-50 px-4 py-3 transition-colors",
           "focus-visible:border-ring/50 hover:bg-neutral-100",
           dragOver && "border-primary/30 bg-accent/30",
           hasError && "border-red-500 !bg-red-50",
           disabled && "cursor-not-allowed opacity-50",
-          hasSingleFile && "aspect-[16/9] border-solid p-0 sm:aspect-[4/3]",
         )}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
         onClick={handleClick}
+        role="button"
+        aria-label="Upload file"
       >
-        {hasSingleFile ? (
-          // Single file preview - full box, no text
-          <div className="relative h-full w-full">
-            {singleFile && singleFile.type.startsWith("image/") && singlePreviewUrl ? (
-              <Image
-                src={singlePreviewUrl}
-                alt={singleFile.name}
-                fill
-                className="object-cover"
-                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                quality={90}
-                priority={false}
-                unoptimized={!existingUrl}
-              />
-            ) : existingUrl ? (
-              <Image
-                src={existingUrl}
-                alt="Preview"
-                fill
-                className="object-cover"
-                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                quality={90}
-                priority={false}
-                unoptimized={!existingUrl.startsWith("blob:")}
-              />
-            ) : singleFile ? (
-              <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
-                <span className="text-7xl">{getFileIcon(singleFile)}</span>
-              </div>
-            ) : null}
-            {/* Overlay with remove button */}
-            <div
-              className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity hover:opacity-100"
-              onClick={(event_) => event_.stopPropagation()}
-            >
-              <Button
-                type="button"
-                variant="destructive"
-                size="sm"
-                className="cursor-pointer shadow-lg"
-                onClick={(event_) => {
-                  event_.stopPropagation();
-                  event_.preventDefault();
-                  handleClear();
-                }}
-                disabled={disabled}
-              >
-                <X className="h-4 w-4" />
-                Remove
-              </Button>
-            </div>
+        {/* Minimal inline prompt */}
+        <div className="flex items-center gap-3">
+          <div className="flex size-8 items-center justify-center rounded border">
+            <Upload className="text-muted-foreground size-4" />
           </div>
-        ) : (
-          // Default upload state
-          <>
-            <div className="flex flex-col items-center gap-1 text-center">
-              <div className="flex items-center justify-center rounded-md border p-2.5">
-                <Upload className="text-muted-foreground size-4" />
-              </div>
-              <p className="mt-3 text-sm font-medium">
-                {dragOver
-                  ? multiple
-                    ? "Drop files here"
-                    : "Drop file here"
-                  : multiple
-                    ? "Drag & drop files here"
-                    : "Drag & drop file here"}
-              </p>
-              <p className="text-muted-foreground text-xs font-semibold">
-                {getAcceptDescription(accept)} . Max size:{" "}
-                {maxSize ? formatFileSize(maxSize) : "2MB"}
-              </p>
-            </div>
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              className="mt-2 w-fit cursor-pointer shadow-none hover:bg-gray-100 hover:text-gray-800"
-              disabled={disabled}
-            >
-              Browse files
-            </Button>
-          </>
-        )}
+          <div className="flex flex-col">
+            <span className="text-sm font-medium">
+              {dragOver
+                ? multiple
+                  ? "Drop files to upload"
+                  : "Drop file to upload"
+                : multiple
+                  ? "Click or drag files to upload"
+                  : "Click or drag a file to upload"}
+            </span>
+            <span className="text-muted-foreground text-xs font-semibold">
+              {getAcceptDescription(accept)} · Max {maxSize ? formatFileSize(maxSize) : "2MB"}
+            </span>
+          </div>
+        </div>
       </div>
 
       {description && (
@@ -388,8 +325,8 @@ export function FileUploadField({
         </p>
       )}
 
-      {/* File List - Only show for multiple mode */}
-      {multiple && hasFiles && (
+      {/* Previews for both single and multiple */}
+      {hasFiles && (
         <div className="space-y-2">
           {/* Existing URL preview */}
           {existingUrl && normalizedValue.length === 0 && (
