@@ -40,8 +40,7 @@ const BaseProgramSchema = z.object({
           .max(255, "Description must not exceed 255 characters"),
       }),
     )
-    .nullable()
-    .optional(),
+    .min(1, "At least one ideal is required"),
   key_features: z
     .array(
       z.object({
@@ -51,8 +50,7 @@ const BaseProgramSchema = z.object({
           .max(255, "Feature must not exceed 255 characters"),
       }),
     )
-    .nullable()
-    .optional(),
+    .min(1, "At least one key feature is required"),
   expected_outcomes: z
     .array(
       z.object({
@@ -62,8 +60,7 @@ const BaseProgramSchema = z.object({
           .max(255, "Outcome must not exceed 255 characters"),
       }),
     )
-    .nullable()
-    .optional(),
+    .min(1, "At least one expected outcome is required"),
   structures: z
     .array(
       z.object({
@@ -78,8 +75,7 @@ const BaseProgramSchema = z.object({
         description: z.string().optional().nullable(),
       }),
     )
-    .nullable()
-    .optional(),
+    .min(1, "At least one structure is required"),
   faqs: z
     .array(
       z.object({
@@ -90,8 +86,7 @@ const BaseProgramSchema = z.object({
         answer: z.string("Answer is required").min(1, "Answer is required"),
       }),
     )
-    .nullable()
-    .optional(),
+    .min(1, "At least one FAQ is required"),
 });
 
 const ThumbnailSchema = z
@@ -124,8 +119,7 @@ export const EditProgramSchema = BaseProgramSchema.extend({
           .max(255, "Description must not exceed 255 characters"),
       }),
     )
-    .nullable()
-    .optional(),
+    .min(1, "At least one ideal is required"),
   key_features: z
     .array(
       z.object({
@@ -136,8 +130,7 @@ export const EditProgramSchema = BaseProgramSchema.extend({
           .max(255, "Feature must not exceed 255 characters"),
       }),
     )
-    .nullable()
-    .optional(),
+    .min(1, "At least one key feature is required"),
   expected_outcomes: z
     .array(
       z.object({
@@ -148,8 +141,7 @@ export const EditProgramSchema = BaseProgramSchema.extend({
           .max(255, "Outcome must not exceed 255 characters"),
       }),
     )
-    .nullable()
-    .optional(),
+    .min(1, "At least one expected outcome is required"),
   structures: z
     .array(
       z.object({
@@ -165,8 +157,7 @@ export const EditProgramSchema = BaseProgramSchema.extend({
         description: z.string().optional().nullable(),
       }),
     )
-    .nullable()
-    .optional(),
+    .min(1, "At least one structure is required"),
   faqs: z
     .array(
       z.object({
@@ -178,8 +169,7 @@ export const EditProgramSchema = BaseProgramSchema.extend({
         answer: z.string("Answer is required").min(1, "Answer is required"),
       }),
     )
-    .nullable()
-    .optional(),
+    .min(1, "At least one FAQ is required"),
 });
 
 // Default schema

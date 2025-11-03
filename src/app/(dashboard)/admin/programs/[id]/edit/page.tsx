@@ -2,7 +2,7 @@
 
 import React from "react";
 
-import ProgramFormPage from "@/components/admin/features/programs/program-form-page";
+import ProgramForm from "@/components/admin/features/programs/program-form";
 import { ENDPOINTS } from "@/config/endpoints";
 import { useRequest } from "@/hooks/use-request";
 import { Program } from "@/types/admin/program";
@@ -33,5 +33,5 @@ export default function EditProgramPage({
     );
   }
 
-  return <ProgramFormPage program={loadedProgram} />;
+  return <ProgramForm program={loadedProgram} />;
 }

@@ -17,6 +17,10 @@ type FormOptions<TSchema extends ZodType> = {
   validate?: TSchema;
   /** Default values for form fields */
   defaults?: Partial<z.infer<TSchema>>;
+  /** Optional transform to run on data before submit (e.g., FormData builder) */
+  transform?: (
+    data: z.infer<TSchema> & Record<string, unknown>,
+  ) => BodyInit | Record<string, unknown> | unknown[];
   /** TanStack Query integration options */
   tanstack?: {
     queryKey?: string[];
@@ -35,6 +39,7 @@ type FormOptions<TSchema extends ZodType> = {
 type SubmitOptions<T> = {
   onSuccess?: (response: ApiResponse<T>) => void;
   onError?: (error: ApiError) => void;
+  transform?: (data: T) => BodyInit | Record<string, unknown> | unknown[];
 };
 
 /**
@@ -388,8 +393,12 @@ export const useForm = <TSchema extends ZodType>(
         options.tanstack &&
         (method === "post" || method === "put" || method === "patch" || method === "delete")
       ) {
+        const payload =
+          submitOptions.transform || options.transform
+            ? ((submitOptions.transform || options.transform)?.(data) as T)
+            : data;
         formMutation.mutate(
-          { method, url, data },
+          { method, url, data: payload as T },
           {
             onSuccess: (response) => {
               submitOptions.onSuccess?.(response);
@@ -411,9 +420,16 @@ export const useForm = <TSchema extends ZodType>(
           signal: abortController.current.signal,
         };
 
+        const payload =
+          submitOptions.transform || options.transform
+            ? ((submitOptions.transform || options.transform)?.(data) as unknown)
+            : data;
         const response = await (method === "get" || method === "delete"
           ? http[method]<T>(url, { ...requestOptions, throwOnError: false })
-          : http[method]<T>(url, data, { ...requestOptions, throwOnError: false }));
+          : http[method]<T>(url, payload as BodyInit | Record<string, unknown> | unknown[], {
+              ...requestOptions,
+              throwOnError: false,
+            }));
 
         if (response.status === "error") {
           setErrors(((response as ApiError).errors || {}) as Errors<T>);
