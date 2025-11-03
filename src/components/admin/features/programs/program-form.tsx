@@ -16,7 +16,7 @@ import { ENDPOINTS } from "@/config/endpoints";
 import { PATHS } from "@/config/paths";
 import { useForm } from "@/hooks/use-form";
 import { CreateProgramSchema, EditProgramSchema } from "@/lib/validations/admin/program-schema";
-import { Program } from "@/types/admin/program";
+import { Program, ProgramApiResponse } from "@/types/admin/program";
 
 type ProgramFormPageProperties = {
   program?: Program;
@@ -57,6 +57,83 @@ export default function ProgramFormPage({ program }: ProgramFormPageProperties) 
         invalidateQueries: ["admin-programs", "admin-program"],
         mutationOptions: {
           onSuccess: (response) => {
+            // Optimistically update list cache like role-form
+            form.queryCache.setQueryData<ProgramApiResponse>(
+              ["admin-programs"],
+              (previous) => {
+                const base: ProgramApiResponse =
+                  previous && previous.status === "success" && Array.isArray(previous.data)
+                    ? previous
+                    : ({
+                        status: "success",
+                        data: [] as Program[],
+                        message: (previous as { message?: string } | undefined)?.message ?? "",
+                      } as ProgramApiResponse);
+
+                const updatedFromServer = (response as unknown as { data?: Program | Program[] })
+                  .data as Program | Program[] | undefined;
+                const baseData = ((base?.data as Program[]) ?? []) as Program[];
+
+                if (isEdit && program?.id) {
+                  const nextProgram = Array.isArray(updatedFromServer)
+                    ? updatedFromServer[0]
+                    : (updatedFromServer as Program | undefined);
+                  const existing = baseData.find((p) => p.id === program.id);
+                  const merged =
+                    nextProgram ??
+                    (existing
+                      ? {
+                          ...existing,
+                          title: String(form.data.title ?? ""),
+                          description: String(form.data.description ?? ""),
+                          duration_value: Number(form.data.duration_value ?? 0),
+                          duration_unit: String(form.data.duration_unit ?? "days") as
+                            | "days"
+                            | "weeks"
+                            | "months",
+                          price: String(form.data.price ?? 0),
+                          status: String(form.data.status ?? "draft") as
+                            | "draft"
+                            | "published"
+                            | "archived",
+                          thumbnail_url:
+                            typeof form.data.thumbnail === "string"
+                              ? form.data.thumbnail
+                              : existing.thumbnail_url,
+                        }
+                      : undefined);
+                  if (!merged) return base;
+                  return {
+                    ...base,
+                    data: baseData.map((r) => (r.id === program.id ? merged : r)),
+                  } as ProgramApiResponse;
+                }
+
+                if (!isEdit && updatedFromServer) {
+                  const created = Array.isArray(updatedFromServer)
+                    ? updatedFromServer[0]
+                    : (updatedFromServer as Program);
+                  return { ...base, data: [created, ...baseData] } as ProgramApiResponse;
+                }
+
+                return base as ProgramApiResponse;
+              },
+              { all: true },
+            );
+
+            // Update the specific program cache too if available
+            if (isEdit && program?.id) {
+              form.queryCache.setQueryData(["admin-program", String(program.id)], (previous) => {
+                const nextProgram = (response as unknown as { data?: Program | Program[] })?.data;
+                if (!nextProgram) return previous;
+                return {
+                  status: "success",
+                  message: (previous as { message?: string } | undefined)?.message ?? "",
+                  data: Array.isArray(nextProgram) ? nextProgram[0] : nextProgram,
+                } as unknown;
+              });
+            }
+
             router.push(PATHS.ADMIN.PROGRAMS.LIST);
             toast.success(response.message);
           },
