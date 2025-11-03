@@ -64,4 +64,9 @@ export const ADMIN_PATHS = {
     CREATE: "/admin/blog-posts/create",
     EDIT: (id: string | number) => `/admin/blog-posts/${id}/edit`,
   },
+
+  /** Payment methods routes */
+  PAYMENT_METHODS: {
+    LIST: "/admin/payment-methods",
+  },
 } as const;

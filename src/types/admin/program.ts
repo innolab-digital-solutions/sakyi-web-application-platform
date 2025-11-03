@@ -1,6 +1,34 @@
 import { ApiResponse } from "@/types/shared/api";
 import { Pagination } from "@/types/shared/common";
 
+export interface ProgramIdeal {
+  id: number;
+  description: string;
+}
+
+export interface ProgramKeyFeature {
+  id: number;
+  feature: string;
+}
+
+export interface ProgramExpectedOutcome {
+  id: number;
+  outcome: string;
+}
+
+export interface ProgramStructure {
+  id: number;
+  week: number;
+  title: string;
+  description: string;
+}
+
+export interface ProgramFAQ {
+  id: number;
+  question: string;
+  answer: string;
+}
+
 export interface Program {
   id: number;
   thumbnail_url: string;
@@ -10,11 +38,16 @@ export interface Program {
   duration_value: number;
   duration_unit: "days" | "weeks" | "months";
   price: string;
-  status: "active" | "inactive" | "archived";
+  status: "draft" | "published" | "archived";
   currency: string;
+  ideals?: ProgramIdeal[];
+  key_features?: ProgramKeyFeature[];
+  expected_outcomes?: ProgramExpectedOutcome[];
+  structures?: ProgramStructure[];
+  faqs?: ProgramFAQ[];
   actions?: {
-    editable?: boolean;
-    deletable?: boolean;
+    editable: boolean;
+    deletable: boolean;
   };
 }
 

@@ -253,7 +253,7 @@ export const adminNavigation: NavGroup[] = [
         path: "/admin/payments/methods",
         params: {},
         active: false,
-        permission: "payment-method.view",
+        permission: "payment-methods.view",
         subitems: [],
       },
       {

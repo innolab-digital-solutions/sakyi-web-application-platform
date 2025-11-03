@@ -6,7 +6,7 @@ export interface OnboardingForm {
   slug: string;
   title: string;
   description: string;
-  status: string;
+  status: "draft" | "published" | "archived";
   published_at: string | null;
   sections: OnboardingFormSection[];
   actions?: {
@@ -19,17 +19,15 @@ export interface OnboardingFormSection {
   id: number;
   title: string;
   description: string;
-  order: number;
   questions: OnboardingFormQuestion[];
 }
 
 export interface OnboardingFormQuestion {
   id: number;
-  question_text: string;
-  question_type: string;
+  question: string;
+  type: "text" | "select" | "multiselect" | "date" | "file";
   options: Record<string, unknown>[];
   required: boolean;
-  help_text: string;
 }
 
 export interface OnboardingFormsResponse {

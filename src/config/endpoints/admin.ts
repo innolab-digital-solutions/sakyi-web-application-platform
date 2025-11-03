@@ -97,4 +97,13 @@ export const ADMIN_ENDPOINTS = {
     UPDATE: (id: string | number) => `/admin/blog-posts/${id}`,
     DESTROY: (id: string | number) => `/admin/blog-posts/${id}`,
   },
+
+  /** Payment methods endpoints */
+  PAYMENT_METHODS: {
+    INDEX: "/admin/payment-methods",
+    SHOW: (id: string | number) => `/admin/payment-methods/${id}`,
+    STORE: "/admin/payment-methods",
+    UPDATE: (id: string | number) => `/admin/payment-methods/${id}`,
+    DESTROY: (id: string | number) => `/admin/payment-methods/${id}`,
+  },
 } as const;
