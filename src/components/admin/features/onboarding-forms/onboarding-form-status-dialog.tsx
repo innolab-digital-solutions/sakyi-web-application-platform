@@ -7,32 +7,35 @@ import DisabledTooltip from "@/components/shared/disabled-tooltip";
 import { Button } from "@/components/ui/button";
 import { ENDPOINTS } from "@/config/endpoints";
 import { useRequest } from "@/hooks/use-request";
-import { Program, ProgramApiResponse } from "@/types/admin/program";
+import { OnboardingForm, OnboardingFormApiResponse } from "@/types/admin/onboarding-form";
 
-interface ProgramStatusDialogProperties {
-  program: Program;
+interface OnboardingFormStatusDialogProperties {
+  onboardingForm: OnboardingForm;
   className?: string;
 }
 
-export default function ProgramStatusDialog({ program, className }: ProgramStatusDialogProperties) {
+export default function OnboardingFormStatusDialog({
+  onboardingForm,
+  className,
+}: OnboardingFormStatusDialogProperties) {
   const [showDialog, setShowDialog] = useState(false);
 
   const closeDialog = () => setShowDialog(false);
 
   const request = useRequest();
 
-  const isDraft = program.status === "draft";
-  const isPublished = program.status === "published";
-  const isArchived = program.status === "archived";
-  const restoreToPublished = Boolean(program.published_at);
+  const isDraft = onboardingForm.status === "draft";
+  const isPublished = onboardingForm.status === "published";
+  const isArchived = onboardingForm.status === "archived";
+  const restoreToPublished = Boolean(onboardingForm.published_at);
 
   // Lifecycle flow: Draft → Published → Archived
   // Only allow archiving if status is "published"
-  // Draft programs cannot be archived directly
+  // Draft forms cannot be archived directly
   const canArchive = isPublished;
   const canRestore = isArchived;
 
-  // Don't render if program is draft (drafts cannot be archived)
+  // Don't render if form is draft (drafts cannot be archived)
   // Lifecycle flow: Draft → Published → Archived
   if (isDraft || (!canArchive && !canRestore)) {
     return <></>;
@@ -40,15 +43,15 @@ export default function ProgramStatusDialog({ program, className }: ProgramStatu
 
   const handleStatusChange = (newStatus: "archived" | "draft" | "published") => {
     request.patch(
-      ENDPOINTS.ADMIN.PROGRAMS.CHANGE_STATUS(program.id),
+      ENDPOINTS.ADMIN.ONBOARDING_FORMS.CHANGE_STATUS(onboardingForm.id),
       { status: newStatus },
       {
         tanstack: {
-          invalidateQueries: ["admin-programs", "admin-program"],
+          invalidateQueries: ["admin-onboarding-forms", "admin-onboarding-form"],
           mutationOptions: {
             onSuccess: () => {
-              request.queryCache.setQueryData<ProgramApiResponse>(
-                ["admin-programs"],
+              request.queryCache.setQueryData<OnboardingFormApiResponse>(
+                ["admin-onboarding-forms"],
                 (previous) => {
                   if (!previous || previous.status !== "success" || !Array.isArray(previous.data)) {
                     return previous;
@@ -56,17 +59,17 @@ export default function ProgramStatusDialog({ program, className }: ProgramStatu
 
                   return {
                     ...previous,
-                    data: previous.data.map((p) =>
-                      p.id === program.id ? { ...p, status: newStatus } : p,
+                    data: previous.data.map((f) =>
+                      f.id === onboardingForm.id ? { ...f, status: newStatus } : f,
                     ),
-                  } as ProgramApiResponse;
+                  } as OnboardingFormApiResponse;
                 },
                 { all: true },
               );
 
-              // Update the specific program cache if available
+              // Update the specific form cache if available
               request.queryCache.setQueryData(
-                ["admin-program", String(program.id)],
+                ["admin-onboarding-form", String(onboardingForm.id)],
                 (previous: unknown) => {
                   if (
                     !previous ||
@@ -78,7 +81,7 @@ export default function ProgramStatusDialog({ program, className }: ProgramStatu
                   }
                   const previous_ = previous as {
                     status: string;
-                    data: Program;
+                    data: OnboardingForm;
                     message?: string;
                   };
                   return {
@@ -92,10 +95,10 @@ export default function ProgramStatusDialog({ program, className }: ProgramStatu
               closeDialog();
               if (isArchived) {
                 toast.success(
-                  `Program restored to ${newStatus === "draft" ? "draft" : "published"} successfully.`,
+                  `Onboarding form restored to ${newStatus === "draft" ? "draft" : "published"} successfully.`,
                 );
               } else {
-                toast.success("Program archived successfully.");
+                toast.success("Onboarding form archived successfully.");
               }
             },
             onError: (error) => {
@@ -116,17 +119,17 @@ export default function ProgramStatusDialog({ program, className }: ProgramStatu
     handleStatusChange(restoreStatus);
   };
 
-  const buttonText = isArchived ? "Restore Program" : "Archive Program";
+  const buttonText = isArchived ? "Restore Form" : "Archive Form";
   const ButtonIcon = isArchived ? ArchiveRestore : Archive;
-  const buttonAriaLabel = isArchived ? "Restore program" : "Archive program";
+  const buttonAriaLabel = isArchived ? "Restore form" : "Archive form";
 
   // Dialog configuration based on action
-  const dialogTitle = isArchived ? "Restore Program" : "Archive Program";
+  const dialogTitle = isArchived ? "Restore Form" : "Archive Form";
   const dialogDescription = isArchived
     ? restoreToPublished
-      ? `Restore "${program.title}" to published status? The program will be moved out of the archive and become visible to users again.`
-      : `Restore "${program.title}" to draft status? The program will be moved out of the archive but remain hidden from public view.`
-    : `Archive "${program.title}"? The program will be moved to the archive and hidden from public view. You can restore it later to draft or published status.`;
+      ? `Restore "${onboardingForm.title}" to published status? The form will be moved out of the archive and become visible to users again.`
+      : `Restore "${onboardingForm.title}" to draft status? The form will be moved out of the archive but remain hidden from public view.`
+    : `Archive "${onboardingForm.title}"? The form will be moved to the archive and hidden from public view. You can restore it later to draft or published status.`;
   const confirmText = isArchived
     ? restoreToPublished
       ? "Restore to Published"

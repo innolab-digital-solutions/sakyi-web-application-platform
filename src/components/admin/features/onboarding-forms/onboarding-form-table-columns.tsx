@@ -2,11 +2,12 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import dayjs from "dayjs";
-import { CalendarDays, Ellipsis, SquarePen, Tag } from "lucide-react";
+import { Archive, CalendarDays, CheckCircle, Ellipsis, FileEdit, SquarePen } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 
 import OnboardingFormDeletionDialog from "@/components/admin/features/onboarding-forms/onboarding-form-deletion-dialog";
+import OnboardingFormStatusDialog from "@/components/admin/features/onboarding-forms/onboarding-form-status-dialog";
 import DisabledTooltip from "@/components/shared/disabled-tooltip";
 import SortableHeader from "@/components/shared/table/sortable-header";
 import { Badge } from "@/components/ui/badge";
@@ -21,6 +22,42 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { PATHS } from "@/config/paths";
 import { OnboardingForm } from "@/types/admin/onboarding-form";
+import { cn } from "@/utils/shared/cn";
+
+import OnboardingFormStatusSwitch from "./onboarding-form-status-switch";
+
+const statusMeta: Record<
+  OnboardingForm["status"],
+  {
+    variant: "secondary";
+    icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+    label: string;
+    badgeClass: string;
+    iconClass: string;
+  }
+> = {
+  draft: {
+    variant: "secondary",
+    icon: FileEdit,
+    label: "Draft",
+    badgeClass: "bg-yellow-100 text-yellow-700",
+    iconClass: "text-yellow-700 h-3.5 w-3.5",
+  },
+  published: {
+    variant: "secondary",
+    icon: CheckCircle,
+    label: "Published",
+    badgeClass: "bg-green-100 text-green-700",
+    iconClass: "text-green-700 h-3.5 w-3.5",
+  },
+  archived: {
+    variant: "secondary",
+    icon: Archive,
+    label: "Archived",
+    badgeClass: "bg-slate-100 text-slate-700",
+    iconClass: "text-slate-700 h-3.5 w-3.5",
+  },
+};
 
 export const onboardingFormsTableColumns: ColumnDef<OnboardingForm>[] = [
   {
@@ -28,26 +65,25 @@ export const onboardingFormsTableColumns: ColumnDef<OnboardingForm>[] = [
     header: ({ column }) => <SortableHeader column={column}>Form</SortableHeader>,
     cell: ({ row }) => {
       const title = row.getValue("title") as string;
-      const description = row.original.description || "-";
-      const status = (row.original.status || "").toLowerCase();
-      const isPublished = Boolean(row.original.published_at);
+      const form = row.original;
+      const description = form.description || "-";
+
+      const meta = statusMeta[form.status];
+      const Icon = meta.icon;
 
       return (
-        <div className="flex flex-col gap-1">
-          <div className="flex items-center gap-2">
+        <div className="flex min-w-0 flex-1 flex-col gap-1">
+          <div className="flex flex-wrap items-center gap-2">
             <span className="text-foreground text-sm font-semibold">{title}</span>
             <Badge
-              variant={isPublished || status === "published" ? "secondary" : "outline"}
-              className={
-                isPublished || status === "published"
-                  ? "bg-primary/10 text-primary !font-semibold"
-                  : "bg-muted/60 text-muted-foreground border-dashed !font-semibold"
-              }
+              variant={meta.variant}
+              className={cn(
+                meta.badgeClass,
+                "pointer-events-none flex items-center gap-1 !font-semibold",
+              )}
             >
-              <Tag className="h-3.5 w-3.5" />
-              <span className="ml-1 capitalize">
-                {status || (isPublished ? "published" : "draft")}
-              </span>
+              <Icon className={meta.iconClass} />
+              <span>{meta.label}</span>
             </Badge>
           </div>
           <div className="text-muted-foreground max-w-full break-words whitespace-pre-line">
@@ -58,8 +94,24 @@ export const onboardingFormsTableColumns: ColumnDef<OnboardingForm>[] = [
     },
   },
   {
+    accessorKey: "status",
+    header: () => "Publish ?",
+    cell: ({ row }) => {
+      const form = row.original;
+      return (
+        <div className="flex items-center justify-start">
+          {form.status === "archived" ? (
+            <span className="text-muted-foreground text-sm font-medium">-</span>
+          ) : (
+            <OnboardingFormStatusSwitch onboardingForm={form} />
+          )}
+        </div>
+      );
+    },
+  },
+  {
     accessorKey: "published_at",
-    header: ({ column }) => <SortableHeader column={column}>Published</SortableHeader>,
+    header: ({ column }) => <SortableHeader column={column}>Published At</SortableHeader>,
     cell: ({ row }) => {
       const publishedAt = row.getValue("published_at") as string | null;
       if (!publishedAt) {
@@ -106,27 +158,31 @@ export const onboardingFormsTableColumns: ColumnDef<OnboardingForm>[] = [
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
-              <DisabledTooltip
-                reason={
-                  form.actions?.editable
-                    ? undefined
-                    : "You don't have permission to edit this onboarding form."
-                }
-              >
-                <Button
-                  variant="outline"
-                  className="hover:!bg-accent/10 group hover:!text-accent hover:!ring-none flex w-full !cursor-pointer items-center justify-start gap-1.5 !rounded-md !border-none text-sm font-medium text-gray-700 shadow-none disabled:hover:!bg-transparent disabled:hover:!text-inherit"
-                  disabled={!Boolean(form.actions?.editable)}
-                >
-                  <Link
-                    href={PATHS.ADMIN.ONBOARDING_FORMS.EDIT(form.id)}
-                    className="flex items-center gap-1.5"
-                  >
-                    <SquarePen className="group-hover:text-accent h-4 w-4 transition-colors duration-150" />
-                    <span>Edit Form</span>
-                  </Link>
-                </Button>
-              </DisabledTooltip>
+              {(() => {
+                const isEditable = Boolean(form.actions?.editable);
+                const disabledReason = isEditable
+                  ? undefined
+                  : "You don't have permission to edit this onboarding form.";
+                return (
+                  <DisabledTooltip reason={disabledReason}>
+                    <Button
+                      asChild
+                      variant="outline"
+                      className="hover:!bg-accent/10 group hover:!text-accent hover:!ring-none flex w-full !cursor-pointer items-center justify-start gap-1.5 !border-none text-sm font-medium text-gray-700 shadow-none"
+                      aria-label="Edit onboarding form"
+                      disabled={!isEditable}
+                    >
+                      <Link href={PATHS.ADMIN.ONBOARDING_FORMS.EDIT(form.id)}>
+                        <SquarePen className="group-hover:text-accent h-4 w-4 transition-colors duration-150" />
+                        <span>Edit Form</span>
+                      </Link>
+                    </Button>
+                  </DisabledTooltip>
+                );
+              })()}
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <OnboardingFormStatusDialog onboardingForm={form} />
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
