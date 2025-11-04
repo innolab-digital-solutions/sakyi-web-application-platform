@@ -5,6 +5,7 @@ import Link from "next/link";
 import React from "react";
 
 import ProgramForm from "@/components/admin/features/programs/program-form";
+import ProgramFormSkeleton from "@/components/admin/features/programs/program-form-skeleton";
 import PageHeader from "@/components/admin/shared/page-header";
 import { Button } from "@/components/ui/button";
 import { ENDPOINTS } from "@/config/endpoints";
@@ -29,13 +30,7 @@ export default function EditProgramPage({
   const loadedProgram = (data?.data as Program) || undefined;
 
   if (loading) {
-    return (
-      <div className="rounded-md border border-gray-200 p-6">
-        <div className="h-5 w-40 animate-pulse rounded bg-gray-200" />
-        <div className="mt-4 h-10 w-full animate-pulse rounded bg-gray-200" />
-        <div className="mt-3 h-24 w-full animate-pulse rounded bg-gray-200" />
-      </div>
-    );
+    return <ProgramFormSkeleton />;
   }
 
   return (
