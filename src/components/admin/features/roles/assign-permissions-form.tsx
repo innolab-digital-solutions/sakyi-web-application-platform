@@ -24,8 +24,8 @@ type AssignPermissionsFormProperties = {
 export default function AssignPermissionsForm({ role }: AssignPermissionsFormProperties) {
   const router = useRouter();
   const { data, isFetching } = useRequest({
-    url: ENDPOINTS.META.PERMISSIONS,
-    queryKey: ["meta-permissions"],
+    url: ENDPOINTS.LOOKUP.PERMISSIONS,
+    queryKey: ["lookup-permissions"],
     staleTime: 1000 * 60 * 5,
   });
 

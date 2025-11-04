@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeft, ClipboardList } from "lucide-react";
+import { ArrowLeft, ClipboardCheck } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 
@@ -31,9 +31,9 @@ export default function EditOnboardingFormPage({
   return (
     <div className="flex flex-col gap-2">
       <PageHeader
-        icon={ClipboardList}
+        icon={ClipboardCheck}
         title="Edit Onboarding Form"
-        description="Design a multi-section onboarding form with customizable questions and attach it to one or more programs."
+        description="Update sections, questions, and settings. Changes apply immediately anywhere this form is used."
         actions={
           <Button variant="outline" asChild>
             <Link

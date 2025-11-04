@@ -1,15 +1,19 @@
 "use client";
 
-import { FolderKanban } from "lucide-react";
+import { FileText } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect } from "react";
 import { toast } from "sonner";
 
 import FormDialog from "@/components/shared/forms/form-dialog";
-import { InputField } from "@/components/shared/forms/input-field";
+import InputField from "@/components/shared/forms/input-field";
+import TextareaField from "@/components/shared/forms/textarea-field";
 import { ENDPOINTS } from "@/config/endpoints";
 import { useForm } from "@/hooks/use-form";
-import { CreateBlogCategorySchema } from "@/lib/validations/admin/blog-category-schema";
+import {
+  CreateBlogCategorySchema,
+  UpdateBlogCategorySchema,
+} from "@/lib/validations/admin/blog-category-schema";
 import {
   BlogCategory,
   BlogCategoryApiResponse,
@@ -23,7 +27,8 @@ export default function BlogCategoryForm({
   defaultValues,
   open,
   onOpenChange,
-  name,
+  title,
+  description,
 }: BlogCategoryFormProperties) {
   const router = useRouter();
   const pathname = usePathname();
@@ -31,24 +36,17 @@ export default function BlogCategoryForm({
 
   const isControlled = typeof open === "boolean" && typeof onOpenChange === "function";
   const [uncontrolledOpen, setUncontrolledOpen] = React.useState(false);
+
   const dialogOpen = isControlled ? open : uncontrolledOpen;
   const isEdit = mode === "edit";
-
-  const handleDialogOpenChange = (value: boolean) => {
-    if (isControlled) onOpenChange?.(value);
-    else setUncontrolledOpen(value);
-
-    if (!value) form.reset();
-  };
 
   const form = useForm(
     {
       name: "",
-      slug: "",
       description: "",
     },
     {
-      validate: CreateBlogCategorySchema,
+      validate: isEdit ? UpdateBlogCategorySchema : CreateBlogCategorySchema,
       tanstack: {
         invalidateQueries: ["admin-blog-categories"],
         mutationOptions: {
@@ -76,7 +74,6 @@ export default function BlogCategoryForm({
                       ? {
                           ...existing,
                           name: String(form.data.name ?? ""),
-                          slug: String(form.data.slug ?? ""),
                           description: String(form.data.description ?? ""),
                         }
                       : undefined);
@@ -104,29 +101,47 @@ export default function BlogCategoryForm({
             }
 
             handleDialogOpenChange(false);
+
             toast.success(response.message);
           },
-          onError: (error) => toast.error(error.message),
+          onError: (error) => {
+            toast.error(error.message);
+          },
         },
       },
     },
   );
 
+  const handleDialogOpenChange = (value: boolean) => {
+    if (isControlled) {
+      onOpenChange?.(value);
+    } else {
+      setUncontrolledOpen(value);
+    }
+
+    if (!value) {
+      form.reset();
+    }
+  };
+
   useEffect(() => {
     if (isEdit && defaultValues) {
-      form.setData({
+      const newData = {
         name: defaultValues.name ?? "",
-        slug: defaultValues.slug ?? "",
-      });
+        description: defaultValues.description ?? "",
+      };
+
+      form.setDataAndDefaults(newData);
     } else {
-      form.setData({
+      const newData = {
         name: "",
-        slug: "",
         description: "",
-      });
+      };
+
+      form.setDataAndDefaults(newData);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [defaultValues?.id, defaultValues?.name, defaultValues?.slug, isEdit]);
+  }, [defaultValues?.id, defaultValues?.name, defaultValues?.description, isEdit]);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -144,15 +159,22 @@ export default function BlogCategoryForm({
       open={dialogOpen}
       onOpenChange={handleDialogOpenChange}
       onClose={() => form.reset()}
-      title={name ?? (isEdit ? "Edit Blog Category" : "Create a New Blog Category")}
-      icon={<FolderKanban className="h-5 w-5" />}
+      title={title ?? (isEdit ? "Edit Blog Category" : "Create Blog Category")}
+      description={
+        description ??
+        (isEdit
+          ? "Update the category’s name or description. Changes apply to all posts filed under this category."
+          : "Add a category with a clear name and short description to keep your content structured and discoverable.")
+      }
+      icon={<FileText className="h-5 w-5" />}
       onSubmit={handleSubmit}
       processing={form.processing}
       isEdit={isEdit}
       submitLabel={isEdit ? "Save Changes" : "Create Blog Category"}
       submittingLabel={isEdit ? "Saving Changes..." : "Creating Blog Category..."}
+      disabled={isEdit && !form.isDirty}
     >
-      {/* name Field */}
+      {/* Name Field */}
       <InputField
         id="name"
         name="name"
@@ -161,22 +183,21 @@ export default function BlogCategoryForm({
         onChange={(event) => form.setData("name", event.target.value)}
         error={form.errors.name as string}
         label="Name"
-        placeholder="e.g., Technology, Health, Food..."
+        placeholder="e.g., Technology, Health, etc."
         required
         disabled={form.processing}
       />
 
-      {/* Slug Field */}
-      <InputField
-        id="slug"
-        name="slug"
-        type="text"
-        value={String(form.data.slug ?? "")}
-        onChange={(event) => form.setData("slug", event.target.value)}
-        error={form.errors.slug as string}
-        label="Slug"
-        placeholder="e.g., technology, health, food"
-        required
+      {/* Description Field */}
+      <TextareaField
+        id="description"
+        name="description"
+        className="min-h-[96px]"
+        placeholder="Describe the blog category's purpose and content..."
+        value={String(form.data.description ?? "")}
+        onChange={(event) => form.setData("description", event.target.value)}
+        error={form.errors.description as string}
+        label="Description"
         disabled={form.processing}
       />
     </FormDialog>

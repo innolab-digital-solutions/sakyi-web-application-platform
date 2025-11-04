@@ -1,18 +1,11 @@
 import { ApiResponse } from "@/types/shared/api";
 import { Pagination } from "@/types/shared/common";
 
-export interface BlogCategoryChild {
-  id: number;
-  name: string;
-  slug: string;
-}
-
 export interface BlogCategory {
   id: number;
   name: string;
   slug: string;
-  parent: BlogCategoryChild | null;
-  children: BlogCategoryChild[];
+  description: string | null;
   actions?: {
     editable?: boolean;
     deletable?: boolean;
@@ -36,5 +29,6 @@ export type BlogCategoryFormProperties = {
   defaultValues?: Partial<BlogCategory>;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
-  name?: string;
+  title?: string;
+  description?: string;
 };

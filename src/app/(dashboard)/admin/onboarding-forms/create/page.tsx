@@ -1,4 +1,4 @@
-import { ArrowLeft, ClipboardList } from "lucide-react";
+import { ArrowLeft, ClipboardCheck } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import React from "react";
@@ -9,16 +9,18 @@ import { Button } from "@/components/ui/button";
 import { PATHS } from "@/config/paths";
 
 export const metadata: Metadata = {
-  title: "Create Onboarding Form",
+  title: "Create Onboarding Form — SaKyi Health & Wellness",
+  description:
+    "Set up sections and questions, then publish and attach the form to programs for a guided client intake.",
 };
 
 export default function CreateOnboardingFormPage() {
   return (
     <div className="flex flex-col gap-2">
       <PageHeader
-        icon={ClipboardList}
+        icon={ClipboardCheck}
         title="Create Onboarding Form"
-        description="Design a multi-section onboarding form with customizable questions and attach it to one or more programs."
+        description="Build a structured form with sections and customizable questions. Attach it to one or more programs for a smooth client intake."
         actions={
           <Button variant="outline" asChild>
             <Link

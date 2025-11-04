@@ -1,28 +1,19 @@
 import { z } from "zod";
 
 /**
- * Validation schema for blog category creation
+ * Base validation schema for blog category fields
  *
- * Supports hierarchical categories with optional parent_id.
- * Slug is required and must be lowercase, alphanumeric, and hyphen-separated.
+ * Name is required and trimmed, must not exceed 255 characters.
+ * Description is optional and automatically trimmed.
+ * Backend manages name uniqueness (not checked client-side).
  */
-export const CreateBlogCategorySchema = z.object({
-  parent_id: z.string().or(z.number()).optional().nullable(),
+const BaseBlogCategorySchema = z.object({
   name: z
-    .string()
+    .string("Category name is required")
     .min(1, "Category name is required")
     .max(255, "Category name must not exceed 255 characters")
     .trim()
     .refine((name) => name.length > 0, "Category name cannot be empty or contain only spaces"),
-  slug: z
-    .string()
-    .min(1, "Slug is required")
-    .max(255, "Slug must not exceed 255 characters")
-    .regex(
-      // eslint-disable-next-line security/detect-unsafe-regex
-      /^[a-z0-9]+(-[a-z0-9]+)*$/,
-      "Slug can only contain lowercase letters, numbers, and hyphens",
-    ),
   description: z
     .string()
     .optional()
@@ -30,13 +21,19 @@ export const CreateBlogCategorySchema = z.object({
 });
 
 /**
- * Validation schema for blog category updates
+ * Validation schema for creating new blog categories
  *
- * Extends create schema with stricter parent_id type (number from API).
+ * Name must be unique across all blog categories (checked by the server).
  */
-export const UpdateBlogCategorySchema = CreateBlogCategorySchema.extend({
-  parent_id: z.number().nullable().optional(),
-});
+export const CreateBlogCategorySchema = BaseBlogCategorySchema;
 
+/**
+ * Validation schema for updating existing blog categories
+ *
+ * Name must be unique but can be the same as the current category (checked by the server).
+ */
+export const UpdateBlogCategorySchema = BaseBlogCategorySchema;
+
+export type BlogCategoryFormData = z.infer<typeof BaseBlogCategorySchema>;
 export type CreateBlogCategoryFormData = z.infer<typeof CreateBlogCategorySchema>;
 export type UpdateBlogCategoryFormData = z.infer<typeof UpdateBlogCategorySchema>;

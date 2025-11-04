@@ -32,7 +32,7 @@ export default function RolePermissionsAssignmentPage({
       <PageHeader
         icon={ShieldCheck}
         title="Assign Permissions"
-        description="Assign or remove permissions for this role to control access and actions across all modules. Select specific capabilities or entire groups to define what users with this role can manage in the admin dashboard. Changes apply immediately."
+        description="Grant or revoke capabilities for this role to precisely control what members can see and do across the admin. Choose individual permissions or whole groups—changes take effect immediately."
         actions={
           <Button variant="outline" asChild>
             <Link

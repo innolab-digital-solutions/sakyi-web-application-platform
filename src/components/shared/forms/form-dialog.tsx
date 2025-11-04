@@ -73,13 +73,14 @@ export default function FormDialog({
         className="flex max-h-[90vh] w-[95vw] max-w-md flex-col rounded-md sm:max-w-lg md:max-w-xl lg:max-w-2xl"
       >
         <form onSubmit={onSubmit} className="flex min-h-0 w-full flex-1 flex-col p-2">
-          <DialogHeader className="flex-shrink-0">
-            <DialogTitle className="text-md mb-1 flex items-center gap-2 font-bold">
-              {icon}
+          <DialogHeader className="flex-shrink-0 !gap-1">
+            <DialogTitle className="text-md !mb-0 flex items-center !p-0 font-bold">
+              {icon && <div className="mr-1.5">{icon}</div>}
               {title}
             </DialogTitle>
+
             {description ? (
-              <DialogDescription className="text-muted-foreground text-sm font-medium">
+              <DialogDescription className="text-muted-foreground !p-0 text-sm font-medium">
                 {description}
               </DialogDescription>
             ) : undefined}

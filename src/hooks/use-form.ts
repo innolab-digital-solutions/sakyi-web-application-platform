@@ -17,6 +17,10 @@ type FormOptions<TSchema extends ZodType> = {
   validate?: TSchema;
   /** Default values for form fields */
   defaults?: Partial<z.infer<TSchema>>;
+  /** Optional transform to run on data before submit (e.g., FormData builder) */
+  transform?: (
+    data: z.infer<TSchema> & Record<string, unknown>,
+  ) => BodyInit | Record<string, unknown> | unknown[];
   /** TanStack Query integration options */
   tanstack?: {
     queryKey?: string[];
@@ -35,6 +39,7 @@ type FormOptions<TSchema extends ZodType> = {
 type SubmitOptions<T> = {
   onSuccess?: (response: ApiResponse<T>) => void;
   onError?: (error: ApiError) => void;
+  transform?: (data: T) => BodyInit | Record<string, unknown> | unknown[];
 };
 
 /**
@@ -71,6 +76,27 @@ type Errors<T> = Partial<Record<keyof T | string, string>>;
  *   }
  * });
  */
+
+// Deep clone utility using structuredClone with a recursion fallback
+function deepClone<U>(value: U): U {
+  // Prefer structuredClone when available
+  const sc = (globalThis as unknown as { structuredClone?: (v: unknown) => unknown })
+    .structuredClone;
+  if (typeof sc === "function") return sc(value) as U;
+
+  if (Array.isArray(value)) {
+    return (value as unknown[]).map((v) => deepClone(v)) as unknown as U;
+  }
+  if (value && typeof value === "object") {
+    const result: Record<string, unknown> = {};
+    for (const [key, v] of Object.entries(value as Record<string, unknown>)) {
+      result[key] = deepClone(v);
+    }
+    return result as U;
+  }
+  return value;
+}
+
 export const useForm = <TSchema extends ZodType>(
   initial: z.infer<TSchema>,
   options: FormOptions<TSchema> = {},
@@ -84,10 +110,10 @@ export const useForm = <TSchema extends ZodType>(
   // ============================================================================
 
   /** Current form field values */
-  const [data, setDataState] = useState<T>(initial as T);
+  const [data, setDataState] = useState<T>(deepClone(initial as T));
 
   /** Default values for reset functionality */
-  const [defaults, setDefaultsState] = useState<T>(initial as T);
+  const [defaults, setDefaultsState] = useState<T>(deepClone(initial as T));
 
   /** Field-level validation errors */
   const [errors, setErrors] = useState<Errors<T>>({});
@@ -119,7 +145,7 @@ export const useForm = <TSchema extends ZodType>(
     }: {
       method: string;
       url: string;
-      data: T;
+      data: T | FormData;
     }) => {
       const response = await http[method as keyof typeof http]<T>(url, formData, {
         throwOnError: false,
@@ -244,11 +270,15 @@ export const useForm = <TSchema extends ZodType>(
   const setDefaults = useCallback(
     (field?: keyof T | Partial<T>, value?: T[keyof T]) => {
       if (!field) {
-        setDefaultsState(data);
+        setDefaultsState(deepClone(data));
       } else if (typeof field === "string") {
-        setDefaultsState((previous) => ({ ...previous, [field]: value }) as T);
+        setDefaultsState(
+          (previous) => ({ ...deepClone(previous), [field]: deepClone(value) }) as T,
+        );
       } else {
-        setDefaultsState((previous) => ({ ...previous, ...(field as Partial<T>) }) as T);
+        setDefaultsState(
+          (previous) => ({ ...deepClone(previous), ...(deepClone(field) as Partial<T>) }) as T,
+        );
       }
     },
     [data],
@@ -263,8 +293,9 @@ export const useForm = <TSchema extends ZodType>(
    * @param newData - The data to set for both current values and defaults
    */
   const setDataAndDefaults = useCallback((newData: Partial<T>) => {
-    setDataState(newData as T);
-    setDefaultsState(newData as T);
+    const cloned = deepClone(newData) as T;
+    setDataState(cloned);
+    setDefaultsState(deepClone(cloned));
     setIsDirty(false);
   }, []);
 
@@ -388,8 +419,22 @@ export const useForm = <TSchema extends ZodType>(
         options.tanstack &&
         (method === "post" || method === "put" || method === "patch" || method === "delete")
       ) {
+        const rawPayload =
+          submitOptions.transform || options.transform
+            ? ((submitOptions.transform || options.transform)?.(data) as T | FormData)
+            : (data as T | FormData);
+        let requestMethod: typeof method = method;
+        let payload: T | FormData = rawPayload;
+        if (
+          (method === "put" || method === "patch" || method === "delete") &&
+          rawPayload instanceof FormData
+        ) {
+          rawPayload.append("_method", method.toUpperCase());
+          requestMethod = "post";
+          payload = rawPayload;
+        }
         formMutation.mutate(
-          { method, url, data },
+          { method: requestMethod, url, data: payload },
           {
             onSuccess: (response) => {
               submitOptions.onSuccess?.(response);
@@ -411,9 +456,33 @@ export const useForm = <TSchema extends ZodType>(
           signal: abortController.current.signal,
         };
 
-        const response = await (method === "get" || method === "delete"
-          ? http[method]<T>(url, { ...requestOptions, throwOnError: false })
-          : http[method]<T>(url, data, { ...requestOptions, throwOnError: false }));
+        const rawPayload =
+          submitOptions.transform || options.transform
+            ? ((submitOptions.transform || options.transform)?.(data) as
+                | BodyInit
+                | Record<string, unknown>
+                | unknown[])
+            : (data as BodyInit | Record<string, unknown> | unknown[]);
+
+        let requestMethod: typeof method = method;
+        let bodyToSend: BodyInit | Record<string, unknown> | unknown[] | undefined = rawPayload;
+        if (
+          (method === "put" || method === "patch" || method === "delete") &&
+          typeof FormData !== "undefined" &&
+          rawPayload instanceof FormData
+        ) {
+          (rawPayload as FormData).append("_method", method.toUpperCase());
+          requestMethod = "post";
+          bodyToSend = rawPayload as FormData;
+        }
+
+        const response = await (requestMethod === "get" || requestMethod === "delete"
+          ? http[requestMethod]<T>(url, { ...requestOptions, throwOnError: false })
+          : http[requestMethod]<T>(
+              url,
+              bodyToSend as BodyInit | Record<string, unknown> | unknown[],
+              { ...requestOptions, throwOnError: false },
+            ));
 
         if (response.status === "error") {
           setErrors(((response as ApiError).errors || {}) as Errors<T>);

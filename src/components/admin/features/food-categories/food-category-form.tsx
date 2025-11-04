@@ -1,6 +1,6 @@
 "use client";
 
-import { FolderKanban } from "lucide-react";
+import { UtensilsCrossed } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect } from "react";
 import { toast } from "sonner";
@@ -42,16 +42,9 @@ export default function FoodCategoryForm({
   const dialogOpen = isControlled ? open : uncontrolledOpen;
   const isEdit = mode === "edit";
 
-  const handleDialogOpenChange = (value: boolean) => {
-    if (isControlled) onOpenChange?.(value);
-    else setUncontrolledOpen(value);
-
-    if (!value) form.reset();
-  };
-
   const { data: foodCategories } = useRequest({
-    url: `${ENDPOINTS.META.FOOD_CATEGORIES}`,
-    queryKey: ["meta-food-categories"],
+    url: `${ENDPOINTS.LOOKUP.FOOD_CATEGORIES}`,
+    queryKey: ["lookup-food-categories"],
     data: { only: "parent" },
     staleTime: 1000 * 60 * 5,
   });
@@ -128,6 +121,13 @@ export default function FoodCategoryForm({
     },
   );
 
+  const handleDialogOpenChange = (value: boolean) => {
+    if (isControlled) onOpenChange?.(value);
+    else setUncontrolledOpen(value);
+
+    if (!value) form.reset();
+  };
+
   useEffect(() => {
     if (isEdit && defaultValues) {
       const newData = {
@@ -171,14 +171,14 @@ export default function FoodCategoryForm({
       open={dialogOpen}
       onOpenChange={handleDialogOpenChange}
       onClose={() => form.reset()}
-      title={title ?? (isEdit ? "Edit Food Category Details" : "Create a New Food Category")}
+      title={title ?? (isEdit ? "Edit Food Category" : "Create Food Category")}
       description={
         description ??
         (isEdit
-          ? "Edit the name, parent, or description of this food category. Changes will update how food items are organized."
-          : "Create a food category with a name, optional parent, and description to organize your food items.")
+          ? "Update the category’s name, parent, or description. Changes apply to all items within this category."
+          : "Add a category with a clear name and optional parent to keep your food catalog organized and scalable.")
       }
-      icon={<FolderKanban className="h-5 w-5" />}
+      icon={<UtensilsCrossed className="h-5 w-5" />}
       onSubmit={handleSubmit}
       processing={form.processing}
       isEdit={isEdit}

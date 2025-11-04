@@ -1,12 +1,22 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { Archive, CircleCheckBig, Ellipsis, SquarePen, XCircle } from "lucide-react";
+import dayjs from "dayjs";
+import {
+  Archive,
+  CalendarDays,
+  CheckCircle,
+  ClipboardCheck,
+  Ellipsis,
+  FileEdit,
+  SquarePen,
+} from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
 
 import ProgramDeletionDialog from "@/components/admin/features/programs/program-deletion-dialog";
-import ProgramForm from "@/components/admin/features/programs/program-form";
+import ProgramStatusDialog from "@/components/admin/features/programs/program-status-dialog";
 import DisabledTooltip from "@/components/shared/disabled-tooltip";
 import SortableHeader from "@/components/shared/table/sortable-header";
 import { Badge } from "@/components/ui/badge";
@@ -19,26 +29,38 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { PATHS } from "@/config/paths";
 import { Program } from "@/types/admin/program";
 import { cn } from "@/utils/shared/cn";
 
-const statusMeta = {
-  active: {
-    variant: "secondary" as const,
-    icon: CircleCheckBig,
-    label: "Active",
+import ProgramStatusSwitch from "./program-status-switch";
+
+const statusMeta: Record<
+  Program["status"],
+  {
+    variant: "secondary";
+    icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+    label: string;
+    badgeClass: string;
+    iconClass: string;
+  }
+> = {
+  draft: {
+    variant: "secondary",
+    icon: FileEdit,
+    label: "Draft",
+    badgeClass: "bg-yellow-100 text-yellow-700",
+    iconClass: "text-yellow-700 h-3.5 w-3.5",
+  },
+  published: {
+    variant: "secondary",
+    icon: CheckCircle,
+    label: "Published",
     badgeClass: "bg-green-100 text-green-700",
     iconClass: "text-green-700 h-3.5 w-3.5",
   },
-  inactive: {
-    variant: "secondary" as const,
-    icon: XCircle,
-    label: "Inactive",
-    badgeClass: "bg-red-100 text-red-700",
-    iconClass: "text-red-700 h-3.5 w-3.5",
-  },
   archived: {
-    variant: "secondary" as const,
+    variant: "secondary",
     icon: Archive,
     label: "Archived",
     badgeClass: "bg-slate-100 text-slate-700",
@@ -105,6 +127,33 @@ export const programsTableColumns: ColumnDef<Program>[] = [
     },
   },
   {
+    id: "onboarding_form",
+    header: () => "Onboarding Form",
+    cell: ({ row }) => {
+      const program = row.original;
+      const attachedForm = program.attached_onboarding_form;
+
+      if (!attachedForm || !attachedForm.title) {
+        return (
+          <Badge
+            variant="outline"
+            className="bg-muted/60 text-muted-foreground pointer-events-none border-dashed text-[13px] font-semibold"
+          >
+            <ClipboardCheck className="h-3.5 w-3.5" />
+            <span className="ml-1">No form</span>
+          </Badge>
+        );
+      }
+
+      return (
+        <div className="flex items-center gap-2">
+          <ClipboardCheck className="text-muted-foreground h-4 w-4 flex-shrink-0" />
+          <span className="text-sm font-medium text-neutral-800">{attachedForm.title}</span>
+        </div>
+      );
+    },
+  },
+  {
     accessorKey: "duration_value",
     header: () => "Duration",
     cell: ({ row }) => {
@@ -119,7 +168,7 @@ export const programsTableColumns: ColumnDef<Program>[] = [
   },
   {
     accessorKey: "price",
-    header: () => "Price",
+    header: ({ column }) => <SortableHeader column={column}>Price</SortableHeader>,
     cell: ({ row }) => {
       const price = row.getValue("price") as string;
       const currency = row.original.currency;
@@ -128,6 +177,46 @@ export const programsTableColumns: ColumnDef<Program>[] = [
           {price} {currency}
         </span>
       );
+    },
+  },
+  {
+    accessorKey: "status",
+    header: () => "Publish ?",
+    cell: ({ row }) => {
+      const program = row.original;
+      return (
+        <div className="flex items-center justify-center">
+          {program.status === "archived" ? (
+            <span className="text-muted-foreground text-sm font-medium">-</span>
+          ) : (
+            <ProgramStatusSwitch program={program} />
+          )}
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: "published_at",
+    header: ({ column }) => <SortableHeader column={column}>Published At</SortableHeader>,
+    cell: ({ row }) => {
+      const publishedAt = row.getValue("published_at") as string | null;
+      if (!publishedAt) {
+        return (
+          <Badge
+            variant="outline"
+            className="bg-muted/60 text-muted-foreground pointer-events-none border-dashed text-[13px] font-semibold"
+          >
+            <CalendarDays className="h-3.5 w-3.5" />
+            <span className="ml-1">Not published</span>
+          </Badge>
+        );
+      }
+
+      const formatted = dayjs(publishedAt).isValid()
+        ? dayjs(publishedAt).format("DD-MMMM-YYYY")
+        : publishedAt;
+
+      return <div className="text-foreground text-sm font-medium">{formatted}</div>;
     },
   },
   {
@@ -155,29 +244,31 @@ export const programsTableColumns: ColumnDef<Program>[] = [
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
-              <ProgramForm
-                mode="edit"
-                defaultValues={program}
-                trigger={(() => {
-                  const isEditable = Boolean(program.actions?.editable);
-                  const disabledReason = isEditable
-                    ? undefined
-                    : "You don't have permission to edit this program.";
-                  return (
-                    <DisabledTooltip reason={disabledReason}>
-                      <Button
-                        variant="outline"
-                        className="hover:!bg-accent/10 group hover:!text-accent hover:!ring-none flex w-full !cursor-pointer items-center justify-start gap-1.5 !border-none text-sm font-medium text-gray-700 shadow-none"
-                        aria-label="Edit program"
-                        disabled={!isEditable}
-                      >
+              {(() => {
+                const isEditable = Boolean(program.actions?.editable);
+                const disabledReason = isEditable
+                  ? undefined
+                  : "You don't have permission to edit this program.";
+                return (
+                  <DisabledTooltip reason={disabledReason}>
+                    <Button
+                      asChild
+                      variant="outline"
+                      className="hover:!bg-accent/10 group hover:!text-accent hover:!ring-none flex w-full !cursor-pointer items-center justify-start gap-1.5 !border-none text-sm font-medium text-gray-700 shadow-none"
+                      aria-label="Edit program"
+                      disabled={!isEditable}
+                    >
+                      <Link href={PATHS.ADMIN.PROGRAMS.EDIT(program.id)}>
                         <SquarePen className="group-hover:text-accent h-4 w-4 transition-colors duration-150" />
                         <span>Edit Program</span>
-                      </Button>
-                    </DisabledTooltip>
-                  );
-                })()}
-              />
+                      </Link>
+                    </Button>
+                  </DisabledTooltip>
+                );
+              })()}
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <ProgramStatusDialog program={program} />
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>

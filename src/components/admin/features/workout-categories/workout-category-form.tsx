@@ -1,6 +1,6 @@
 "use client";
 
-import { FolderKanban } from "lucide-react";
+import { Dumbbell } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect } from "react";
 import { toast } from "sonner";
@@ -42,21 +42,9 @@ export default function WorkoutCategoryForm({
   const dialogOpen = isControlled ? open : uncontrolledOpen;
   const isEdit = mode === "edit";
 
-  const handleDialogOpenChange = (value: boolean) => {
-    if (isControlled) {
-      onOpenChange?.(value);
-    } else {
-      setUncontrolledOpen(value);
-    }
-
-    if (!value) {
-      form.reset();
-    }
-  };
-
   const { data: workoutCategories } = useRequest({
-    url: ENDPOINTS.META.WORKOUT_CATEGORIES,
-    queryKey: ["meta-workout-categories"],
+    url: ENDPOINTS.LOOKUP.WORKOUT_CATEGORIES,
+    queryKey: ["lookup-workout-categories"],
     data: { only: "parent" },
     staleTime: 1000 * 60 * 5,
   });
@@ -135,6 +123,18 @@ export default function WorkoutCategoryForm({
     },
   );
 
+  const handleDialogOpenChange = (value: boolean) => {
+    if (isControlled) {
+      onOpenChange?.(value);
+    } else {
+      setUncontrolledOpen(value);
+    }
+
+    if (!value) {
+      form.reset();
+    }
+  };
+
   useEffect(() => {
     if (isEdit && defaultValues) {
       const newData = {
@@ -178,14 +178,14 @@ export default function WorkoutCategoryForm({
       open={dialogOpen}
       onOpenChange={handleDialogOpenChange}
       onClose={() => form.reset()}
-      title={title ?? (isEdit ? "Edit Workout Category" : "Create a New Workout Category")}
+      title={title ?? (isEdit ? "Edit Workout Category" : "Create Workout Category")}
       description={
         description ??
         (isEdit
-          ? "Edit the name, parent, or description of this workout category. Changes will update how workouts are organized."
-          : "Create a workout category with a name, optional parent, and description to organize your workouts.")
+          ? "Update the category’s name, parent, or description. Changes apply to all workouts in this category."
+          : "Add a category with a clear name and optional parent to keep your workout library organized and scalable.")
       }
-      icon={<FolderKanban className="h-5 w-5" />}
+      icon={<Dumbbell className="h-5 w-5" />}
       onSubmit={handleSubmit}
       processing={form.processing}
       isEdit={isEdit}

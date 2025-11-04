@@ -1,4 +1,4 @@
-import { FolderKanban } from "lucide-react";
+import { UtensilsCrossed } from "lucide-react";
 import type { Metadata } from "next";
 
 import FoodCategoryForm from "@/components/admin/features/food-categories/food-category-form";
@@ -7,17 +7,17 @@ import CreateButton from "@/components/admin/shared/create-button";
 import ResourceListPage from "@/components/admin/shared/resource-list-page";
 
 export const metadata: Metadata = {
-  title: "Food Categories | SaKyi Health & Wellness",
+  title: "Food Categories — SaKyi Health & Wellness",
   description:
-    "Manage and structure food categories to organize meals and ingredients efficiently.",
+    "Organize foods into clear, scalable categories so planning and reporting stay simple.",
 };
 
 export default function FoodCategoryListPage() {
   return (
     <ResourceListPage
-      icon={FolderKanban}
+      icon={UtensilsCrossed}
       title="Food Categories"
-      description="Manage and structure your food categories. Organize parent and child categories to streamline how foods are grouped, making it easier to maintain, update, and navigate your menu."
+      description="Create parent and child categories to keep your food catalog tidy and easy to navigate."
       createTrigger={
         <FoodCategoryForm mode="create" trigger={<CreateButton label="Add Food Category" />} />
       }

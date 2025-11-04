@@ -105,31 +105,33 @@ export const hasPermission = (
 /**
  * Checks if user has a specific permission
  *
- * Primary permission checking function used throughout the application.
- * Parses permission string (e.g., "staffs.view") and validates against
- * user's permission structure.
+ * Handles permissions where the module might itself contain dots (e.g., "food.categories.view").
+ * Splits on the last dot, so the module part can contain dots or dashes.
+ * Avoids using the `module` variable name, and prefers `slice` over `substring`.
  *
  * @param userPermissions - User's permission object
- * @param permission - Permission string to check (format: "module.action")
+ * @param permission - Permission string to check (e.g., "roles.view", "food.categories.view")
  * @returns True if user has the permission
  *
  * @example
  * ```ts
  * can(user.permissions, "roles.view")  // true if user can view roles
  * can(user.permissions, "roles.create") // true if user can create roles
+ * can(user.permissions, "food.categories.view") // works with modules with dots
  * ```
  */
 export const can = (userPermissions: Permission | undefined, permission: string): boolean => {
   if (!userPermissions) return false;
 
-  // Handle array of permissions (use first object)
   const permissions = Array.isArray(userPermissions) ? userPermissions[0] : userPermissions;
 
   if (!permissions) return false;
 
-  const [module, action] = permission.split(".");
+  const lastDotIndex = permission.lastIndexOf(".");
+  if (lastDotIndex === -1) return false;
 
-  if (!module || !action) return false;
+  const moduleKey = permission.slice(0, lastDotIndex);
+  const action = permission.slice(lastDotIndex + 1);
 
-  return permissions[module]?.[action] === permission;
+  return permissions[moduleKey]?.[action] === permission;
 };

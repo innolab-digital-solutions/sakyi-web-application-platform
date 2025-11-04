@@ -51,7 +51,7 @@ export const unitsTableColumns: ColumnDef<Unit>[] = [
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="hover:bg-accent/10 hover:text-accent text-accent flex cursor-pointer items-center justify-center text-sm font-semibold"
+                    className="text-accent hover:bg-accent/10 hover:text-accent flex cursor-pointer items-center justify-center text-sm font-semibold"
                     disabled={!isEditable}
                   >
                     <SquarePen className="h-2 w-2" />

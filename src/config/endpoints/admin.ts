@@ -41,6 +41,7 @@ export const ADMIN_ENDPOINTS = {
     SHOW: (id: string | number) => `/admin/onboarding-forms/${id}`,
     STORE: "/admin/onboarding-forms",
     UPDATE: (id: string | number) => `/admin/onboarding-forms/${id}`,
+    CHANGE_STATUS: (id: string | number) => `/admin/onboarding-forms/${id}/status`,
     DESTROY: (id: string | number) => `/admin/onboarding-forms/${id}`,
   },
 
@@ -87,5 +88,23 @@ export const ADMIN_ENDPOINTS = {
     STORE: "/admin/blog-categories",
     UPDATE: (id: string | number) => `/admin/blog-categories/${id}`,
     DESTROY: (id: string | number) => `/admin/blog-categories/${id}`,
+  },
+
+  /** Blog posts endpoints */
+  BLOG_POSTS: {
+    INDEX: "/admin/blog-posts",
+    SHOW: (id: string | number) => `/admin/blog-posts/${id}`,
+    STORE: "/admin/blog-posts",
+    UPDATE: (id: string | number) => `/admin/blog-posts/${id}`,
+    DESTROY: (id: string | number) => `/admin/blog-posts/${id}`,
+  },
+
+  /** Payment methods endpoints */
+  PAYMENT_METHODS: {
+    INDEX: "/admin/payment-methods",
+    SHOW: (id: string | number) => `/admin/payment-methods/${id}`,
+    STORE: "/admin/payment-methods",
+    UPDATE: (id: string | number) => `/admin/payment-methods/${id}`,
+    DESTROY: (id: string | number) => `/admin/payment-methods/${id}`,
   },
 } as const;

@@ -23,6 +23,9 @@ export const ADMIN_PATHS = {
   /** Programs routes */
   PROGRAMS: {
     LIST: "/admin/programs",
+    CREATE: "/admin/programs/create",
+    EDIT: (id: string | number) => `/admin/programs/${id}/edit`,
+    DETAIL: (id: string | number) => `/admin/programs/${id}`,
   },
 
   /** Onboarding forms routes */
@@ -56,5 +59,17 @@ export const ADMIN_PATHS = {
   /** Blog categories routes */
   BLOG_CATEGORIES: {
     LIST: "/admin/blog-categories",
+  },
+
+  /** Blog posts routes */
+  BLOG_POSTS: {
+    LIST: "/admin/blog-posts",
+    CREATE: "/admin/blog-posts/create",
+    EDIT: (id: string | number) => `/admin/blog-posts/${id}/edit`,
+  },
+
+  /** Payment methods routes */
+  PAYMENT_METHODS: {
+    LIST: "/admin/payment-methods",
   },
 } as const;

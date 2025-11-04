@@ -20,10 +20,16 @@ export default function OnboardingFormTable() {
                 <Skeleton className="h-4 w-40 animate-pulse rounded" />
                 <Skeleton className="h-5 w-20 animate-pulse rounded-full" />
               </div>
-              <Skeleton className="h-3 w-96 animate-pulse rounded" />
+              <Skeleton className="h-3 w-80 animate-pulse rounded" />
             </div>
           ),
+          status: <Skeleton className="h-4 w-8 animate-pulse rounded-lg" />,
           published_at: (
+            <div className="flex items-center">
+              <Skeleton className="h-6 w-28 animate-pulse rounded-full" />
+            </div>
+          ),
+          attached_programs: (
             <div className="flex items-center">
               <Skeleton className="h-6 w-28 animate-pulse rounded-full" />
             </div>

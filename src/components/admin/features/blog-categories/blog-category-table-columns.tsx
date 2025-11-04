@@ -18,15 +18,16 @@ export const blogCategoriesTableColumns: ColumnDef<BlogCategory>[] = [
     header: ({ column }) => <SortableHeader column={column}>Category</SortableHeader>,
     cell: ({ row }) => {
       const name = row.getValue("name") as string;
-      return <div className="text-foreground text-sm font-semibold">{name}</div>;
-    },
-  },
-  {
-    accessorKey: "slug",
-    header: ({ column }) => <SortableHeader column={column}>Slug</SortableHeader>,
-    cell: ({ row }) => {
-      const slug = row.getValue("slug") as string;
-      return <div className="text-muted-foreground text-sm">{slug}</div>;
+      const description = row.original.description || "-";
+
+      return (
+        <div>
+          <div className="text-foreground text-sm font-semibold">{name}</div>
+          <div className="text-muted-foreground max-w-full break-words whitespace-pre-line">
+            {description}
+          </div>
+        </div>
+      );
     },
   },
   {
