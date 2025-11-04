@@ -40,6 +40,7 @@ export interface Program {
   price: string;
   status: "draft" | "published" | "archived";
   currency: string;
+  published_at?: string;
   ideals?: ProgramIdeal[];
   key_features?: ProgramKeyFeature[];
   expected_outcomes?: ProgramExpectedOutcome[];

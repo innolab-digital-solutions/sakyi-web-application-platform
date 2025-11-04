@@ -28,6 +28,7 @@ export default function ProgramTable() {
           ),
           duration_value: <Skeleton className="h-4 w-20 animate-pulse rounded" />,
           price: <Skeleton className="h-4 w-24 animate-pulse rounded" />,
+          status: <Skeleton className="h-4 w-8 animate-pulse rounded-lg" />,
           actions: (
             <div className="flex items-center space-x-1">
               <Skeleton className="h-8 w-8 animate-pulse rounded" />
