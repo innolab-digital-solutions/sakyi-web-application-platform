@@ -2,7 +2,15 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import dayjs from "dayjs";
-import { Archive, CalendarDays, CheckCircle, Ellipsis, FileEdit, SquarePen } from "lucide-react";
+import {
+  Archive,
+  CalendarDays,
+  CheckCircle,
+  ClipboardList,
+  Ellipsis,
+  FileEdit,
+  SquarePen,
+} from "lucide-react";
 import Link from "next/link";
 import React from "react";
 
@@ -20,6 +28,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { PATHS } from "@/config/paths";
 import { OnboardingForm } from "@/types/admin/onboarding-form";
 import { cn } from "@/utils/shared/cn";
@@ -118,7 +127,7 @@ export const onboardingFormsTableColumns: ColumnDef<OnboardingForm>[] = [
         return (
           <Badge
             variant="outline"
-            className="bg-muted/60 text-muted-foreground border-dashed !font-semibold"
+            className="bg-muted/60 text-muted-foreground pointer-events-none border-dashed text-[13px] font-semibold"
           >
             <CalendarDays className="h-3.5 w-3.5" />
             <span className="ml-1">Not published</span>
@@ -131,6 +140,61 @@ export const onboardingFormsTableColumns: ColumnDef<OnboardingForm>[] = [
         : publishedAt;
 
       return <div className="text-foreground text-sm font-medium">{formatted}</div>;
+    },
+  },
+  {
+    id: "attached_programs",
+    header: () => "Attached Programs",
+    cell: ({ row }) => {
+      const form = row.original;
+      const programs = form.programs ?? [];
+
+      if (programs.length === 0) {
+        return (
+          <Badge
+            variant="outline"
+            className="bg-muted/60 text-muted-foreground pointer-events-none border-dashed text-[13px] font-semibold"
+          >
+            <ClipboardList className="h-3.5 w-3.5" />
+            <span className="ml-1">No programs</span>
+          </Badge>
+        );
+      }
+
+      const programCount = programs.length;
+
+      return (
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <div className="flex cursor-help items-center gap-2">
+              <Badge
+                variant="secondary"
+                className="bg-primary/15 text-primary flex max-w-[140px] cursor-help items-center gap-1 truncate text-[13px] !font-semibold capitalize"
+              >
+                {programCount} {programCount === 1 ? "program" : "programs"}
+              </Badge>
+            </div>
+          </TooltipTrigger>
+          <TooltipContent className="bg-popover text-popover-foreground border-border rounded-md border px-3 py-2 shadow-lg">
+            <div className="space-y-1">
+              <p className="text-xs font-semibold">Attached Programs:</p>
+              <ul className="list-inside list-disc space-y-1 text-xs">
+                {programs.map((program) => (
+                  <li key={program.id}>
+                    <Link
+                      href={PATHS.ADMIN.PROGRAMS.EDIT(program.id)}
+                      className="text-primary hover:underline"
+                      onClick={(event_) => event_.stopPropagation()}
+                    >
+                      {program.title}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </TooltipContent>
+        </Tooltip>
+      );
     },
   },
   {

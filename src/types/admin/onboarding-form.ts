@@ -9,6 +9,10 @@ export interface OnboardingForm {
   status: "draft" | "published" | "archived";
   published_at: string | null;
   sections: OnboardingFormSection[];
+  programs: {
+    id: number;
+    title: string;
+  }[];
   actions?: {
     editable?: boolean;
     deletable?: boolean;

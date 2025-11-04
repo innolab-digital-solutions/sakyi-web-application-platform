@@ -29,6 +29,11 @@ export default function OnboardingFormTable() {
               <Skeleton className="h-6 w-28 animate-pulse rounded-full" />
             </div>
           ),
+          attached_programs: (
+            <div className="flex items-center">
+              <Skeleton className="h-6 w-28 animate-pulse rounded-full" />
+            </div>
+          ),
           actions: (
             <div className="flex items-center space-x-1">
               <Skeleton className="h-8 w-8 animate-pulse rounded" />

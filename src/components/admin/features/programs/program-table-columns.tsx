@@ -137,7 +137,7 @@ export const programsTableColumns: ColumnDef<Program>[] = [
         return (
           <Badge
             variant="outline"
-            className="bg-muted/60 text-muted-foreground border-dashed !font-semibold"
+            className="bg-muted/60 text-muted-foreground pointer-events-none border-dashed text-[13px] font-semibold"
           >
             <ClipboardCheck className="h-3.5 w-3.5" />
             <span className="ml-1">No form</span>
@@ -204,7 +204,7 @@ export const programsTableColumns: ColumnDef<Program>[] = [
         return (
           <Badge
             variant="outline"
-            className="bg-muted/60 text-muted-foreground border-dashed !font-semibold"
+            className="bg-muted/60 text-muted-foreground pointer-events-none border-dashed text-[13px] font-semibold"
           >
             <CalendarDays className="h-3.5 w-3.5" />
             <span className="ml-1">Not published</span>

@@ -21,13 +21,17 @@ import {
   type CreateOnboardingFormInput,
   CreateOnboardingFormSchema,
 } from "@/lib/validations/admin/onboarding-form-schema";
-import { OnboardingForm as OnboardingFormType } from "@/types/admin/onboarding-form";
+import {
+  OnboardingForm as OnboardingFormType,
+  OnboardingFormApiResponse,
+} from "@/types/admin/onboarding-form";
 
 export default function OnboardingFormCreateForm({
   onboardingForm,
 }: {
   onboardingForm?: OnboardingFormType;
 }) {
+  const isEdit = Boolean(onboardingForm);
   const router = useRouter();
 
   type CreateSection = CreateOnboardingFormInput["sections"][number];
@@ -109,9 +113,91 @@ export default function OnboardingFormCreateForm({
     {
       validate: CreateOnboardingFormSchema,
       tanstack: {
-        invalidateQueries: ["admin-onboarding-forms"],
+        invalidateQueries: ["admin-onboarding-forms", "admin-onboarding-form"],
         mutationOptions: {
           onSuccess: (response) => {
+            const isEdit = Boolean(onboardingForm?.id);
+
+            // Optimistically update list cache
+            form.queryCache.setQueryData<OnboardingFormApiResponse>(
+              ["admin-onboarding-forms"],
+              (previous) => {
+                const base: OnboardingFormApiResponse =
+                  previous && previous.status === "success" && Array.isArray(previous.data)
+                    ? previous
+                    : ({
+                        status: "success",
+                        data: [] as OnboardingFormType[],
+                        message: (previous as { message?: string } | undefined)?.message ?? "",
+                      } as OnboardingFormApiResponse);
+
+                const updatedFromServer = (
+                  response as unknown as {
+                    data?: OnboardingFormType | OnboardingFormType[];
+                  }
+                ).data as OnboardingFormType | OnboardingFormType[] | undefined;
+                const baseData = ((base?.data as OnboardingFormType[]) ??
+                  []) as OnboardingFormType[];
+
+                if (isEdit && onboardingForm?.id) {
+                  const nextForm = Array.isArray(updatedFromServer)
+                    ? updatedFromServer[0]
+                    : (updatedFromServer as OnboardingFormType | undefined);
+                  const existing = baseData.find((f) => f.id === onboardingForm.id);
+                  const merged =
+                    nextForm ??
+                    (existing
+                      ? {
+                          ...existing,
+                          title: String(form.data.title ?? ""),
+                          description: String(form.data.description ?? ""),
+                          status: String(form.data.status ?? "draft") as
+                            | "draft"
+                            | "published"
+                            | "archived",
+                          published_at: form.data.published_at ?? existing.published_at,
+                        }
+                      : undefined);
+                  if (!merged) return base;
+                  return {
+                    ...base,
+                    data: baseData.map((f) => (f.id === onboardingForm.id ? merged : f)),
+                  } as OnboardingFormApiResponse;
+                }
+
+                if (!isEdit && updatedFromServer) {
+                  const created = Array.isArray(updatedFromServer)
+                    ? updatedFromServer[0]
+                    : (updatedFromServer as OnboardingFormType);
+                  return { ...base, data: [created, ...baseData] } as OnboardingFormApiResponse;
+                }
+
+                return base as OnboardingFormApiResponse;
+              },
+              { all: true },
+            );
+
+            // Update the specific form cache too if available
+            if (isEdit && onboardingForm?.id) {
+              form.queryCache.setQueryData(
+                ["admin-onboarding-form", String(onboardingForm.id)],
+                (previous) => {
+                  const nextForm = (
+                    response as unknown as {
+                      data?: OnboardingFormType | OnboardingFormType[];
+                    }
+                  )?.data;
+                  if (!nextForm) return previous;
+                  return {
+                    status: "success",
+                    message: (previous as { message?: string } | undefined)?.message ?? "",
+                    data: Array.isArray(nextForm) ? nextForm[0] : nextForm,
+                  } as unknown;
+                },
+              );
+            }
+
+            router.push(PATHS.ADMIN.ONBOARDING_FORMS.LIST);
             toast.success(response.message);
           },
           onError: (error) => {
@@ -310,19 +396,9 @@ export default function OnboardingFormCreateForm({
     event.preventDefault();
     const isEdit = Boolean(onboardingForm?.id);
     if (isEdit && onboardingForm?.id) {
-      form.put(ENDPOINTS.ADMIN.ONBOARDING_FORMS.UPDATE(onboardingForm.id), {
-        onSuccess: (response) => {
-          toast.success(response.message);
-          router.push(PATHS.ADMIN.ONBOARDING_FORMS.LIST);
-        },
-      });
+      form.put(ENDPOINTS.ADMIN.ONBOARDING_FORMS.UPDATE(onboardingForm.id));
     } else {
-      form.post(ENDPOINTS.ADMIN.ONBOARDING_FORMS.STORE, {
-        onSuccess: (response) => {
-          toast.success(response.message);
-          router.push(PATHS.ADMIN.ONBOARDING_FORMS.LIST);
-        },
-      });
+      form.post(ENDPOINTS.ADMIN.ONBOARDING_FORMS.STORE);
     }
   };
 
@@ -633,18 +709,19 @@ export default function OnboardingFormCreateForm({
           )}
         </div>
 
+        <Separator className="my-5" />
+
         <div className="flex items-center justify-end">
           <Button
             type="submit"
-            variant="default"
-            disabled={form.processing || (Boolean(onboardingForm?.id) && !form.isDirty)}
+            disabled={form.processing || (isEdit && !form.isDirty)}
             className="flex cursor-pointer items-center gap-2 font-semibold"
           >
             {form.processing
-              ? onboardingForm?.id
-                ? "Saving..."
-                : "Creating..."
-              : onboardingForm?.id
+              ? isEdit
+                ? "Saving Changes..."
+                : "Creating Onboarding Form..."
+              : isEdit
                 ? "Save Changes"
                 : "Create Onboarding Form"}
           </Button>
