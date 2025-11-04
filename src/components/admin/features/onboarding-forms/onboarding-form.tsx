@@ -20,7 +20,6 @@ import { useForm } from "@/hooks/use-form";
 import {
   type CreateOnboardingFormInput,
   CreateOnboardingFormSchema,
-  QuestionTypeEnum,
 } from "@/lib/validations/admin/onboarding-form-schema";
 import { OnboardingForm as OnboardingFormType } from "@/types/admin/onboarding-form";
 
@@ -33,23 +32,17 @@ export default function OnboardingFormCreateForm({
 
   type CreateSection = CreateOnboardingFormInput["sections"][number];
   type CreateQuestion = CreateSection["questions"][number];
-  type QuestionType = (typeof QuestionTypeEnum)["options"][number];
-  type QuestionEditableKey =
-    | "question_text"
-    | "question_type"
-    | "required"
-    | "help_text"
-    | "options";
+  type QuestionType = "text" | "select" | "multiselect" | "date" | "file";
+  type QuestionEditableKey = "question" | "type" | "required" | "options";
 
   // Build initial data from props to avoid flicker when editing
   const mappedFromProperties: CreateOnboardingFormInput | null = React.useMemo(() => {
     if (!onboardingForm) return null;
     const sections: CreateOnboardingFormInput["sections"] = Array.isArray(onboardingForm.sections)
-      ? onboardingForm.sections.map((s, index) => {
+      ? onboardingForm.sections.map((s) => {
           const sec = s as unknown as {
             title?: unknown;
             description?: unknown;
-            order?: unknown;
             questions?: unknown;
           };
           const questions = Array.isArray(sec.questions as unknown[])
@@ -60,18 +53,17 @@ export default function OnboardingFormCreateForm({
                   ? (rawOptions.filter((c) => typeof c === "string") as string[])
                   : null;
                 return {
-                  question_text: String(
-                    (question.question_text as string | undefined) ??
-                      (question.question as string | undefined) ??
+                  question: String(
+                    (question.question as string | undefined) ??
+                      (question.question_text as string | undefined) ??
                       "",
                   ),
-                  question_type: String(
-                    (question.question_type as string | undefined) ??
-                      (question.type as string | undefined) ??
+                  type: String(
+                    (question.type as string | undefined) ??
+                      (question.question_type as string | undefined) ??
                       "text",
                   ),
                   required: Boolean((question.required as boolean | undefined) ?? true),
-                  help_text: String((question.help_text as string | undefined) ?? ""),
                   options: optionsArray,
                 } as CreateQuestion;
               })
@@ -79,7 +71,6 @@ export default function OnboardingFormCreateForm({
           return {
             title: String(sec.title ?? ""),
             description: String(sec.description ?? ""),
-            order: Number(sec.order ?? index) || index,
             questions,
           } as CreateSection;
         })
@@ -104,13 +95,11 @@ export default function OnboardingFormCreateForm({
         {
           title: "",
           description: "",
-          order: 0,
           questions: [
             {
-              question_text: "",
-              question_type: "text" as const,
+              question: "",
+              type: "text" as const,
               required: true,
-              help_text: "",
               options: null,
             },
           ],
@@ -142,10 +131,9 @@ export default function OnboardingFormCreateForm({
     const mappedSections: CreateOnboardingFormInput["sections"] = Array.isArray(
       onboardingForm.sections,
     )
-      ? onboardingForm.sections.map((s, index) => ({
+      ? onboardingForm.sections.map((s) => ({
           title: String((s as unknown as { title?: unknown }).title ?? ""),
           description: String((s as unknown as { description?: unknown }).description ?? ""),
-          order: Number((s as unknown as { order?: unknown }).order ?? index) || index,
           questions: Array.isArray((s as unknown as { questions?: unknown }).questions as unknown[])
             ? (((s as unknown as { questions?: unknown }).questions as unknown[]) ?? []).map(
                 (q) => {
@@ -155,18 +143,17 @@ export default function OnboardingFormCreateForm({
                     ? (rawOptions.filter((c) => typeof c === "string") as string[])
                     : null;
                   return {
-                    question_text: String(
-                      (question.question_text as string | undefined) ??
-                        (question.question as string | undefined) ??
+                    question: String(
+                      (question.question as string | undefined) ??
+                        (question.question_text as string | undefined) ??
                         "",
                     ),
-                    question_type: String(
-                      (question.question_type as string | undefined) ??
-                        (question.type as string | undefined) ??
+                    type: String(
+                      (question.type as string | undefined) ??
+                        (question.question_type as string | undefined) ??
                         "text",
                     ),
                     required: Boolean((question.required as boolean | undefined) ?? true),
-                    help_text: String((question.help_text as string | undefined) ?? ""),
                     options: optionsArray,
                   } as CreateQuestion;
                 },
@@ -199,20 +186,18 @@ export default function OnboardingFormCreateForm({
 
   function defaultQuestion(): CreateQuestion {
     return {
-      question_text: "",
-      question_type: "text",
+      question: "",
+      type: "text",
       required: true,
-      help_text: "",
       options: null,
     } as CreateQuestion;
   }
 
   const addSection = () => {
     const sections = (form.data.sections ?? []) as CreateOnboardingFormInput["sections"];
-    const nextOrder = sections.length;
     form.setData("sections", [
       ...sections,
-      { title: "", description: "", order: nextOrder, questions: [defaultQuestion()] },
+      { title: "", description: "", questions: [defaultQuestion()] },
     ]);
     setOpenSections((previous) => [...previous, true]);
   };
@@ -226,7 +211,6 @@ export default function OnboardingFormCreateForm({
       return;
     }
     sections.splice(index, 1);
-    for (const [index_, s] of sections.entries()) s.order = index_;
     form.setData("sections", sections);
     setOpenSections((previous) => {
       const next = [...previous];
@@ -269,20 +253,16 @@ export default function OnboardingFormCreateForm({
     const sec = sections[sectionIndex];
     const q = sec.questions[questionIndex] as CreateQuestion & { options?: unknown };
     switch (key) {
-      case "question_text": {
-        q.question_text = String(value ?? "");
+      case "question": {
+        q.question = String(value ?? "");
         break;
       }
-      case "question_type": {
-        q.question_type = (value as QuestionType) ?? "text";
+      case "type": {
+        q.type = (value as QuestionType) ?? "text";
         break;
       }
       case "required": {
         q.required = Boolean(value);
-        break;
-      }
-      case "help_text": {
-        q.help_text = typeof value === "string" ? value : "";
         break;
       }
       case "options": {
@@ -346,10 +326,12 @@ export default function OnboardingFormCreateForm({
     }
   };
 
-  const questionTypeOptions = QuestionTypeEnum.options.map((type) => ({
-    value: type,
-    label: type.charAt(0).toUpperCase() + type.slice(1),
-  }));
+  const questionTypeOptions = (["text", "select", "multiselect", "date", "file"] as const).map(
+    (type) => ({
+      value: type,
+      label: type.charAt(0).toUpperCase() + type.slice(1),
+    }),
+  );
 
   return (
     <div className="mx-auto w-full">
@@ -402,10 +384,10 @@ export default function OnboardingFormCreateForm({
             </div>
             <Button
               type="button"
-              variant="default"
+              variant="ghost"
               size="sm"
               onClick={addSection}
-              className="flex cursor-pointer items-center gap-2"
+              className="text-primary hover:text-primary/80 hover:bg-primary/10 flex cursor-pointer items-center gap-2"
             >
               <Plus className="h-3.5 w-3.5" /> Add section
             </Button>
@@ -499,10 +481,10 @@ export default function OnboardingFormCreateForm({
                       </div>
                       <Button
                         type="button"
-                        variant="secondary"
+                        variant="ghost"
                         size="sm"
                         onClick={() => addQuestion(sectionIndex)}
-                        className="flex cursor-pointer items-center gap-2"
+                        className="text-primary hover:text-primary/80 hover:bg-primary/10 flex cursor-pointer items-center gap-2"
                       >
                         <Plus className="h-3.5 w-3.5" /> Add question
                       </Button>
@@ -516,75 +498,47 @@ export default function OnboardingFormCreateForm({
                         const choices = Array.isArray(q.options)
                           ? (q.options.filter((c) => typeof c === "string") as string[])
                           : [];
-                        const canHaveChoices =
-                          q.question_type === "select" || q.question_type === "multiselect";
+                        const canHaveChoices = q.type === "select" || q.type === "multiselect";
                         return (
                           <div key={questionIndex} className="space-y-4">
                             <div className="flex items-start gap-5">
                               <div className="flex-1 space-y-4">
-                                <InputField
-                                  id={`q-${sectionIndex}-${questionIndex}-text`}
-                                  label="Question"
-                                  placeholder="Ask something..."
-                                  value={String(q.question_text ?? "")}
-                                  onChange={(event_) =>
-                                    updateQuestion(
-                                      sectionIndex,
-                                      questionIndex,
-                                      "question_text",
-                                      event_.target.value,
-                                    )
-                                  }
-                                  required
-                                  error={
-                                    form.errors[
-                                      `sections.${sectionIndex}.questions.${questionIndex}.question_text`
-                                    ] as string
-                                  }
-                                />
                                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                                  {/* Type */}
+                                  <InputField
+                                    id={`q-${sectionIndex}-${questionIndex}-text`}
+                                    label="Question"
+                                    placeholder="Ask something..."
+                                    value={String(q.question ?? "")}
+                                    onChange={(event_) =>
+                                      updateQuestion(
+                                        sectionIndex,
+                                        questionIndex,
+                                        "question",
+                                        event_.target.value,
+                                      )
+                                    }
+                                    required
+                                    error={
+                                      form.errors[
+                                        `sections.${sectionIndex}.questions.${questionIndex}.question`
+                                      ] as string
+                                    }
+                                  />
                                   <ComboBoxField
                                     id={`q-${sectionIndex}-${questionIndex}-type`}
                                     label="Type"
                                     placeholder="Select question type"
                                     options={questionTypeOptions}
-                                    value={q.question_type}
+                                    value={q.type}
                                     onChange={(value) =>
-                                      updateQuestion(
-                                        sectionIndex,
-                                        questionIndex,
-                                        "question_type",
-                                        value,
-                                      )
+                                      updateQuestion(sectionIndex, questionIndex, "type", value)
                                     }
                                     error={
                                       form.errors[
-                                        `sections.${sectionIndex}.questions.${questionIndex}.question_type`
+                                        `sections.${sectionIndex}.questions.${questionIndex}.type`
                                       ] as string
                                     }
                                     required
-                                  />
-
-                                  {/* Help text */}
-                                  <InputField
-                                    id={`q-${sectionIndex}-${questionIndex}-help`}
-                                    label="Help text"
-                                    placeholder="Optional hint to guide users"
-                                    value={String(q.help_text ?? "")}
-                                    onChange={(event_) =>
-                                      updateQuestion(
-                                        sectionIndex,
-                                        questionIndex,
-                                        "help_text",
-                                        event_.target.value,
-                                      )
-                                    }
-                                    error={
-                                      form.errors[
-                                        `sections.${sectionIndex}.questions.${questionIndex}.help_text`
-                                      ] as string
-                                    }
                                   />
                                 </div>
 
