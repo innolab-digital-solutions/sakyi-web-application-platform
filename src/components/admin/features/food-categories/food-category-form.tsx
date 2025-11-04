@@ -42,13 +42,6 @@ export default function FoodCategoryForm({
   const dialogOpen = isControlled ? open : uncontrolledOpen;
   const isEdit = mode === "edit";
 
-  const handleDialogOpenChange = (value: boolean) => {
-    if (isControlled) onOpenChange?.(value);
-    else setUncontrolledOpen(value);
-
-    if (!value) form.reset();
-  };
-
   const { data: foodCategories } = useRequest({
     url: `${ENDPOINTS.LOOKUP.FOOD_CATEGORIES}`,
     queryKey: ["lookup-food-categories"],
@@ -127,6 +120,13 @@ export default function FoodCategoryForm({
       },
     },
   );
+
+  const handleDialogOpenChange = (value: boolean) => {
+    if (isControlled) onOpenChange?.(value);
+    else setUncontrolledOpen(value);
+
+    if (!value) form.reset();
+  };
 
   useEffect(() => {
     if (isEdit && defaultValues) {

@@ -244,7 +244,6 @@ export function FileUploadField({
   const hasError = Boolean(error);
   // Only show files if value is actually present (not null, undefined, or empty)
   const hasFiles = normalizedValue.length > 0 || Boolean(existingUrl);
-  const isSingleMode = !multiple;
 
   const getFileIcon = (file: File) => {
     if (file.type.startsWith("image/")) return "🖼️";

@@ -30,13 +30,6 @@ export default function UnitForm({
   const dialogOpen = isControlled ? open : uncontrolledOpen;
   const isEdit = mode === "edit";
 
-  const handleDialogOpenChange = (value: boolean) => {
-    if (isControlled) onOpenChange?.(value);
-    else setUncontrolledOpen(value);
-
-    if (!value) form.reset();
-  };
-
   const form = useForm(
     {
       name: defaultValues?.name ?? "",
@@ -107,6 +100,13 @@ export default function UnitForm({
       },
     },
   );
+
+  const handleDialogOpenChange = (value: boolean) => {
+    if (isControlled) onOpenChange?.(value);
+    else setUncontrolledOpen(value);
+
+    if (!value) form.reset();
+  };
 
   useEffect(() => {
     if (isEdit && defaultValues) {

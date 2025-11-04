@@ -33,18 +33,6 @@ export default function RoleForm({
   const dialogOpen = isControlled ? open : uncontrolledOpen;
   const isEdit = mode === "edit";
 
-  const handleDialogOpenChange = (value: boolean) => {
-    if (isControlled) {
-      onOpenChange?.(value);
-    } else {
-      setUncontrolledOpen(value);
-    }
-
-    if (!value) {
-      form.reset();
-    }
-  };
-
   const form = useForm(
     {
       name: "",
@@ -113,6 +101,18 @@ export default function RoleForm({
       },
     },
   );
+
+  const handleDialogOpenChange = (value: boolean) => {
+    if (isControlled) {
+      onOpenChange?.(value);
+    } else {
+      setUncontrolledOpen(value);
+    }
+
+    if (!value) {
+      form.reset();
+    }
+  };
 
   useEffect(() => {
     if (isEdit && defaultValues) {

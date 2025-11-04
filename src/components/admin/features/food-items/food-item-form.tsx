@@ -36,13 +36,6 @@ export default function FoodItemForm({
   const dialogOpen = isControlled ? open : uncontrolledOpen;
   const isEdit = mode === "edit";
 
-  const handleDialogOpenChange = (value: boolean) => {
-    if (isControlled) onOpenChange?.(value);
-    else setUncontrolledOpen(value);
-
-    if (!value) form.reset();
-  };
-
   // Fetch metadata (categories and units)
   const { data: categories } = useRequest({
     url: ENDPOINTS.LOOKUP.FOOD_CATEGORIES,
@@ -132,6 +125,13 @@ export default function FoodItemForm({
       },
     },
   );
+
+  const handleDialogOpenChange = (value: boolean) => {
+    if (isControlled) onOpenChange?.(value);
+    else setUncontrolledOpen(value);
+
+    if (!value) form.reset();
+  };
 
   useEffect(() => {
     if (dialogOpen) {

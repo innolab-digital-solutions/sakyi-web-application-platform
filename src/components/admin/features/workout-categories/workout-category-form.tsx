@@ -42,18 +42,6 @@ export default function WorkoutCategoryForm({
   const dialogOpen = isControlled ? open : uncontrolledOpen;
   const isEdit = mode === "edit";
 
-  const handleDialogOpenChange = (value: boolean) => {
-    if (isControlled) {
-      onOpenChange?.(value);
-    } else {
-      setUncontrolledOpen(value);
-    }
-
-    if (!value) {
-      form.reset();
-    }
-  };
-
   const { data: workoutCategories } = useRequest({
     url: ENDPOINTS.LOOKUP.WORKOUT_CATEGORIES,
     queryKey: ["lookup-workout-categories"],
@@ -134,6 +122,18 @@ export default function WorkoutCategoryForm({
       },
     },
   );
+
+  const handleDialogOpenChange = (value: boolean) => {
+    if (isControlled) {
+      onOpenChange?.(value);
+    } else {
+      setUncontrolledOpen(value);
+    }
+
+    if (!value) {
+      form.reset();
+    }
+  };
 
   useEffect(() => {
     if (isEdit && defaultValues) {
