@@ -29,6 +29,10 @@ const BaseProgramSchema = z.object({
   status: z.enum(["draft", "published", "archived"], {
     message: "Status must be draft, published, or archived",
   }),
+  onboarding_form_id: z
+    .number("Onboarding form is required")
+    .int("Onboarding form ID must be an integer")
+    .positive("Onboarding form ID must be a positive number"),
 
   // Relationship arrays (nullable)
   ideals: z

@@ -2,7 +2,15 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import dayjs from "dayjs";
-import { Archive, CalendarDays, CheckCircle, Ellipsis, FileEdit, SquarePen } from "lucide-react";
+import {
+  Archive,
+  CalendarDays,
+  CheckCircle,
+  ClipboardCheck,
+  Ellipsis,
+  FileEdit,
+  SquarePen,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
@@ -114,6 +122,33 @@ export const programsTableColumns: ColumnDef<Program>[] = [
               {description}
             </div>
           </div>
+        </div>
+      );
+    },
+  },
+  {
+    id: "onboarding_form",
+    header: () => "Onboarding Form",
+    cell: ({ row }) => {
+      const program = row.original;
+      const attachedForm = program.attached_onboarding_form;
+
+      if (!attachedForm || !attachedForm.title) {
+        return (
+          <Badge
+            variant="outline"
+            className="bg-muted/60 text-muted-foreground border-dashed !font-semibold"
+          >
+            <ClipboardCheck className="h-3.5 w-3.5" />
+            <span className="ml-1">No form</span>
+          </Badge>
+        );
+      }
+
+      return (
+        <div className="flex items-center gap-2">
+          <ClipboardCheck className="text-muted-foreground h-4 w-4 flex-shrink-0" />
+          <span className="text-sm font-medium text-neutral-800">{attachedForm.title}</span>
         </div>
       );
     },

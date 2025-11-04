@@ -45,6 +45,10 @@ export interface Program {
   key_features?: ProgramKeyFeature[];
   expected_outcomes?: ProgramExpectedOutcome[];
   structures?: ProgramStructure[];
+  attached_onboarding_form?: {
+    id: number;
+    title: string;
+  };
   faqs?: ProgramFAQ[];
   actions?: {
     editable: boolean;

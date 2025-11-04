@@ -27,7 +27,7 @@ export default function ProgramFormSkeleton() {
             <Skeleton className="h-5 w-32" />
             <Skeleton className="h-4 w-full" />
           </div>
-          <div className="space-y-4">
+          <div className="space-y-5">
             {/* Thumbnail */}
             <Skeleton className="h-24 w-full rounded-md" />
             {/* Title */}
@@ -40,6 +40,8 @@ export default function ProgramFormSkeleton() {
               <Skeleton className="h-10 w-full" />
             </div>
             {/* Price */}
+            <Skeleton className="h-10 w-full" />
+            {/* Onboarding Form */}
             <Skeleton className="h-10 w-full" />
           </div>
         </div>

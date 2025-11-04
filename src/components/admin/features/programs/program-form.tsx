@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 import { toast } from "sonner";
 
+import ComboBoxField from "@/components/shared/forms/combo-box-field";
 import FileUploadField from "@/components/shared/forms/file-upload-field";
 import InputField from "@/components/shared/forms/input-field";
 import SelectField from "@/components/shared/forms/select-field";
@@ -15,7 +16,9 @@ import { Separator } from "@/components/ui/separator";
 import { ENDPOINTS } from "@/config/endpoints";
 import { PATHS } from "@/config/paths";
 import { useForm } from "@/hooks/use-form";
+import { useRequest } from "@/hooks/use-request";
 import { CreateProgramSchema, EditProgramSchema } from "@/lib/validations/admin/program-schema";
+import { OnboardingForm } from "@/types/admin/onboarding-form";
 import { Program, ProgramApiResponse } from "@/types/admin/program";
 
 type ProgramFormPageProperties = {
@@ -36,6 +39,20 @@ type FaqInput = { id?: number | null; question: string; answer: string };
 export default function ProgramFormPage({ program }: ProgramFormPageProperties) {
   const isEdit = Boolean(program);
   const router = useRouter();
+
+  // Fetch onboarding forms for dropdown
+  const { data: onboardingFormsData } = useRequest<OnboardingForm>({
+    url: ENDPOINTS.LOOKUP.ONBOARDING_FORMS,
+    queryKey: ["lookup-onboarding-forms"],
+    staleTime: 1000 * 60 * 5,
+  });
+
+  const onboardingForms = (onboardingFormsData?.data ?? []) as OnboardingForm[];
+  const onboardingFormOptions = onboardingForms.map((form) => ({
+    value: String(form.id),
+    label: form.title,
+  }));
+
   const form = useForm(
     {
       title: "",
@@ -45,6 +62,7 @@ export default function ProgramFormPage({ program }: ProgramFormPageProperties) 
       duration_unit: program?.duration_unit ?? ("days" as "days" | "weeks" | "months"),
       price: 0,
       status: "draft" as "draft" | "published" | "archived",
+      onboarding_form_id: program?.attached_onboarding_form?.id ?? (0 as number),
       ideals: [{ description: "" }] as Array<IdealInput>,
       key_features: [{ feature: "" }] as Array<KeyFeatureInput>,
       expected_outcomes: [{ outcome: "" }] as Array<ExpectedOutcomeInput>,
@@ -163,6 +181,7 @@ export default function ProgramFormPage({ program }: ProgramFormPageProperties) 
         duration_unit: (program?.duration_unit ?? "days") as "days" | "weeks" | "months",
         price: parseNumber(program.price, 0),
         status: (program?.status ?? "draft") as "draft" | "published" | "archived",
+        onboarding_form_id: program.attached_onboarding_form?.id ?? 0,
         ideals: (program.ideals?.map((ideal) => ({
           id: ideal.id,
           description: ideal.description,
@@ -207,6 +226,7 @@ export default function ProgramFormPage({ program }: ProgramFormPageProperties) 
     fd.append("duration_unit", String(payload.duration_unit ?? "days"));
     fd.append("price", String(payload.price ?? 0));
     fd.append("status", String(payload.status ?? "draft"));
+    fd.append("onboarding_form_id", String(payload.onboarding_form_id ?? 0));
 
     for (const [index, item] of ((payload.ideals ?? []) as IdealInput[]).entries()) {
       fd.append(`ideals[${index}][description]`, String(item.description ?? ""));
@@ -345,6 +365,23 @@ export default function ProgramFormPage({ program }: ProgramFormPageProperties) 
                 onChange={(event) => form.setData("price", Number(event.target.value))}
                 error={form.errors.price as string}
                 label="Price"
+                required
+                disabled={form.processing}
+              />
+
+              <ComboBoxField
+                id="onboarding_form_id"
+                name="onboarding_form_id"
+                label="Onboarding Form"
+                placeholder="Select an onboarding form"
+                options={onboardingFormOptions}
+                value={
+                  form.data.onboarding_form_id && form.data.onboarding_form_id > 0
+                    ? String(form.data.onboarding_form_id)
+                    : ""
+                }
+                onChange={(value) => form.setData("onboarding_form_id", value ? Number(value) : 0)}
+                error={form.errors.onboarding_form_id as string}
                 required
                 disabled={form.processing}
               />
