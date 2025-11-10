@@ -17,6 +17,20 @@ import { CreateBlogPostSchema, EditBlogPostSchema } from "@/lib/validations/admi
 import { BlogCategory } from "@/types/admin/blog-category";
 import { BlogPost } from "@/types/admin/blog-post";
 
+const handleKeyDown = (event: React.KeyboardEvent<HTMLFormElement>) => {
+  if (event.key === "Enter" && event.target instanceof HTMLElement) {
+    const isTextarea = event.target.tagName === "TEXTAREA";
+    const targetElement = event.target as HTMLElement;
+    const isSubmitButton =
+      (targetElement instanceof HTMLButtonElement && targetElement.type === "submit") ||
+      targetElement.closest('button[type="submit"]') !== null;
+
+    if (!isTextarea && !isSubmitButton) {
+      event.preventDefault();
+    }
+  }
+};
+
 export default function BlogPostForm({ blogPost }: { blogPost?: BlogPost }) {
   const router = useRouter();
   const isEdit = Boolean(blogPost?.id);
@@ -39,9 +53,31 @@ export default function BlogPostForm({ blogPost }: { blogPost?: BlogPost }) {
       validate: isEdit ? EditBlogPostSchema : CreateBlogPostSchema,
       tanstack: {
         invalidateQueries: ["admin-blog-posts"],
+        mutationOptions: {
+          onSuccess: (response) => {
+            toast.success(response.message);
+            router.push(PATHS.ADMIN.BLOG_POSTS.LIST);
+          },
+          onError: (error) => {
+            toast.error(error.message);
+          },
+        },
       },
     },
   );
+
+  // Build FormData payload to support file upload and Laravel method override
+  const buildFormData = (payload: typeof form.data) => {
+    const fd = new FormData();
+    fd.append("blog_category_id", String(payload.blog_category_id ?? 0));
+    if (payload.thumbnail instanceof File) {
+      fd.append("thumbnail", payload.thumbnail);
+    }
+    fd.append("title", String(payload.title ?? ""));
+    fd.append("description", String(payload.description ?? ""));
+    fd.append("content", String(payload.content ?? ""));
+    return fd;
+  };
 
   useEffect(() => {
     if (isEdit && blogPost) {
@@ -80,164 +116,128 @@ export default function BlogPostForm({ blogPost }: { blogPost?: BlogPost }) {
     event.preventDefault();
 
     if (isEdit && blogPost?.id) {
-      form.put(ENDPOINTS.ADMIN.BLOG_POSTS.UPDATE(blogPost.id), {
-        onSuccess: (response) => {
-          toast.success(response.message);
-          router.push(PATHS.ADMIN.BLOG_POSTS.LIST);
-        },
-      });
+      form.put(ENDPOINTS.ADMIN.BLOG_POSTS.UPDATE(blogPost.id), { transform: buildFormData });
     } else {
-      form.post(ENDPOINTS.ADMIN.BLOG_POSTS.STORE, {
-        onSuccess: (response) => {
-          toast.success(response.message);
-          router.push(PATHS.ADMIN.BLOG_POSTS.LIST);
-        },
-      });
+      form.post(ENDPOINTS.ADMIN.BLOG_POSTS.STORE, { transform: buildFormData });
     }
   };
 
   return (
     <div className="mx-auto w-full">
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="grid auto-rows-min gap-6 lg:grid-cols-3">
-          {/* Left Card - Media */}
-          <div className="h-fit rounded-md border border-gray-200 bg-white p-5 shadow-sm lg:col-span-1">
-            <div className="space-y-4">
-              <div>
-                <h3 className="text-[15px] font-semibold tracking-tight text-gray-900">
-                  Thumbnail
-                </h3>
-                <p className="mt-1 text-sm text-gray-500">
-                  Upload a thumbnail image for your blog post. This will be displayed in previews
-                  and listings
-                </p>
-              </div>
+      <form
+        onSubmit={handleSubmit}
+        onKeyDown={handleKeyDown}
+        className="space-y-6 rounded-md border border-gray-200 bg-white p-5 shadow-sm"
+      >
+        <div className="space-y-5">
+          <div className="space-y-5">
+            <FileUploadField
+              id="blog-post-thumbnail"
+              label="Thumbnail"
+              value={form.data.thumbnail}
+              onChange={(file) => form.setData("thumbnail", file as File | undefined)}
+              maxSize={2 * 1024 * 1024}
+              accept="image/jpg,image/jpeg,image/png,image/webp"
+              required={!isEdit}
+              error={form.errors.thumbnail as string}
+              disabled={form.processing}
+            />
 
-              <FileUploadField
-                id="blog-post-thumbnail"
-                value={form.data.thumbnail as File | string | null | undefined}
-                onChange={(file) => {
-                  // Explicitly set to undefined when null to clear the preview
-                  form.setData("thumbnail", file === null ? undefined : (file as File | string));
-                }}
-                maxSize={2 * 1024 * 1024}
-                accept="image/jpg,image/jpeg,image/png,image/webp"
-                required={!isEdit}
-                error={form.errors.thumbnail as string}
-                disabled={form.processing}
-              />
-            </div>
+            {/* Category Field */}
+            <ComboBoxField
+              id="blog_category_id"
+              name="blog_category_id"
+              label="Category"
+              placeholder="Select a category..."
+              searchPlaceholder="Search categories..."
+              emptyMessage="No categories found."
+              options={
+                Array.isArray(blogCategories?.data) && blogCategories !== undefined
+                  ? blogCategories.data.map((category: BlogCategory) => ({
+                      value: String(category.id),
+                      label: category.name,
+                    }))
+                  : []
+              }
+              value={String(form.data.blog_category_id ?? "")}
+              onChange={(value: string) => {
+                const numberValue = value === "" ? 0 : Number(value);
+                form.setData("blog_category_id", numberValue);
+              }}
+              error={form.errors.blog_category_id as string}
+              required
+              disabled={form.processing}
+              allowClear={false}
+            />
+
+            {/* Title Field */}
+            <InputField
+              id="title"
+              name="title"
+              type="text"
+              value={String(form.data.title ?? "")}
+              onChange={(event) => form.setData("title", event.target.value)}
+              error={form.errors.title as string}
+              label="Title"
+              placeholder="Enter blog post title"
+              required
+              disabled={form.processing}
+            />
+
+            {/* Description Field */}
+            <TextareaField
+              id="description"
+              name="description"
+              className="min-h-[96px]"
+              placeholder="Enter a brief description that will appear in previews and excerpts..."
+              value={String(form.data.description ?? "")}
+              onChange={(event) => form.setData("description", event.target.value)}
+              error={form.errors.description as string}
+              label="Description"
+              disabled={form.processing}
+              required
+            />
+
+            {/* Content Field */}
+            <TextareaField
+              id="content"
+              name="content"
+              className="min-h-[300px]"
+              placeholder="Write your blog post content here. Use clear paragraphs and formatting to make it easy to read..."
+              value={String(form.data.content ?? "")}
+              onChange={(event) => form.setData("content", event.target.value)}
+              error={form.errors.content as string}
+              label="Content"
+              disabled={form.processing}
+              required
+            />
           </div>
 
-          {/* Right Card - Content Fields */}
-          <div className="rounded-md border border-gray-200 bg-white p-5 shadow-sm lg:col-span-2">
-            <div className="space-y-5">
-              <div>
-                <h3 className="text-[15px] font-semibold tracking-tight text-gray-900">Content</h3>
-                <p className="mt-1 text-sm text-gray-500">
-                  Add the essentials—category, title, short summary, and the main content. Keep it
-                  clear and well‑structured to help readers and search discover your post.
-                </p>
-              </div>
-
-              <div className="space-y-5">
-                {/* Category Field */}
-                <ComboBoxField
-                  id="blog_category_id"
-                  name="blog_category_id"
-                  label="Category"
-                  placeholder="Select a category..."
-                  searchPlaceholder="Search categories..."
-                  emptyMessage="No categories found."
-                  options={
-                    Array.isArray(blogCategories?.data) && blogCategories !== undefined
-                      ? blogCategories.data.map((category: BlogCategory) => ({
-                          value: String(category.id),
-                          label: category.name,
-                        }))
-                      : []
-                  }
-                  value={String(form.data.blog_category_id ?? "")}
-                  onChange={(value: string) => {
-                    const numberValue = value === "" ? 0 : Number(value);
-                    form.setData("blog_category_id", numberValue);
-                  }}
-                  error={form.errors.blog_category_id as string}
-                  required
-                  disabled={form.processing}
-                  allowClear={false}
-                />
-
-                {/* Title Field */}
-                <InputField
-                  id="title"
-                  name="title"
-                  type="text"
-                  value={String(form.data.title ?? "")}
-                  onChange={(event) => form.setData("title", event.target.value)}
-                  error={form.errors.title as string}
-                  label="Title"
-                  placeholder="Enter blog post title"
-                  required
-                  disabled={form.processing}
-                />
-
-                {/* Description Field */}
-                <TextareaField
-                  id="description"
-                  name="description"
-                  className="min-h-[96px]"
-                  placeholder="Enter a brief description that will appear in previews and excerpts..."
-                  value={String(form.data.description ?? "")}
-                  onChange={(event) => form.setData("description", event.target.value)}
-                  error={form.errors.description as string}
-                  label="Description"
-                  disabled={form.processing}
-                  required
-                />
-
-                {/* Content Field */}
-                <TextareaField
-                  id="content"
-                  name="content"
-                  className="min-h-[300px]"
-                  placeholder="Write your blog post content here. Use clear paragraphs and formatting to make it easy to read..."
-                  value={String(form.data.content ?? "")}
-                  onChange={(event) => form.setData("content", event.target.value)}
-                  error={form.errors.content as string}
-                  label="Content"
-                  disabled={form.processing}
-                  required
-                />
-              </div>
-
-              {/* Actions Section */}
-              <div className="flex items-center justify-end gap-3 border-t border-gray-200 pt-5">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => router.push(PATHS.ADMIN.BLOG_POSTS.LIST)}
-                  disabled={form.processing}
-                  className="flex cursor-pointer items-center gap-2 font-semibold"
-                >
-                  Cancel
-                </Button>
-                <Button
-                  type="submit"
-                  variant="default"
-                  disabled={form.processing || (isEdit && !form.isDirty)}
-                  className="flex cursor-pointer items-center gap-2 font-semibold"
-                >
-                  {form.processing
-                    ? isEdit
-                      ? "Saving..."
-                      : "Creating..."
-                    : isEdit
-                      ? "Save Changes"
-                      : "Create Blog Post"}
-                </Button>
-              </div>
-            </div>
+          {/* Actions Section */}
+          <div className="flex items-center justify-end gap-3 border-t border-gray-200 pt-5">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => router.push(PATHS.ADMIN.BLOG_POSTS.LIST)}
+              disabled={form.processing}
+              className="flex cursor-pointer items-center gap-2 font-semibold"
+            >
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              variant="default"
+              disabled={form.processing || (isEdit && !form.isDirty)}
+              className="flex cursor-pointer items-center gap-2 font-semibold"
+            >
+              {form.processing
+                ? isEdit
+                  ? "Saving Changes..."
+                  : "Creating Blog Post..."
+                : isEdit
+                  ? "Save Changes"
+                  : "Create Blog Post"}
+            </Button>
           </div>
         </div>
       </form>

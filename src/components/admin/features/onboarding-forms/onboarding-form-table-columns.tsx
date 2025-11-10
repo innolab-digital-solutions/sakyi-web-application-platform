@@ -12,7 +12,7 @@ import {
   SquarePen,
 } from "lucide-react";
 import Link from "next/link";
-import React from "react";
+import React, { useState } from "react";
 
 import OnboardingFormDeletionDialog from "@/components/admin/features/onboarding-forms/onboarding-form-deletion-dialog";
 import OnboardingFormStatusDialog from "@/components/admin/features/onboarding-forms/onboarding-form-status-dialog";
@@ -34,6 +34,83 @@ import { OnboardingForm } from "@/types/admin/onboarding-form";
 import { cn } from "@/utils/shared/cn";
 
 import OnboardingFormStatusSwitch from "./onboarding-form-status-switch";
+
+function OnboardingFormActionsCell({ form }: { form: OnboardingForm }) {
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  return (
+    <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
+      <DropdownMenuTrigger asChild>
+        <Button
+          variant="outline"
+          size="icon"
+          aria-label="Open actions"
+          className="hover:!text-foreground ml-auto size-8 cursor-pointer items-center justify-center hover:!bg-gray-100"
+        >
+          <Ellipsis className="h-5 w-5" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" sideOffset={8} className="p-3.5">
+        <DropdownMenuLabel className="text-muted-foreground text-[13px] font-semibold">
+          Onboarding Form Actions
+        </DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem
+          asChild
+          onSelect={(event) => {
+            if (form.actions?.editable) {
+              setDropdownOpen(false);
+            } else {
+              event.preventDefault();
+            }
+          }}
+        >
+          {(() => {
+            const isEditable = Boolean(form.actions?.editable);
+            const disabledReason = isEditable
+              ? undefined
+              : "You don't have permission to edit this onboarding form.";
+            return (
+              <DisabledTooltip reason={disabledReason}>
+                <Button
+                  asChild
+                  variant="outline"
+                  className="hover:!bg-accent/10 group hover:!text-accent hover:!ring-none flex w-full !cursor-pointer items-center justify-start gap-1.5 !border-none text-sm font-medium text-gray-700 shadow-none"
+                  aria-label="Edit onboarding form"
+                  disabled={!isEditable}
+                >
+                  <Link href={PATHS.ADMIN.ONBOARDING_FORMS.EDIT(form.id)}>
+                    <SquarePen className="group-hover:text-accent h-4 w-4 transition-colors duration-150" />
+                    <span>Edit Form</span>
+                  </Link>
+                </Button>
+              </DisabledTooltip>
+            );
+          })()}
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          asChild
+          onSelect={(event) => {
+            setDropdownOpen(false);
+            event.preventDefault();
+          }}
+        >
+          <OnboardingFormStatusDialog onboardingForm={form} />
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem
+          asChild
+          onSelect={(event) => {
+            setDropdownOpen(false);
+            event.preventDefault();
+          }}
+        >
+          <OnboardingFormDeletionDialog onboardingForm={form} />
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
 
 const statusMeta: Record<
   OnboardingForm["status"],
@@ -201,60 +278,6 @@ export const onboardingFormsTableColumns: ColumnDef<OnboardingForm>[] = [
     id: "actions",
     enableHiding: false,
     header: "Actions",
-    cell: ({ row }) => {
-      const form = row.original;
-
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="outline"
-              size="icon"
-              aria-label="Open actions"
-              className="hover:!text-foreground ml-auto size-8 cursor-pointer items-center justify-center hover:!bg-gray-100"
-            >
-              <Ellipsis className="h-5 w-5" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" sideOffset={8} className="p-3.5">
-            <DropdownMenuLabel className="text-muted-foreground text-[13px] font-semibold">
-              Onboarding Form Actions
-            </DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem asChild>
-              {(() => {
-                const isEditable = Boolean(form.actions?.editable);
-                const disabledReason = isEditable
-                  ? undefined
-                  : "You don't have permission to edit this onboarding form.";
-                return (
-                  <DisabledTooltip reason={disabledReason}>
-                    <Button
-                      asChild
-                      variant="outline"
-                      className="hover:!bg-accent/10 group hover:!text-accent hover:!ring-none flex w-full !cursor-pointer items-center justify-start gap-1.5 !border-none text-sm font-medium text-gray-700 shadow-none"
-                      aria-label="Edit onboarding form"
-                      disabled={!isEditable}
-                    >
-                      <Link href={PATHS.ADMIN.ONBOARDING_FORMS.EDIT(form.id)}>
-                        <SquarePen className="group-hover:text-accent h-4 w-4 transition-colors duration-150" />
-                        <span>Edit Form</span>
-                      </Link>
-                    </Button>
-                  </DisabledTooltip>
-                );
-              })()}
-            </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <OnboardingFormStatusDialog onboardingForm={form} />
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem asChild>
-              <OnboardingFormDeletionDialog onboardingForm={form} />
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
-    },
+    cell: ({ row }) => <OnboardingFormActionsCell form={row.original} />,
   },
 ];

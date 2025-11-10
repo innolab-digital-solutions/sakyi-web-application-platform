@@ -50,7 +50,6 @@ export const paymentMethodsTableColumns: ColumnDef<PaymentMethod>[] = [
     header: ({ column }) => <SortableHeader column={column}>Name</SortableHeader>,
     cell: ({ row }) => {
       const method = row.original;
-      const status = statusMeta[method.status];
       const logoUrl = method.logo
         ? method.logo.startsWith("http")
           ? method.logo
@@ -70,16 +69,6 @@ export const paymentMethodsTableColumns: ColumnDef<PaymentMethod>[] = [
           </div>
           <div className="flex min-w-0 flex-col">
             <span className="text-foreground text-sm font-semibold">{method.name}</span>
-            <Badge
-              variant="secondary"
-              className={cn(
-                status.badgeClass,
-                "pointer-events-none mt-1 flex items-center gap-1 font-semibold",
-              )}
-            >
-              <status.icon className={status.iconClass} />
-              <span>{status.label}</span>
-            </Badge>
           </div>
         </div>
       );

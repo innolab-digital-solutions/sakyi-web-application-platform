@@ -19,19 +19,16 @@ export default function PaymentMethodTable() {
         customSkeletons: {
           name: (
             <div className="flex items-center gap-3">
-              <Skeleton className="h-6 w-6 animate-pulse rounded-md" />
-              <div className="flex flex-col gap-1">
-                <Skeleton className="h-4 w-28 animate-pulse rounded" />
-                <Skeleton className="h-3 w-16 animate-pulse rounded" />
-              </div>
+              <Skeleton className="size-12 flex-shrink-0 animate-pulse rounded-md" />
+              <Skeleton className="h-3 w-96 animate-pulse rounded" />
             </div>
           ),
-          qr_code: <Skeleton className="h-6 w-6 animate-pulse rounded" />,
-          status: <Skeleton className="h-4 w-16 animate-pulse rounded-lg" />,
-          created_at: <Skeleton className="h-4 w-20 animate-pulse rounded" />,
+          qr_code: <Skeleton className="size-12 flex-shrink-0 animate-pulse rounded-md" />,
+          status: <Skeleton className="h-5 w-16 animate-pulse rounded-lg" />,
           actions: (
             <div className="flex items-center space-x-1">
-              <Skeleton className="h-8 w-8 animate-pulse rounded" />
+              <Skeleton className="h-8 w-16 animate-pulse rounded" />
+              <Skeleton className="h-8 w-16 animate-pulse rounded" />
             </div>
           ),
         },
