@@ -3,6 +3,7 @@
 import { ChevronDown, Filter, Loader2, RotateCcw } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -86,6 +87,9 @@ export default function FoodItemFiltersDropdown({
   const currentCategory = searchParameters.get("category");
   const currentUnit = searchParameters.get("unit");
 
+  const activeFiltersCount = [currentCategory, currentUnit].filter(Boolean).length;
+  const hasActiveFilters = activeFiltersCount > 0;
+
   return (
     <div className="ml-auto hidden lg:flex">
       <DropdownMenu>
@@ -93,16 +97,24 @@ export default function FoodItemFiltersDropdown({
           <Button
             variant="outline"
             size="sm"
-            className="hover:!text-foreground ml-auto hidden h-10 font-medium hover:!bg-gray-100 disabled:cursor-not-allowed disabled:opacity-60 lg:flex"
+            className="hover:!text-foreground relative ml-auto hidden h-10 font-medium hover:!bg-gray-100 disabled:cursor-not-allowed disabled:opacity-60 lg:flex"
             disabled={isLoading}
             aria-label="Open food item filters"
           >
             <Filter className="mr-1 h-4 w-4" />
             <span className="hidden sm:block">Filters</span>
+            {hasActiveFilters && (
+              <Badge
+                variant="default"
+                className="bg-primary text-primary-foreground absolute -top-1 -right-1 flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-[10px] font-semibold"
+              >
+                {activeFiltersCount}
+              </Badge>
+            )}
             {isLoading ? (
               <Loader2 className="ml-1 h-4 w-4 animate-spin" />
             ) : (
-              <ChevronDown className="h-4 w-4" />
+              <ChevronDown className="ml-1 h-4 w-4" />
             )}
           </Button>
         </DropdownMenuTrigger>
