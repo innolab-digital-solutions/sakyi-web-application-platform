@@ -5,14 +5,12 @@ import { z } from "zod";
  * Matches backend rules for fields, types, constraints, and file handling.
  */
 
-const ACCEPTED_IMAGE_TYPES = new Set(["image/jpeg", "image/png", "image/jpg", "image/webp"]);
-
 const ThumbnailSchema = z
   .instanceof(File, { message: "Thumbnail is required" })
   .refine((file) => file.size > 0, "Thumbnail is required")
   .refine((file) => file.size <= 2 * 1024 * 1024, "Thumbnail size must not exceed 2MB")
   .refine(
-    (file) => ACCEPTED_IMAGE_TYPES.has(file.type),
+    (file) => ["image/jpeg", "image/png", "image/jpg", "image/webp"].includes(file.type),
     "Thumbnail must be a JPG, PNG, JPEG, or WEBP image",
   );
 
@@ -45,7 +43,7 @@ export const EditBlogPostSchema = z.object({
       .int("Category selection is invalid")
       .min(1, "Category selection is required"),
   ),
-  thumbnail: ThumbnailSchema.or(z.string().min(5, "Thumbnail is required")),
+  thumbnail: ThumbnailSchema.or(z.string().url("Invalid thumbnail URL")).optional().nullable(),
   title: z
     .string("Title is required")
     .min(1, "Title is required")
