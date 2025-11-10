@@ -21,6 +21,20 @@ import { CreateProgramSchema, EditProgramSchema } from "@/lib/validations/admin/
 import { OnboardingForm } from "@/types/admin/onboarding-form";
 import { Program, ProgramApiResponse } from "@/types/admin/program";
 
+const handleKeyDown = (event: React.KeyboardEvent<HTMLFormElement>) => {
+  if (event.key === "Enter" && event.target instanceof HTMLElement) {
+    const isTextarea = event.target.tagName === "TEXTAREA";
+    const targetElement = event.target as HTMLElement;
+    const isSubmitButton =
+      (targetElement instanceof HTMLButtonElement && targetElement.type === "submit") ||
+      targetElement.closest('button[type="submit"]') !== null;
+
+    if (!isTextarea && !isSubmitButton) {
+      event.preventDefault();
+    }
+  }
+};
+
 type ProgramFormPageProperties = {
   program?: Program;
 };
@@ -273,7 +287,7 @@ export default function ProgramFormPage({ program }: ProgramFormPageProperties) 
 
   return (
     <div>
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} onKeyDown={handleKeyDown} className="space-y-6">
         <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
           {/* Basics */}
           <div className="h-fit space-y-5 rounded-md border border-gray-200 p-6">
