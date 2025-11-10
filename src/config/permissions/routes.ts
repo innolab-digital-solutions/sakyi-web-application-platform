@@ -51,6 +51,11 @@ export const routePermissions: Record<string, string | undefined> = {
   // Blog Categories
   "/admin/blog-categories": "blog.categories.view",
 
+  // Payment Methods
+  "/admin/payment-methods": "payment-methods.view",
+  "/admin/payment-methods/create": "payment-methods.create",
+  "/admin/payment-methods/:id/edit": "payment-methods.update",
+
   // Example route (user's request)
   "/admin/example": "example.view",
 
