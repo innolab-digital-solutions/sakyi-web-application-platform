@@ -65,6 +65,20 @@ export default function FormDialog({
   const derivedSubmitLabel = submitLabel ?? (isEdit ? "Save Changes" : "Create");
   const derivedSubmittingLabel = submittingLabel ?? (isEdit ? "Saving Changes..." : "Creating...");
 
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLFormElement>) => {
+    if (event.key === "Enter" && event.target instanceof HTMLElement) {
+      const isTextarea = event.target.tagName === "TEXTAREA";
+      const targetElement = event.target as HTMLElement;
+      const isSubmitButton =
+        (targetElement instanceof HTMLButtonElement && targetElement.type === "submit") ||
+        targetElement.closest('button[type="submit"]') !== null;
+
+      if (!isTextarea && !isSubmitButton) {
+        event.preventDefault();
+      }
+    }
+  };
+
   return (
     <Dialog open={dialogOpen} onOpenChange={handleOpenChange}>
       {trigger ? <DialogTrigger asChild>{trigger}</DialogTrigger> : undefined}
@@ -72,7 +86,11 @@ export default function FormDialog({
         showCloseButton={false}
         className="flex max-h-[90vh] w-[95vw] max-w-md flex-col rounded-md sm:max-w-lg md:max-w-xl lg:max-w-2xl"
       >
-        <form onSubmit={onSubmit} className="flex min-h-0 w-full flex-1 flex-col p-2">
+        <form
+          onSubmit={onSubmit}
+          onKeyDown={handleKeyDown}
+          className="flex min-h-0 w-full flex-1 flex-col p-2"
+        >
           <DialogHeader className="flex-shrink-0 !gap-1">
             <DialogTitle className="text-md !mb-0 flex items-center !p-0 font-bold">
               {icon && <div className="mr-1.5">{icon}</div>}

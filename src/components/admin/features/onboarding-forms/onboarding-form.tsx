@@ -402,6 +402,20 @@ export default function OnboardingFormCreateForm({
     }
   };
 
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLFormElement>) => {
+    if (event.key === "Enter" && event.target instanceof HTMLElement) {
+      const isTextarea = event.target.tagName === "TEXTAREA";
+      const targetElement = event.target as HTMLElement;
+      const isSubmitButton =
+        (targetElement instanceof HTMLButtonElement && targetElement.type === "submit") ||
+        targetElement.closest('button[type="submit"]') !== null;
+
+      if (!isTextarea && !isSubmitButton) {
+        event.preventDefault();
+      }
+    }
+  };
+
   const questionTypeOptions = (["text", "select", "multiselect", "date", "file"] as const).map(
     (type) => ({
       value: type,
@@ -411,7 +425,11 @@ export default function OnboardingFormCreateForm({
 
   return (
     <div className="mx-auto w-full">
-      <form onSubmit={handleSubmit} className="space-y-6 rounded-md border border-gray-200 p-6">
+      <form
+        onSubmit={handleSubmit}
+        onKeyDown={handleKeyDown}
+        className="space-y-6 rounded-md border border-gray-200 p-6"
+      >
         {/* Basics */}
         <div className="space-y-5">
           <div>

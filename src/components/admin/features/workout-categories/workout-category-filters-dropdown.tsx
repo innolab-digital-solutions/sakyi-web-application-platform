@@ -3,6 +3,7 @@
 import { Check, ChevronDown, Filter, RotateCcw } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -79,6 +80,8 @@ export default function WorkoutCategoryFiltersDropdown({
     return currentOnly === value;
   };
 
+  const hasActiveFilters = currentOnly !== null && currentOnly !== "";
+
   return (
     <div>
       <DropdownMenu>
@@ -86,12 +89,20 @@ export default function WorkoutCategoryFiltersDropdown({
           <Button
             variant="outline"
             size="sm"
-            className="hover:!text-foreground ml-auto hidden h-10 font-medium hover:!bg-gray-100 disabled:cursor-not-allowed disabled:opacity-60 lg:flex"
+            className="hover:!text-foreground relative ml-auto hidden h-10 font-medium hover:!bg-gray-100 disabled:cursor-not-allowed disabled:opacity-60 lg:flex"
             disabled={isLoading}
           >
             <Filter className="mr-1 h-4 w-4" />
             <span className="hidden sm:block">Filters</span>
-            {isLoading ? <Spinner /> : <ChevronDown className="h-4 w-4" />}
+            {hasActiveFilters && (
+              <Badge
+                variant="default"
+                className="bg-primary text-primary-foreground absolute -top-1 -right-1 flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-[10px] font-semibold"
+              >
+                1
+              </Badge>
+            )}
+            {isLoading ? <Spinner /> : <ChevronDown className="ml-1 h-4 w-4" />}
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-[240px]">
