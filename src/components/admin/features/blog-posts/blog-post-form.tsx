@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import ComboBoxField from "@/components/shared/forms/combo-box-field";
 import FileUploadField from "@/components/shared/forms/file-upload-field";
 import InputField from "@/components/shared/forms/input-field";
+import SelectField from "@/components/shared/forms/select-field";
 import TextareaField from "@/components/shared/forms/textarea-field";
 import { Button } from "@/components/ui/button";
 import { ENDPOINTS } from "@/config/endpoints";
@@ -15,7 +16,7 @@ import { useForm } from "@/hooks/use-form";
 import { useRequest } from "@/hooks/use-request";
 import { CreateBlogPostSchema, EditBlogPostSchema } from "@/lib/validations/admin/blog-post-schema";
 import { BlogCategory } from "@/types/admin/blog-category";
-import { BlogPost } from "@/types/admin/blog-post";
+import { BlogPost, BlogPostApiResponse } from "@/types/admin/blog-post";
 
 export default function BlogPostForm({ blogPost }: { blogPost?: BlogPost }) {
   const router = useRouter();
@@ -34,11 +35,95 @@ export default function BlogPostForm({ blogPost }: { blogPost?: BlogPost }) {
       title: "",
       description: "",
       content: "",
+      status: "draft" as "draft" | "published" | "archived",
     },
     {
       validate: isEdit ? EditBlogPostSchema : CreateBlogPostSchema,
       tanstack: {
-        invalidateQueries: ["admin-blog-posts"],
+        invalidateQueries: ["admin-blog-posts", "admin-blog-post"],
+        mutationOptions: {
+          onSuccess: (response) => {
+            form.queryCache.setQueryData<BlogPostApiResponse>(
+              ["admin-blog-posts"],
+              (previous) => {
+                const base: BlogPostApiResponse =
+                  previous && previous.status === "success" && Array.isArray(previous.data)
+                    ? previous
+                    : ({
+                        status: "success",
+                        data: [] as BlogPost[],
+                        message: (previous as { message?: string } | undefined)?.message ?? "",
+                      } as BlogPostApiResponse);
+
+                const updatedFromServer = (response as unknown as { data?: BlogPost | BlogPost[] })
+                  .data as BlogPost | BlogPost[] | undefined;
+                const baseData = ((base?.data as BlogPost[]) ?? []) as BlogPost[];
+
+                // If editing
+                if (isEdit && blogPost?.id) {
+                  const nextBlogPost = Array.isArray(updatedFromServer)
+                    ? updatedFromServer[0]
+                    : (updatedFromServer as BlogPost | undefined);
+                  const existing = baseData.find((p) => p.id === blogPost.id);
+                  const merged =
+                    nextBlogPost ??
+                    (existing
+                      ? {
+                          ...existing,
+                          title: String(form.data.title ?? ""),
+                          description: String(form.data.description ?? ""),
+                          content: String(form.data.content ?? ""),
+                          blog_category_id: Number(form.data.blog_category_id ?? 0),
+                          status: String(form.data.status ?? "draft") as
+                            | "draft"
+                            | "published"
+                            | "archived",
+                          thumbnail_url:
+                            typeof form.data.thumbnail === "string"
+                              ? form.data.thumbnail
+                              : existing.thumbnail,
+                        }
+                      : undefined);
+
+                  if (!merged) return base;
+                  return {
+                    ...base,
+                    data: baseData.map((r) => (r.id === blogPost.id ? merged : r)),
+                  } as BlogPostApiResponse;
+                }
+
+                // If creating new
+                if (!isEdit && updatedFromServer) {
+                  const created = Array.isArray(updatedFromServer)
+                    ? updatedFromServer[0]
+                    : (updatedFromServer as BlogPost);
+                  return { ...base, data: [created, ...baseData] } as BlogPostApiResponse;
+                }
+
+                return base as BlogPostApiResponse;
+              },
+              { all: true },
+            );
+
+            // Update specific cache if editing
+            if (isEdit && blogPost?.id) {
+              form.queryCache.setQueryData(["admin-blog-post", String(blogPost.id)], (previous) => {
+                const nextBlogPost = (response as unknown as { data?: BlogPost | BlogPost[] })
+                  ?.data;
+                if (!nextBlogPost) return previous;
+                return {
+                  status: "success",
+                  message: (previous as { message?: string } | undefined)?.message ?? "",
+                  data: Array.isArray(nextBlogPost) ? nextBlogPost[0] : nextBlogPost,
+                } as unknown;
+              });
+            }
+
+            router.push(PATHS.ADMIN.BLOG_POSTS.LIST);
+            toast.success(response.message);
+          },
+          onError: (error) => toast.error(error.message),
+        },
       },
     },
   );
@@ -51,6 +136,7 @@ export default function BlogPostForm({ blogPost }: { blogPost?: BlogPost }) {
         title: blogPost.title ?? "",
         description: blogPost.description ?? "",
         content: blogPost.content ?? "",
+        status: blogPost.status ?? "draft",
       };
 
       form.setDataAndDefaults(newData);
@@ -61,6 +147,7 @@ export default function BlogPostForm({ blogPost }: { blogPost?: BlogPost }) {
         title: "",
         description: "",
         content: "",
+        status: "draft" as const,
       };
 
       form.setDataAndDefaults(newData);
@@ -186,7 +273,7 @@ export default function BlogPostForm({ blogPost }: { blogPost?: BlogPost }) {
                 <TextareaField
                   id="description"
                   name="description"
-                  className="min-h-[96px]"
+                  className="min-h-24"
                   placeholder="Enter a brief description that will appear in previews and excerpts..."
                   value={String(form.data.description ?? "")}
                   onChange={(event) => form.setData("description", event.target.value)}
@@ -208,6 +295,24 @@ export default function BlogPostForm({ blogPost }: { blogPost?: BlogPost }) {
                   label="Content"
                   disabled={form.processing}
                   required
+                />
+
+                {/* Status Select */}
+                <SelectField
+                  id="status"
+                  name="status"
+                  label="Status"
+                  value={String(form.data.status ?? "draft")}
+                  onChange={(value) =>
+                    form.setData("status", value as "draft" | "published" | "archived")
+                  }
+                  error={form.errors.status as string}
+                  options={[
+                    { label: "Draft", value: "draft" },
+                    { label: "Published", value: "published" },
+                    { label: "Archived", value: "archived" },
+                  ]}
+                  disabled={form.processing}
                 />
               </div>
 
