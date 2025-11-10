@@ -250,7 +250,7 @@ export const adminNavigation: NavGroup[] = [
       {
         name: "Payment Methods",
         icon: CreditCard,
-        path: "/admin/payments/methods",
+        path: "/admin/payment-methods",
         params: {},
         active: false,
         permission: "payment-methods.view",

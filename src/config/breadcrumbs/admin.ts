@@ -121,6 +121,13 @@ export const adminBreadcrumbs: Breadcrumbs = {
     { label: "Workout Categories", href: PATHS.ADMIN.WORKOUT_CATEGORIES.LIST },
   ],
 
+  /** Payment Methods list page */
+  "/admin/payments": [
+    { label: "Admin Control Panel" },
+    { label: "Finance" },
+    { label: "Payment Methods", href: PATHS.ADMIN.PAYMENT_METHODS.LIST },
+  ],
+
   /** Blog categories list page */
   "/admin/blog-categories": [
     { label: "Admin Control Panel" },
