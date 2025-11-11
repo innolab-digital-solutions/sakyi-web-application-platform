@@ -15,6 +15,7 @@ import { PATHS } from "@/config/paths";
 import { BlogPost } from "@/types/admin/blog-post";
 import { cn } from "@/utils/shared/cn";
 
+import { ImagePreview } from "../../shared/image-preview";
 import BlogPostDeletionDialog from "./blog-post-deletion-dialog";
 
 const statusMeta = {
@@ -55,16 +56,9 @@ export const blogPostsTableColumns: ColumnDef<BlogPost>[] = [
 
       return (
         <div className="flex min-w-0 items-start gap-4">
-          <div className="bg-muted/50 ring-muted-foreground/5 relative size-12 flex-shrink-0 overflow-hidden rounded-md ring-1">
+          <div className="bg-muted/50 ring-muted-foreground/5 relative size-12 shrink-0 overflow-hidden rounded-md ring-1">
             {thumbnailUrl ? (
-              <Image
-                src={thumbnailUrl}
-                alt={title}
-                fill
-                className="object-cover"
-                sizes="(max-width: 768px) 48px, 48px"
-                unoptimized={thumbnailUrl.startsWith("http")}
-              />
+              <ImagePreview src={thumbnailUrl} alt={title} type="Thumbnail" />
             ) : (
               <div className="text-muted-foreground/50 flex h-full w-full items-center justify-center text-xs font-medium">
                 N/A
@@ -78,7 +72,7 @@ export const blogPostsTableColumns: ColumnDef<BlogPost>[] = [
                 variant={meta.variant}
                 className={cn(
                   meta.badgeClass,
-                  "pointer-events-none flex items-center gap-1 !font-semibold",
+                  "pointer-events-none flex items-center gap-1 font-semibold",
                 )}
               >
                 <meta.icon className={meta.iconClass} />

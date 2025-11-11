@@ -49,7 +49,7 @@ export default function BlogPostForm({ blogPost }: { blogPost?: BlogPost }) {
       title: "",
       description: "",
       content: "",
-      status: "draft" as "draft" | "published" | "archived",
+      status: blogPost?.status ?? "draft",
     },
     {
       validate: isEdit ? EditBlogPostSchema : CreateBlogPostSchema,
@@ -78,6 +78,7 @@ export default function BlogPostForm({ blogPost }: { blogPost?: BlogPost }) {
     fd.append("title", String(payload.title ?? ""));
     fd.append("description", String(payload.description ?? ""));
     fd.append("content", String(payload.content ?? ""));
+    fd.append("status", String(payload.status ?? "draft"));
     return fd;
   };
 
@@ -89,7 +90,7 @@ export default function BlogPostForm({ blogPost }: { blogPost?: BlogPost }) {
         title: blogPost.title ?? "",
         description: blogPost.description ?? "",
         content: blogPost.content ?? "",
-        status: blogPost.status ?? "draft",
+        status: (blogPost.status ?? "draft").toLowerCase() as "draft" | "published" | "archived",
       };
 
       form.setDataAndDefaults(newData);
@@ -100,7 +101,7 @@ export default function BlogPostForm({ blogPost }: { blogPost?: BlogPost }) {
         title: "",
         description: "",
         content: "",
-        status: "draft" as const,
+        status: "draft" as "draft" | "published" | "archived",
       };
 
       form.setDataAndDefaults(newData);
@@ -113,6 +114,7 @@ export default function BlogPostForm({ blogPost }: { blogPost?: BlogPost }) {
     blogPost?.content,
     blogPost?.thumbnail,
     blogPost?.category?.id,
+    blogPost?.status,
     isEdit,
   ]);
 
@@ -192,7 +194,7 @@ export default function BlogPostForm({ blogPost }: { blogPost?: BlogPost }) {
             <TextareaField
               id="description"
               name="description"
-              className="min-h-[96px]"
+              className="min-h-24"
               placeholder="Enter a brief description that will appear in previews and excerpts..."
               value={String(form.data.description ?? "")}
               onChange={(event) => form.setData("description", event.target.value)}
@@ -214,6 +216,24 @@ export default function BlogPostForm({ blogPost }: { blogPost?: BlogPost }) {
               label="Content"
               disabled={form.processing}
               required
+            />
+
+            {/* Status Field */}
+            <SelectField
+              id="status"
+              name="status"
+              label="Status"
+              value={String(form.data.status ?? "draft")}
+              onChange={(value) =>
+                form.setData("status", value as "draft" | "published" | "archived")
+              }
+              error={form.errors.status as string}
+              options={[
+                { label: "Draft", value: "draft" },
+                { label: "Published", value: "published" },
+                { label: "Archived", value: "archived" },
+              ]}
+              disabled={form.processing}
             />
           </div>
 
