@@ -32,6 +32,7 @@ export const CreateBlogPostSchema = z.object({
     .refine((value) => value.length > 0, "Title cannot be empty or contain only spaces"),
   description: z.string("Description is required").min(1, "Description is required").trim(),
   content: z.string("Content is required").min(1, "Content is required").trim(),
+  status: z.enum(["draft", "published", "archived"]).default("draft"),
 });
 
 // Schema for editing existing blog posts (thumbnail can be File or string and is required)
@@ -52,6 +53,7 @@ export const EditBlogPostSchema = z.object({
     .refine((value) => value.length > 0, "Title cannot be empty or contain only spaces"),
   description: z.string("Description is required").min(1, "Description is required").trim(),
   content: z.string("Content is required").min(1, "Content is required").trim(),
+  status: z.enum(["draft", "published", "archived"]).default("draft"),
 });
 
 export type BlogPostFormData = z.infer<typeof CreateBlogPostSchema>;
