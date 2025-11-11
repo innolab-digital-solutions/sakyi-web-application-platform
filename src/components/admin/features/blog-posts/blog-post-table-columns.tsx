@@ -3,7 +3,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 import dayjs from "dayjs";
 import { Archive, CalendarDays, CheckCircle, FileEdit, SquarePen } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
