@@ -48,6 +48,9 @@ export const routePermissions: Record<string, string | undefined> = {
   // Workout Categories
   "/admin/workout-categories": "workout.categories.view",
 
+  // Workouts
+  "/admin/workouts": "workouts.view",
+
   // Blog Categories
   "/admin/blog-categories": "blog.categories.view",
 

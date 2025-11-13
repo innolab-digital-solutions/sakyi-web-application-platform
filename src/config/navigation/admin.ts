@@ -235,7 +235,7 @@ export const adminNavigation: NavGroup[] = [
           },
           {
             name: "Workout Items",
-            path: "/admin/workouts/items",
+            path: "/admin/workouts",
             params: {},
             active: false,
             permission: "workouts.view",

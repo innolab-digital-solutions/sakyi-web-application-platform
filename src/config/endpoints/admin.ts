@@ -81,6 +81,15 @@ export const ADMIN_ENDPOINTS = {
     DESTROY: (id: string | number) => `/admin/workout-categories/${id}`,
   },
 
+  /** Workouts endpoints */
+  WORKOUTS: {
+    INDEX: "/admin/workouts",
+    SHOW: (id: string | number) => `/admin/workouts/${id}`,
+    STORE: "/admin/workouts",
+    UPDATE: (id: string | number) => `/admin/workouts/${id}`,
+    DESTROY: (id: string | number) => `/admin/workouts/${id}`,
+  },
+
   /** Blog categories endpoints */
   BLOG_CATEGORIES: {
     INDEX: "/admin/blog-categories",

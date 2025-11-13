@@ -54,6 +54,15 @@ export const ADMIN_PATHS = {
   /** Workout categories routes */
   WORKOUT_CATEGORIES: {
     LIST: "/admin/workout-categories",
+    CREATE: "/admin/workout-categories/create",
+    EDIT: (id: string | number) => `/admin/workout-categories/${id}/edit`,
+  },
+
+  /** Workouts routes */
+  WORKOUTS: {
+    LIST: "/admin/workouts",
+    CREATE: "/admin/workouts/create",
+    EDIT: (id: string | number) => `/admin/workouts/${id}/edit`,
   },
 
   /** Blog categories routes */
