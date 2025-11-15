@@ -143,4 +143,11 @@ export const adminBreadcrumbs: Breadcrumbs = {
     { label: "Blog" },
     { label: "Blog Categories", href: PATHS.ADMIN.BLOG_CATEGORIES.LIST },
   ],
+
+  /** Testimonials list page */
+  "/admin/testimonials": [
+    { label: "Admin Control Panel" },
+    { label: "Content Management" },
+    { label: "Testimonials", href: PATHS.ADMIN.TESTIMONIALS.LIST },
+  ],
 };

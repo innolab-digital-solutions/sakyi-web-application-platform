@@ -5,6 +5,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect } from "react";
 import { toast } from "sonner";
 
+import ComboBoxField from "@/components/shared/forms/combo-box-field";
 import FileUploadField from "@/components/shared/forms/file-upload-field";
 import FormDialog from "@/components/shared/forms/form-dialog";
 import InputField from "@/components/shared/forms/input-field";
@@ -49,7 +50,7 @@ export default function WorkoutForm({
       video: "",
       equipment: "",
       difficulty: "beginner",
-      workout_category_id: 0,
+      workout_category_id: undefined as number | undefined,
     },
     {
       validate: isEdit ? UpdateWorkoutSchema : CreateWorkoutSchema,
@@ -297,21 +298,31 @@ export default function WorkoutForm({
         disabled={form.processing}
       />
       {/* Category */}
-      <SelectField
+      <ComboBoxField
         id="workout_category_id"
         name="workout_category_id"
         label="Category"
-        value={String(form.data.workout_category_id ?? "")}
-        onChange={(value) => form.setData("workout_category_id", Number(value))}
-        error={form.errors.workout_category_id as string}
+        placeholder="Select a category..."
+        searchPlaceholder="Search categories..."
+        emptyMessage="No categories found."
         options={
-          categories?.data?.map((c: WorkoutCategory) => ({
-            label: c.name,
-            value: String(c.id),
-          })) ?? []
+          Array.isArray(categories?.data) && categories !== undefined
+            ? categories.data.map((category: WorkoutCategory) => ({
+                value: String(category.id),
+                label: category.name,
+              }))
+            : []
         }
-        placeholder="Select workout category"
+        value={
+          form.data.workout_category_id === undefined ? "" : String(form.data.workout_category_id)
+        }
+        onChange={(value: string) => {
+          form.setData("workout_category_id", value === "" ? undefined : Number(value));
+        }}
+        error={form.errors.workout_category_id as string}
+        required
         disabled={form.processing || !categories}
+        allowClear={true}
       />
     </FormDialog>
   );
