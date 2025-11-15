@@ -116,4 +116,13 @@ export const ADMIN_ENDPOINTS = {
     UPDATE: (id: string | number) => `/admin/payment-methods/${id}`,
     DESTROY: (id: string | number) => `/admin/payment-methods/${id}`,
   },
+
+  /** Testimonials */
+  TESTIMONIALS: {
+    INDEX: "/admin/testimonials",
+    SHOW: (id: string | number) => `/admin/testimonials/${id}`,
+    STORE: "/admin/testimonials",
+    UPDATE: (id: string | number) => `/admin/testimonials/${id}`,
+    DESTROY: (id: string | number) => `/admin/testimonials/${id}`,
+  },
 } as const;

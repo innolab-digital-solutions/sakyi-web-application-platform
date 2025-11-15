@@ -73,6 +73,11 @@ export const workoutsTableColumns: ColumnDef<Workout>[] = [
     cell: ({ row }) => <span className="text-sm">{row.original.category?.name}</span>,
   },
   {
+    accessorKey: "equipment",
+    header: "Equipment",
+    cell: ({ row }) => <span className="text-sm">{row.original.equipment ?? "-"}</span>,
+  },
+  {
     accessorKey: "gif",
     header: "GIF",
     cell: ({ row }) => {

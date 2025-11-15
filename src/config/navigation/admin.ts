@@ -295,6 +295,15 @@ export const adminNavigation: NavGroup[] = [
           },
         ],
       },
+      {
+        name: "Testimonials",
+        icon: ClipboardList,
+        path: "/admin/testimonials",
+        params: {},
+        active: false,
+        permission: "testimonials.view",
+        subitems: [],
+      },
     ],
   },
 
