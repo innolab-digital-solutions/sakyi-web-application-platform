@@ -22,42 +22,38 @@ import {
 } from "@/components/ui/select";
 import { ENDPOINTS } from "@/config/endpoints";
 import { useRequest } from "@/hooks/use-request";
-import type { FoodCategory } from "@/types/admin/food-category";
-import type { Unit } from "@/types/admin/unit";
+import { Enrollment } from "@/types/admin/testimonial";
 
-interface FoodItemFiltersDropdownProperties {
+interface TestimonialFiltersDropdownProperties {
   isLoading?: boolean;
 }
 
-export default function FoodItemFiltersDropdown({
+export default function TestimonialFiltersDropdown({
   isLoading = false,
-}: FoodItemFiltersDropdownProperties) {
+}: TestimonialFiltersDropdownProperties) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParameters = useSearchParams();
 
-  const { data: categoryData, isFetching: loadingCategories } = useRequest<{
+  // Fetch enrollments (for program filter)
+  const { data: enrollmentData, isFetching: loadingEnrollments } = useRequest<{
     status: string;
     message: string;
-    data: FoodCategory[];
+    data: Enrollment[];
   }>({
-    url: ENDPOINTS.LOOKUP.FOOD_ITEMS,
-    queryKey: ["lookup-food-items"],
+    url: ENDPOINTS.LOOKUP.ENROLLMENTS,
+    queryKey: ["lookup-enrollments"],
     staleTime: 1000 * 60 * 5,
   });
 
-  const { data: unitData, isFetching: loadingUnits } = useRequest<{
-    status: string;
-    message: string;
-    data: Unit[];
-  }>({
-    url: ENDPOINTS.LOOKUP.UNITS,
-    queryKey: ["lookup-units"],
-    staleTime: 1000 * 60 * 5,
-  });
-
-  const categoryList = (categoryData?.data ?? []) as FoodCategory[];
-  const unitList = (unitData?.data ?? []) as Unit[];
+  const ratingOptions = [
+    { label: "All Ratings", value: "__all__" },
+    { label: "1 Star", value: "1" },
+    { label: "2 Stars", value: "2" },
+    { label: "3 Stars", value: "3" },
+    { label: "4 Stars", value: "4" },
+    { label: "5 Stars", value: "5" },
+  ];
 
   const replaceParameters = (next: URLSearchParams) => {
     next.set("page", "1");
@@ -69,26 +65,37 @@ export default function FoodItemFiltersDropdown({
   const setParameter = (key: string, value: string | undefined) => {
     if (isLoading) return;
     const next = new URLSearchParams(searchParameters.toString());
-    if (value) {
-      next.set(key, value);
-    } else {
-      next.delete(key);
-    }
+    if (value) next.set(key, value);
+    else next.delete(key);
     replaceParameters(next);
   };
 
   const clearFilters = () => {
     if (isLoading) return;
     const next = new URLSearchParams(searchParameters.toString());
-    for (const key of ["category", "unit"]) next.delete(key);
+    for (const key of ["program", "rating"]) next.delete(key);
     replaceParameters(next);
   };
 
-  const currentCategory = searchParameters.get("category");
-  const currentUnit = searchParameters.get("unit");
-
-  const activeFiltersCount = [currentCategory, currentUnit].filter(Boolean).length;
+  const currentProgram = searchParameters.get("program");
+  const currentRating = searchParameters.get("rating");
+  const activeFiltersCount = [currentProgram, currentRating].filter(Boolean).length;
   const hasActiveFilters = activeFiltersCount > 0;
+
+  // Extract unique programs from enrollments
+  // Extract unique programs from enrollments without using reduce
+  const programList: { id: number; title: string }[] = [];
+  const programIds = new Set<number>();
+
+  if (Array.isArray(enrollmentData?.data)) {
+    for (const enrollment of enrollmentData.data) {
+      if (enrollment.program && !programIds.has(enrollment.program.id)) {
+        // Use title from API
+        programList.push({ id: enrollment.program.id, title: enrollment.program.title });
+        programIds.add(enrollment.program.id);
+      }
+    }
+  }
 
   return (
     <div className="ml-auto hidden lg:flex">
@@ -99,7 +106,7 @@ export default function FoodItemFiltersDropdown({
             size="sm"
             className="hover:!text-foreground relative ml-auto hidden h-10 font-medium hover:!bg-gray-100 disabled:cursor-not-allowed disabled:opacity-60 lg:flex"
             disabled={isLoading}
-            aria-label="Open food item filters"
+            aria-label="Open testimonial filters"
           >
             <Filter className="mr-1 h-4 w-4" />
             <span className="hidden sm:block">Filters</span>
@@ -120,57 +127,56 @@ export default function FoodItemFiltersDropdown({
         </DropdownMenuTrigger>
 
         <DropdownMenuContent align="end" className="w-[300px]">
-          <DropdownMenuLabel>Filter Food Items</DropdownMenuLabel>
+          <DropdownMenuLabel>Filter Testimonials</DropdownMenuLabel>
           <DropdownMenuSeparator />
 
-          {/* Category Select */}
+          {/* Program Select */}
           <DropdownMenuLabel className="text-muted-foreground text-xs font-semibold">
-            Category
+            Program
           </DropdownMenuLabel>
           <div className="px-2 py-1.5">
             <Select
-              value={currentCategory ?? undefined}
+              value={currentProgram ?? "__all__"}
               onValueChange={(value) =>
-                setParameter("category", value === "__all__" ? undefined : value)
+                setParameter("program", value === "__all__" ? undefined : value)
               }
-              disabled={isLoading || loadingCategories}
+              disabled={isLoading || loadingEnrollments}
             >
               <SelectTrigger className="h-9 w-full">
                 <SelectValue
-                  placeholder={loadingCategories ? "Loading categories..." : "All categories"}
+                  placeholder={loadingEnrollments ? "Loading programs..." : "All programs"}
                 />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="__all__">All Categories</SelectItem>
-                {categoryList.map((category: FoodCategory) => (
-                  <SelectItem key={category.id} value={String(category.name)}>
-                    {category.name}
+                <SelectItem value="__all__">All Programs</SelectItem>
+                {programList.map((program) => (
+                  <SelectItem key={program.id} value={String(program.title)}>
+                    {program.title}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
           </div>
 
-          {/* Unit Select */}
+          {/* Rating Select */}
           <DropdownMenuLabel className="text-muted-foreground text-xs font-semibold">
-            Unit
+            Rating
           </DropdownMenuLabel>
           <div className="px-2 py-1.5">
             <Select
-              value={currentUnit ?? undefined}
+              value={currentRating ?? "__all__"}
               onValueChange={(value) =>
-                setParameter("unit", value === "__all__" ? undefined : value)
+                setParameter("rating", value === "__all__" ? undefined : value)
               }
-              disabled={isLoading || loadingUnits}
+              disabled={isLoading}
             >
               <SelectTrigger className="h-9 w-full">
-                <SelectValue placeholder={loadingUnits ? "Loading units..." : "All units"} />
+                <SelectValue placeholder="All ratings" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="__all__">All Units</SelectItem>
-                {unitList.map((unit: Unit) => (
-                  <SelectItem key={unit.id} value={String(unit.name)}>
-                    {unit.name}
+                {ratingOptions.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
                   </SelectItem>
                 ))}
               </SelectContent>

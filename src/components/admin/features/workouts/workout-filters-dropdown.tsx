@@ -22,42 +22,36 @@ import {
 } from "@/components/ui/select";
 import { ENDPOINTS } from "@/config/endpoints";
 import { useRequest } from "@/hooks/use-request";
-import type { FoodCategory } from "@/types/admin/food-category";
-import type { Unit } from "@/types/admin/unit";
+import type { WorkoutCategory } from "@/types/admin/workout-category";
 
-interface FoodItemFiltersDropdownProperties {
+interface WorkoutFiltersDropdownProperties {
   isLoading?: boolean;
 }
 
-export default function FoodItemFiltersDropdown({
+export default function WorkoutFiltersDropdown({
   isLoading = false,
-}: FoodItemFiltersDropdownProperties) {
+}: WorkoutFiltersDropdownProperties) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParameters = useSearchParams();
 
+  // Fetch workout categories
   const { data: categoryData, isFetching: loadingCategories } = useRequest<{
     status: string;
     message: string;
-    data: FoodCategory[];
+    data: WorkoutCategory[];
   }>({
-    url: ENDPOINTS.LOOKUP.FOOD_ITEMS,
-    queryKey: ["lookup-food-items"],
+    url: ENDPOINTS.LOOKUP.WORKOUT_CATEGORIES,
+    queryKey: ["lookup-workout-categories"],
     staleTime: 1000 * 60 * 5,
   });
 
-  const { data: unitData, isFetching: loadingUnits } = useRequest<{
-    status: string;
-    message: string;
-    data: Unit[];
-  }>({
-    url: ENDPOINTS.LOOKUP.UNITS,
-    queryKey: ["lookup-units"],
-    staleTime: 1000 * 60 * 5,
-  });
-
-  const categoryList = (categoryData?.data ?? []) as FoodCategory[];
-  const unitList = (unitData?.data ?? []) as Unit[];
+  const difficultyOptions = [
+    { label: "All Difficulties", value: "__all__" },
+    { label: "Beginner", value: "beginner" },
+    { label: "Intermediate", value: "intermediate" },
+    { label: "Advanced", value: "advanced" },
+  ];
 
   const replaceParameters = (next: URLSearchParams) => {
     next.set("page", "1");
@@ -69,26 +63,24 @@ export default function FoodItemFiltersDropdown({
   const setParameter = (key: string, value: string | undefined) => {
     if (isLoading) return;
     const next = new URLSearchParams(searchParameters.toString());
-    if (value) {
-      next.set(key, value);
-    } else {
-      next.delete(key);
-    }
+    if (value) next.set(key, value);
+    else next.delete(key);
     replaceParameters(next);
   };
 
   const clearFilters = () => {
     if (isLoading) return;
     const next = new URLSearchParams(searchParameters.toString());
-    for (const key of ["category", "unit"]) next.delete(key);
+    for (const key of ["category", "difficulty"]) next.delete(key);
     replaceParameters(next);
   };
 
   const currentCategory = searchParameters.get("category");
-  const currentUnit = searchParameters.get("unit");
-
-  const activeFiltersCount = [currentCategory, currentUnit].filter(Boolean).length;
+  const currentDifficulty = searchParameters.get("difficulty");
+  const activeFiltersCount = [currentCategory, currentDifficulty].filter(Boolean).length;
   const hasActiveFilters = activeFiltersCount > 0;
+
+  const categoryList = Array.isArray(categoryData?.data) ? categoryData.data : [];
 
   return (
     <div className="ml-auto hidden lg:flex">
@@ -99,7 +91,7 @@ export default function FoodItemFiltersDropdown({
             size="sm"
             className="hover:!text-foreground relative ml-auto hidden h-10 font-medium hover:!bg-gray-100 disabled:cursor-not-allowed disabled:opacity-60 lg:flex"
             disabled={isLoading}
-            aria-label="Open food item filters"
+            aria-label="Open workout filters"
           >
             <Filter className="mr-1 h-4 w-4" />
             <span className="hidden sm:block">Filters</span>
@@ -120,7 +112,7 @@ export default function FoodItemFiltersDropdown({
         </DropdownMenuTrigger>
 
         <DropdownMenuContent align="end" className="w-[300px]">
-          <DropdownMenuLabel>Filter Food Items</DropdownMenuLabel>
+          <DropdownMenuLabel>Filter Workouts</DropdownMenuLabel>
           <DropdownMenuSeparator />
 
           {/* Category Select */}
@@ -129,7 +121,7 @@ export default function FoodItemFiltersDropdown({
           </DropdownMenuLabel>
           <div className="px-2 py-1.5">
             <Select
-              value={currentCategory ?? undefined}
+              value={currentCategory ?? "__all__"}
               onValueChange={(value) =>
                 setParameter("category", value === "__all__" ? undefined : value)
               }
@@ -142,7 +134,7 @@ export default function FoodItemFiltersDropdown({
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="__all__">All Categories</SelectItem>
-                {categoryList.map((category: FoodCategory) => (
+                {categoryList.map((category) => (
                   <SelectItem key={category.id} value={String(category.name)}>
                     {category.name}
                   </SelectItem>
@@ -151,26 +143,25 @@ export default function FoodItemFiltersDropdown({
             </Select>
           </div>
 
-          {/* Unit Select */}
+          {/* Difficulty Select */}
           <DropdownMenuLabel className="text-muted-foreground text-xs font-semibold">
-            Unit
+            Difficulty
           </DropdownMenuLabel>
           <div className="px-2 py-1.5">
             <Select
-              value={currentUnit ?? undefined}
+              value={currentDifficulty ?? "__all__"}
               onValueChange={(value) =>
-                setParameter("unit", value === "__all__" ? undefined : value)
+                setParameter("difficulty", value === "__all__" ? undefined : value)
               }
-              disabled={isLoading || loadingUnits}
+              disabled={isLoading}
             >
               <SelectTrigger className="h-9 w-full">
-                <SelectValue placeholder={loadingUnits ? "Loading units..." : "All units"} />
+                <SelectValue placeholder="All difficulties" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="__all__">All Units</SelectItem>
-                {unitList.map((unit: Unit) => (
-                  <SelectItem key={unit.id} value={String(unit.name)}>
-                    {unit.name}
+                {difficultyOptions.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
                   </SelectItem>
                 ))}
               </SelectContent>

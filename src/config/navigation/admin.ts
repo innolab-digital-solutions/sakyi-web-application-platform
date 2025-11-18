@@ -235,7 +235,7 @@ export const adminNavigation: NavGroup[] = [
           },
           {
             name: "Workout Items",
-            path: "/admin/workouts/items",
+            path: "/admin/workouts",
             params: {},
             active: false,
             permission: "workouts.view",
@@ -250,7 +250,7 @@ export const adminNavigation: NavGroup[] = [
       {
         name: "Payment Methods",
         icon: CreditCard,
-        path: "/admin/payments/methods",
+        path: "/admin/payment-methods",
         params: {},
         active: false,
         permission: "payment-methods.view",
@@ -294,6 +294,15 @@ export const adminNavigation: NavGroup[] = [
             permission: "blog.posts.view",
           },
         ],
+      },
+      {
+        name: "Testimonials",
+        icon: ClipboardList,
+        path: "/admin/testimonials",
+        params: {},
+        active: false,
+        permission: "testimonials.view",
+        subitems: [],
       },
     ],
   },

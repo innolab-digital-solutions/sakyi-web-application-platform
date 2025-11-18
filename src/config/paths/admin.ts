@@ -54,6 +54,15 @@ export const ADMIN_PATHS = {
   /** Workout categories routes */
   WORKOUT_CATEGORIES: {
     LIST: "/admin/workout-categories",
+    CREATE: "/admin/workout-categories/create",
+    EDIT: (id: string | number) => `/admin/workout-categories/${id}/edit`,
+  },
+
+  /** Workouts routes */
+  WORKOUTS: {
+    LIST: "/admin/workouts",
+    CREATE: "/admin/workouts/create",
+    EDIT: (id: string | number) => `/admin/workouts/${id}/edit`,
   },
 
   /** Blog categories routes */
@@ -71,5 +80,14 @@ export const ADMIN_PATHS = {
   /** Payment methods routes */
   PAYMENT_METHODS: {
     LIST: "/admin/payment-methods",
+    CREATE: "/admin/payment-methods/create",
+    EDIT: (id: string | number) => `/admin/payment-methods/${id}/edit`,
+  },
+
+  /** Testimonials routes */
+  TESTIMONIALS: {
+    LIST: "/admin/testimonials",
+    CREATE: "/admin/testimonials/create",
+    EDIT: (id: string | number) => `/admin/testimonials/${id}/edit`,
   },
 } as const;

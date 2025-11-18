@@ -121,11 +121,33 @@ export const adminBreadcrumbs: Breadcrumbs = {
     { label: "Workout Categories", href: PATHS.ADMIN.WORKOUT_CATEGORIES.LIST },
   ],
 
+  /** Workouts list page */
+  "/admin/workouts": [
+    { label: "Admin Control Panel" },
+    { label: "Health Data & Plans" },
+    { label: "Workout Library" },
+    { label: "Workout Items", href: PATHS.ADMIN.WORKOUTS.LIST },
+  ],
+
+  /** Payment Methods list page */
+  "/admin/payments": [
+    { label: "Admin Control Panel" },
+    { label: "Finance" },
+    { label: "Payment Methods", href: PATHS.ADMIN.PAYMENT_METHODS.LIST },
+  ],
+
   /** Blog categories list page */
   "/admin/blog-categories": [
     { label: "Admin Control Panel" },
     { label: "Content Management" },
     { label: "Blog" },
     { label: "Blog Categories", href: PATHS.ADMIN.BLOG_CATEGORIES.LIST },
+  ],
+
+  /** Testimonials list page */
+  "/admin/testimonials": [
+    { label: "Admin Control Panel" },
+    { label: "Content Management" },
+    { label: "Testimonials", href: PATHS.ADMIN.TESTIMONIALS.LIST },
   ],
 };

@@ -170,8 +170,22 @@ export default function AssignPermissionsForm({ role }: AssignPermissionsFormPro
     form.patch(ENDPOINTS.ADMIN.ROLES.ASSIGN_PERMISSIONS(role.id));
   };
 
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLFormElement>) => {
+    if (event.key === "Enter" && event.target instanceof HTMLElement) {
+      const isTextarea = event.target.tagName === "TEXTAREA";
+      const targetElement = event.target as HTMLElement;
+      const isSubmitButton =
+        (targetElement instanceof HTMLButtonElement && targetElement.type === "submit") ||
+        targetElement.closest('button[type="submit"]') !== null;
+
+      if (!isTextarea && !isSubmitButton) {
+        event.preventDefault();
+      }
+    }
+  };
+
   return (
-    <form onSubmit={handleSubmit} className="space-y-5">
+    <form onSubmit={handleSubmit} onKeyDown={handleKeyDown} className="space-y-5">
       <div className="flex items-center justify-between">
         <div>
           <h3 className="text-[15px] font-semibold tracking-tight text-gray-800">

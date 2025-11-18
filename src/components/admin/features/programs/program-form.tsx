@@ -2,7 +2,7 @@
 
 import { ChevronDown, Plus, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 import ComboBoxField from "@/components/shared/forms/combo-box-field";
@@ -20,6 +20,20 @@ import { useRequest } from "@/hooks/use-request";
 import { CreateProgramSchema, EditProgramSchema } from "@/lib/validations/admin/program-schema";
 import { OnboardingForm } from "@/types/admin/onboarding-form";
 import { Program, ProgramApiResponse } from "@/types/admin/program";
+
+const handleKeyDown = (event: React.KeyboardEvent<HTMLFormElement>) => {
+  if (event.key === "Enter" && event.target instanceof HTMLElement) {
+    const isTextarea = event.target.tagName === "TEXTAREA";
+    const targetElement = event.target as HTMLElement;
+    const isSubmitButton =
+      (targetElement instanceof HTMLButtonElement && targetElement.type === "submit") ||
+      targetElement.closest('button[type="submit"]') !== null;
+
+    if (!isTextarea && !isSubmitButton) {
+      event.preventDefault();
+    }
+  }
+};
 
 type ProgramFormPageProperties = {
   program?: Program;
@@ -39,6 +53,11 @@ type FaqInput = { id?: number | null; question: string; answer: string };
 export default function ProgramFormPage({ program }: ProgramFormPageProperties) {
   const isEdit = Boolean(program);
   const router = useRouter();
+  const [idealsOpen, setIdealsOpen] = useState(true);
+  const [keyFeaturesOpen, setKeyFeaturesOpen] = useState(true);
+  const [expectedOutcomesOpen, setExpectedOutcomesOpen] = useState(true);
+  const [structuresOpen, setStructuresOpen] = useState(true);
+  const [faqsOpen, setFaqsOpen] = useState(true);
 
   // Fetch onboarding forms for dropdown
   const { data: onboardingFormsData } = useRequest<OnboardingForm>({
@@ -273,7 +292,7 @@ export default function ProgramFormPage({ program }: ProgramFormPageProperties) 
 
   return (
     <div>
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} onKeyDown={handleKeyDown} className="space-y-6">
         <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
           {/* Basics */}
           <div className="h-fit space-y-5 rounded-md border border-gray-200 p-6">
@@ -391,7 +410,7 @@ export default function ProgramFormPage({ program }: ProgramFormPageProperties) 
           {/* Content sections */}
           <div className="space-y-5 rounded-md border border-gray-200 p-6">
             {/* Ideals */}
-            <Collapsible defaultOpen>
+            <Collapsible open={idealsOpen} onOpenChange={setIdealsOpen}>
               <div className="overflow-hidden rounded-md border border-gray-200">
                 <div className="flex flex-col gap-2 bg-gray-50 px-4 py-3 md:flex-row md:items-center md:justify-between">
                   <SectionHeader
@@ -403,12 +422,13 @@ export default function ProgramFormPage({ program }: ProgramFormPageProperties) 
                       type="button"
                       variant="ghost"
                       size="sm"
-                      onClick={() =>
+                      onClick={() => {
+                        setIdealsOpen(true);
                         form.setData("ideals", [
                           ...((form.data.ideals ?? []) as IdealInput[]),
                           { description: "" },
-                        ])
-                      }
+                        ]);
+                      }}
                       className="text-primary hover:text-primary/80 hover:bg-primary/10 flex cursor-pointer items-center gap-2"
                     >
                       <Plus className="h-3.5 w-3.5" /> Add ideal
@@ -466,7 +486,7 @@ export default function ProgramFormPage({ program }: ProgramFormPageProperties) 
             </Collapsible>
 
             {/* Key Features */}
-            <Collapsible defaultOpen>
+            <Collapsible open={keyFeaturesOpen} onOpenChange={setKeyFeaturesOpen}>
               <div className="overflow-hidden rounded-md border border-gray-200">
                 <div className="flex flex-col gap-2 bg-gray-50 px-4 py-3 md:flex-row md:items-center md:justify-between">
                   <SectionHeader
@@ -478,12 +498,13 @@ export default function ProgramFormPage({ program }: ProgramFormPageProperties) 
                       type="button"
                       variant="ghost"
                       size="sm"
-                      onClick={() =>
+                      onClick={() => {
+                        setKeyFeaturesOpen(true);
                         form.setData("key_features", [
                           ...(((form.data.key_features ?? []) as KeyFeatureInput[]) ?? []),
                           { feature: "" },
-                        ])
-                      }
+                        ]);
+                      }}
                       className="text-primary hover:text-primary/80 hover:bg-primary/10 flex cursor-pointer items-center gap-2"
                     >
                       <Plus className="h-3.5 w-3.5" /> Add feature
@@ -543,7 +564,7 @@ export default function ProgramFormPage({ program }: ProgramFormPageProperties) 
             </Collapsible>
 
             {/* Expected Outcomes */}
-            <Collapsible defaultOpen>
+            <Collapsible open={expectedOutcomesOpen} onOpenChange={setExpectedOutcomesOpen}>
               <div className="overflow-hidden rounded-md border border-gray-200">
                 <div className="flex flex-col gap-2 bg-gray-50 px-4 py-3 md:flex-row md:items-center md:justify-between">
                   <SectionHeader
@@ -555,13 +576,14 @@ export default function ProgramFormPage({ program }: ProgramFormPageProperties) 
                       type="button"
                       variant="ghost"
                       size="sm"
-                      onClick={() =>
+                      onClick={() => {
+                        setExpectedOutcomesOpen(true);
                         form.setData("expected_outcomes", [
                           ...(((form.data.expected_outcomes ?? []) as ExpectedOutcomeInput[]) ??
                             []),
                           { outcome: "" },
-                        ])
-                      }
+                        ]);
+                      }}
                       className="text-primary hover:text-primary/80 hover:bg-primary/10 flex cursor-pointer items-center gap-2"
                     >
                       <Plus className="h-3.5 w-3.5" /> Add outcome
@@ -625,7 +647,7 @@ export default function ProgramFormPage({ program }: ProgramFormPageProperties) 
             </Collapsible>
 
             {/* Structures */}
-            <Collapsible defaultOpen>
+            <Collapsible open={structuresOpen} onOpenChange={setStructuresOpen}>
               <div className="overflow-hidden rounded-md border border-gray-200">
                 <div className="flex flex-col gap-2 bg-gray-50 px-4 py-3 md:flex-row md:items-center md:justify-between">
                   <SectionHeader
@@ -637,12 +659,13 @@ export default function ProgramFormPage({ program }: ProgramFormPageProperties) 
                       type="button"
                       variant="ghost"
                       size="sm"
-                      onClick={() =>
+                      onClick={() => {
+                        setStructuresOpen(true);
                         form.setData("structures", [
                           ...(((form.data.structures ?? []) as StructureInput[]) ?? []),
                           { week: "", title: "", description: "" },
-                        ])
-                      }
+                        ]);
+                      }}
                       className="text-primary hover:text-primary/80 hover:bg-primary/10 flex cursor-pointer items-center gap-2"
                     >
                       <Plus className="h-3.5 w-3.5" /> Add structure
@@ -745,7 +768,7 @@ export default function ProgramFormPage({ program }: ProgramFormPageProperties) 
             </Collapsible>
 
             {/* FAQs */}
-            <Collapsible defaultOpen>
+            <Collapsible open={faqsOpen} onOpenChange={setFaqsOpen}>
               <div className="overflow-hidden rounded-md border border-gray-200">
                 <div className="flex flex-col gap-2 bg-gray-50 px-4 py-3 md:flex-row md:items-center md:justify-between">
                   <SectionHeader
@@ -757,12 +780,13 @@ export default function ProgramFormPage({ program }: ProgramFormPageProperties) 
                       type="button"
                       variant="ghost"
                       size="sm"
-                      onClick={() =>
+                      onClick={() => {
+                        setFaqsOpen(true);
                         form.setData("faqs", [
                           ...(((form.data.faqs ?? []) as FaqInput[]) ?? []),
                           { question: "", answer: "" },
-                        ])
-                      }
+                        ]);
+                      }}
                       className="text-primary hover:text-primary/80 hover:bg-primary/10 flex cursor-pointer items-center gap-2"
                     >
                       <Plus className="h-3.5 w-3.5" /> Add FAQ

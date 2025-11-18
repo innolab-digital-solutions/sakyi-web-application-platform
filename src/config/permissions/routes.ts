@@ -48,8 +48,21 @@ export const routePermissions: Record<string, string | undefined> = {
   // Workout Categories
   "/admin/workout-categories": "workout.categories.view",
 
+  // Workouts
+  "/admin/workouts": "workouts.view",
+
   // Blog Categories
   "/admin/blog-categories": "blog.categories.view",
+
+  // Payment Methods
+  "/admin/payment-methods": "payment-methods.view",
+  "/admin/payment-methods/create": "payment-methods.create",
+  "/admin/payment-methods/:id/edit": "payment-methods.update",
+
+  // Testimonials
+  "/admin/testimonials": "testimonials.view",
+  "/admin/testimonials/create": "testimonials.create",
+  "/admin/testimonials/:id/edit": "testimonials.update",
 
   // Example route (user's request)
   "/admin/example": "example.view",

@@ -81,6 +81,15 @@ export const ADMIN_ENDPOINTS = {
     DESTROY: (id: string | number) => `/admin/workout-categories/${id}`,
   },
 
+  /** Workouts endpoints */
+  WORKOUTS: {
+    INDEX: "/admin/workouts",
+    SHOW: (id: string | number) => `/admin/workouts/${id}`,
+    STORE: "/admin/workouts",
+    UPDATE: (id: string | number) => `/admin/workouts/${id}`,
+    DESTROY: (id: string | number) => `/admin/workouts/${id}`,
+  },
+
   /** Blog categories endpoints */
   BLOG_CATEGORIES: {
     INDEX: "/admin/blog-categories",
@@ -106,5 +115,14 @@ export const ADMIN_ENDPOINTS = {
     STORE: "/admin/payment-methods",
     UPDATE: (id: string | number) => `/admin/payment-methods/${id}`,
     DESTROY: (id: string | number) => `/admin/payment-methods/${id}`,
+  },
+
+  /** Testimonials */
+  TESTIMONIALS: {
+    INDEX: "/admin/testimonials",
+    SHOW: (id: string | number) => `/admin/testimonials/${id}`,
+    STORE: "/admin/testimonials",
+    UPDATE: (id: string | number) => `/admin/testimonials/${id}`,
+    DESTROY: (id: string | number) => `/admin/testimonials/${id}`,
   },
 } as const;
