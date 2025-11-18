@@ -27,6 +27,12 @@ export const routePermissions: Record<string, string | undefined> = {
   "/admin/roles": "roles.view",
   "/admin/roles/:id/assign-permissions": "roles.update",
 
+  // Users
+  "/admin/users": "users.view",
+  "/admin/users/create": "users.create",
+  "/admin/users/:id/edit": "users.update",
+  "/admin/users/:id": "users.view",
+
   // Programs
   "/admin/programs": "programs.view",
 

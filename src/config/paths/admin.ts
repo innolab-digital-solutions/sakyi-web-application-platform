@@ -20,6 +20,13 @@ export const ADMIN_PATHS = {
     ASSIGN_PERMISSIONS: (id: string | number) => `/admin/roles/${id}/assign-permissions`,
   },
 
+  USERS: {
+    LIST: "/admin/users",
+    CREATE: "/admin/users/create",
+    EDIT: (id: string | number) => `/admin/users/${id}/edit`,
+    DETAIL: (id: string | number) => `/admin/users/${id}`,
+  },
+
   /** Programs routes */
   PROGRAMS: {
     LIST: "/admin/programs",

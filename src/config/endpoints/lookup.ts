@@ -8,6 +8,8 @@
 export const LOOKUP_ENDPOINTS = {
   PERMISSIONS: "/lookup/permissions",
   ENROLLMENTS: "/lookup/enrollments",
+  ROLES: "/lookup/roles",
+  USERS: "/lookup/users",
   WORKOUT_CATEGORIES: "/lookup/workout-categories",
   FOOD_CATEGORIES: "/lookup/food-categories",
   FOOD_ITEMS: "/lookup/food-items",

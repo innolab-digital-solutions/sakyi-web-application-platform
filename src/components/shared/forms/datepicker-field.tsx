@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronDownIcon, X } from "lucide-react";
+import { ChevronDownIcon } from "lucide-react";
 import * as React from "react";
 
 import { Button } from "@/components/ui/button";
@@ -29,10 +29,24 @@ export interface DatepickerFieldProperties {
   popoverClassName?: string;
 }
 
+function formatDateToDMY(date: Date | undefined): string | undefined {
+  if (!date) return undefined;
+
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0"); // months are 0-based
+  const year = date.getFullYear();
+
+  return `${day}-${month}-${year}`; // display format
+}
+
 function formatDateToYYYYMMDD(date: Date | undefined): string | undefined {
   if (!date) return undefined;
-  const iso = date.toISOString();
-  return iso.slice(0, 10);
+
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const year = date.getFullYear();
+
+  return `${year}-${month}-${day}`; // value format
 }
 
 function parseYYYYMMDDToDate(value?: string | null): Date | undefined {
@@ -52,7 +66,6 @@ export default function DatepickerField({
   onChange,
   disabled = false,
   required = false,
-  allowClear = true,
   containerClassName,
   labelClassName,
   descriptionClassName,
@@ -68,12 +81,6 @@ export default function DatepickerField({
     const formatted = formatDateToYYYYMMDD(date);
     onChange?.(formatted);
     setOpen(false);
-  };
-
-  const handleClear = (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-    event.stopPropagation();
-    onChange?.();
   };
 
   return (
@@ -113,19 +120,9 @@ export default function DatepickerField({
             )}
           >
             <span className="truncate font-normal">
-              {selectedDate ? selectedDate.toLocaleDateString() : placeholder}
+              {selectedDate ? formatDateToDMY(selectedDate) : placeholder}
             </span>
             <div className="flex items-center gap-1">
-              {allowClear && value && (
-                <button
-                  type="button"
-                  onClick={handleClear}
-                  aria-label="Clear date"
-                  className="text-muted-foreground hover:text-foreground"
-                >
-                  <X className="h-4 w-4" />
-                </button>
-              )}
               <ChevronDownIcon className="h-4 w-4 shrink-0 opacity-50" />
             </div>
           </Button>

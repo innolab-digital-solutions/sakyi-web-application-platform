@@ -63,6 +63,29 @@ export const adminBreadcrumbs: Breadcrumbs = {
     { label: "Edit" },
   ],
 
+  /** Users list page */
+  "/admin/users": [
+    { label: "Admin Control Panel" },
+    { label: "Administration & Access Control" },
+    { label: "User Management", href: PATHS.ADMIN.USERS.LIST },
+  ],
+
+  /** Users create page */
+  "/admin/users/create": [
+    { label: "Admin Control Panel" },
+    { label: "Administration & Access Control" },
+    { label: "User Management", href: PATHS.ADMIN.USERS.LIST },
+    { label: "Create" },
+  ],
+
+  /** Users edit page (dynamic: :id replaced at runtime) */
+  "/admin/users/:id/edit": [
+    { label: "Admin Control Panel" },
+    { label: "Administration & Access Control" },
+    { label: "User Management", href: PATHS.ADMIN.USERS.LIST },
+    { label: "Edit" },
+  ],
+
   /** Onboarding forms list page */
   "/admin/onboarding-forms": [
     { label: "Admin Control Panel" },
