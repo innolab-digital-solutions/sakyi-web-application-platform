@@ -5,6 +5,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { ENDPOINTS } from "@/config/endpoints";
 import { User } from "@/types/admin/user";
 
+import UserFiltersDropdown from "./user-filters-dropdown";
 import { usersTableColumns } from "./user-table-columns";
 
 export default function UserTable() {
@@ -39,6 +40,7 @@ export default function UserTable() {
         },
       }}
       emptyMessage="No users found. Create your first user to get started."
+      filters={<UserFiltersDropdown />}
     />
   );
 }

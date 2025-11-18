@@ -24,7 +24,7 @@ export interface UserProfile {
   user_id: number;
   username?: string | null;
   picture?: string | null;
-  dob?: string | null; // ISO date string
+  dob?: string | null;
   gender?: "male" | "female" | null;
   address?: string | null;
   created_at: string;

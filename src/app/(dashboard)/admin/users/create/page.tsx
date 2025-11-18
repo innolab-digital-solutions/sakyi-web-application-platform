@@ -1,18 +1,16 @@
-import { ArrowLeft, ClipboardList, Users } from "lucide-react";
+import { ArrowLeft, Users } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import React from "react";
 
-import ProgramForm from "@/components/admin/features/programs/program-form";
 import UserForm from "@/components/admin/features/users/user-form";
 import PageHeader from "@/components/admin/shared/page-header";
 import { Button } from "@/components/ui/button";
 import { PATHS } from "@/config/paths";
 
 export const metadata: Metadata = {
-  title: "Create Program — SaKyi Health & Wellness",
-  description:
-    "Set up a new program with the essentials, then add audience, features, outcomes, structure, and FAQs.",
+  title: "Create User — SaKyi Health & Wellness",
+  description: "Add a new user with basic information, profile details, and role assignment.",
 };
 
 export default function CreateUserPage() {
@@ -20,8 +18,8 @@ export default function CreateUserPage() {
     <div className="flex flex-col gap-2">
       <PageHeader
         icon={Users}
-        title="Create Program"
-        description="Set the basics—thumbnail, title, description, duration, and price—then add audience, key features, outcomes, structure, and FAQs."
+        title="Create User"
+        description="Fill in the user's basic details such as name, email, contact information, profile settings, and assign a role."
         actions={
           <Button variant="outline" asChild>
             <Link

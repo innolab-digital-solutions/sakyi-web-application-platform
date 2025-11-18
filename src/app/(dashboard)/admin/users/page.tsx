@@ -10,7 +10,7 @@ import { PATHS } from "@/config/paths";
 export const metadata: Metadata = {
   title: "User Management — SaKyi Health & Wellness",
   description:
-    "Create and manage users with clear outcomes and structure. Keep offerings organized and easy to maintain.",
+    "Manage users, roles, and permissions with clarity. Easily create, update, and organize user accounts across your system.",
 };
 
 export default function UserListPage() {
@@ -18,7 +18,8 @@ export default function UserListPage() {
     <ResourceListPage
       icon={Users}
       title="User Management"
-      description="Design, organize, and maintain your programs. Publish with clear outcomes and structure so clients know exactly what to expect."
+      description="Create, organize, and maintain user accounts(light profile) with ease. Assign role and keep your team structure clear and up to date.
+"
       createTrigger={
         <Button asChild>
           <Link

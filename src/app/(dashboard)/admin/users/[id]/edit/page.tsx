@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeft, ClipboardList, Users } from "lucide-react";
+import { ArrowLeft, Users } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 
@@ -33,8 +33,9 @@ export default function EditUserPage({
     <div className="flex flex-col gap-2">
       <PageHeader
         icon={Users}
-        title="Edit Program"
-        description="Update details and structure with confidence. Refine the basics or adjust audience, features, outcomes, and weekly plan—changes help clients understand what’s new."
+        title="Edit User"
+        description="Update user information and role with confidence. Ensure each account stays accurate, organized, and aligned with your system's access requirements.
+"
         actions={
           <Button variant="outline" asChild>
             <Link

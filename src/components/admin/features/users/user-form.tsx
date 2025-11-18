@@ -156,7 +156,6 @@ export default function UserForm({ user }: UserFormPageProperties) {
   // Populate form for editing
   useEffect(() => {
     if (isEdit && user) {
-      console.log("user", user);
       const newData = {
         name: user.name ?? "",
         picture: user.picture || undefined,
@@ -200,14 +199,6 @@ export default function UserForm({ user }: UserFormPageProperties) {
     user?.role,
     isEdit,
   ]);
-
-  function formatDateToDMY(date: Date | undefined): string {
-    if (!date) return "";
-    const day = String(date.getDate()).padStart(2, "0");
-    const month = date.toLocaleString("default", { month: "short" }); // "Jan", "Feb", etc.
-    const year = date.getFullYear();
-    return `${day}-${month}-${year}`;
-  }
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();

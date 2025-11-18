@@ -67,14 +67,14 @@ export const adminBreadcrumbs: Breadcrumbs = {
   "/admin/users": [
     { label: "Admin Control Panel" },
     { label: "Administration & Access Control" },
-    { label: "Users", href: PATHS.ADMIN.USERS.LIST },
+    { label: "User Management", href: PATHS.ADMIN.USERS.LIST },
   ],
 
   /** Users create page */
   "/admin/users/create": [
     { label: "Admin Control Panel" },
     { label: "Administration & Access Control" },
-    { label: "Users", href: PATHS.ADMIN.USERS.LIST },
+    { label: "User Management", href: PATHS.ADMIN.USERS.LIST },
     { label: "Create" },
   ],
 
@@ -82,7 +82,7 @@ export const adminBreadcrumbs: Breadcrumbs = {
   "/admin/users/:id/edit": [
     { label: "Admin Control Panel" },
     { label: "Administration & Access Control" },
-    { label: "Users", href: PATHS.ADMIN.USERS.LIST },
+    { label: "User Management", href: PATHS.ADMIN.USERS.LIST },
     { label: "Edit" },
   ],
 

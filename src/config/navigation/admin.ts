@@ -78,19 +78,11 @@ export const adminNavigation: NavGroup[] = [
       {
         name: "User Management",
         icon: Users,
-        path: "#",
+        path: "/admin/users",
         params: {},
         active: false,
-        permission: "",
-        subitems: [
-          {
-            name: "All Users",
-            path: "/admin/users",
-            params: {},
-            active: false,
-            permission: "users.view",
-          },
-        ],
+        permission: "users.view",
+        subitems: [],
       },
     ],
   },
