@@ -8,9 +8,9 @@ import { Button } from "@/components/ui/button";
 import { PATHS } from "@/config/paths";
 
 export const metadata: Metadata = {
-  title: "Programs — SaKyi Health & Wellness",
+  title: "User Management — SaKyi Health & Wellness",
   description:
-    "Create and manage programs with clear outcomes and structure. Keep offerings organized and easy to maintain.",
+    "Create and manage users with clear outcomes and structure. Keep offerings organized and easy to maintain.",
 };
 
 export default function UserListPage() {

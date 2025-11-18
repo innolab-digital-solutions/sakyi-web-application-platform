@@ -8,6 +8,12 @@ export interface Role {
   name: string;
 }
 
+export interface RolesResponse {
+  status: string;
+  message: string;
+  data: Role[];
+}
+
 export interface Permission {
   module: string;
   actions: string[];
@@ -28,7 +34,7 @@ export interface UserProfile {
 
 export interface User {
   id: number;
-  roles: Role[];
+  role: string;
   permissions?: Permission[];
   provider_id?: string | null;
   provider_name?: AuthProvider | null;

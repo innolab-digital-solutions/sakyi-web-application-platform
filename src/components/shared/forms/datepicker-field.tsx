@@ -116,16 +116,6 @@ export default function DatepickerField({
               {selectedDate ? selectedDate.toLocaleDateString() : placeholder}
             </span>
             <div className="flex items-center gap-1">
-              {allowClear && value && (
-                <button
-                  type="button"
-                  onClick={handleClear}
-                  aria-label="Clear date"
-                  className="text-muted-foreground hover:text-foreground"
-                >
-                  <X className="h-4 w-4" />
-                </button>
-              )}
               <ChevronDownIcon className="h-4 w-4 shrink-0 opacity-50" />
             </div>
           </Button>

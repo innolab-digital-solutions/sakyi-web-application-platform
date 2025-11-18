@@ -15,36 +15,20 @@ const BaseUserSchema = z.object({
 
   email: z.string("Email is required").email("Email must be valid").trim(),
 
-  username: z
-    .string("Username is required")
-    .min(1, "Username is required")
-    .max(50, "Username must not exceed 50 characters")
-    .trim()
-    .refine((username) => username.length > 0, "Username cannot be empty or contain only spaces"),
-
   phone: z.string().trim().optional(),
 
   dob: z.string().optional(), // Could also use z.date() if you handle conversion in form
-  gender: z.enum(["male", "female", "other"]).optional(),
+  gender: z.enum(["male", "female"]).optional(),
   address: z.string().optional(),
 
-  avatar: z.any().optional(), // File or string URL
+  picture: z.any().optional(), // File or string URL
 
-  status: z.enum(["active", "inactive"]).default("active"),
-
-  roles: z
-    .array(
-      z.object({
-        id: z.number().optional(),
-        name: z
-          .string("Role name is required")
-          .min(1, "Role name is required")
-          .max(255, "Role name must not exceed 255 characters")
-          .trim()
-          .refine((name) => name.length > 0, "Role name cannot be empty or contain only spaces"),
-      }),
-    )
-    .min(1, "At least one role must be assigned"),
+  role: z
+    .string("Role name is required")
+    .min(1, "Role name is required")
+    .max(255, "Role name must not exceed 255 characters")
+    .trim()
+    .refine((name) => name.length > 0, "Role name cannot be empty or contain only spaces"),
 });
 
 /**

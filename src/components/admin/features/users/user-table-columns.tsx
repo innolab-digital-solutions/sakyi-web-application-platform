@@ -2,7 +2,6 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import { Ellipsis, SquarePen } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
@@ -20,7 +19,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { PATHS } from "@/config/paths";
 import { User } from "@/types/admin/user";
-import { cn } from "@/utils/shared/cn";
+
+import { ImagePreview } from "../../shared/image-preview";
 
 export const usersTableColumns: ColumnDef<User>[] = [
   {
@@ -28,17 +28,13 @@ export const usersTableColumns: ColumnDef<User>[] = [
     header: ({ column }) => <SortableHeader column={column}>Name</SortableHeader>,
     cell: ({ row }) => {
       const user = row.original;
-      const avatar = user.profile?.picture;
+      const avatar = user.picture;
       const initial = user.name?.[0] ?? "?";
 
       return (
         <div className="flex items-center gap-2">
           <div className="relative flex h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-gray-200 text-sm font-semibold text-gray-600">
-            {avatar ? (
-              <Image src={avatar} alt={user.name} fill className="object-cover" />
-            ) : (
-              <span>{initial}</span>
-            )}
+            {avatar ? <ImagePreview src={avatar} type="Avatar" /> : <span>{initial}</span>}
           </div>
           <span className="text-sm font-semibold">{user.name}</span>
         </div>
@@ -61,14 +57,10 @@ export const usersTableColumns: ColumnDef<User>[] = [
     cell: ({ row }) => {
       return (
         <div className="flex flex-wrap gap-1">
-          {row.original.roles?.length ? (
-            row.original.roles.map((role) => (
-              <Badge key={role.id} className="text-xs font-medium">
-                {role.name}
-              </Badge>
-            ))
+          {row.original.role ? (
+            <Badge className="font-medium">{row.original.role}</Badge>
           ) : (
-            <span className="text-sm text-gray-400">No roles</span>
+            <span className="text-sm text-gray-400">No Role</span>
           )}
         </div>
       );

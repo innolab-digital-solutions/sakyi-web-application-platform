@@ -1,11 +1,11 @@
 "use client";
 
-import { Plus, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 import { toast } from "sonner";
 
 import ComboBoxField from "@/components/shared/forms/combo-box-field";
+import DatepickerField from "@/components/shared/forms/datepicker-field";
 import FileUploadField from "@/components/shared/forms/file-upload-field";
 import InputField from "@/components/shared/forms/input-field";
 import SelectField from "@/components/shared/forms/select-field";
@@ -15,61 +15,52 @@ import { PATHS } from "@/config/paths";
 import { useForm } from "@/hooks/use-form";
 import { useRequest } from "@/hooks/use-request";
 import { CreateUserSchema, EditUserSchema } from "@/lib/validations/admin/user-schema";
-import { User, UserApiResponse } from "@/types/admin/user";
-
-const handleKeyDown = (event: React.KeyboardEvent<HTMLFormElement>) => {
-  if (event.key === "Enter" && event.target instanceof HTMLElement) {
-    const isTextarea = event.target.tagName === "TEXTAREA";
-    const targetElement = event.target as HTMLElement;
-    const isSubmitButton =
-      (targetElement instanceof HTMLButtonElement && targetElement.type === "submit") ||
-      targetElement.closest('button[type="submit"]') !== null;
-
-    if (!isTextarea && !isSubmitButton) {
-      event.preventDefault();
-    }
-  }
-};
+import { Role, User, UserApiResponse } from "@/types/admin/user";
 
 type UserFormPageProperties = {
   user?: User;
 };
-
-type RoleInput = { id?: number; name: string };
 
 export default function UserForm({ user }: UserFormPageProperties) {
   const isEdit = Boolean(user);
   const router = useRouter();
 
   // Fetch roles
-  const { data: rolesData } = useRequest<{ data: { id: number; name: string }[] }>({
+  const { data: rolesData } = useRequest<Role[]>({
     url: ENDPOINTS.LOOKUP.ROLES,
     queryKey: ["lookup-roles"],
   });
 
   const roleOptions =
-    rolesData?.data && Array.isArray(rolesData.data)
-      ? rolesData.data.map((role) => ({
-          value: String(role.id),
-          label: role.name,
-        }))
-      : [];
+    rolesData?.data?.map((role: Role) => ({
+      value: role.name,
+      label: role.name,
+    })) ?? [];
 
   const form = useForm(
-    {
-      name: "",
-      username: "",
-      email: "",
-      phone: "",
-      dob: "",
-      gender: "male" as "male" | "female" | "other",
-      address: "",
-      avatar: undefined as File | string | undefined,
-      password: "",
-      password_confirmation: "",
-      status: "active" as "active" | "inactive",
-      roles: [{ name: "" }] as RoleInput[],
-    },
+    isEdit && user
+      ? {
+          name: user.name ?? "",
+          email: user.email ?? "",
+          phone: user.phone ?? "",
+          dob: user.dob ?? "",
+          gender: user.gender ?? undefined,
+          address: user.address ?? "",
+          picture: user.picture || undefined,
+          role: user.role ?? "",
+        }
+      : {
+          name: "",
+          email: "",
+          phone: "",
+          dob: "",
+          gender: undefined,
+          address: "",
+          picture: undefined as File | string | undefined,
+          password: "",
+          password_confirmation: "",
+          role: "",
+        },
     {
       validate: isEdit ? EditUserSchema : CreateUserSchema,
       tanstack: {
@@ -99,14 +90,12 @@ export default function UserForm({ user }: UserFormPageProperties) {
                       ? {
                           ...existing,
                           name: String(form.data.name ?? ""),
-                          username: String(form.data.username ?? ""),
                           email: String(form.data.email ?? ""),
                           phone: String(form.data.phone ?? ""),
                           dob: String(form.data.dob ?? ""),
                           gender: String(form.data.gender ?? "male"),
                           address: String(form.data.address ?? ""),
-                          avatar_url: String(form.data.avatar ?? ""),
-                          status: String(form.data.status ?? "active"),
+                          picture_url: String(form.data.picture ?? ""),
                           roles: form.data.roles ?? [],
                         }
                       : existing);
@@ -141,50 +130,88 @@ export default function UserForm({ user }: UserFormPageProperties) {
     },
   );
 
-  // Populate form for editing
-  useEffect(() => {
-    if (isEdit && user) {
-      form.setData({
-        name: user.name ?? "",
-        username: user.username ?? "",
-        email: user.email ?? "",
-        phone: user.phone ?? "",
-        dob: user.dob ?? "",
-        gender: user.gender ?? "male",
-        address: user.address ?? "",
-        roles: user.roles?.map((role) => ({ id: role.id, name: role.name })) ?? [{ name: "" }],
-      });
-    } else {
-      form.reset();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user?.id]);
-
   // Build FormData
   const buildFormData = (payload: typeof form.data) => {
     const fd = new FormData();
     fd.append("name", String(payload.name ?? ""));
-    fd.append("username", String(payload.username ?? ""));
     fd.append("email", String(payload.email ?? ""));
     fd.append("phone", String(payload.phone ?? ""));
     fd.append("dob", String(payload.dob ?? ""));
     fd.append("gender", String(payload.gender ?? "male"));
     fd.append("address", String(payload.address ?? ""));
-    fd.append("status", String(payload.status ?? "active"));
-    if (payload.avatar instanceof File) fd.append("avatar", payload.avatar);
-    if (!isEdit) {
+    if (payload.picture instanceof File) {
+      fd.append("picture", payload.picture);
+    }
+    if (!isEdit && payload.password) {
       fd.append("password", String(payload.password ?? ""));
       fd.append("password_confirmation", String(payload.password_confirmation ?? ""));
     }
-    for (const [index, role] of (payload.roles ?? []).entries()) {
-      fd.append(`roles[${index}][id]`, String(role.id ?? ""));
-      fd.append(`roles[${index}][name]`, String(role.name ?? ""));
+    if (payload.role) {
+      fd.append("role", payload.role); // singular
     }
+
     return fd;
   };
 
+  // Populate form for editing
+  useEffect(() => {
+    if (isEdit && user) {
+      console.log("user", user);
+      const newData = {
+        name: user.name ?? "",
+        picture: user.picture || undefined,
+        email: user.email ?? "",
+        phone: user.phone ?? "",
+        dob: user.dob ?? "",
+        gender: user.gender ?? undefined,
+        address: user.address ?? "",
+        role: user.role ?? "",
+      };
+
+      form.setDataAndDefaults(newData);
+    } else {
+      const newData = {
+        name: "",
+        picture: undefined as File | string | undefined,
+        username: "",
+        email: "",
+        phone: "",
+        dob: "",
+        gender: undefined,
+        password: "",
+        password_confirmation: "",
+        address: "",
+        role: "",
+      };
+
+      form.setDataAndDefaults(newData);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    user,
+    user?.id,
+    user?.name,
+    user?.email,
+    user?.phone,
+    user?.dob,
+    user?.picture,
+    user?.gender,
+    user?.address,
+    user?.role,
+    isEdit,
+  ]);
+
+  function formatDateToDMY(date: Date | undefined): string {
+    if (!date) return "";
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = date.toLocaleString("default", { month: "short" }); // "Jan", "Feb", etc.
+    const year = date.getFullYear();
+    return `${day}-${month}-${year}`;
+  }
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
     if (isEdit && user?.id) {
       form.put(ENDPOINTS.ADMIN.USERS.UPDATE(user.id), { transform: buildFormData });
     } else {
@@ -193,18 +220,19 @@ export default function UserForm({ user }: UserFormPageProperties) {
   };
 
   return (
-    <form onSubmit={handleSubmit} onKeyDown={handleKeyDown} className="space-y-6">
+    <form onSubmit={handleSubmit} className="space-y-6">
       <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
         {/* User Info */}
         <div className="space-y-4 rounded-md border border-gray-200 p-6">
           <FileUploadField
-            id="avatar"
+            id="picture"
             label="Avatar"
-            value={form.data.avatar}
-            onChange={(file) => form.setData("avatar", file as File | undefined)}
+            value={form.data.picture}
+            onChange={(file) => form.setData("picture", file as File | undefined)}
             maxSize={2 * 1024 * 1024}
             accept="image/jpg,image/jpeg,image/png,image/webp"
-            error={form.errors.avatar as string}
+            error={form.errors.picture as string}
+            disabled={form.processing}
           />
 
           <InputField
@@ -212,7 +240,7 @@ export default function UserForm({ user }: UserFormPageProperties) {
             label="Full Name"
             placeholder="Enter full name"
             value={form.data.name}
-            onChange={(e) => form.setData("name", e.target.value)}
+            onChange={(event) => form.setData("name", event.target.value)}
             error={form.errors.name as string}
             required
           />
@@ -223,7 +251,7 @@ export default function UserForm({ user }: UserFormPageProperties) {
             placeholder="Enter email"
             type="email"
             value={form.data.email}
-            onChange={(e) => form.setData("email", e.target.value)}
+            onChange={(event) => form.setData("email", event.target.value)}
             error={form.errors.email as string}
             required
           />
@@ -233,18 +261,18 @@ export default function UserForm({ user }: UserFormPageProperties) {
             label="Phone"
             placeholder="Enter phone number"
             value={form.data.phone}
-            onChange={(e) => form.setData("phone", e.target.value)}
+            onChange={(event) => form.setData("phone", event.target.value)}
             error={form.errors.phone as string}
           />
 
-          <InputField
+          <DatepickerField
             id="dob"
             label="Date of Birth"
-            placeholder="YYYY-MM-DD"
-            type="date"
+            placeholder="Select date"
             value={form.data.dob}
-            onChange={(e) => form.setData("dob", e.target.value)}
+            onChange={(value) => form.setData("dob", value)}
             error={form.errors.dob as string}
+            required
           />
         </div>
 
@@ -253,13 +281,13 @@ export default function UserForm({ user }: UserFormPageProperties) {
           <SelectField
             id="gender"
             label="Gender"
-            value={form.data.gender}
-            onChange={(v) => form.setData("gender", v as "male" | "female" | "other")}
+            value={String(form.data.gender ?? "")}
+            onChange={(v) => form.setData("gender", v as "male" | "female")}
             options={[
               { value: "male", label: "Male" },
               { value: "female", label: "Female" },
-              { value: "other", label: "Other" },
             ]}
+            disabled={form.processing}
             required
           />
 
@@ -268,7 +296,7 @@ export default function UserForm({ user }: UserFormPageProperties) {
             label="Address"
             placeholder="Enter address"
             value={form.data.address}
-            onChange={(e) => form.setData("address", e.target.value)}
+            onChange={(event) => form.setData("address", event.target.value)}
             error={form.errors.address as string}
           />
 
@@ -280,7 +308,7 @@ export default function UserForm({ user }: UserFormPageProperties) {
                 type="password"
                 placeholder="Enter password"
                 value={form.data.password}
-                onChange={(e) => form.setData("password", e.target.value)}
+                onChange={(event) => form.setData("password", event.target.value)}
                 error={form.errors.password as string}
                 required
               />
@@ -290,29 +318,21 @@ export default function UserForm({ user }: UserFormPageProperties) {
                 type="password"
                 placeholder="Confirm password"
                 value={form.data.password_confirmation}
-                onChange={(e) => form.setData("password_confirmation", e.target.value)}
+                onChange={(event) => form.setData("password_confirmation", event.target.value)}
                 error={form.errors.password_confirmation as string}
                 required
               />
             </>
           )}
+
           <label className="text-sm font-semibold text-gray-700">Roles</label>
 
           <ComboBoxField
             id="role"
             placeholder="Select role"
             options={roleOptions}
-            value={form.data.roles?.[0]?.id ? String(form.data.roles[0].id) : ""}
-            onChange={(value) => {
-              const selected = rolesData?.data?.find((r) => String(r.id) === value);
-              form.setData("roles", [
-                {
-                  id: selected?.id ?? null,
-                  name: selected?.name ?? "",
-                },
-              ]);
-            }}
-            required
+            value={form.data.role ?? ""}
+            onChange={(value) => form.setData("role", value ?? "")}
           />
         </div>
       </div>

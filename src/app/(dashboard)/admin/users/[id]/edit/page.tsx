@@ -5,6 +5,7 @@ import Link from "next/link";
 import React from "react";
 
 import UserForm from "@/components/admin/features/users/user-form";
+import UserFormSkeleton from "@/components/admin/features/users/user-form-skeleton";
 import PageHeader from "@/components/admin/shared/page-header";
 import { Button } from "@/components/ui/button";
 import { ENDPOINTS } from "@/config/endpoints";
@@ -21,12 +22,12 @@ export default function EditUserPage({
 }) {
   const resolvedParameters = React.use(params);
 
-  const { data } = useRequest({
+  const { data: user, loading: isLoading } = useRequest({
     url: ENDPOINTS.ADMIN.USERS.SHOW(resolvedParameters.id),
     queryKey: ["admin-user", resolvedParameters.id],
   });
 
-  const loadedUser = (data?.data as User) || undefined;
+  const loadedUser = (user?.data as User) || undefined;
 
   return (
     <div className="flex flex-col gap-2">
@@ -47,7 +48,8 @@ export default function EditUserPage({
         }
       />
 
-      <UserForm user={loadedUser} />
+      {isLoading && <UserFormSkeleton />}
+      {!isLoading && loadedUser && <UserForm user={loadedUser} />}
     </div>
   );
 }
