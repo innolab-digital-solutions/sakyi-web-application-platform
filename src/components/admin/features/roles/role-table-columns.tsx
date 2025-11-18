@@ -26,6 +26,7 @@ import {
   getPermissionModuleCount,
   getPermissionModuleNames,
 } from "@/utils/admin/permissions";
+import { truncateText } from "@/utils/admin/truncate-text";
 
 export const rolesTableColumns: ColumnDef<Role>[] = [
   {
@@ -39,12 +40,13 @@ export const rolesTableColumns: ColumnDef<Role>[] = [
         <div>
           <div className="text-foreground text-sm font-semibold">{name}</div>
           <div className="text-muted-foreground max-w-full break-words whitespace-pre-line">
-            {description}
+            {truncateText(description, 15)}
           </div>
         </div>
       );
     },
   },
+
   {
     accessorKey: "permissions",
     header: "Permissions",
