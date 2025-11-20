@@ -153,7 +153,7 @@ export default function BlogDetailPage({ params }: { params: Promise<{ slug: str
               className="rounded-3xl border border-dashed border-slate-200 bg-white p-12 text-center shadow-sm"
               data-aos="zoom-in"
             >
-              <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-r from-[#35bec5] to-[#0c96c4] text-white">
+              <div className="bg-brand-gradient mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl text-white">
                 <FileText className="h-8 w-8" />
               </div>
               <h3
