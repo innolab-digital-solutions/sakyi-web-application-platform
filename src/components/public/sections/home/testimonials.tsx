@@ -44,7 +44,6 @@ export default function Testimonials() {
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
   const [isAutoRotating, setIsAutoRotating] = useState(true);
   const [isHovered, setIsHovered] = useState(false);
-  const [isTransitioning, setIsTransitioning] = useState(false);
 
   const {
     data: testimonialsResponse,
@@ -71,11 +70,7 @@ export default function Testimonials() {
     if (!isAutoRotating || isHovered || !hasTestimonials) return;
 
     const interval = setInterval(() => {
-      setIsTransitioning(true);
-      setTimeout(() => {
-        setCurrentTestimonial((previous) => (previous + 1) % testimonials.length);
-        setTimeout(() => setIsTransitioning(false), 50);
-      }, 350);
+      setCurrentTestimonial((previous) => (previous + 1) % testimonials.length);
     }, 6000); // Slower rotation - 6 seconds
 
     return () => clearInterval(interval);
@@ -84,33 +79,21 @@ export default function Testimonials() {
   // Handle manual navigation with smooth transitions
   const handlePrevious = () => {
     setIsAutoRotating(false); // Stop auto-rotation when user manually navigates
-    setIsTransitioning(true);
-    setTimeout(() => {
-      setCurrentTestimonial((previous) => (previous - 1 + testimonials.length) % testimonials.length);
-      setTimeout(() => setIsTransitioning(false), 50);
-    }, 350);
+    setCurrentTestimonial((previous) => (previous - 1 + testimonials.length) % testimonials.length);
     // Restart auto-rotation after 10 seconds of inactivity
     setTimeout(() => setIsAutoRotating(true), 10_000);
   };
 
   const handleNext = () => {
     setIsAutoRotating(false); // Stop auto-rotation when user manually navigates
-    setIsTransitioning(true);
-    setTimeout(() => {
-      setCurrentTestimonial((previous) => (previous + 1) % testimonials.length);
-      setTimeout(() => setIsTransitioning(false), 50);
-    }, 350);
+    setCurrentTestimonial((previous) => (previous + 1) % testimonials.length);
     // Restart auto-rotation after 10 seconds of inactivity
     setTimeout(() => setIsAutoRotating(true), 10_000);
   };
 
   const handleIndicatorClick = (index: number) => {
     setIsAutoRotating(false); // Stop auto-rotation when user clicks indicator
-    setIsTransitioning(true);
-    setTimeout(() => {
-      setCurrentTestimonial(index);
-      setTimeout(() => setIsTransitioning(false), 50);
-    }, 350);
+    setCurrentTestimonial(index);
     // Restart auto-rotation after 10 seconds of inactivity
     setTimeout(() => setIsAutoRotating(true), 10_000);
   };

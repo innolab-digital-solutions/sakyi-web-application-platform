@@ -23,8 +23,8 @@ export default function TestimonialSkeleton({
           {/* Star Rating Skeleton */}
           <div className="flex justify-center">
             <div className="flex space-x-1">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <Skeleton key={i} className="h-4 w-4 rounded" />
+              {Array.from({ length: 5 }).map((_, index_) => (
+                <Skeleton key={index_} className="h-4 w-4 rounded" />
               ))}
             </div>
           </div>
