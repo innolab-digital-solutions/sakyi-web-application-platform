@@ -11,4 +11,5 @@ export const PUBLIC_ENDPOINTS = {
   RELATED_BLOG_POSTS: (slug: string) => `/public/blog-posts/${slug}/related`,
 
   HOME_BLOG_POSTS: "/public/home/blog-posts",
+  HOME_TESTIMONIALS: "/public/home/testimonials",
 } as const;
