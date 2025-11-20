@@ -2,7 +2,13 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 
-export default function Pagination({ currentPage, totalPages }: { currentPage: number, totalPages: number }) {
+interface PaginationProperties {
+  currentPage: number;
+  totalPages: number;
+  onPageChange?: (page: number) => void;
+}
+
+export default function Pagination({ currentPage, totalPages, onPageChange }: PaginationProperties) {
   const getPageNumbers = () => {
     const pages = [];
     const maxVisiblePages = 5;
@@ -34,22 +40,80 @@ export default function Pagination({ currentPage, totalPages }: { currentPage: n
     return pages;
   };
 
+  const handlePageChange = (page: number) => {
+    if (onPageChange) {
+      onPageChange(page);
+    }
+  };
+
+  const renderTrigger = (page: number, label: React.ReactNode, disabled: boolean, variant: "prev" | "next" | "page") => {
+    if (!onPageChange) {
+      const href =
+        variant === "prev"
+          ? currentPage > 1
+            ? `/blog?page=${currentPage - 1}`
+            : "#"
+          : variant === "next"
+            ? currentPage < totalPages
+              ? `/blog?page=${currentPage + 1}`
+              : "#"
+            : `/blog?page=${page}`;
+
+      return (
+        <Link
+          href={href}
+          className={`flex items-center justify-center rounded-lg text-sm font-medium transition-all duration-300 ${
+            variant === "page"
+              ? currentPage === page
+                ? "bg-gradient-to-r from-[#35bec5] to-[#0c96c4] text-white shadow-lg"
+                : "bg-white text-slate-700 hover:bg-slate-50 hover:text-[#35bec5]"
+              : disabled
+                ? "bg-slate-100 text-slate-400 cursor-not-allowed"
+                : "bg-white text-slate-700 hover:bg-slate-50 hover:text-[#35bec5]"
+          } ${variant === "page" ? "h-10 w-10" : "px-4 py-2 gap-2"}`}
+          style={{ fontFamily: "Inter, sans-serif" }}
+          aria-disabled={disabled}
+        >
+          {label}
+        </Link>
+      );
+    }
+
+    return (
+      <button
+        type="button"
+        onClick={() => handlePageChange(page)}
+        disabled={disabled}
+        className={`flex items-center justify-center rounded-lg text-sm font-medium transition-all duration-300 ${
+          variant === "page"
+            ? currentPage === page
+              ? "bg-gradient-to-r from-[#35bec5] to-[#0c96c4] text-white shadow-lg"
+              : "bg-white text-slate-700 hover:bg-slate-50 hover:text-[#35bec5]"
+            : disabled
+              ? "bg-slate-100 text-slate-400 cursor-not-allowed"
+              : "bg-white text-slate-700 hover:bg-slate-50 hover:text-[#35bec5]"
+        } ${variant === "page" ? "h-10 w-10" : "px-4 py-2 gap-2"}`}
+        style={{ fontFamily: "Inter, sans-serif" }}
+        aria-label={variant === "page" ? `Go to page ${page}` : undefined}
+      >
+        {label}
+      </button>
+    );
+  };
+
   return (
     <div className="mt-16 flex items-center justify-center">
       <nav className="flex items-center space-x-2">
         {/* Previous Button */}
-        <Link
-          href={currentPage > 1 ? `/blog?page=${currentPage - 1}` : "#"}
-          className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-all duration-300 ${
-            currentPage > 1
-              ? "bg-white text-slate-700 hover:bg-slate-50 hover:text-[#35bec5]"
-              : "bg-slate-100 text-slate-400 cursor-not-allowed"
-          }`}
-          style={{ fontFamily: "Inter, sans-serif" }}
-        >
-          <ChevronLeft className="h-4 w-4" />
-          Previous
-        </Link>
+        {renderTrigger(
+          currentPage - 1,
+          <>
+            <ChevronLeft className="h-4 w-4" />
+            Previous
+          </>,
+          currentPage <= 1,
+          "prev",
+        )}
 
         {/* Page Numbers */}
         <div className="flex items-center space-x-1">
@@ -58,35 +122,22 @@ export default function Pagination({ currentPage, totalPages }: { currentPage: n
               {page === "..." ? (
                 <span className="px-3 py-2 text-slate-500">...</span>
               ) : (
-                <Link
-                  href={`/blog?page=${page}`}
-                  className={`flex h-10 w-10 items-center justify-center rounded-lg text-sm font-medium transition-all duration-300 ${
-                    currentPage === page
-                      ? "bg-gradient-to-r from-[#35bec5] to-[#0c96c4] text-white shadow-lg"
-                      : "bg-white text-slate-700 hover:bg-slate-50 hover:text-[#35bec5]"
-                  }`}
-                  style={{ fontFamily: "Inter, sans-serif" }}
-                >
-                  {page}
-                </Link>
+                renderTrigger(page as number, page, false, "page")
               )}
             </div>
           ))}
         </div>
 
         {/* Next Button */}
-        <Link
-          href={currentPage < totalPages ? `/blog?page=${currentPage + 1}` : "#"}
-          className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-all duration-300 ${
-            currentPage < totalPages
-              ? "bg-white text-slate-700 hover:bg-slate-50 hover:text-[#35bec5]"
-              : "bg-slate-100 text-slate-400 cursor-not-allowed"
-          }`}
-          style={{ fontFamily: "Inter, sans-serif" }}
-        >
-          Next
-          <ChevronRight className="h-4 w-4" />
-        </Link>
+        {renderTrigger(
+          currentPage + 1,
+          <>
+            Next
+            <ChevronRight className="h-4 w-4" />
+          </>,
+          currentPage >= totalPages,
+          "next",
+        )}
       </nav>
     </div>
   );

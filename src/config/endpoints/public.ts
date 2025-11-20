@@ -4,6 +4,8 @@
  * Endpoints accessible without authentication.
  */
 export const PUBLIC_ENDPOINTS = {
-  /** Public homepage data */
-  HOME: "/home",
+  BLOG_CATEGORIES: "/public/blog-categories",
+
+  BLOG_POSTS: "/public/blog-posts",
+  BLOG_POST: (slug: string) => `/public/blog-posts/${slug}`,
 } as const;
