@@ -16,6 +16,9 @@ export const PUBLIC_PATHS = {
   /** Public blog page */
   BLOG: "/blog",
 
+  /** Public blog detail page */
+  BLOG_DETAIL: (slug: string) => `/blog/${slug}`,
+
   /** Public contact page */
   CONTACT: "/contact",
 } as const;

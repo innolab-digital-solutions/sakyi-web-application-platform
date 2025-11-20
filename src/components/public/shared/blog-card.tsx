@@ -2,6 +2,7 @@ import { ArrowRight, ImageIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
+import { PATHS } from "@/config/paths";
 import { BlogPost } from "@/types/public/blog";
 
 interface BlogCardProperties {
@@ -73,14 +74,14 @@ export default function BlogCard({ blog, index = 0, className = "" }: BlogCardPr
         </h3>
 
         {/* Description */}
-        <p className="text-slate-600" style={{ fontFamily: "Inter, sans-serif" }}>
+        <p className="text-slate-600 line-clamp-3" style={{ fontFamily: "Inter, sans-serif" }}>
           {blog.description}
         </p>
 
         {/* CTA */}
         <div className="pt-2">
           <Link
-            href= {`/blog/${blog.slug}`}
+            href= {PATHS.PUBLIC.BLOG_DETAIL(blog.slug)}
             className="group/link inline-flex items-center text-base font-medium text-slate-900 transition-all duration-300 hover:text-[#35bec5]"
             style={{ fontFamily: "Inter, sans-serif" }}
           >

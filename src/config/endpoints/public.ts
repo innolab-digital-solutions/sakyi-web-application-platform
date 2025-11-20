@@ -8,4 +8,5 @@ export const PUBLIC_ENDPOINTS = {
 
   BLOG_POSTS: "/public/blog-posts",
   BLOG_POST: (slug: string) => `/public/blog-posts/${slug}`,
+  RELATED_BLOG_POSTS: (slug: string) => `/public/blog-posts/${slug}/related`,
 } as const;
