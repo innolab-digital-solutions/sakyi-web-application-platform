@@ -293,151 +293,72 @@ export default function Testimonials() {
                   </div>
                 </div>
 
-                {/* Desktop: Two Columns */}
-                <div className="hidden lg:grid lg:grid-cols-2 lg:gap-8">
-                  {/* Left Column - Current Testimonial */}
-                  {testimonials[currentTestimonial] && (
-                    <div className="relative overflow-hidden">
-                      <div
-                        className={`flex h-80 flex-col justify-between text-center transition-all duration-700 ease-in-out ${
-                          isTransitioning
-                            ? "opacity-0 transform scale-95"
-                            : "opacity-100 transform scale-100"
-                        }`}
-                      >
-                        {/* Quote */}
-                        <div className="flex flex-1 items-center justify-center px-2">
-                          <div className="text-center">
-                            {/* Star Rating */}
-                            <div className="mb-4 flex justify-center">
-                              {renderStars(testimonials[currentTestimonial].rating)}
+                {/* Desktop: Two Columns - Looping Carousel */}
+                <div className="hidden lg:block">
+                  <div className="relative overflow-hidden">
+                    <div
+                      className="flex transition-transform duration-700 ease-in-out"
+                      style={{
+                        transform: `translateX(-${currentTestimonial * 50}%)`,
+                      }}
+                    >
+                      {testimonials.map((testimonial, index) => (
+                        <div key={testimonial.id || index} className="w-1/2 shrink-0 px-4">
+                          <div className="flex h-80 flex-col justify-between text-center">
+                            {/* Quote */}
+                            <div className="flex flex-1 items-center justify-center px-2">
+                              <div className="text-center">
+                                {/* Star Rating */}
+                                <div className="mb-4 flex justify-center">
+                                  {renderStars(testimonial.rating)}
+                                </div>
+                                <blockquote
+                                  className="text-base leading-relaxed text-slate-700"
+                                  style={{ fontFamily: "Inter, sans-serif" }}
+                                >
+                                  &quot;{testimonial.comment}&quot;
+                                </blockquote>
+                              </div>
                             </div>
-                            <blockquote
-                              className="text-base leading-relaxed text-slate-700"
-                              style={{ fontFamily: "Inter, sans-serif" }}
-                            >
-                              &quot;{testimonials[currentTestimonial].comment}&quot;
-                            </blockquote>
-                          </div>
-                        </div>
 
-                        {/* Client Info */}
-                        <div className="flex flex-col items-center space-y-3">
-                          {testimonials[currentTestimonial].user.picture ? (
-                            <div className="relative h-12 w-12 overflow-hidden rounded-full">
-                              <Image
-                                src={testimonials[currentTestimonial].user.picture}
-                                alt={testimonials[currentTestimonial].user.name}
-                                fill
-                                className="object-cover"
-                              />
-                            </div>
-                          ) : (
-                            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-r from-[#35bec5] to-[#0c96c4]">
-                              <span className="text-sm font-bold text-white">
-                                {getUserInitials(testimonials[currentTestimonial].user.name)}
-                              </span>
-                            </div>
-                          )}
-                          <div className="text-center">
-                            <h4
-                              className="text-base font-semibold text-slate-900"
-                              style={{ fontFamily: "Poppins, sans-serif" }}
-                            >
-                              {testimonials[currentTestimonial].user.name}
-                            </h4>
-                            <p
-                              className="text-sm text-slate-600"
-                              style={{ fontFamily: "Inter, sans-serif" }}
-                            >
-                              {testimonials[currentTestimonial].program.title}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Right Column - Next Testimonial */}
-                  {testimonials[(currentTestimonial + 1) % testimonials.length] && (
-                    <div className="relative overflow-hidden">
-                      <div
-                        className={`flex h-80 flex-col justify-between text-center transition-all duration-700 ease-in-out ${
-                          isTransitioning
-                            ? "opacity-0 transform scale-95"
-                            : "opacity-100 transform scale-100"
-                        }`}
-                      >
-                        {/* Quote */}
-                        <div className="flex flex-1 items-center justify-center px-2">
-                          <div className="text-center">
-                            {/* Star Rating */}
-                            <div className="mb-4 flex justify-center">
-                              {renderStars(
-                                testimonials[(currentTestimonial + 1) % testimonials.length].rating
+                            {/* Client Info */}
+                            <div className="flex flex-col items-center space-y-3">
+                              {testimonial.user.picture ? (
+                                <div className="relative h-12 w-12 overflow-hidden rounded-full">
+                                  <Image
+                                    src={testimonial.user.picture}
+                                    alt={testimonial.user.name}
+                                    fill
+                                    className="object-cover"
+                                  />
+                                </div>
+                              ) : (
+                                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-r from-[#35bec5] to-[#0c96c4]">
+                                  <span className="text-sm font-bold text-white">
+                                    {getUserInitials(testimonial.user.name)}
+                                  </span>
+                                </div>
                               )}
+                              <div className="text-center">
+                                <h4
+                                  className="text-base font-semibold text-slate-900"
+                                  style={{ fontFamily: "Poppins, sans-serif" }}
+                                >
+                                  {testimonial.user.name}
+                                </h4>
+                                <p
+                                  className="text-sm text-slate-600"
+                                  style={{ fontFamily: "Inter, sans-serif" }}
+                                >
+                                  {testimonial.program.title}
+                                </p>
+                              </div>
                             </div>
-                            <blockquote
-                              className="text-base leading-relaxed text-slate-700"
-                              style={{ fontFamily: "Inter, sans-serif" }}
-                            >
-                              &quot;
-                              {testimonials[(currentTestimonial + 1) % testimonials.length].comment}
-                              &quot;
-                            </blockquote>
                           </div>
                         </div>
-
-                        {/* Client Info */}
-                        <div className="flex flex-col items-center space-y-3">
-                          {testimonials[(currentTestimonial + 1) % testimonials.length].user
-                            .picture ? (
-                            <div className="relative h-12 w-12 overflow-hidden rounded-full">
-                              <Image
-                                src={
-                                  testimonials[(currentTestimonial + 1) % testimonials.length].user
-                                    .picture
-                                }
-                                alt={
-                                  testimonials[(currentTestimonial + 1) % testimonials.length].user
-                                    .name
-                                }
-                                fill
-                                className="object-cover"
-                              />
-                            </div>
-                          ) : (
-                            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-r from-[#35bec5] to-[#0c96c4]">
-                              <span className="text-sm font-bold text-white">
-                                {getUserInitials(
-                                  testimonials[(currentTestimonial + 1) % testimonials.length].user
-                                    .name
-                                )}
-                              </span>
-                            </div>
-                          )}
-                          <div className="text-center">
-                            <h4
-                              className="text-base font-semibold text-slate-900"
-                              style={{ fontFamily: "Poppins, sans-serif" }}
-                            >
-                              {testimonials[(currentTestimonial + 1) % testimonials.length].user
-                                .name}
-                            </h4>
-                            <p
-                              className="text-sm text-slate-600"
-                              style={{ fontFamily: "Inter, sans-serif" }}
-                            >
-                              {
-                                testimonials[(currentTestimonial + 1) % testimonials.length].program
-                                  .title
-                              }
-                            </p>
-                          </div>
-                        </div>
-                      </div>
+                      ))}
                     </div>
-                  )}
+                  </div>
                 </div>
               </>
             )}
