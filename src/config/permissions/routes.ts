@@ -33,6 +33,12 @@ export const routePermissions: Record<string, string | undefined> = {
   "/admin/users/:id/edit": "users.update",
   "/admin/users/:id": "users.view",
 
+  // Team
+  "/admin/teams": "teams.view",
+  "/admin/teams/create": "teams.create",
+  "/admin/teams/:id/edit": "teams.update",
+  "/admin/teams/:id": "teams.view",
+
   // Programs
   "/admin/programs": "programs.view",
 

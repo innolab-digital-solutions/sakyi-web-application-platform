@@ -47,6 +47,13 @@ export const adminBreadcrumbs: Breadcrumbs = {
     { label: "Program Management", href: PATHS.ADMIN.PROGRAMS.LIST },
   ],
 
+  /** Team members list page */
+  "/admin/team-members": [
+    { label: "Admin Control Panel" },
+    { label: "Administration & Access Control" },
+    { label: "Team Management", href: PATHS.ADMIN.TEAMS.LIST },
+  ],
+
   /** Programs create page */
   "/admin/programs/create": [
     { label: "Admin Control Panel" },
