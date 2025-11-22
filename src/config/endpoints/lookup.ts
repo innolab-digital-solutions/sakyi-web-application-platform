@@ -10,6 +10,7 @@ export const LOOKUP_ENDPOINTS = {
   ENROLLMENTS: "/lookup/enrollments",
   ROLES: "/lookup/roles",
   USERS: "/lookup/users",
+  TEAM_MEMBERS: "/lookup/members",
   WORKOUT_CATEGORIES: "/lookup/workout-categories",
   FOOD_CATEGORIES: "/lookup/food-categories",
   FOOD_ITEMS: "/lookup/food-items",

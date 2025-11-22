@@ -7,6 +7,7 @@ import {
   ClipboardCheck,
   ClipboardList,
   CreditCard,
+  Group,
   LayoutDashboard,
   ListChecks,
   MonitorCog,
@@ -59,8 +60,8 @@ export const adminNavigation: NavGroup[] = [
     items: [
       {
         name: "Team Management",
-        icon: Users,
-        path: "/admin/team-management",
+        icon: Group,
+        path: PATHS.ADMIN.TEAMS.LIST,
         params: {},
         active: false,
         permission: "teams.view",
@@ -78,7 +79,7 @@ export const adminNavigation: NavGroup[] = [
       {
         name: "User Management",
         icon: Users,
-        path: "/admin/users",
+        path: PATHS.ADMIN.USERS.LIST,
         params: {},
         active: false,
         permission: "users.view",
