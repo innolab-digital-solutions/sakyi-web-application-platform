@@ -2,23 +2,10 @@ import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 
 import BlogCard from "@/components/public/shared/blog-card";
+import { PATHS } from "@/config/paths";
+import { BlogPost } from "@/types/public/blog";
 
-interface RelatedPost {
-  title: string;
-  description: string;
-  category: string;
-  readTime: string;
-  date: string;
-  image: string;
-  imageAlt: string;
-  slug: string;
-}
-
-interface BlogDetailRelatedProperties {
-  posts: RelatedPost[];
-}
-
-export default function BlogDetailRelated({ posts }: BlogDetailRelatedProperties) {
+export default function BlogDetailRelated({ posts }: { posts: BlogPost[] }) {
   return (
     <section className="relative overflow-hidden bg-slate-50 py-16">
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -31,7 +18,7 @@ export default function BlogDetailRelated({ posts }: BlogDetailRelatedProperties
           >
             Related{" "}
             <span
-              className="bg-gradient-to-r from-[#35bec5] via-[#4bc4db] to-[#0c96c4] bg-clip-text text-transparent"
+              className="text-brand-gradient bg-clip-text text-transparent"
               style={{ fontFamily: "Poppins, sans-serif" }}
             >
               Articles
@@ -52,15 +39,7 @@ export default function BlogDetailRelated({ posts }: BlogDetailRelatedProperties
           {posts.map((post, index) => (
             <BlogCard
               key={index}
-              blog={{
-                title: post.title,
-                description: post.description,
-                category: post.category,
-                readTime: post.readTime,
-                image: post.image,
-                imageAlt: post.imageAlt,
-                href: `/blog/${post.slug}`,
-              }}
+              blog={post}
               index={index}
             />
           ))}
@@ -69,7 +48,7 @@ export default function BlogDetailRelated({ posts }: BlogDetailRelatedProperties
         {/* View All Button */}
         <div className="mt-12 text-center" data-aos="fade-up" data-aos-delay="600">
               <Link
-                href="#blog"
+                href={PATHS.PUBLIC.BLOG}
                 className="group inline-flex items-center justify-center rounded-full bg-brand-gradient px-6 py-3 text-base font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
                 style={{ fontFamily: "Inter, sans-serif" }}
               >
@@ -79,5 +58,5 @@ export default function BlogDetailRelated({ posts }: BlogDetailRelatedProperties
             </div>
       </div>
     </section>
-  );
+  );  
 }

@@ -1,83 +1,133 @@
-import { BookOpen } from "lucide-react";
+"use client";
+
+import { BookOpen, FileQuestion } from "lucide-react";
+import Link from "next/link";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import BlogCard from "@/components/public/shared/blog-card";
+import BlogCardSkeleton from "@/components/public/shared/blog-card-skeleton";
 import Pagination from "@/components/public/shared/pagination";
-
-// Dummy blog data
-const blogPosts = [
-  {
-    title: "5 Small Daily Habits That Transform Your Mental Health",
-    description: "Discover how simple micro-actions—like mindful breathing or gratitude journaling—can make a powerful impact on your mental wellbeing. Uncover practical tips designed for everyday life to help you enhance focus, resilience, and happiness.",
-    category: "Mindfulness",
-    readTime: "5 min read",
-    date: "FEB 15, 2024",
-    image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
-    imageAlt: "Mental health and wellness",
-    slug: "5-small-daily-habits-transform-mental-health",
-    tags: ["Mental Health", "Daily Habits", "Wellness"],
-  },
-  {
-    title: "How to Eat Mindfully: A Doctor's Approach to Nutrition",
-    description: "Explore how awareness and intention at the table lead to better nutrition and improved mood. Learn real strategies from physicians to cultivate mindful eating, prevent overeating, and savor every meal.",
-    category: "Nutrition",
-    readTime: "7 min read",
-    date: "FEB 10, 2024",
-    image: "https://images.unsplash.com/photo-1490645935967-10de6ba17061?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
-    imageAlt: "Mindful eating and nutrition",
-    slug: "how-to-eat-mindfully-doctors-approach-nutrition",
-    tags: ["Nutrition", "Mindful Eating", "Health"],
-  },
-  {
-    title: "The Science of Sleep: Why 8 Hours Isn't Always Enough",
-    description: "Dive deep into sleep science and discover why quality matters more than quantity. Learn about sleep cycles, optimal bedtime routines, and how to create the perfect sleep environment for restorative rest.",
-    category: "Wellness",
-    readTime: "6 min read",
-    date: "FEB 5, 2024",
-    image: "https://images.unsplash.com/photo-1688383454417-b11a123846e9?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjV8fHNsZWVwJTIwd2VsbG5lc3N8ZW58MHx8MHx8fDI%3D&auto=format&fit=crop&q=60&w=500",
-    imageAlt: "Sleep and wellness",
-    slug: "science-of-sleep-8-hours-not-enough",
-    tags: ["Sleep", "Science", "Health"],
-  },
-  {
-    title: "Building Resilience: Mental Health Strategies for Tough Times",
-    description: "Learn evidence-based techniques to build emotional resilience and navigate life's challenges with grace. Discover how to develop a growth mindset and maintain mental wellness during difficult periods.",
-    category: "Mindfulness",
-    readTime: "8 min read",
-    date: "JAN 28, 2024",
-    image: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
-    imageAlt: "Mental resilience and wellness",
-    slug: "building-resilience-mental-health-strategies",
-    tags: ["Resilience", "Mental Health", "Strategies"],
-  },
-  {
-    title: "The Complete Guide to Stress Management",
-    description: "Master the art of stress management with proven techniques from mindfulness to physical exercise. Learn to identify stress triggers and develop healthy coping mechanisms for long-term wellness.",
-    category: "Lifestyle",
-    readTime: "9 min read",
-    date: "JAN 20, 2024",
-    image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
-    imageAlt: "Stress management and wellness",
-    slug: "complete-guide-stress-management",
-    tags: ["Stress", "Management", "Wellness"],
-  },
-  {
-    title: "Nutrition for Mental Health: Foods That Boost Your Mood",
-    description: "Discover the powerful connection between nutrition and mental health. Learn which foods support brain function, improve mood, and contribute to overall emotional wellbeing.",
-    category: "Nutrition",
-    readTime: "6 min read",
-    date: "JAN 15, 2024",
-    image: "https://images.unsplash.com/photo-1490645935967-10de6ba17061?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
-    imageAlt: "Nutrition for mental health",
-    slug: "nutrition-mental-health-foods-boost-mood",
-    tags: ["Nutrition", "Mental Health", "Food"],
-  },
-];
-
-const categories = ["All", "Wellness", "Nutrition", "Mindfulness", "Lifestyle"];
+import { Skeleton } from "@/components/ui/skeleton";
+import { ENDPOINTS } from "@/config/endpoints";
+import { useRequest } from "@/hooks/use-request";
+import { BlogCategory, BlogPost } from "@/types/public/blog";
+import { Pagination as PaginationMeta } from "@/types/shared/common";
 
 export default function BlogArticles() {
+  const [selectedCategory, setSelectedCategory] = useState<string>();
+  const [currentPage, setCurrentPage] = useState(1);
+  const articlesSectionReference = useRef<HTMLElement>(null);
+  const isInitialMount = useRef(true);
+
+  const {
+    data: categoriesResponse,
+    loading: categoriesLoading,
+    isFetching: categoriesFetching,
+  } = useRequest({
+    url: ENDPOINTS.PUBLIC.BLOG_CATEGORIES,
+    queryKey: ["blog-categories"],
+    staleTime: 1000 * 60 * 5,
+  });
+
+  const postsQueryParameters = useMemo(() => {
+    const parameters: Record<string, string> = {
+      page: currentPage.toString(),
+    };
+
+    if (selectedCategory) {
+      parameters.category = selectedCategory;
+    }
+
+    return parameters;
+  }, [currentPage, selectedCategory]);
+
+  const {
+    data: postsResponse,
+    loading: postsLoading,
+    isFetching: postsFetching,
+  } = useRequest({
+    url: ENDPOINTS.PUBLIC.BLOG_POSTS,
+    queryKey: ["blog-posts", selectedCategory ?? "all", currentPage.toString()],
+    data: postsQueryParameters,
+    staleTime: 1000 * 60 * 5,
+  });
+
+  const categories = (categoriesResponse?.data as BlogCategory[]) ?? [];
+  const posts = (postsResponse?.data as BlogPost[]) ?? [];
+  const pagination = postsResponse?.meta?.pagination as PaginationMeta | undefined;
+  const totalAvailablePosts = pagination?.total ?? posts.length;
+  const hasPosts = totalAvailablePosts > 0;
+  const isPostsLoading = postsLoading || postsFetching;
+  const isAllCategoryActive = selectedCategory === undefined;
+  const shouldShowAllFilter = hasPosts || !isAllCategoryActive;
+  const totalPages = Math.max(pagination?.last_page ?? 1, 1);
+
+  const scrollToArticles = useCallback((immediate = false) => {
+    if (articlesSectionReference.current) {
+      if (immediate) {
+        // Immediate scroll without animation for instant positioning
+        // Use scrollIntoView for more reliable positioning
+        articlesSectionReference.current.scrollIntoView({
+          behavior: "auto",
+          block: "start",
+        });
+        // Apply offset manually after scrollIntoView
+        window.scrollBy({
+          top: -100, // Offset for navbar/spacing
+          behavior: "auto",
+        });
+      } else {
+        // Smooth scroll for better UX
+        const offset = 100; // Offset for navbar/spacing
+        const elementPosition = articlesSectionReference.current.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.pageYOffset - offset;
+
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: "smooth",
+        });
+      }
+    }
+  }, []);
+
+  const handleCategorySelect = (categorySlug?: string) => {
+    // Scroll immediately before state update to prevent any unwanted scrolling
+    scrollToArticles(true);
+    setSelectedCategory(categorySlug);
+    setCurrentPage(1);
+  };
+
+  const handlePageChange = (page: number) => {
+    if (page === currentPage || page < 1 || page > totalPages) {
+      return;
+    }
+
+    // Scroll immediately before state update to prevent any unwanted scrolling
+    scrollToArticles(true);
+    setCurrentPage(page);
+  };
+
+  // Scroll to articles section when data finishes loading after filter/page change
+  // This ensures we're at the correct position after content updates
+  useEffect(() => {
+    // Skip scroll on initial mount
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
+
+    // Scroll when data has finished loading to ensure accurate positioning
+    if (!isPostsLoading) {
+      const timeoutId = setTimeout(() => {
+        scrollToArticles();
+      }, 100);
+
+      return () => clearTimeout(timeoutId);
+    }
+  }, [isPostsLoading, scrollToArticles]);
+
   return (
-    <section id="articles" className="relative overflow-hidden bg-white py-24">
+    <section id="articles" ref={articlesSectionReference} className="relative overflow-hidden bg-white py-24">
       <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
         {/* Section Header */}
         <div className="mb-16 text-center">
@@ -118,30 +168,94 @@ export default function BlogArticles() {
 
         {/* Category Filters */}
         <div className="mb-12 flex flex-wrap items-center justify-center gap-4">
-          {categories.map((category) => (
-            <button
-              key={category}
-              className={`rounded-full px-6 py-3 text-sm font-medium transition-all duration-500 ease-out ${
-                category === "All"
-                  ? "bg-brand-gradient text-white shadow-lg"
-                  : "bg-slate-100 text-slate-700 hover:bg-gradient-to-r hover:from-[#35bec5] hover:to-[#0c96c4] hover:text-white hover:shadow-lg hover:scale-105"
-              }`}
-              style={{ fontFamily: "Inter, sans-serif" }}
-            >
-              {category}
-            </button>
-          ))}
+          {categoriesLoading && !categoriesFetching ? (
+            <>
+              <Skeleton className="h-10 w-24 rounded-full" />
+              <Skeleton className="h-10 w-20 rounded-full" />
+              <Skeleton className="h-10 w-28 rounded-full" />
+              <Skeleton className="h-10 w-28 rounded-full" />
+              <Skeleton className="h-10 w-28 rounded-full" />
+            </>
+          ) : (
+            <>
+              {shouldShowAllFilter && (
+                <button
+                  key="All"
+                  onClick={() => handleCategorySelect()}
+                  className={`rounded-full px-6 py-3 text-sm font-medium transition-all duration-500 ease-out ${
+                    isAllCategoryActive
+                      ? "bg-brand-gradient text-white shadow-lg"
+                      : "bg-slate-100 text-slate-700 hover:scale-105 hover:bg-gradient-to-r hover:from-[#35bec5] hover:to-[#0c96c4] hover:text-white hover:shadow-lg"
+                  }`}
+                  style={{ fontFamily: "Inter, sans-serif" }}
+                  aria-pressed={isAllCategoryActive}
+                >
+                  All
+                </button>
+              )}
+              {categories.map((category: BlogCategory) => (
+                <button
+                  key={category.id || category.slug}
+                  onClick={() => handleCategorySelect(category.slug)}
+                  className={`rounded-full px-6 py-3 text-sm font-medium transition-all duration-500 ease-out ${
+                    selectedCategory === category.slug
+                      ? "bg-brand-gradient text-white shadow-lg"
+                      : "bg-slate-100 text-slate-700 hover:scale-105 hover:bg-gradient-to-r hover:from-[#35bec5] hover:to-[#0c96c4] hover:text-white hover:shadow-lg"
+                  }`}
+                  style={{ fontFamily: "Inter, sans-serif" }}
+                  aria-pressed={selectedCategory === category.slug}
+                >
+                  {category.name}
+                </button>
+              ))}
+            </>
+          )}
         </div>
 
         {/* Blog Cards Grid */}
         <div className="grid gap-8 lg:grid-cols-2">
-          {blogPosts.map((post, index) => (
-            <BlogCard key={index} blog={post} index={index} />
-          ))}
+          {isPostsLoading ? (
+            Array.from({ length: 4 }).map((_, index) => <BlogCardSkeleton key={index} index={index} />)
+          ) : hasPosts ? (
+            posts.map((post: BlogPost, index: number) => (
+              <BlogCard key={post.id || index} blog={post} index={index} />
+            ))
+          ) : (
+            <div
+              className="col-span-full rounded-3xl border border-dashed border-slate-200 bg-slate-50/60 p-12 text-center shadow-sm"
+              data-aos="zoom-in"
+            >
+              <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-r from-[#35bec5] to-[#0c96c4] text-white">
+                <FileQuestion className="h-8 w-8" />
+              </div>
+              <h3
+                className="mb-4 text-2xl font-bold text-slate-900"
+                style={{ fontFamily: "Poppins, sans-serif" }}
+              >
+                Fresh insights are on the way
+              </h3>
+              <p
+                className="mx-auto mb-6 max-w-2xl text-base text-slate-600"
+                style={{ fontFamily: "Inter, sans-serif" }}
+              >
+                We&apos;re curating expert articles right now. Check back soon or let us know what
+                topics you&apos;d love to read about.
+              </p>
+              <Link
+                href="/contact"
+                className="inline-flex items-center justify-center rounded-full border border-slate-200 px-6 py-3 text-sm font-semibold text-slate-700 transition-all duration-300 hover:border-[#35bec5] hover:text-[#35bec5] hover:shadow-lg"
+                style={{ fontFamily: "Inter, sans-serif" }}
+              >
+                Request a topic
+              </Link>
+            </div>
+          )}
         </div>
       </div>
 
-      <Pagination currentPage={1} totalPages={10} />
+      {hasPosts && !isPostsLoading && (
+        <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
+      )}
     </section>
   );
 }

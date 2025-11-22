@@ -52,7 +52,7 @@ export default function BlogHero() {
            {/* CTA Button */}
            <div className="mt-12 flex flex-col items-center gap-4 sm:flex-row sm:justify-center" data-aos="fade-up" data-aos-delay="400">
             <button
-              onClick={() => smoothScrollTo('programs', 80)}
+              onClick={() => smoothScrollTo('articles', 80)}
               className="group inline-flex items-center gap-2 rounded-full bg-brand-gradient px-6 py-3 text-white font-semibold transition-all duration-300 hover:shadow-lg hover:scale-105"
               style={{ fontFamily: "Inter, sans-serif" }}
             >
