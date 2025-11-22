@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import React from "react";
 
-import TeamForm from "@/components/admin/features/teams/team-form";
+import ProgramFormPage from "@/components/admin/features/programs/program-form";
 import PageHeader from "@/components/admin/shared/page-header";
 import { Button } from "@/components/ui/button";
 import { PATHS } from "@/config/paths";
@@ -34,7 +34,7 @@ export default function CreateProgramPage() {
         }
       />
 
-      <TeamForm />
+      <ProgramFormPage />
     </div>
   );
 }
