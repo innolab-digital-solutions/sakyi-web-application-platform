@@ -1,6 +1,6 @@
 "use client";
 
-import { Users } from "lucide-react";
+import { Group } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -243,7 +243,7 @@ export default function TeamForm({
       onOpenChange={handleDialogOpenChange}
       title={title ?? (isEdit ? "Edit Team" : "Create Team")}
       description={description ?? (isEdit ? "Update team details." : "Create a new team.")}
-      icon={<Users className="h-5 w-5" />}
+      icon={<Group className="h-5 w-5" />}
       isEdit={isEdit}
       processing={form.processing}
       submitLabel={isEdit ? "Save Changes" : "Create Team"}
