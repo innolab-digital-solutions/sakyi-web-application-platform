@@ -71,7 +71,7 @@ export default function TeamForm({
     {
       validate: isEdit ? EditTeamSchema : CreateTeamSchema,
       tanstack: {
-        invalidateQueries: ["admin-teams"],
+        invalidateQueries: ["admin-teams", "team-members-lookup"],
         mutationOptions: {
           onSuccess: (response) => {
             form.queryCache.setQueryData<TeamApiResponse>(
