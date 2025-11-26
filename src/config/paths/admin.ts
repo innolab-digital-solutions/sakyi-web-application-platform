@@ -51,6 +51,13 @@ export const ADMIN_PATHS = {
     DETAIL: (id: string | number) => `/admin/onboarding-forms/${id}`,
   },
 
+  ENROLLMENTS: {
+    LIST: "/admin/enrollments",
+    CREATE: "/admin/enrollments/create",
+    EDIT: (id: string | number) => `/admin/enrollments/${id}/edit`,
+    DETAIL: (id: string | number) => `/admin/enrollments/${id}`,
+  },
+
   /** Units routes */
   UNITS: {
     LIST: "/admin/units",

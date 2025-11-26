@@ -27,6 +27,8 @@ export interface DatepickerFieldProperties {
   errorClassName?: string;
   buttonClassName?: string;
   popoverClassName?: string;
+  maxDate?: Date;
+  minDate?: Date;
 }
 
 function formatDateToDMY(date: Date | undefined): string | undefined {
@@ -72,12 +74,18 @@ export default function DatepickerField({
   errorClassName,
   buttonClassName,
   popoverClassName,
+  maxDate,
+  minDate,
 }: DatepickerFieldProperties) {
   const [open, setOpen] = React.useState(false);
   const selectedDate = React.useMemo(() => parseYYYYMMDDToDate(value), [value]);
   const hasError = Boolean(error);
 
   const handleSelect = (date?: Date) => {
+    if (!date) return;
+
+    if (minDate && date < minDate) return;
+    if (maxDate && date > maxDate) return;
     const formatted = formatDateToYYYYMMDD(date);
     onChange?.(formatted);
     setOpen(false);
@@ -137,6 +145,10 @@ export default function DatepickerField({
             captionLayout="dropdown"
             selected={selectedDate}
             onSelect={(date) => handleSelect(date)}
+            disabled={[
+              (date: Date) => (minDate ? date < minDate : false),
+              (date: Date) => (maxDate ? date > maxDate : false),
+            ]}
           />
         </PopoverContent>
       </Popover>

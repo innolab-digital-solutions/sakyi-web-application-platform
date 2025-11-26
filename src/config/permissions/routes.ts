@@ -48,6 +48,12 @@ export const routePermissions: Record<string, string | undefined> = {
   "/admin/onboarding-forms/:id/edit": "onboarding.forms.update",
   "/admin/onboarding-forms/:id": "onboarding.forms.view",
 
+  // Enrollment
+  "/admin/enrollments": "enrollments.view",
+  "/admin/enrollments/create": "enrollments.create",
+  "/admin/enrollments/:id/edit": "enrollments.update",
+  "/admin/enrollments/:id": "enrollments.view",
+
   // Units
   "/admin/units": "units.view",
 

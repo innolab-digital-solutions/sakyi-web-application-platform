@@ -180,4 +180,18 @@ export const adminBreadcrumbs: Breadcrumbs = {
     { label: "Content Management" },
     { label: "Testimonials", href: PATHS.ADMIN.TESTIMONIALS.LIST },
   ],
+
+  /** Enrollments list page */
+  "/admin/enrollments": [
+    { label: "Admin Control Panel" },
+    { label: "Programs & Clients" },
+    { label: "Enrollments", href: PATHS.ADMIN.ENROLLMENTS.LIST },
+  ],
+
+  "/admin/enrollments/:id/edit": [
+    { label: "Admin Control Panel" },
+    { label: "Programs & Clients" },
+    { label: "Enrollments", href: PATHS.ADMIN.ENROLLMENTS.LIST },
+    { label: "Edit" },
+  ],
 };

@@ -24,7 +24,7 @@ export default function UserDeletionDialog({ user, className }: UserDeletionDial
   const handleDeleteConfirm = () => {
     request.del(ENDPOINTS.ADMIN.USERS.DESTROY(user.id), {
       tanstack: {
-        invalidateQueries: ["admin-users"],
+        invalidateQueries: ["admin-users", "team-members-lookup"],
         mutationOptions: {
           onSuccess: () => {
             // Optimistic cache update - remove deleted user from the list
