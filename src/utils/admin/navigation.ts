@@ -16,6 +16,7 @@ export const isAdminListPage = (path: string): boolean => {
     /\/admin\/units$/,
     /\/admin\/roles$/,
     /\/admin\/users$/,
+    /\/admin\/teams$/,
     /\/admin\/staff$/,
     /\/admin\/programs$/,
     /\/admin\/enrollments$/,

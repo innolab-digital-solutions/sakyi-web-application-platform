@@ -27,6 +27,14 @@ export const ADMIN_PATHS = {
     DETAIL: (id: string | number) => `/admin/users/${id}`,
   },
 
+  TEAMS: {
+    LIST: "/admin/teams",
+    CREATE: "/admin/teams/create",
+    EDIT: (id: string | number) => `/admin/teams/${id}/edit`,
+    DETAIL: (id: string | number) => `/admin/teams/${id}`,
+    ASSIGN_MEMBERS: (id: string | number) => `/admin/teams/${id}/assign-members`,
+  },
+
   /** Programs routes */
   PROGRAMS: {
     LIST: "/admin/programs",
