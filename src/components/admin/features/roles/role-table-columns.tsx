@@ -26,7 +26,6 @@ import {
   getPermissionModuleCount,
   getPermissionModuleNames,
 } from "@/utils/admin/permissions";
-import { truncateText } from "@/utils/admin/truncate-text";
 
 export const rolesTableColumns: ColumnDef<Role>[] = [
   {
@@ -39,8 +38,8 @@ export const rolesTableColumns: ColumnDef<Role>[] = [
       return (
         <div>
           <div className="text-foreground text-sm font-semibold">{name}</div>
-          <div className="text-muted-foreground max-w-full break-words whitespace-pre-line">
-            {truncateText(description, 15)}
+          <div className="text-muted-foreground line-clamp-2 max-w-full wrap-break-word whitespace-pre-line">
+            {description}
           </div>
         </div>
       );
@@ -80,7 +79,7 @@ export const rolesTableColumns: ColumnDef<Role>[] = [
                 <TooltipTrigger asChild>
                   <Badge
                     variant="secondary"
-                    className="bg-primary/15 text-primary flex max-w-[140px] cursor-help items-center gap-1 truncate text-[13px] !font-semibold"
+                    className="bg-primary/15 text-primary flex max-w-[140px] cursor-help items-center gap-1 truncate text-[13px] font-semibold!"
                   >
                     {moduleKey}
                   </Badge>
@@ -106,7 +105,7 @@ export const rolesTableColumns: ColumnDef<Role>[] = [
               <TooltipTrigger asChild>
                 <Badge
                   variant="outline"
-                  className="bg-muted/60 text-muted-foreground cursor-help border-dashed text-[13px] !font-semibold"
+                  className="bg-muted/60 text-muted-foreground cursor-help border-dashed text-[13px] font-semibold!"
                 >
                   +{remainingCount} more
                 </Badge>
