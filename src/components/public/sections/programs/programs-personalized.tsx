@@ -6,8 +6,8 @@ export default function ProgramsPersonalized() {
     <section className="relative overflow-hidden bg-slate-50 py-24">
       {/* Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-1/4 -right-32 h-64 w-64 rounded-full bg-gradient-to-br from-[#35bec5]/5 to-[#0c96c4]/5 blur-3xl"></div>
-        <div className="absolute bottom-1/4 -left-32 h-64 w-64 rounded-full bg-gradient-to-br from-[#4bc4db]/5 to-[#35bec5]/5 blur-3xl"></div>
+        <div className="absolute top-1/4 -right-32 h-64 w-64 rounded-full bg-linear-to-br from-[#35bec5]/5 to-[#0c96c4]/5 blur-3xl"></div>
+        <div className="absolute bottom-1/4 -left-32 h-64 w-64 rounded-full bg-linear-to-br from-[#4bc4db]/5 to-[#35bec5]/5 blur-3xl"></div>
       </div>
 
       <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
@@ -16,7 +16,7 @@ export default function ProgramsPersonalized() {
           <div className="space-y-8" data-aos="fade-right">
             {/* Section Header */}
             <div className="space-y-6">
-              <div className="inline-flex items-center space-x-2 rounded-full bg-gradient-to-r from-[#35bec5]/10 to-[#0c96c4]/10 px-4 py-2">
+              <div className="inline-flex items-center space-x-2 rounded-full bg-linear-to-r from-[#35bec5]/10 to-[#0c96c4]/10 px-4 py-2">
                 <User className="h-4 w-4 text-[#35bec5]" />
                 <span
                   className="text-sm font-medium text-[#35bec5]"
@@ -75,7 +75,7 @@ export default function ProgramsPersonalized() {
                   data-aos="fade-up"
                   data-aos-delay={`${index * 200 + 400}`}
                 >
-                  <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-gradient-to-r from-[#35bec5] to-[#0c96c4] shadow-lg">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-linear-to-r from-[#35bec5] to-[#0c96c4] shadow-lg">
                     <feature.icon className="h-5 w-5 text-white" />
                   </div>
                   <div className="flex-1">
@@ -148,7 +148,7 @@ export default function ProgramsPersonalized() {
             <div className="relative">
               {/* Main Image */}
               <div className="group relative overflow-hidden rounded-3xl shadow-2xl">
-                <div className="aspect-[4/5] w-full">
+                <div className="aspect-4/5 w-full">
                   <Image
                     src="/images/personalized.jpg"
                     alt="Personalized Wellness Plans - Tailored Health Journey"
@@ -158,9 +158,9 @@ export default function ProgramsPersonalized() {
                   />
                 </div>
                 {/* Subtle dark overlay that disappears on hover */}
-                <div className="absolute inset-0 bg-gradient-to-br from-slate-900/20 to-slate-800/10 transition-opacity duration-300 group-hover:opacity-0"></div>
+                <div className="absolute inset-0 bg-linear-to-br from-slate-900/20 to-slate-800/10 transition-opacity duration-300 group-hover:opacity-0"></div>
                 {/* Brand gradient overlay */}
-                <div className="absolute inset-0 bg-gradient-to-br from-[#35bec5]/5 to-[#0c96c4]/5"></div>
+                <div className="absolute inset-0 bg-linear-to-br from-[#35bec5]/5 to-[#0c96c4]/5"></div>
               </div>
 
               {/* Floating Cards with Movement Animation */}
@@ -173,7 +173,7 @@ export default function ProgramsPersonalized() {
                 }}
               >
                 <div className="flex items-center space-x-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-r from-[#35bec5] to-[#4bc4db]">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-linear-to-r from-[#35bec5] to-[#4bc4db]">
                     <CheckCircle className="h-5 w-5 text-white" />
                   </div>
                   <div>
@@ -202,7 +202,7 @@ export default function ProgramsPersonalized() {
                 }}
               >
                 <div className="flex items-center space-x-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-r from-[#4bc4db] to-[#0c96c4]">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-linear-to-r from-[#4bc4db] to-[#0c96c4]">
                     <Star className="h-5 w-5 text-white" />
                   </div>
                   <div>

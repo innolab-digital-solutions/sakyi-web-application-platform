@@ -82,7 +82,7 @@ export default function Navbar() {
                   }`}
                 ></span>
                 <span
-                  className={`absolute inset-0 rounded-lg bg-gradient-to-r from-[#35bec5]/5 via-[#4bc4db]/5 to-[#0c96c4]/5 transition-opacity duration-300 ${
+                  className={`absolute inset-0 rounded-lg bg-linear-to-r from-[#35bec5]/5 via-[#4bc4db]/5 to-[#0c96c4]/5 transition-opacity duration-300 ${
                     item.active ? "opacity-100" : "opacity-0 group-hover:opacity-100"
                   }`}
                 ></span>
@@ -132,7 +132,7 @@ export default function Navbar() {
                   href={item.path}
                   className={`block py-2 text-sm font-medium transition-all duration-300 ease-in-out ${
                     item.active
-                      ? "rounded-lg bg-gradient-to-r from-[#35bec5]/10 via-[#4bc4db]/10 to-[#0c96c4]/10 px-3 text-slate-900"
+                      ? "rounded-lg bg-linear-to-r from-[#35bec5]/10 via-[#4bc4db]/10 to-[#0c96c4]/10 px-3 text-slate-900"
                       : "text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-lg px-3"
                   }`}
                   style={{ 

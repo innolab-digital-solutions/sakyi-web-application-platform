@@ -6,8 +6,8 @@ export default function AboutHero() {
     <section className="relative overflow-hidden bg-slate-50 py-24 sm:py-32">
       {/* Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-1/4 -right-32 h-64 w-64 rounded-full bg-gradient-to-br from-[#35bec5]/5 to-[#0c96c4]/5 blur-3xl"></div>
-        <div className="absolute bottom-1/4 -left-32 h-64 w-64 rounded-full bg-gradient-to-br from-[#4bc4db]/5 to-[#35bec5]/5 blur-3xl"></div>
+        <div className="absolute top-1/4 -right-32 h-64 w-64 rounded-full bg-linear-to-br from-[#35bec5]/5 to-[#0c96c4]/5 blur-3xl"></div>
+        <div className="absolute bottom-1/4 -left-32 h-64 w-64 rounded-full bg-linear-to-br from-[#4bc4db]/5 to-[#35bec5]/5 blur-3xl"></div>
       </div>
 
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -16,7 +16,7 @@ export default function AboutHero() {
           <div className="space-y-8" data-aos="slide-up" data-aos-duration="1200" data-aos-easing="ease-out-cubic">
             {/* Badge */}
             <div 
-              className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#35bec5]/10 to-[#0c96c4]/10 px-4 py-2 text-sm font-medium text-[#35bec5]"
+              className="inline-flex items-center gap-2 rounded-full bg-linear-to-r from-[#35bec5]/10 to-[#0c96c4]/10 px-4 py-2 text-sm font-medium text-[#35bec5]"
               data-aos="slide-down"
               data-aos-delay="200"
               data-aos-duration="800"
@@ -40,7 +40,7 @@ export default function AboutHero() {
                 Your Trusted Partner in{" "}
               </span>
               <span
-                className="bg-gradient-to-r from-[#35bec5] via-[#4bc4db] to-[#0c96c4] bg-clip-text text-transparent"
+                className="bg-linear-to-r from-[#35bec5] via-[#4bc4db] to-[#0c96c4] bg-clip-text text-transparent"
                 style={{ fontFamily: "Poppins, sans-serif" }}
                 data-aos="fade-up"
                 data-aos-delay="500"
@@ -118,7 +118,7 @@ export default function AboutHero() {
             <div className="grid grid-cols-2 gap-4">
               {/* Large Main Image - Top Left */}
               <div className="group relative col-span-2 row-span-2 overflow-hidden rounded-2xl shadow-xl">
-                <div className="aspect-[4/3] w-full sm:aspect-[3/2] lg:aspect-[4/3]">
+                <div className="aspect-4/3 w-full sm:aspect-3/2 lg:aspect-4/3">
                   <Image
                     src="/images/team.jpg"
                     alt="SaKyi Wellness Team - Holistic Health Approach"
@@ -131,9 +131,9 @@ export default function AboutHero() {
                   />
                 </div>
                 {/* Subtle dark overlay that disappears on hover */}
-                <div className="absolute inset-0 bg-gradient-to-br from-slate-900/20 to-slate-800/10 transition-opacity duration-300 group-hover:opacity-0"></div>
+                <div className="absolute inset-0 bg-linear-to-br from-slate-900/20 to-slate-800/10 transition-opacity duration-300 group-hover:opacity-0"></div>
                 {/* Brand gradient overlay */}
-                <div className="absolute inset-0 bg-gradient-to-br from-[#35bec5]/5 to-[#0c96c4]/5"></div>
+                <div className="absolute inset-0 bg-linear-to-br from-[#35bec5]/5 to-[#0c96c4]/5"></div>
                 
                 {/* Overlay Content */}
                 <div className="absolute bottom-4 left-4 text-white">
@@ -154,7 +154,7 @@ export default function AboutHero() {
 
               {/* Small Image 1 - Bottom Left */}
               <div className="group relative overflow-hidden rounded-2xl shadow-lg">
-                <div className="aspect-square w-full sm:aspect-[4/3] lg:aspect-square">
+                <div className="aspect-square w-full sm:aspect-4/3 lg:aspect-square">
                   <Image
                     src="/images/consultation.jpg"
                     alt="Wellness Consultation - Personalized Care"
@@ -166,9 +166,9 @@ export default function AboutHero() {
                   />
                 </div>
                 {/* Subtle dark overlay that disappears on hover */}
-                <div className="absolute inset-0 bg-gradient-to-br from-slate-900/20 to-slate-800/10 transition-opacity duration-300 group-hover:opacity-0"></div>
+                <div className="absolute inset-0 bg-linear-to-br from-slate-900/20 to-slate-800/10 transition-opacity duration-300 group-hover:opacity-0"></div>
                 {/* Brand gradient overlay */}
-                <div className="absolute inset-0 bg-gradient-to-br from-[#35bec5]/5 to-[#0c96c4]/5"></div>
+                <div className="absolute inset-0 bg-linear-to-br from-[#35bec5]/5 to-[#0c96c4]/5"></div>
                 
                 {/* Overlay Content */}
                 <div className="absolute bottom-3 left-3 text-white">
@@ -189,7 +189,7 @@ export default function AboutHero() {
 
               {/* Small Image 2 - Bottom Right */}
               <div className="group relative overflow-hidden rounded-2xl shadow-lg">
-                <div className="aspect-square w-full sm:aspect-[4/3] lg:aspect-square">
+                <div className="aspect-square w-full sm:aspect-4/3 lg:aspect-square">
                   <Image
                     src="/images/holistic.jpg"
                     alt="Holistic Wellness Approach - Mind, Body, Spirit"
@@ -201,9 +201,9 @@ export default function AboutHero() {
                   />
                 </div>
                 {/* Subtle dark overlay that disappears on hover */}
-                <div className="absolute inset-0 bg-gradient-to-br from-slate-900/20 to-slate-800/10 transition-opacity duration-300 group-hover:opacity-0"></div>
+                <div className="absolute inset-0 bg-linear-to-br from-slate-900/20 to-slate-800/10 transition-opacity duration-300 group-hover:opacity-0"></div>
                 {/* Brand gradient overlay */}
-                <div className="absolute inset-0 bg-gradient-to-br from-[#35bec5]/5 to-[#0c96c4]/5"></div>
+                <div className="absolute inset-0 bg-linear-to-br from-[#35bec5]/5 to-[#0c96c4]/5"></div>
                 
                 {/* Overlay Content */}
                 <div className="absolute bottom-3 left-3 text-white">
