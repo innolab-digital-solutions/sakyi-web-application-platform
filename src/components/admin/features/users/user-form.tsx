@@ -1,29 +1,41 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { UserCog2 } from "lucide-react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect } from "react";
 import { toast } from "sonner";
 
 import ComboBoxField from "@/components/shared/forms/combo-box-field";
 import DatepickerField from "@/components/shared/forms/datepicker-field";
 import FileUploadField from "@/components/shared/forms/file-upload-field";
+import FormDialog from "@/components/shared/forms/form-dialog";
 import InputField from "@/components/shared/forms/input-field";
 import SelectField from "@/components/shared/forms/select-field";
-import { Button } from "@/components/ui/button";
 import { ENDPOINTS } from "@/config/endpoints";
-import { PATHS } from "@/config/paths";
 import { useForm } from "@/hooks/use-form";
 import { useRequest } from "@/hooks/use-request";
 import { CreateUserSchema, EditUserSchema } from "@/lib/validations/admin/user-schema";
-import { Role, User, UserApiResponse } from "@/types/admin/user";
+import { Role, User, UserApiResponse, UserFormProperties } from "@/types/admin/user";
+import { buildDefaultListUrl } from "@/utils/shared/parameters";
 
-type UserFormPageProperties = {
-  user?: User;
-};
-
-export default function UserForm({ user }: UserFormPageProperties) {
-  const isEdit = Boolean(user);
+export default function UserForm({
+  mode,
+  trigger,
+  defaultValues,
+  open,
+  onOpenChange,
+  title,
+  description,
+}: UserFormProperties) {
   const router = useRouter();
+  const pathname = usePathname();
+  const searchParameters = useSearchParams();
+
+  const isControlled = typeof open === "boolean" && typeof onOpenChange === "function";
+  const [uncontrolledOpen, setUncontrolledOpen] = React.useState(false);
+
+  const dialogOpen = isControlled ? open : uncontrolledOpen;
+  const isEdit = mode === "edit";
 
   // Fetch roles
   const { data: rolesData } = useRequest<Role[]>({
@@ -38,29 +50,18 @@ export default function UserForm({ user }: UserFormPageProperties) {
     })) ?? [];
 
   const form = useForm(
-    isEdit && user
-      ? {
-          name: user.name ?? "",
-          email: user.email ?? "",
-          phone: user.phone ?? "",
-          dob: user.dob ?? "",
-          gender: user.gender ?? undefined,
-          address: user.address ?? "",
-          picture: user.picture || undefined,
-          role: user.role ?? "",
-        }
-      : {
-          name: "",
-          email: "",
-          phone: "",
-          dob: "",
-          gender: undefined,
-          address: "",
-          picture: undefined as File | string | undefined,
-          password: "",
-          password_confirmation: "",
-          role: "",
-        },
+    {
+      name: "",
+      email: "",
+      phone: "",
+      dob: "",
+      gender: "male",
+      address: "",
+      picture: undefined as File | string | undefined,
+      password: "",
+      password_confirmation: "",
+      role: "",
+    },
     {
       validate: isEdit ? EditUserSchema : CreateUserSchema,
       tanstack: {
@@ -82,8 +83,8 @@ export default function UserForm({ user }: UserFormPageProperties) {
                 const updatedFromServer = (response as UserApiResponse)?.data;
                 const baseData = (base?.data as User[]) ?? [];
 
-                if (isEdit && user) {
-                  const existing = baseData.find((u) => u.id === user.id);
+                if (isEdit && defaultValues) {
+                  const existing = baseData.find((u) => u.id === defaultValues.id);
                   const next =
                     updatedFromServer ??
                     (existing
@@ -95,14 +96,14 @@ export default function UserForm({ user }: UserFormPageProperties) {
                           dob: String(form.data.dob ?? ""),
                           gender: String(form.data.gender ?? "male"),
                           address: String(form.data.address ?? ""),
-                          picture_url: String(form.data.picture ?? ""),
-                          roles: form.data.roles ?? [],
+                          picture: String(form.data.picture ?? ""),
+                          role: String(form.data.role ?? ""),
                         }
-                      : existing);
-
+                      : undefined);
+                  if (!next) return base;
                   return {
                     ...base,
-                    data: baseData.map((u) => (u.id === user.id ? next : u)),
+                    data: baseData.map((u) => (u.id === defaultValues.id ? next : u)),
                   } as UserApiResponse;
                 }
 
@@ -118,8 +119,14 @@ export default function UserForm({ user }: UserFormPageProperties) {
               { all: true },
             );
 
+            if (!isEdit) {
+              const url = buildDefaultListUrl(pathname, searchParameters);
+              router.replace(url, { scroll: false });
+            }
+
+            handleDialogOpenChange(false);
+
             toast.success(response.message);
-            router.push(PATHS.ADMIN.USERS.LIST);
           },
 
           onError: (error) => {
@@ -153,18 +160,30 @@ export default function UserForm({ user }: UserFormPageProperties) {
     return fd;
   };
 
+  const handleDialogOpenChange = (value: boolean) => {
+    if (isControlled) {
+      onOpenChange?.(value);
+    } else {
+      setUncontrolledOpen(value);
+    }
+
+    if (!value) {
+      form.reset();
+    }
+  };
+
   // Populate form for editing
   useEffect(() => {
-    if (isEdit && user) {
+    if (isEdit && defaultValues) {
       const newData = {
-        name: user.name ?? "",
-        picture: user.picture || undefined,
-        email: user.email ?? "",
-        phone: user.phone ?? "",
-        dob: user.dob ?? "",
-        gender: user.gender ?? undefined,
-        address: user.address ?? "",
-        role: user.role ?? "",
+        name: defaultValues.name ?? "",
+        picture: defaultValues.picture || undefined,
+        email: defaultValues.email ?? "",
+        phone: defaultValues.phone ?? "",
+        dob: defaultValues.dob ?? "",
+        gender: defaultValues.gender ?? undefined,
+        address: defaultValues.address ?? "",
+        role: defaultValues.role ?? "",
       };
 
       form.setDataAndDefaults(newData);
@@ -172,7 +191,6 @@ export default function UserForm({ user }: UserFormPageProperties) {
       const newData = {
         name: "",
         picture: undefined as File | string | undefined,
-        username: "",
         email: "",
         phone: "",
         dob: "",
@@ -187,161 +205,161 @@ export default function UserForm({ user }: UserFormPageProperties) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
-    user,
-    user?.id,
-    user?.name,
-    user?.email,
-    user?.phone,
-    user?.dob,
-    user?.picture,
-    user?.gender,
-    user?.address,
-    user?.role,
+    defaultValues?.id,
+    defaultValues?.name,
+    defaultValues?.email,
+    defaultValues?.phone,
+    defaultValues?.dob,
+    defaultValues?.picture,
+    defaultValues?.gender,
+    defaultValues?.address,
+    defaultValues?.role,
     isEdit,
   ]);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    if (isEdit && user?.id) {
-      form.put(ENDPOINTS.ADMIN.USERS.UPDATE(user.id), { transform: buildFormData });
+    if (isEdit && defaultValues?.id) {
+      form.put(ENDPOINTS.ADMIN.USERS.UPDATE(defaultValues.id), { transform: buildFormData });
     } else {
       form.post(ENDPOINTS.ADMIN.USERS.STORE, { transform: buildFormData });
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
-        {/* User Info */}
-        <div className="space-y-4 rounded-md border border-gray-200 p-6">
-          <FileUploadField
-            id="picture"
-            label="Avatar"
-            value={form.data.picture}
-            onChange={(file) => form.setData("picture", file as File | undefined)}
-            maxSize={2 * 1024 * 1024}
-            accept="image/jpg,image/jpeg,image/png,image/webp"
-            error={form.errors.picture as string}
-            disabled={form.processing}
-          />
+    <FormDialog
+      trigger={trigger}
+      open={dialogOpen}
+      onOpenChange={handleDialogOpenChange}
+      onClose={() => form.reset()}
+      title={title ?? (isEdit ? "Edit User" : "Create User")}
+      description={
+        description ??
+        (isEdit
+          ? "Update user information and role with confidence. Ensure each account stays accurate, organized, and aligned with your system's access requirements."
+          : "Fill in the user's basic details such as name, email, contact information, profile settings, and assign a role.")
+      }
+      icon={<UserCog2 className="h-5 w-5" />}
+      onSubmit={handleSubmit}
+      processing={form.processing}
+      isEdit={isEdit}
+      submitLabel={isEdit ? "Save Changes" : "Create User"}
+      submittingLabel={isEdit ? "Saving Changes..." : "Creating User..."}
+      disabled={isEdit && !form.isDirty}
+    >
+      <FileUploadField
+        id="picture"
+        label="Avatar"
+        value={form.data.picture}
+        onChange={(file) => form.setData("picture", file as File | undefined)}
+        maxSize={2 * 1024 * 1024}
+        accept="image/jpg,image/jpeg,image/png,image/webp"
+        error={form.errors.picture as string}
+        disabled={form.processing}
+      />
 
-          <InputField
-            id="name"
-            label="Full Name"
-            placeholder="Enter full name"
-            value={form.data.name}
-            onChange={(event) => form.setData("name", event.target.value)}
-            error={form.errors.name as string}
-            required
-          />
+      <InputField
+        id="name"
+        label="Full Name"
+        placeholder="Enter full name"
+        value={form.data.name}
+        onChange={(event) => form.setData("name", event.target.value)}
+        error={form.errors.name as string}
+        required
+      />
 
-          <InputField
-            id="email"
-            label="Email"
-            placeholder="Enter email"
-            type="email"
-            value={form.data.email}
-            onChange={(event) => form.setData("email", event.target.value)}
-            error={form.errors.email as string}
-            required
-          />
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <InputField
+          id="email"
+          label="Email"
+          placeholder="Enter email"
+          type="email"
+          value={form.data.email}
+          onChange={(event) => form.setData("email", event.target.value)}
+          error={form.errors.email as string}
+          required
+        />
 
-          <InputField
-            id="phone"
-            label="Phone"
-            placeholder="Enter phone number"
-            value={form.data.phone}
-            onChange={(event) => form.setData("phone", event.target.value)}
-            error={form.errors.phone as string}
-          />
-
-          <DatepickerField
-            id="dob"
-            label="Date of Birth"
-            placeholder="Select date"
-            value={form.data.dob}
-            onChange={(value) => form.setData("dob", value)}
-            error={form.errors.dob as string}
-            required
-          />
-        </div>
-
-        {/* Roles */}
-        <div className="space-y-4 rounded-md border border-gray-200 p-6">
-          <SelectField
-            id="gender"
-            label="Gender"
-            value={String(form.data.gender ?? "")}
-            onChange={(v) => form.setData("gender", v as "male" | "female")}
-            options={[
-              { value: "male", label: "Male" },
-              { value: "female", label: "Female" },
-            ]}
-            disabled={form.processing}
-            required
-          />
-
-          <InputField
-            id="address"
-            label="Address"
-            placeholder="Enter address"
-            value={form.data.address}
-            onChange={(event) => form.setData("address", event.target.value)}
-            error={form.errors.address as string}
-          />
-
-          {!isEdit && (
-            <>
-              <InputField
-                id="password"
-                label="Password"
-                type="password"
-                placeholder="Enter password"
-                value={form.data.password}
-                onChange={(event) => form.setData("password", event.target.value)}
-                error={form.errors.password as string}
-                required
-              />
-              <InputField
-                id="password_confirmation"
-                label="Confirm Password"
-                type="password"
-                placeholder="Confirm password"
-                value={form.data.password_confirmation}
-                onChange={(event) => form.setData("password_confirmation", event.target.value)}
-                error={form.errors.password_confirmation as string}
-                required
-              />
-            </>
-          )}
-
-          <label className="text-sm font-semibold text-gray-700">Roles</label>
-
-          <ComboBoxField
-            id="role"
-            placeholder="Select role"
-            options={roleOptions}
-            value={form.data.role ?? ""}
-            onChange={(value) => form.setData("role", value ?? "")}
-          />
-        </div>
+        <InputField
+          id="phone"
+          label="Phone"
+          placeholder="Enter phone number"
+          value={form.data.phone}
+          onChange={(event) => form.setData("phone", event.target.value)}
+          error={form.errors.phone as string}
+        />
       </div>
 
-      <div className="flex justify-end gap-2">
-        <Button type="button" variant="outline" onClick={() => router.back()}>
-          Cancel
-        </Button>
-        <Button type="submit" disabled={form.processing || (isEdit && !form.isDirty)}>
-          {form.processing
-            ? isEdit
-              ? "Saving Changes..."
-              : "Creating User..."
-            : isEdit
-              ? "Save Changes"
-              : "Create User"}
-        </Button>
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <DatepickerField
+          id="dob"
+          label="Date of Birth"
+          placeholder="Select date"
+          value={form.data.dob}
+          onChange={(value) => form.setData("dob", value)}
+          error={form.errors.dob as string}
+          required
+        />
+
+        <SelectField
+          id="gender"
+          label="Gender"
+          value={String(form.data.gender ?? "")}
+          onChange={(v) => form.setData("gender", v as "male" | "female")}
+          options={[
+            { value: "male", label: "Male" },
+            { value: "female", label: "Female" },
+          ]}
+          disabled={form.processing}
+          required
+        />
       </div>
-    </form>
+
+      <ComboBoxField
+        label="Roles"
+        id="role"
+        placeholder="Select role"
+        options={roleOptions}
+        value={form.data.role ?? ""}
+        onChange={(value) => form.setData("role", value ?? "")}
+      />
+
+      <InputField
+        id="address"
+        label="Address"
+        placeholder="Enter address"
+        value={form.data.address}
+        onChange={(event) => form.setData("address", event.target.value)}
+        error={form.errors.address as string}
+      />
+
+      {!isEdit && (
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <InputField
+            id="password"
+            label="Password"
+            type="password"
+            placeholder="Enter password"
+            value={form.data.password}
+            onChange={(event) => form.setData("password", event.target.value)}
+            error={form.errors.password as string}
+            required
+            disabled={form.processing}
+          />
+          <InputField
+            id="password_confirmation"
+            label="Confirm Password"
+            type="password"
+            placeholder="Confirm password"
+            value={form.data.password_confirmation}
+            onChange={(event) => form.setData("password_confirmation", event.target.value)}
+            error={form.errors.password_confirmation as string}
+            required
+            disabled={form.processing}
+          />
+        </div>
+      )}
+    </FormDialog>
   );
 }

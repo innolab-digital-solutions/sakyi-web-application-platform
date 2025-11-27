@@ -7,7 +7,6 @@ import {
   ClipboardCheck,
   ClipboardList,
   CreditCard,
-  Group,
   LayoutDashboard,
   ListChecks,
   MonitorCog,
@@ -15,6 +14,7 @@ import {
   Settings,
   ShieldCheck,
   Stethoscope,
+  UserCog2,
   Users,
 } from "lucide-react";
 
@@ -78,7 +78,7 @@ export const adminNavigation: NavGroup[] = [
       },
       {
         name: "User Management",
-        icon: Users,
+        icon: UserCog2,
         path: PATHS.ADMIN.USERS.LIST,
         params: {},
         active: false,

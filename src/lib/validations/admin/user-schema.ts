@@ -17,18 +17,19 @@ const BaseUserSchema = z.object({
 
   phone: z.string().trim().optional(),
 
-  dob: z.string().optional(), // Could also use z.date() if you handle conversion in form
-  gender: z.enum(["male", "female"]).optional(),
+  dob: z.string("Date of birth is required").min(1, "Date of birth is required"),
+  gender: z.enum(["male", "female"], "Gender is required"),
+
   address: z.string().optional(),
 
   picture: z.any().optional(), // File or string URL
 
   role: z
-    .string("Role name is required")
-    .min(1, "Role name is required")
+    .string()
     .max(255, "Role name must not exceed 255 characters")
     .trim()
-    .refine((name) => name.length > 0, "Role name cannot be empty or contain only spaces"),
+    .refine((name) => !name || name.length > 0, "Role name cannot be empty or contain only spaces")
+    .optional(),
 });
 
 /**

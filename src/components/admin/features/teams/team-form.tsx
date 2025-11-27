@@ -287,6 +287,7 @@ export default function TeamForm({
         onChange={(event) => form.setData("name", event.target.value)}
         error={form.errors.name as string}
         disabled={form.processing}
+        required
       />
 
       <TextareaField
@@ -309,6 +310,7 @@ export default function TeamForm({
         options={membersOptions}
         value={comboValue}
         selectedValues={addedMembers.map((m) => m.id.toString())}
+        required
         error={form.errors.member_ids as string}
         onChange={(value) => {
           setComboValue(value);
