@@ -16,9 +16,35 @@ import { Label } from "@/components/ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/utils/shared/cn";
 
+/**
+ * Extracts text content from a ReactNode recursively.
+ * Used to generate searchValue automatically when not provided.
+ */
+function extractTextFromReactNode(node: React.ReactNode): string {
+  if (node === null || node === undefined) {
+    return "";
+  }
+  if (typeof node === "string" || typeof node === "number") {
+    return String(node);
+  }
+  if (Array.isArray(node)) {
+    return node.map((item) => extractTextFromReactNode(item)).join(" ");
+  }
+  if (typeof node === "object" && "props" in node) {
+    // React element - extract text from children
+    const reactElement = node as React.ReactElement<{ children?: React.ReactNode }>;
+    const children = reactElement.props?.children;
+    if (children !== undefined && children !== null) {
+      return extractTextFromReactNode(children);
+    }
+  }
+  return "";
+}
+
 export interface ComboBoxOption {
   value: string;
-  label: string;
+  label: React.ReactNode;
+  searchValue?: string;
   disabled?: boolean;
 }
 
@@ -33,6 +59,7 @@ export interface ComboBoxFieldProperties {
   emptyMessage?: string;
   options: ComboBoxOption[];
   value?: string;
+  selectedValues?: string[];
   onChange?: (value: string) => void;
   onSelect?: (option: ComboBoxOption) => void;
   disabled?: boolean;
@@ -60,6 +87,7 @@ export const ComboBoxField = forwardRef<HTMLButtonElement, ComboBoxFieldProperti
       emptyMessage = "No option found.",
       options = [],
       value = "",
+      selectedValues = [],
       onChange,
       onSelect,
       disabled = false,
@@ -147,13 +175,15 @@ export const ComboBoxField = forwardRef<HTMLButtonElement, ComboBoxFieldProperti
           >
             <Command className={commandClassName}>
               <CommandInput placeholder={searchPlaceholder} className="h-9" />
+
+              {/* Explicit height + overflow on the list (use overflow-auto for better UX) */}
               <CommandList>
                 <CommandEmpty>{emptyMessage}</CommandEmpty>
                 <CommandGroup>
                   {options.map((option) => (
                     <CommandItem
                       key={option.value}
-                      value={option.label}
+                      value={option.searchValue ?? extractTextFromReactNode(option.label)}
                       onSelect={() => handleSelect(option.value)}
                       disabled={option.disabled}
                       className={cn(
@@ -165,7 +195,9 @@ export const ComboBoxField = forwardRef<HTMLButtonElement, ComboBoxFieldProperti
                       <Check
                         className={cn(
                           "ml-auto h-4 w-4",
-                          value === option.value ? "opacity-100" : "opacity-0",
+                          value === option.value || selectedValues.includes(option.value)
+                            ? "opacity-100"
+                            : "opacity-0",
                         )}
                       />
                     </CommandItem>

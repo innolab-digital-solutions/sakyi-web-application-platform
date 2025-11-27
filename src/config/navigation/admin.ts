@@ -60,7 +60,7 @@ export const adminNavigation: NavGroup[] = [
     items: [
       {
         name: "Team Management",
-        icon: Group,
+        icon: Users,
         path: PATHS.ADMIN.TEAMS.LIST,
         params: {},
         active: false,

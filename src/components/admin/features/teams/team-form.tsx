@@ -10,6 +10,7 @@ import FormDialog from "@/components/shared/forms/form-dialog";
 import InputField from "@/components/shared/forms/input-field";
 import TextareaField from "@/components/shared/forms/textarea-field";
 import MemberCard from "@/components/shared/member-card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ENDPOINTS } from "@/config/endpoints";
 import { useForm } from "@/hooks/use-form";
 import { useRequest } from "@/hooks/use-request";
@@ -54,12 +55,34 @@ export default function TeamForm({
     (membersResponse?.data as
       | { id: number; name: string; phone: string; email: string; role: string; picture: string }[]
       | undefined) ?? [];
-  const membersOptions = membersData.map((m) => ({
-    value: m.id.toString(),
-    label: m.name,
-    picture: m.picture, // <-- picture
-    role: m.role,
-  }));
+  const membersOptions = membersData.map((m) => {
+    const initials = m.name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2);
+    return {
+      value: m.id.toString(),
+      label: (
+        <div className="flex items-center gap-3">
+          <Avatar className="h-8 w-8">
+            <AvatarImage src={m.picture} alt={m.name} />
+            <AvatarFallback className="bg-indigo-100 text-sm font-semibold text-indigo-700">
+              {initials}
+            </AvatarFallback>
+          </Avatar>
+          <div className="flex min-w-0 flex-col">
+            <span className="truncate text-sm font-medium">{m.name}</span>
+            {m.role && <span className="text-muted-foreground truncate text-xs">{m.role}</span>}
+          </div>
+        </div>
+      ),
+      name: m.name,
+      picture: m.picture,
+      role: m.role,
+    };
+  });
 
   const form = useForm(
     {
@@ -285,6 +308,7 @@ export default function TeamForm({
         placeholder="Choose team members"
         options={membersOptions}
         value={comboValue}
+        selectedValues={addedMembers.map((m) => m.id.toString())}
         error={form.errors.member_ids as string}
         onChange={(value) => {
           setComboValue(value);
@@ -293,7 +317,7 @@ export default function TeamForm({
           if (selected) {
             handleAddMember({
               id: Number(selected.value),
-              name: selected.label,
+              name: selected.name,
               picture: selected.picture,
               role: selected.role,
             });
