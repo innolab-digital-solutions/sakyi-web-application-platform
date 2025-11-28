@@ -64,7 +64,7 @@ export default function UserForm({ user }: UserFormPageProperties) {
     {
       validate: isEdit ? EditUserSchema : CreateUserSchema,
       tanstack: {
-        invalidateQueries: ["admin-users", "admin-user"],
+        invalidateQueries: ["admin-users", "admin-user", "lookup-invoice-users"],
         mutationOptions: {
           onSuccess: (response) => {
             form.queryCache.setQueryData<UserApiResponse>(

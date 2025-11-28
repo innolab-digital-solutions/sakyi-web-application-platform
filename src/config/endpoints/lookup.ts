@@ -17,4 +17,6 @@ export const LOOKUP_ENDPOINTS = {
   UNITS: "/lookup/units",
   BLOG_CATEGORIES: "/lookup/blog-categories",
   ONBOARDING_FORMS: "/lookup/onboarding-forms",
+  PAYMENT_METHODS: "/lookup/payment-methods",
+  INVOICE_USERS: "/lookup/invoice-users",
 } as const;
