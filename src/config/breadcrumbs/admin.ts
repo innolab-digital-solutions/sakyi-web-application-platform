@@ -180,4 +180,24 @@ export const adminBreadcrumbs: Breadcrumbs = {
     { label: "Content Management" },
     { label: "Testimonials", href: PATHS.ADMIN.TESTIMONIALS.LIST },
   ],
+
+  "/admin/invoices": [
+    { label: "Admin Control Panel" },
+    { label: "Finance" },
+    { label: "Invoices", href: PATHS.ADMIN.INVOICES.LIST },
+  ],
+
+  "/admin/invoices/:id/edit": [
+    { label: "Admin Control Panel" },
+    { label: "Finance" },
+    { label: "Invoices", href: PATHS.ADMIN.INVOICES.LIST },
+    { label: "Edit" },
+  ],
+
+  "/admin/invoices/create": [
+    { label: "Admin Control Panel" },
+    { label: "Finance" },
+    { label: "Invoices", href: PATHS.ADMIN.INVOICES.LIST },
+    { label: "Create" },
+  ],
 };

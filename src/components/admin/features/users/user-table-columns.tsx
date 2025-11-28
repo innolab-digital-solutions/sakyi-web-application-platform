@@ -75,8 +75,7 @@ export const usersTableColumns: ColumnDef<User>[] = [
     header: "Gender",
     cell: ({ row }) => {
       const gender = row.original.gender;
-      const formattedGender = gender ? gender.charAt(0).toUpperCase() + gender.slice(1) : gender;
-      return <span className="text-sm">{formattedGender ?? "-"}</span>;
+      return <span className="text-sm capitalize">{gender ?? "-"}</span>;
     },
   },
   {
