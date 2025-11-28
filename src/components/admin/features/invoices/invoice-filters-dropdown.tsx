@@ -177,7 +177,7 @@ export default function InvoiceFiltersDropdown({
 
           {/* ISSUED DATE */}
           <DropdownMenuLabel className="text-muted-foreground text-xs font-semibold">
-            Issued Date From
+            Issued Date
           </DropdownMenuLabel>
           <div className="px-2 py-1.5">
             <DatepickerField
