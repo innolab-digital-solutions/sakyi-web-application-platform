@@ -2,6 +2,7 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import { CheckCircle, SquarePen, XCircle } from "lucide-react";
+import Image from "next/image";
 import React from "react";
 
 import DisabledTooltip from "@/components/shared/disabled-tooltip";
@@ -11,7 +12,6 @@ import { Button } from "@/components/ui/button";
 import { PaymentMethod } from "@/types/admin/payment-method";
 import { cn } from "@/utils/shared/cn";
 
-import { ImagePreview } from "../../shared/image-preview";
 import PaymentMethodDeletionDialog from "./payment-method-deletion-dialog";
 import PaymentMethodForm from "./payment-method-form";
 
@@ -60,7 +60,7 @@ export const paymentMethodsTableColumns: ColumnDef<PaymentMethod>[] = [
         <div className="flex min-w-0 items-center gap-3">
           <div className="bg-muted/50 ring-muted-foreground/5 relative h-12 w-12 shrink-0 overflow-hidden rounded-md ring-1">
             {logoUrl ? (
-              <ImagePreview src={logoUrl} fallback="N/A" alt="logo" type="Logo" />
+              <Image src={logoUrl} alt="logo" fill className="object-cover" />
             ) : (
               <div className="text-muted-foreground/50 flex h-full w-full items-center justify-center text-xs font-medium">
                 N/A
@@ -83,7 +83,7 @@ export const paymentMethodsTableColumns: ColumnDef<PaymentMethod>[] = [
       return (
         <div className="bg-muted/50 ring-muted-foreground/5 relative h-12 w-12 shrink-0 overflow-hidden rounded-md ring-1">
           {qr_url ? (
-            <ImagePreview src={qr_url} fallback="N/A" alt="qr_code" type="QR Code" />
+            <Image src={qr_url} alt="qr_code" fill className="object-cover" />
           ) : (
             <div className="text-muted-foreground/50 flex h-full w-full items-center justify-center text-xs font-medium">
               N/A

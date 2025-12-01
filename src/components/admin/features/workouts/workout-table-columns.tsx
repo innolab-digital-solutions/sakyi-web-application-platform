@@ -3,6 +3,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { CheckCircle, Flame, Gauge, PlayCircle, SquarePen } from "lucide-react";
 import NextImage from "next/image";
+import Image from "next/image";
 import React from "react";
 
 import DisabledTooltip from "@/components/shared/disabled-tooltip";
@@ -12,7 +13,6 @@ import { Button } from "@/components/ui/button";
 import { Workout } from "@/types/admin/workout";
 import { cn } from "@/utils/shared/cn";
 
-import { ImagePreview } from "../../shared/image-preview";
 import WorkoutDeletionDialog from "./workout-deletion-dialog";
 import WorkoutForm from "./workout-form";
 
@@ -49,7 +49,9 @@ export const workoutsTableColumns: ColumnDef<Workout>[] = [
   {
     accessorKey: "name",
     header: ({ column }) => <SortableHeader column={column}>Name</SortableHeader>,
-    cell: ({ row }) => <span className="text-sm font-semibold">{row.original.name}</span>,
+    cell: ({ row }) => (
+      <span className="text-foreground text-sm font-semibold">{row.original.name}</span>
+    ),
   },
   {
     accessorKey: "difficulty",
@@ -70,12 +72,16 @@ export const workoutsTableColumns: ColumnDef<Workout>[] = [
   {
     accessorKey: "category",
     header: "Category",
-    cell: ({ row }) => <span className="text-sm">{row.original.category?.name}</span>,
+    cell: ({ row }) => (
+      <span className="text-sm font-medium text-neutral-800">{row.original.category?.name}</span>
+    ),
   },
   {
     accessorKey: "equipment",
     header: "Equipment",
-    cell: ({ row }) => <span className="text-sm">{row.original.equipment ?? "-"}</span>,
+    cell: ({ row }) => (
+      <span className="text-sm font-medium text-neutral-800">{row.original.equipment ?? "-"}</span>
+    ),
   },
   {
     accessorKey: "gif",
@@ -89,7 +95,7 @@ export const workoutsTableColumns: ColumnDef<Workout>[] = [
       return (
         <div className="bg-muted/50 ring-muted-foreground/5 relative h-12 w-12 shrink-0 overflow-hidden rounded-md ring-1">
           {gifUrl ? (
-            <ImagePreview src={gifUrl} fallback="N/A" alt="GIF" type="GIF" />
+            <Image src={gifUrl} alt="GIF" fill className="object-cover" />
           ) : (
             <div className="text-muted-foreground/50 flex h-full w-full items-center justify-center text-xs font-medium">
               N/A

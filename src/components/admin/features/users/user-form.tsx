@@ -262,7 +262,7 @@ export default function UserForm({
       <InputField
         id="name"
         label="Full Name"
-        placeholder="Enter full name"
+        placeholder="eg. John Doe"
         value={form.data.name}
         onChange={(event) => form.setData("name", event.target.value)}
         error={form.errors.name as string}
@@ -273,7 +273,7 @@ export default function UserForm({
         <InputField
           id="email"
           label="Email"
-          placeholder="Enter email"
+          placeholder="name@example.com"
           type="email"
           value={form.data.email}
           onChange={(event) => form.setData("email", event.target.value)}
@@ -284,7 +284,7 @@ export default function UserForm({
         <InputField
           id="phone"
           label="Phone"
-          placeholder="Enter phone number"
+          placeholder="e.g. +1 555 123 4567"
           value={form.data.phone}
           onChange={(event) => form.setData("phone", event.target.value)}
           error={form.errors.phone as string}
@@ -295,7 +295,7 @@ export default function UserForm({
         <DatepickerField
           id="dob"
           label="Date of Birth"
-          placeholder="Select date"
+          placeholder="YYYY-MM-DD"
           value={form.data.dob}
           onChange={(value) => form.setData("dob", value)}
           error={form.errors.dob as string}
@@ -312,14 +312,15 @@ export default function UserForm({
             { value: "female", label: "Female" },
           ]}
           disabled={form.processing}
+          placeholder="Select gender"
           required
         />
       </div>
 
       <ComboBoxField
-        label="Roles"
+        label="Role"
         id="role"
-        placeholder="Select role"
+        placeholder="Choose a role"
         options={roleOptions}
         value={form.data.role ?? ""}
         onChange={(value) => form.setData("role", value ?? "")}
@@ -328,7 +329,7 @@ export default function UserForm({
       <InputField
         id="address"
         label="Address"
-        placeholder="Enter address"
+        placeholder="Street address, city, state"
         value={form.data.address}
         onChange={(event) => form.setData("address", event.target.value)}
         error={form.errors.address as string}
@@ -340,7 +341,7 @@ export default function UserForm({
             id="password"
             label="Password"
             type="password"
-            placeholder="Enter password"
+            placeholder="Minimum 8 characters"
             value={form.data.password}
             onChange={(event) => form.setData("password", event.target.value)}
             error={form.errors.password as string}
@@ -351,7 +352,7 @@ export default function UserForm({
             id="password_confirmation"
             label="Confirm Password"
             type="password"
-            placeholder="Confirm password"
+            placeholder="Re-enter password"
             value={form.data.password_confirmation}
             onChange={(event) => form.setData("password_confirmation", event.target.value)}
             error={form.errors.password_confirmation as string}
