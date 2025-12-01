@@ -2,7 +2,7 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import dayjs from "dayjs";
-import { CalendarDays, MapPinned, Mars, Phone, SquarePen, Venus } from "lucide-react";
+import { CalendarDays, Ellipsis, MapPinned, Mars, Phone, SquarePen, Venus } from "lucide-react";
 import React from "react";
 
 import UserDeletionDialog from "@/components/admin/features/users/user-deletion-dialog";
@@ -12,6 +12,14 @@ import SortableHeader from "@/components/shared/table/sortable-header";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { User } from "@/types/admin/user";
 
 export const usersTableColumns: ColumnDef<User>[] = [
@@ -159,38 +167,58 @@ export const usersTableColumns: ColumnDef<User>[] = [
     header: "Actions",
     cell: ({ row }) => {
       const user = row.original;
-      const isEditable = Boolean(user.actions?.editable);
-      const disabledReason = isEditable
-        ? undefined
-        : "You don't have permission to edit this workout.";
 
       return (
-        <div className="flex items-center space-x-0.5">
-          <UserForm
-            mode="edit"
-            defaultValues={{
-              ...user,
-              profile: user.profile ?? undefined,
-            }}
-            trigger={(() => {
-              return (
-                <DisabledTooltip reason={disabledReason}>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="text-accent hover:bg-accent/10 hover:text-accent flex cursor-pointer items-center justify-center text-sm font-semibold disabled:hover:bg-transparent! disabled:hover:text-inherit!"
-                    disabled={!isEditable}
-                  >
-                    <SquarePen className="h-2 w-2" />
-                    <span>Edit</span>
-                  </Button>
-                </DisabledTooltip>
-              );
-            })()}
-          />
-
-          <UserDeletionDialog user={user} />
-        </div>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="outline"
+              size="icon"
+              aria-label="Open actions"
+              className="hover:!text-foreground ml-auto size-8 cursor-pointer items-center justify-center hover:!bg-gray-100"
+            >
+              <Ellipsis className="h-5 w-5" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" sideOffset={8} className="p-3.5">
+            <DropdownMenuLabel className="text-muted-foreground text-[13px] font-semibold">
+              User Actions
+            </DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem asChild>
+              <UserForm
+                mode="edit"
+                defaultValues={{
+                  ...user,
+                  profile: user.profile ?? undefined,
+                }}
+                trigger={(() => {
+                  const isEditable = Boolean(user.actions?.editable);
+                  const disabledReason = isEditable
+                    ? undefined
+                    : "You don't have permission to edit this user.";
+                  return (
+                    <DisabledTooltip reason={disabledReason}>
+                      <Button
+                        variant="outline"
+                        className="hover:!bg-accent/10 group hover:!text-accent hover:!ring-none flex w-full !cursor-pointer items-center justify-start gap-1.5 !border-none text-sm font-medium text-gray-700 shadow-none disabled:hover:!bg-transparent disabled:hover:!text-inherit"
+                        aria-label="Edit user"
+                        disabled={!isEditable}
+                      >
+                        <SquarePen className="group-hover:text-accent h-4 w-4 transition-colors duration-150" />
+                        <span>Edit User</span>
+                      </Button>
+                    </DisabledTooltip>
+                  );
+                })()}
+              />
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem asChild>
+              <UserDeletionDialog user={user} />
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       );
     },
   },

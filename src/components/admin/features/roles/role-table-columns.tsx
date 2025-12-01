@@ -67,7 +67,7 @@ export const rolesTableColumns: ColumnDef<Role>[] = [
       }
 
       const moduleNames = getPermissionModuleNames(permissions);
-      const previewModules = moduleNames.slice(0, 2);
+      const previewModules = moduleNames.slice(0, 3);
       const remainingCount = moduleNames.length - previewModules.length;
 
       return (
