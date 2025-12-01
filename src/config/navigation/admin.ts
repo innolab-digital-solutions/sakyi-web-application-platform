@@ -269,7 +269,7 @@ export const adminNavigation: NavGroup[] = [
       {
         name: "Invoices",
         icon: Receipt,
-        path: "/admin/payments/invoices",
+        path: PATHS.ADMIN.INVOICES.LIST,
         params: {},
         active: false,
         permission: "invoices.view",
