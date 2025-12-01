@@ -78,7 +78,7 @@ export const blogPostsTableColumns: ColumnDef<BlogPost>[] = [
                 <span>{meta.label}</span>
               </Badge>
             </div>
-            <div className="text-muted-foreground max-w-full break-words whitespace-pre-line">
+            <div className="text-muted-foreground line-clamp-1 max-w-full break-words whitespace-pre-line">
               {description}
             </div>
           </div>

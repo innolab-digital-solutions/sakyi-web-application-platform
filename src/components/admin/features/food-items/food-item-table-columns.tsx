@@ -17,7 +17,16 @@ export const foodItemsTableColumns: ColumnDef<FoodItem>[] = [
     header: ({ column }) => <SortableHeader column={column}>Name</SortableHeader>,
     cell: ({ row }) => {
       const name = row.getValue("name") as string;
-      return <div className="text-foreground text-sm font-semibold">{name}</div>;
+      const description = row.original.description || "-";
+
+      return (
+        <div>
+          <div className="text-foreground text-sm font-semibold">{name}</div>
+          <div className="text-muted-foreground line-clamp-2 max-w-full wrap-break-word whitespace-pre-line">
+            {description}
+          </div>
+        </div>
+      );
     },
   },
   {
@@ -25,7 +34,7 @@ export const foodItemsTableColumns: ColumnDef<FoodItem>[] = [
     header: "Category",
     cell: ({ row }) => {
       const categoryName = row.original.category?.name || "—";
-      return <div className="text-muted-foreground text-sm">{categoryName}</div>;
+      return <div className="text-sm font-medium text-neutral-800">{categoryName}</div>;
     },
   },
   {
@@ -33,7 +42,7 @@ export const foodItemsTableColumns: ColumnDef<FoodItem>[] = [
     header: "Unit",
     cell: ({ row }) => {
       const unitName = row.original.unit?.name || "—";
-      return <div className="text-muted-foreground text-sm">{unitName}</div>;
+      return <div className="text-sm font-medium text-neutral-800">{unitName}</div>;
     },
   },
   {
@@ -41,19 +50,7 @@ export const foodItemsTableColumns: ColumnDef<FoodItem>[] = [
     header: "Calories / Unit",
     cell: ({ row }) => {
       const calories = row.getValue("calories_per_unit") as number;
-      return <div className="text-muted-foreground text-sm">{calories}</div>;
-    },
-  },
-  {
-    accessorKey: "description",
-    header: "Description",
-    cell: ({ row }) => {
-      const description = row.getValue("description") as string;
-      return (
-        <div className="text-muted-foreground line-clamp-2 max-w-xs text-sm">
-          {description || "—"}
-        </div>
-      );
+      return <div className="text-sm font-medium text-neutral-800">{calories}</div>;
     },
   },
   {

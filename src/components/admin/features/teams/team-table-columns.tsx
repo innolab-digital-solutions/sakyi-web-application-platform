@@ -62,11 +62,8 @@ export const teamsTableColumns: ColumnDef<Team>[] = [
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Avatar className="border-muted size-8 cursor-pointer border ring-2 ring-white">
-                        {member.picture ? (
-                          <AvatarImage src={member.picture} alt={member.name} />
-                        ) : (
-                          <AvatarFallback>{initial}</AvatarFallback>
-                        )}
+                        <AvatarImage src={member.picture ?? undefined} alt={member.name} />
+                        <AvatarFallback>{initial}</AvatarFallback>
                       </Avatar>
                     </TooltipTrigger>
                     <TooltipContent

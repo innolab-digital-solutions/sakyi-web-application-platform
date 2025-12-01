@@ -33,11 +33,8 @@ export const usersTableColumns: ColumnDef<User>[] = [
         <div className="flex items-center gap-2">
           <div>
             <Avatar>
-              {user.picture ? (
-                <AvatarImage src={user.picture} alt={user.name} />
-              ) : (
-                <AvatarFallback>{user.name?.[0]}</AvatarFallback>
-              )}
+              <AvatarImage src={user.picture ?? undefined} alt={user.name} />
+              <AvatarFallback>{user.name?.[0]}</AvatarFallback>
             </Avatar>
           </div>
           <div className="flex items-center gap-2">

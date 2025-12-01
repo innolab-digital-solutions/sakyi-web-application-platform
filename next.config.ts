@@ -15,30 +15,20 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
-        hostname: "via.placeholder.com",
-      },
-      {
-        protocol: "https",
         hostname: "images.unsplash.com",
       },
       {
         protocol: "https",
-        hostname: "media.tenor.com",
+        hostname: "media.giphy.com",
         pathname: "**",
       },
       {
         protocol: "https",
         hostname: "www.youtube.com",
-        pathname: "/**",
       },
       {
         protocol: "https",
         hostname: "img.youtube.com",
-        pathname: "/**",
-      },
-      {
-        protocol: "https",
-        hostname: "example.com",
       },
     ],
   },

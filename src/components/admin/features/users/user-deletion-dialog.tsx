@@ -72,7 +72,7 @@ export default function UserDeletionDialog({ user, className }: UserDeletionDial
               aria-label="Delete user"
             >
               <Trash2 className="group-hover:text-destructive-900 text-destructive h-4 w-4 transition-colors duration-150" />
-              <span>Delete</span>
+              <span>Delete User</span>
             </Button>
           </DisabledTooltip>
         );
