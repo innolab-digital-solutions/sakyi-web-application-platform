@@ -3,12 +3,12 @@
 import { ColumnDef } from "@tanstack/react-table";
 import dayjs from "dayjs";
 import { Check, CheckCircle, CirclePause, Copy, SquarePen, XCircle } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import { toast } from "sonner";
 
 import DisabledTooltip from "@/components/shared/disabled-tooltip";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { PATHS } from "@/config/paths";
@@ -87,7 +87,7 @@ export const invoicesTableColumns: ColumnDef<Invoice>[] = [
     accessorKey: "enrollment",
     header: "Enrollment",
     cell: ({ row }) => (
-      <div className="text-muted-foreground text-sm">
+      <div className="text-sm font-medium text-neutral-800">
         {row.original.enrollment?.unique_id ?? "—"}
       </div>
     ),
@@ -98,7 +98,7 @@ export const invoicesTableColumns: ColumnDef<Invoice>[] = [
     cell: ({ row }) => {
       const user = row.original.user;
       if (!user) {
-        return <span className="text-muted-foreground text-sm">—</span>;
+        return <span className="text-sm font-medium text-neutral-800">—</span>;
       }
 
       const avatar = user.picture;
@@ -107,13 +107,12 @@ export const invoicesTableColumns: ColumnDef<Invoice>[] = [
       return (
         <div className="flex items-center gap-2">
           <div className="relative flex h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-gray-200 text-sm font-semibold text-gray-600">
-            {avatar ? (
-              <Image src={avatar} alt={user.name} width={32} height={32} />
-            ) : (
-              <span>{initial}</span>
-            )}
+            <Avatar>
+              <AvatarImage src={avatar ?? undefined} alt={user.name} />
+              <AvatarFallback>{initial}</AvatarFallback>
+            </Avatar>
           </div>
-          <span className="text-sm font-semibold">{user.name}</span>
+          <span className="text-sm font-medium text-neutral-800">{user.name}</span>
         </div>
       );
     },
@@ -123,9 +122,9 @@ export const invoicesTableColumns: ColumnDef<Invoice>[] = [
     accessorKey: "amount",
     header: "Amount",
     cell: ({ row }) => {
-      const amount = Number(row.original.amount); // cast to number
+      const amount = Number(row.original.amount);
       return (
-        <div className="text-muted-foreground text-sm">
+        <div className="text-sm font-medium text-neutral-800">
           {row.original.currency} {Number.isNaN(amount) ? "0.00" : amount.toFixed(2)}
         </div>
       );
@@ -135,7 +134,7 @@ export const invoicesTableColumns: ColumnDef<Invoice>[] = [
     accessorKey: "payment_method",
     header: "Payment Method",
     cell: ({ row }) => (
-      <div className="text-muted-foreground text-sm">
+      <div className="text-sm font-medium text-neutral-800">
         {row.original.payment_method?.name ?? "—"}
       </div>
     ),
@@ -144,7 +143,7 @@ export const invoicesTableColumns: ColumnDef<Invoice>[] = [
     accessorKey: "issue_date",
     header: "Issued Date",
     cell: ({ row }) => (
-      <div className="text-muted-foreground text-sm">
+      <div className="text-sm font-medium text-neutral-800">
         {row.original.issued_date ? dayjs(row.original.issued_date).format("DD-MMMM-YYYY") : "—"}
       </div>
     ),
@@ -153,7 +152,7 @@ export const invoicesTableColumns: ColumnDef<Invoice>[] = [
     accessorKey: "paid_date",
     header: "Paid Date",
     cell: ({ row }) => (
-      <div className="text-muted-foreground text-sm">
+      <div className="text-sm font-medium text-neutral-800">
         {row.original.paid_date ? dayjs(row.original.paid_date).format("DD-MMMM-YYYY") : "—"}
       </div>
     ),
