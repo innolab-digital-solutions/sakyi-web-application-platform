@@ -6,8 +6,8 @@ export default function MobileApp() {
     <section id="app" className="relative overflow-hidden bg-slate-50 py-24">
     {/* Background Elements */}
     <div className="absolute inset-0 overflow-hidden">
-      <div className="absolute top-1/3 -right-20 h-40 w-40 rounded-full bg-gradient-to-br from-[#35bec5]/5 to-[#0c96c4]/5 blur-3xl sm:-right-28 sm:h-56 sm:w-56 lg:-right-32 lg:h-64 lg:w-64"></div>
-      <div className="absolute bottom-1/3 -left-20 h-40 w-40 rounded-full bg-gradient-to-br from-[#4bc4db]/5 to-[#35bec5]/5 blur-3xl sm:-left-28 sm:h-56 sm:w-56 lg:-left-32 lg:h-64 lg:w-64"></div>
+      <div className="absolute top-1/3 -right-20 h-40 w-40 rounded-full bg-linear-to-br from-[#35bec5]/5 to-[#0c96c4]/5 blur-3xl sm:-right-28 sm:h-56 sm:w-56 lg:-right-32 lg:h-64 lg:w-64"></div>
+      <div className="absolute bottom-1/3 -left-20 h-40 w-40 rounded-full bg-linear-to-br from-[#4bc4db]/5 to-[#35bec5]/5 blur-3xl sm:-left-28 sm:h-56 sm:w-56 lg:-left-32 lg:h-64 lg:w-64"></div>
     </div>
 
     <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -16,7 +16,7 @@ export default function MobileApp() {
         <div className="space-y-8" data-aos="slide-up" data-aos-duration="1200" data-aos-easing="ease-out-cubic">
           <div className="space-y-6">
             <div 
-              className="inline-flex items-center space-x-2 rounded-full bg-gradient-to-r from-[#35bec5]/10 to-[#0c96c4]/10 px-4 py-2"
+              className="inline-flex items-center space-x-2 rounded-full bg-linear-to-r from-[#35bec5]/10 to-[#0c96c4]/10 px-4 py-2"
               data-aos="slide-down"
               data-aos-delay="200"
               data-aos-duration="800"
@@ -103,7 +103,7 @@ export default function MobileApp() {
             {/* First Phone Mockup - Dashboard Screen */}
             <div className="group relative z-10">
               {/* Glow effect */}
-              <div className="absolute inset-0 -z-10 h-[400px] w-[180px] rotate-12 transform rounded-3xl bg-gradient-to-r from-[#35bec5]/20 to-[#0c96c4]/20 blur-xl sm:h-[450px] sm:w-[200px] lg:h-[500px] lg:w-[240px]"></div>
+              <div className="absolute inset-0 -z-10 h-[400px] w-[180px] rotate-12 transform rounded-3xl bg-linear-to-br from-[#35bec5]/20 to-[#0c96c4]/20 blur-xl sm:h-[450px] sm:w-[200px] lg:h-[500px] lg:w-[240px]"></div>
               <div className="h-[400px] w-[180px] rotate-12 transform overflow-hidden rounded-3xl bg-white shadow-2xl sm:h-[450px] sm:w-[200px] sm:rotate-12 lg:h-[500px] lg:w-[240px] lg:rotate-12">
                 {/* Phone Status Bar */}
                 <div className="flex items-center justify-between bg-white px-4 py-2">
@@ -122,7 +122,7 @@ export default function MobileApp() {
                 </div>
 
                 {/* App Header */}
-                <div className="bg-gradient-to-r from-[#35bec5] to-[#0c96c4] px-4 py-3">
+                <div className="bg-linear-to-br from-[#35bec5] to-[#0c96c4] px-4 py-3">
                   <div className="flex items-center justify-between">
                     <div>
                       <h3 className="text-sm font-bold text-white">SaKyi Wellness</h3>
@@ -137,7 +137,7 @@ export default function MobileApp() {
                 {/* Dashboard Content */}
                 <div className="space-y-4 p-4">
                   {/* Welcome Card */}
-                  <div className="rounded-xl bg-gradient-to-r from-[#35bec5]/10 to-[#0c96c4]/10 p-3">
+                  <div className="rounded-xl bg-linear-to-br from-[#35bec5]/10 to-[#0c96c4]/10 p-3">
                     <h4 className="text-sm font-semibold text-slate-800">
                       Good Morning, Sarah!
                     </h4>
@@ -155,7 +155,7 @@ export default function MobileApp() {
                       </div>
                       <div className="h-1.5 w-full rounded-full bg-slate-200">
                         <div
-                          className="h-1.5 rounded-full bg-gradient-to-r from-[#35bec5] to-[#0c96c4]"
+                          className="h-1.5 rounded-full bg-linear-to-br from-[#35bec5] to-[#0c96c4]"
                           style={{ width: "82%" }}
                         ></div>
                       </div>
@@ -170,7 +170,7 @@ export default function MobileApp() {
                       </div>
                       <div className="h-1.5 w-full rounded-full bg-slate-200">
                         <div
-                          className="h-1.5 rounded-full bg-gradient-to-r from-[#35bec5] to-[#0c96c4]"
+                          className="h-1.5 rounded-full bg-linear-to-br from-[#35bec5] to-[#0c96c4]"
                           style={{ width: "75%" }}
                         ></div>
                       </div>
@@ -206,7 +206,7 @@ export default function MobileApp() {
             {/* Second Phone Mockup - Progress Screen */}
             <div className="group relative z-0 -translate-y-8 sm:-translate-y-10 lg:-translate-y-12">
               {/* Glow effect */}
-              <div className="absolute inset-0 -z-10 h-[400px] w-[180px] -rotate-12 transform rounded-3xl bg-gradient-to-r from-[#4bc4db]/20 to-[#35bec5]/20 blur-xl sm:h-[450px] sm:w-[200px] lg:h-[500px] lg:w-[240px]"></div>
+              <div className="absolute inset-0 -z-10 h-[400px] w-[180px] -rotate-12 transform rounded-3xl bg-linear-to-br from-[#4bc4db]/20 to-[#35bec5]/20 blur-xl sm:h-[450px] sm:w-[200px] lg:h-[500px] lg:w-[240px]"></div>
               <div className="h-[400px] w-[180px] -rotate-12 transform overflow-hidden rounded-3xl bg-white shadow-2xl sm:h-[450px] sm:w-[200px] sm:-rotate-12 lg:h-[500px] lg:w-[240px] lg:-rotate-12">
                 {/* Phone Status Bar */}
                 <div className="flex items-center justify-between bg-white px-4 py-2">
@@ -225,7 +225,7 @@ export default function MobileApp() {
                 </div>
 
                 {/* App Header */}
-                <div className="bg-gradient-to-r from-[#4bc4db] to-[#35bec5] px-4 py-3">
+                <div className="bg-linear-to-br from-[#4bc4db] to-[#35bec5] px-4 py-3">
                   <div className="flex items-center justify-between">
                     <div>
                       <h3 className="text-sm font-bold text-white">Progress</h3>
@@ -240,7 +240,7 @@ export default function MobileApp() {
                 {/* Progress Content */}
                 <div className="space-y-4 p-4">
                   {/* Weekly Overview */}
-                  <div className="rounded-xl bg-gradient-to-r from-[#4bc4db]/10 to-[#35bec5]/10 p-3">
+                  <div className="rounded-xl bg-linear-to-br from-[#4bc4db]/10 to-[#35bec5]/10 p-3">
                     <h4 className="text-sm font-semibold text-slate-800">This Week</h4>
                     <div className="mt-2 flex items-center justify-between">
                       <div className="text-center">
@@ -266,35 +266,35 @@ export default function MobileApp() {
                     <div className="flex h-16 items-end justify-between">
                       <div className="flex flex-col items-center">
                         <div
-                          className="w-3 rounded-t bg-gradient-to-t from-[#35bec5] to-[#4bc4db]"
+                          className="w-3 rounded-t bg-linear-to-t from-[#35bec5] to-[#4bc4db]"
                           style={{ height: "60%" }}
                         ></div>
                         <span className="mt-1 text-xs text-slate-500">Mon</span>
                       </div>
                       <div className="flex flex-col items-center">
                         <div
-                          className="w-3 rounded-t bg-gradient-to-t from-[#35bec5] to-[#4bc4db]"
+                          className="w-3 rounded-t bg-linear-to-t from-[#35bec5] to-[#4bc4db]"
                           style={{ height: "80%" }}
                         ></div>
                         <span className="mt-1 text-xs text-slate-500">Tue</span>
                       </div>
                       <div className="flex flex-col items-center">
                         <div
-                          className="w-3 rounded-t bg-gradient-to-t from-[#35bec5] to-[#4bc4db]"
+                          className="w-3 rounded-t bg-linear-to-t from-[#35bec5] to-[#4bc4db]"
                           style={{ height: "100%" }}
                         ></div>
                         <span className="mt-1 text-xs text-slate-500">Wed</span>
                       </div>
                       <div className="flex flex-col items-center">
                         <div
-                          className="w-3 rounded-t bg-gradient-to-t from-[#35bec5] to-[#4bc4db]"
+                          className="w-3 rounded-t bg-linear-to-t from-[#35bec5] to-[#4bc4db]"
                           style={{ height: "70%" }}
                         ></div>
                         <span className="mt-1 text-xs text-slate-500">Thu</span>
                       </div>
                       <div className="flex flex-col items-center">
                         <div
-                          className="w-3 rounded-t bg-gradient-to-t from-[#35bec5] to-[#4bc4db]"
+                          className="w-3 rounded-t bg-linear-to-t from-[#35bec5] to-[#4bc4db]"
                           style={{ height: "90%" }}
                         ></div>
                         <span className="mt-1 text-xs text-slate-500">Fri</span>

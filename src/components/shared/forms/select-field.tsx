@@ -108,7 +108,15 @@ export const SelectField = forwardRef<HTMLButtonElement, SelectFieldProperties>(
           <SelectContent className={contentClassName}>
             <SelectGroup>
               {options.map((opt) => (
-                <SelectItem key={opt.value} value={opt.value} disabled={opt.disabled}>
+                <SelectItem
+                  key={opt.value}
+                  value={opt.value}
+                  disabled={opt.disabled}
+                  className={cn(
+                    opt.disabled && "cursor-not-allowed opacity-50",
+                    "hover:!bg-accent/10 hover:!text-accent focus:!bg-accent/10 focus:!text-accent text-foreground data-[selected=true]:!bg-primary/10 data-[selected=true]:!text-primary font-medium",
+                  )}
+                >
                   {opt.label}
                 </SelectItem>
               ))}

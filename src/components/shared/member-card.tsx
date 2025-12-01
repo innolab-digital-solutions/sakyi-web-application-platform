@@ -1,8 +1,7 @@
 "use client";
 
 import { X } from "lucide-react";
-
-import { ImagePreview } from "../admin/shared/image-preview";
+import Image from "next/image";
 
 interface MemberCardProperties {
   id: number;
@@ -10,20 +9,22 @@ interface MemberCardProperties {
   role?: string;
   email?: string;
   picture?: string;
-  matchPercentage?: number; // Added for the green badge
+  matchPercentage?: number;
   onRemove?: (id: number) => void;
 }
 
 export default function MemberCard({ id, name, role, picture, onRemove }: MemberCardProperties) {
-  // Determine the display value for the match badge
   const initial = name?.[0] ?? "?";
   return (
-    // Card Container: rounded-xl, light background, padding
-    <div className="rounded-xl bg-white p-2 shadow-md transition-shadow duration-200 hover:shadow-lg">
+    <div className="rounded-md border border-gray-200 bg-white p-2 shadow-sm transition-shadow duration-200">
       <div className="flex items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-indigo-100 text-base font-semibold text-indigo-700">
-            {picture ? <ImagePreview src={picture} type="Avatar" /> : <span>{initial}</span>}
+            {picture ? (
+              <Image src={picture} alt={name} width={40} height={40} />
+            ) : (
+              <span className="text-sm font-semibold text-gray-800">{initial}</span>
+            )}
           </div>
 
           <div className="flex min-w-0 flex-col gap-1">

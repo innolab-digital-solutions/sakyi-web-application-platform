@@ -1,6 +1,6 @@
 "use client";
 
-import { Group } from "lucide-react";
+import { Users } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -10,7 +10,7 @@ import FormDialog from "@/components/shared/forms/form-dialog";
 import InputField from "@/components/shared/forms/input-field";
 import TextareaField from "@/components/shared/forms/textarea-field";
 import MemberCard from "@/components/shared/member-card";
-import { Separator } from "@/components/ui/separator";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ENDPOINTS } from "@/config/endpoints";
 import { useForm } from "@/hooks/use-form";
 import { useRequest } from "@/hooks/use-request";
@@ -55,12 +55,34 @@ export default function TeamForm({
     (membersResponse?.data as
       | { id: number; name: string; phone: string; email: string; role: string; picture: string }[]
       | undefined) ?? [];
-  const membersOptions = membersData.map((m) => ({
-    value: m.id.toString(),
-    label: m.name,
-    picture: m.picture, // <-- picture
-    role: m.role,
-  }));
+  const membersOptions = membersData.map((m) => {
+    const initials = m.name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2);
+    return {
+      value: m.id.toString(),
+      label: (
+        <div className="flex items-center gap-3">
+          <Avatar className="h-8 w-8">
+            <AvatarImage src={m.picture} alt={m.name} />
+            <AvatarFallback className="bg-indigo-100 text-sm font-semibold text-indigo-700">
+              {initials}
+            </AvatarFallback>
+          </Avatar>
+          <div className="flex min-w-0 flex-col">
+            <span className="truncate text-sm font-medium">{m.name}</span>
+            {m.role && <span className="text-muted-foreground truncate text-xs">{m.role}</span>}
+          </div>
+        </div>
+      ),
+      name: m.name,
+      picture: m.picture,
+      role: m.role,
+    };
+  });
 
   const form = useForm(
     {
@@ -182,7 +204,6 @@ export default function TeamForm({
       next.map((m) => m.id.toString()),
     );
   };
-  // --- End members logic ---
 
   useEffect(() => {
     if (dialogOpen) {
@@ -196,7 +217,7 @@ export default function TeamForm({
 
         setAddedMembers(
           defaultValues.users?.map((u) => ({
-            id: u.id,
+            id: Number(u.id),
             name: u.name,
             role: u.role,
             picture: u.picture,
@@ -204,10 +225,10 @@ export default function TeamForm({
         );
       } else {
         form.setDataAndDefaults({ name: "", description: "", member_ids: [] });
-        setAddedMembers([]); // clear members when creating new team
+        setAddedMembers([]);
       }
 
-      setComboValue(undefined); // reset combo box selection
+      setComboValue(undefined);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dialogOpen, defaultValues, isEdit]);
@@ -242,8 +263,13 @@ export default function TeamForm({
       open={dialogOpen}
       onOpenChange={handleDialogOpenChange}
       title={title ?? (isEdit ? "Edit Team" : "Create Team")}
-      description={description ?? (isEdit ? "Update team details." : "Create a new team.")}
-      icon={<Group className="h-5 w-5" />}
+      description={
+        description ??
+        (isEdit
+          ? "Update your team’s details and manage its members."
+          : "Fill out the form below to create a new team and assign its members.")
+      }
+      icon={<Users className="h-5 w-5" />}
       isEdit={isEdit}
       processing={form.processing}
       submitLabel={isEdit ? "Save Changes" : "Create Team"}
@@ -261,6 +287,7 @@ export default function TeamForm({
         onChange={(event) => form.setData("name", event.target.value)}
         error={form.errors.name as string}
         disabled={form.processing}
+        required
       />
 
       <TextareaField
@@ -275,24 +302,24 @@ export default function TeamForm({
         disabled={form.processing}
       />
 
-      <Separator />
-
       <ComboBoxField
         id="member_ids"
         name="member_ids"
-        label="Add Members"
-        placeholder="Select team members"
+        label="Members"
+        placeholder="Choose team members"
         options={membersOptions}
         value={comboValue}
+        selectedValues={addedMembers.map((m) => m.id.toString())}
+        required
         error={form.errors.member_ids as string}
         onChange={(value) => {
-          setComboValue(value); // <-- FIX
+          setComboValue(value);
 
           const selected = membersOptions.find((o) => o.value === value);
           if (selected) {
             handleAddMember({
               id: Number(selected.value),
-              name: selected.label,
+              name: selected.name,
               picture: selected.picture,
               role: selected.role,
             });
@@ -300,7 +327,7 @@ export default function TeamForm({
         }}
       />
 
-      <div className="mt-2 grid grid-cols-1 gap-4 rounded-lg md:grid-cols-2">
+      <div className="mt-2 grid grid-cols-1 gap-4 rounded-md md:grid-cols-2">
         {addedMembers.map((m) => (
           <MemberCard
             key={m.id}

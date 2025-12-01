@@ -3,6 +3,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import dayjs from "dayjs";
 import { Archive, CalendarDays, CheckCircle, FileEdit, SquarePen } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
@@ -14,7 +15,6 @@ import { PATHS } from "@/config/paths";
 import { BlogPost } from "@/types/admin/blog-post";
 import { cn } from "@/utils/shared/cn";
 
-import { ImagePreview } from "../../shared/image-preview";
 import BlogPostDeletionDialog from "./blog-post-deletion-dialog";
 
 const statusMeta = {
@@ -57,7 +57,7 @@ export const blogPostsTableColumns: ColumnDef<BlogPost>[] = [
         <div className="flex min-w-0 items-start gap-4">
           <div className="bg-muted/50 ring-muted-foreground/5 relative size-12 shrink-0 overflow-hidden rounded-md ring-1">
             {thumbnailUrl ? (
-              <ImagePreview src={thumbnailUrl} alt={title} type="Thumbnail" />
+              <Image src={thumbnailUrl} alt={title} width={48} height={48} />
             ) : (
               <div className="text-muted-foreground/50 flex h-full w-full items-center justify-center text-xs font-medium">
                 N/A
@@ -78,7 +78,7 @@ export const blogPostsTableColumns: ColumnDef<BlogPost>[] = [
                 <span>{meta.label}</span>
               </Badge>
             </div>
-            <div className="text-muted-foreground max-w-full break-words whitespace-pre-line">
+            <div className="text-muted-foreground line-clamp-1 max-w-full break-words whitespace-pre-line">
               {description}
             </div>
           </div>

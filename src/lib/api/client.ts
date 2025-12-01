@@ -18,8 +18,8 @@ export interface FetchOptions extends Omit<RequestInit, "body"> {
   throwOnError?: boolean;
 }
 
-const DEFAULT_BASE_URL = "https://api.sakyi.com/v1";
-const DEFAULT_API_DOMAIN = "https://api.sakyi.com";
+const DEFAULT_BASE_URL = "https://api.sakyihealthandwellness.com/v1";
+const DEFAULT_API_DOMAIN = "https://api.sakyihealthandwellness.com";
 
 /**
  * Extracts XSRF-TOKEN from document cookies

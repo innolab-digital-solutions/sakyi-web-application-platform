@@ -193,9 +193,9 @@ export default function BodyRecompositionProgramPage() {
       <section className="relative flex min-h-screen items-center overflow-hidden bg-slate-50">
         {/* Background Elements */}
         <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute -top-40 -right-40 h-80 w-80 rounded-full bg-gradient-to-br from-[#35bec5]/10 to-[#4bc4db]/10 blur-3xl"></div>
-          <div className="absolute -bottom-40 -left-40 h-80 w-80 rounded-full bg-gradient-to-br from-[#4bc4db]/10 to-[#0c96c4]/10 blur-3xl"></div>
-          <div className="absolute top-1/2 left-1/2 h-96 w-96 -translate-x-1/2 -translate-y-1/2 transform rounded-full bg-gradient-to-br from-[#35bec5]/5 to-[#0c96c4]/5 blur-3xl"></div>
+          <div className="absolute -top-40 -right-40 h-80 w-80 rounded-full bg-linear-to-br from-[#35bec5]/10 to-[#4bc4db]/10 blur-3xl"></div>
+          <div className="absolute -bottom-40 -left-40 h-80 w-80 rounded-full bg-linear-to-br from-[#4bc4db]/10 to-[#0c96c4]/10 blur-3xl"></div>
+          <div className="absolute top-1/2 left-1/2 h-96 w-96 -translate-x-1/2 -translate-y-1/2 transform rounded-full bg-linear-to-br from-[#35bec5]/5 to-[#0c96c4]/5 blur-3xl"></div>
         </div>
 
         <div className="relative mx-auto max-w-7xl px-4 pt-24 pb-20 sm:px-6 lg:px-8">
@@ -209,7 +209,7 @@ export default function BodyRecompositionProgramPage() {
             >
               {/* Badge */}
               <div
-                className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#35bec5]/10 to-[#0c96c4]/10 px-4 py-2 text-sm font-medium text-[#35bec5]"
+                className="inline-flex items-center gap-2 rounded-full bg-linear-to-r from-[#35bec5]/10 to-[#0c96c4]/10 px-4 py-2 text-sm font-medium text-[#35bec5]"
                 data-aos="slide-down"
                 data-aos-delay="200"
                 data-aos-duration="800"
@@ -253,7 +253,7 @@ export default function BodyRecompositionProgramPage() {
                 data-aos-easing="ease-out-cubic"
               >
                 <div className="group flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-r from-[#35bec5]/10 to-[#0c96c4]/10 transition-all duration-300 group-hover:scale-110">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-linear-to-r from-[#35bec5]/10 to-[#0c96c4]/10 transition-all duration-300 group-hover:scale-110">
                     <Clock className="h-5 w-5 text-[#35bec5]" />
                   </div>
                   <div>
@@ -273,7 +273,7 @@ export default function BodyRecompositionProgramPage() {
                 </div>
 
                 <div className="group flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-r from-[#35bec5]/10 to-[#0c96c4]/10 transition-all duration-300 group-hover:scale-110">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-linear-to-r from-[#35bec5]/10 to-[#0c96c4]/10 transition-all duration-300 group-hover:scale-110">
                     <Users className="h-5 w-5 text-[#35bec5]" />
                   </div>
                   <div>
@@ -293,7 +293,7 @@ export default function BodyRecompositionProgramPage() {
                 </div>
 
                 <div className="group flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-r from-[#35bec5]/10 to-[#0c96c4]/10 transition-all duration-300 group-hover:scale-110">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-linear-to-r from-[#35bec5]/10 to-[#0c96c4]/10 transition-all duration-300 group-hover:scale-110">
                     <Star className="h-5 w-5 text-[#35bec5]" />
                   </div>
                   <div>
@@ -313,7 +313,7 @@ export default function BodyRecompositionProgramPage() {
                 </div>
 
                 <div className="group flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-r from-[#35bec5]/10 to-[#0c96c4]/10 transition-all duration-300 group-hover:scale-110">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-linear-to-r from-[#35bec5]/10 to-[#0c96c4]/10 transition-all duration-300 group-hover:scale-110">
                     <Heart className="h-5 w-5 text-[#35bec5]" />
                   </div>
                   <div>
@@ -372,7 +372,7 @@ export default function BodyRecompositionProgramPage() {
               data-aos-easing="ease-out-cubic"
             >
               <div className="group relative overflow-hidden rounded-3xl shadow-2xl">
-                <div className="aspect-[4/5] w-full sm:aspect-[3/4]">
+                <div className="aspect-4/5 w-full sm:aspect-3/4">
                   <Image
                     src={program.image}
                     alt={program.imageAlt}
@@ -385,9 +385,9 @@ export default function BodyRecompositionProgramPage() {
                   />
                 </div>
                 {/* Subtle dark overlay that disappears on hover */}
-                <div className="absolute inset-0 bg-gradient-to-br from-slate-900/20 to-slate-800/10 transition-opacity duration-300 group-hover:opacity-0"></div>
+                <div className="absolute inset-0 bg-linear-to-br from-slate-900/20 to-slate-800/10 transition-opacity duration-300 group-hover:opacity-0"></div>
                 {/* Brand gradient overlay */}
-                <div className="absolute inset-0 bg-gradient-to-br from-[#35bec5]/5 to-[#0c96c4]/5"></div>
+                <div className="absolute inset-0 bg-linear-to-br from-[#35bec5]/5 to-[#0c96c4]/5"></div>
               </div>
             </div>
           </div>
@@ -444,7 +444,7 @@ export default function BodyRecompositionProgramPage() {
               <div className="space-y-4">
                 {program.keyFeatures.map((feature, index) => (
                   <div key={index} className="flex items-start gap-4">
-                    <div className="mt-1 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-gradient-to-r from-[#35bec5]/10 to-[#0c96c4]/10">
+                    <div className="mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-linear-to-r from-[#35bec5]/10 to-[#0c96c4]/10">
                       <CheckCircle className="h-5 w-5 text-[#35bec5]" />
                     </div>
                     <p className="text-slate-600" style={{ fontFamily: "Inter, sans-serif" }}>
@@ -471,7 +471,7 @@ export default function BodyRecompositionProgramPage() {
               <div className="space-y-4">
                 {program.idealFor.map((item, index) => (
                   <div key={index} className="flex items-start gap-4">
-                    <div className="mt-1 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-gradient-to-r from-[#35bec5]/10 to-[#0c96c4]/10">
+                    <div className="mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-linear-to-r from-[#35bec5]/10 to-[#0c96c4]/10">
                       <CheckCircle className="h-5 w-5 text-[#35bec5]" />
                     </div>
                     <p className="text-slate-600" style={{ fontFamily: "Inter, sans-serif" }}>
@@ -489,8 +489,8 @@ export default function BodyRecompositionProgramPage() {
       <section className="relative overflow-hidden bg-slate-50 py-24">
         {/* Background Elements */}
         <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute top-1/4 -right-32 h-64 w-64 rounded-full bg-gradient-to-br from-[#35bec5]/5 to-[#0c96c4]/5 blur-3xl"></div>
-          <div className="absolute bottom-1/4 -left-32 h-64 w-64 rounded-full bg-gradient-to-br from-[#4bc4db]/5 to-[#35bec5]/5 blur-3xl"></div>
+          <div className="absolute top-1/4 -right-32 h-64 w-64 rounded-full bg-linear-to-br from-[#35bec5]/5 to-[#0c96c4]/5 blur-3xl"></div>
+          <div className="absolute bottom-1/4 -left-32 h-64 w-64 rounded-full bg-linear-to-br from-[#4bc4db]/5 to-[#35bec5]/5 blur-3xl"></div>
         </div>
 
         <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
@@ -541,7 +541,7 @@ export default function BodyRecompositionProgramPage() {
                 data-aos-duration="1000"
                 data-aos-easing="ease-out-cubic"
               >
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-r from-[#35bec5] to-[#0c96c4] transition-all duration-300 group-hover:scale-105">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-linear-to-r from-[#35bec5] to-[#0c96c4] transition-all duration-300 group-hover:scale-105">
                   <CheckCircle className="h-6 w-6 text-white" />
                 </div>
                 <div className="flex-1">
@@ -608,7 +608,7 @@ export default function BodyRecompositionProgramPage() {
                 {/* Mobile Layout - Stacked */}
                 <div className="flex flex-col gap-4 sm:hidden">
                   <div className="flex items-center gap-4">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-r from-[#35bec5] to-[#0c96c4] font-bold text-white transition-all duration-300 group-hover:scale-105">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-linear-to-r from-[#35bec5] to-[#0c96c4] font-bold text-white transition-all duration-300 group-hover:scale-105">
                       {index + 1}
                     </div>
                     <span
@@ -633,7 +633,7 @@ export default function BodyRecompositionProgramPage() {
 
                 {/* Desktop/Tablet Layout - Horizontal */}
                 <div className="hidden sm:flex sm:items-start sm:gap-6">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-r from-[#35bec5] to-[#0c96c4] font-bold text-white transition-all duration-300 group-hover:scale-105">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-linear-to-r from-[#35bec5] to-[#0c96c4] font-bold text-white transition-all duration-300 group-hover:scale-105">
                     {index + 1}
                   </div>
                   <div className="flex-1">
@@ -711,7 +711,7 @@ export default function BodyRecompositionProgramPage() {
               >
                 <div className="mb-6">
                   <div className="mb-2 flex items-center gap-3">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-r from-[#35bec5] to-[#0c96c4] font-bold text-white">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-linear-to-r from-[#35bec5] to-[#0c96c4] font-bold text-white">
                       {story.name.charAt(0)}
                     </div>
                     <div>

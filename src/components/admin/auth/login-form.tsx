@@ -135,10 +135,10 @@ export default function LoginForm() {
         {/* Sign In Button */}
         <Button
           type="submit"
-          className="from-primary to-accent hover:from-primary/90 hover:to-accent/90 group relative flex h-11 w-full cursor-pointer items-center justify-center gap-2 overflow-hidden bg-gradient-to-r text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl"
+          className="from-primary to-accent hover:from-primary/90 hover:to-accent/90 group relative flex h-11 w-full cursor-pointer items-center justify-center gap-2 overflow-hidden bg-linear-to-r text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl"
           disabled={isLoggingIn}
         >
-          <div className="absolute inset-0 translate-x-[-100%] bg-gradient-to-r from-white/10 to-white/5 transition-transform duration-700 ease-out group-hover:translate-x-[100%]" />
+          <div className="absolute inset-0 -translate-x-full bg-linear-to-r from-white/10 to-white/5 transition-transform duration-700 ease-out group-hover:translate-x-full" />
           {isLoggingIn ? (
             <>
               <Spinner />

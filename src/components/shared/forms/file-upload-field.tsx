@@ -93,6 +93,17 @@ export function FileUploadField({
   const [dragOver, setDragOver] = useState(false);
   const [previewUrls, setPreviewUrls] = useState<Map<File, string>>(new Map());
 
+  // Helper to check if string is a valid URL
+  const isValidUrl = React.useCallback((urlString: string): boolean => {
+    try {
+      const url = new URL(urlString);
+      return url.protocol === "http:" || url.protocol === "https:" || urlString.startsWith("blob:");
+    } catch {
+      // If it's a relative path (starts with /), consider it valid
+      return urlString.startsWith("/");
+    }
+  }, []);
+
   // Normalize value to array for easier handling
   const normalizedValue = React.useMemo(() => {
     if (!value) return [];
@@ -101,8 +112,12 @@ export function FileUploadField({
     return [value];
   }, [value]);
 
-  // Get existing URL if value is a string (and not empty)
-  const existingUrl = typeof value === "string" && value.length > 0 ? value : undefined;
+  // Get existing URL if value is a string (and not empty and valid URL)
+  const existingUrl = React.useMemo(() => {
+    if (typeof value === "string" && value.length > 0 && isValidUrl(value)) {
+      return value;
+    }
+  }, [value, isValidUrl]);
 
   // Create preview URLs for File objects
   React.useEffect(() => {
@@ -325,7 +340,7 @@ export function FileUploadField({
           {/* Existing URL preview */}
           {existingUrl && normalizedValue.length === 0 && (
             <div className="relative flex items-center gap-2.5 rounded-md border p-3">
-              <div className="bg-accent/50 relative flex size-10 shrink-0 items-center justify-center overflow-hidden rounded border">
+              <div className="relative flex size-10 shrink-0 items-center justify-center overflow-hidden rounded border bg-white">
                 {existingUrl && (
                   <Image
                     src={existingUrl}
@@ -359,7 +374,7 @@ export function FileUploadField({
               key={`${file.name}-${file.size}-${index}`}
               className="relative flex items-center gap-2.5 rounded-md border p-3"
             >
-              <div className="bg-accent/50 relative flex size-10 shrink-0 items-center justify-center overflow-hidden rounded border">
+              <div className="relative flex size-10 shrink-0 items-center justify-center overflow-hidden rounded border bg-white">
                 {file.type.startsWith("image/") ? (
                   previewUrls.get(file) ? (
                     <Image
