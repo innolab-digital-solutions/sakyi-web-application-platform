@@ -38,7 +38,7 @@ export const usersTableColumns: ColumnDef<User>[] = [
             {user.role && (
               <Badge
                 variant="secondary"
-                className="bg-primary/10 text-primary flex items-center gap-1 !font-semibold"
+                className="bg-primary/10 text-primary flex items-center gap-1 font-semibold!"
               >
                 {user.role}
               </Badge>
@@ -109,7 +109,7 @@ export const usersTableColumns: ColumnDef<User>[] = [
       return (
         <Badge
           variant="outline"
-          className={`pointer-events-none flex items-center gap-1 border-none text-[13px] !font-semibold ${
+          className={`pointer-events-none flex items-center gap-1 border-none text-[13px] font-semibold! ${
             row.original.gender === "male"
               ? "bg-slate-100 text-slate-700"
               : "bg-pink-100 text-pink-700"
@@ -178,7 +178,7 @@ export const usersTableColumns: ColumnDef<User>[] = [
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="text-accent hover:bg-accent/10 hover:text-accent flex cursor-pointer items-center justify-center text-sm font-semibold disabled:hover:!bg-transparent disabled:hover:!text-inherit"
+                    className="text-accent hover:bg-accent/10 hover:text-accent flex cursor-pointer items-center justify-center text-sm font-semibold disabled:hover:bg-transparent! disabled:hover:text-inherit!"
                     disabled={!isEditable}
                   >
                     <SquarePen className="h-2 w-2" />

@@ -3,6 +3,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import dayjs from "dayjs";
 import { Check, CheckCircle, CirclePause, Copy, SquarePen, XCircle } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import { toast } from "sonner";
@@ -13,7 +14,6 @@ import { Button } from "@/components/ui/button";
 import { PATHS } from "@/config/paths";
 import { Invoice } from "@/types/admin/invoice";
 
-import { ImagePreview } from "../../shared/image-preview";
 import InvoiceDeletionDialog from "./invoice-deletion-dialog";
 
 const statusMeta = {
@@ -107,7 +107,11 @@ export const invoicesTableColumns: ColumnDef<Invoice>[] = [
       return (
         <div className="flex items-center gap-2">
           <div className="relative flex h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-gray-200 text-sm font-semibold text-gray-600">
-            {avatar ? <ImagePreview src={avatar} type="Avatar" /> : <span>{initial}</span>}
+            {avatar ? (
+              <Image src={avatar} alt={user.name} width={32} height={32} />
+            ) : (
+              <span>{initial}</span>
+            )}
           </div>
           <span className="text-sm font-semibold">{user.name}</span>
         </div>
