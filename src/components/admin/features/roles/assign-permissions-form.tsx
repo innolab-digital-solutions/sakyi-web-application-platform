@@ -96,7 +96,7 @@ export default function AssignPermissionsForm({ role }: AssignPermissionsFormPro
   const togglePermission = (moduleKey: string, actionKey: string, checked: boolean) => {
     setSelected((previous) => {
       const next = { ...previous };
-      const moduleSet = new Set(next[moduleKey] ?? []);
+      const moduleSet = new Set(next[moduleKey] || []);
       if (checked) moduleSet.add(actionKey);
       else moduleSet.delete(actionKey);
       next[moduleKey] = moduleSet;

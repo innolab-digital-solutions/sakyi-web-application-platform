@@ -8,8 +8,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/utils/shared/cn";
 
-export interface InputFieldProperties
-  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "id"> {
+export interface InputFieldProperties extends Omit<
+  React.InputHTMLAttributes<HTMLInputElement>,
+  "id"
+> {
   id: string;
   label?: React.ReactNode;
   error?: string;
