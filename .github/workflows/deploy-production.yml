@@ -1,0 +1,54 @@
+name: SaKyi Web Application - Production Deployment
+
+on:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}-production
+  cancel-in-progress: true
+
+jobs:
+  deploy-production:
+    name: Deploy to Vercel Production
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: "https://sakyihealthandwellness.com"
+
+    steps:
+      - name: Checkout Codebase
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Run Lint
+        run: npm run lint
+        continue-on-error: false
+
+      - name: Run Type Check
+        run: npm run type-check
+        continue-on-error: false
+
+      - name: Build Next.js Application
+        run: npm run build
+
+      - name: Deploy Next.js Application to Vercel (Production)
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          vercel-args: "--prod"
+          scope: ${{ secrets.VERCEL_ORG_ID }}
+
+      - name: Deployment Summary
+        run: |
+          echo "🎉 Production deployment completed successfully."
