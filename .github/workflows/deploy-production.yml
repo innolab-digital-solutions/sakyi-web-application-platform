@@ -3,13 +3,14 @@ name: SaKyi Web Application - Production Deployment
 on:
   push:
     branches: [main]
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}-production
   cancel-in-progress: true
 
 jobs:
-  deploy-production:
+  deploy-to-production:
     name: Deploy to Vercel Production
     runs-on: ubuntu-latest
     environment:

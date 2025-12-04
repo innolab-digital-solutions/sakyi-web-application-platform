@@ -3,13 +3,14 @@ name: SaKyi Web Application - Staging Deployment
 on:
   push:
     branches: [dev]
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}-staging
   cancel-in-progress: true
 
 jobs:
-  deploy-staging:
+  deploy-to-staging:
     name: Deploy to Vercel Staging
     runs-on: ubuntu-latest
     environment:

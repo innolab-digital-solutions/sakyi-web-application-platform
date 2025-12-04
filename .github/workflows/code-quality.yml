@@ -12,7 +12,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  code-quality:
+  check-code-quality:
     name: Checking Code Quality and Formatting
     runs-on: ubuntu-latest
 
