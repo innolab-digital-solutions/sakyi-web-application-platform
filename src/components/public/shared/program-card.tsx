@@ -3,9 +3,12 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
+import { PATHS } from "@/config/paths";
+
 interface Program {
   title: string;
   description: string;
+  slug: string;
   readTime?: string;
   image: string;
   href?: string;
@@ -34,6 +37,7 @@ export default function ProgramCard({ program, index = 0, className = "" }: Prog
             height={400}
             className="h-auto w-full object-cover transition-transform duration-300 group-hover:scale-105"
             quality={90}
+            priority
           />
           {/* Subtle dark overlay that disappears on hover */}
           <div className="absolute inset-0 bg-gradient-to-br from-slate-900/20 to-slate-800/10 transition-opacity duration-300 group-hover:opacity-0"></div>
@@ -55,7 +59,7 @@ export default function ProgramCard({ program, index = 0, className = "" }: Prog
           {/* CTA Link */}
           <div className="pt-2">
             <Link
-              href="programs/example"
+              href={PATHS.PUBLIC.PROGRAMS_DETAIL(program.slug)}
               className="group/link inline-flex items-center text-sm font-medium text-[#35bec5] transition-all duration-300 hover:text-[#0c96c4]"
               style={{ fontFamily: "Inter, sans-serif" }}
             >

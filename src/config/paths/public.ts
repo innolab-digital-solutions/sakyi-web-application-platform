@@ -12,6 +12,8 @@ export const PUBLIC_PATHS = {
 
   /** Public programs page */
   PROGRAMS: "/programs",
+  /** Public program detail page */
+  PROGRAMS_DETAIL: (slug: string) => `/programs/${slug}`,
 
   /** Public blog page */
   BLOG: "/blog",

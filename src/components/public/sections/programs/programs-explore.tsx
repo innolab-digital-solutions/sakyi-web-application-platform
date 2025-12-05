@@ -1,78 +1,48 @@
 "use client";
 
 import { ChevronDown, Grid3X3 } from "lucide-react";
-import { useState } from "react";
+import { useMemo, useRef,useState } from "react";
 
 import ProgramCard from "@/components/public/shared/program-card";
-
-// Dummy program data - simulating 8 programs total
-const programs = [
-  {
-    title: "Mental Wellness Program",
-    description: "Comprehensive mental health support with personalized therapy sessions, mindfulness training, and stress management techniques.",
-    image: "/images/program-1.jpg",
-    href: "/programs/mental-wellness"
-  },
-  {
-    title: "Nutrition & Lifestyle Program",
-    description: "Transform your eating habits and lifestyle with personalized meal plans, nutrition coaching, and sustainable habit building.",
-    image: "/images/program-2.jpg",
-    href: "/programs/nutrition-lifestyle"
-  },
-  {
-    title: "Fitness & Movement Program",
-    description: "Build strength, flexibility, and endurance with personalized workout plans, movement therapy, and injury prevention.",
-    image: "/images/program-3.jpg",
-    href: "/programs/fitness-movement"
-  },
-  {
-    title: "Weight Management Program",
-    description: "Achieve sustainable weight loss with personalized nutrition plans, exercise routines, and lifestyle modifications.",
-    image: "/images/program-4.jpg",
-    href: "/programs/weight-management"
-  },
-  {
-    title: "Stress Management Program",
-    description: "Learn effective stress reduction techniques, mindfulness practices, and resilience building strategies.",
-    image: "/images/program-5.jpg",
-    href: "/programs/stress-management"
-  },
-  {
-    title: "Sleep Optimization Program",
-    description: "Improve sleep quality and establish healthy sleep habits with personalized sleep hygiene strategies.",
-    image: "/images/program-6.jpg",
-    href: "/programs/sleep-optimization"
-  },
-  {
-    title: "Chronic Disease Management",
-    description: "Comprehensive support for managing chronic conditions with personalized care plans and lifestyle interventions.",
-    image: "/images/program-7.jpg",
-    href: "/programs/chronic-disease-management"
-  },
-  {
-    title: "Preventive Health Program",
-    description: "Proactive health maintenance with regular check-ups, health screenings, and preventive care strategies.",
-    image: "/images/program-8.jpg",
-    href: "/programs/preventive-health"
-  }
-];
+import { Skeleton } from "@/components/ui/skeleton";
+import { ENDPOINTS } from "@/config/endpoints";
+import { useRequest } from "@/hooks/use-request";
+import { Program } from "@/types/public/program";
 
 export default function ProgramsExplore() {
   const [showAll, setShowAll] = useState(false);
+  const programsSectionReference = useRef<HTMLElement>(null);
   const initialPrograms = 4;
+
+  const { data: programsResponse, loading: programsLoading, isFetching: programsFetching } = useRequest({
+    url: ENDPOINTS.PUBLIC.PROGRAMS, 
+    queryKey: ["programs"],
+    staleTime: 1000 * 60 * 5,
+  });
+
+const programs = useMemo(() => {
+  if (!programsResponse?.data) return [];
+  return (programsResponse.data as Program[]).map((program: Program) => ({
+    title: program.title,
+    description: program.description,
+    image: program.thumbnail,
+    slug: program.slug,
+    href: `/programs/${program.slug}`,
+  }));
+}, [programsResponse]);
+
+  const isProgramsLoading = programsLoading || programsFetching;
+
   const displayedPrograms = showAll ? programs : programs.slice(0, initialPrograms);
 
   return (
-    <section id="programs" className="relative overflow-hidden bg-white py-24">
+    <section id="programs" ref={programsSectionReference} className="relative overflow-hidden bg-white py-24">
       <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
         {/* Section Header */}
         <div className="mb-16 text-center">
           <div className="mb-6 inline-flex items-center space-x-2 rounded-full bg-gradient-to-r from-[#35bec5]/10 to-[#0c96c4]/10 px-4 py-2">
             <Grid3X3 className="h-4 w-4 text-[#35bec5]" />
-            <span
-              className="text-sm font-medium text-[#35bec5]"
-              style={{ fontFamily: "Inter, sans-serif" }}
-            >
+            <span className="text-sm font-medium text-[#35bec5]" style={{ fontFamily: "Inter, sans-serif" }}>
               Our Programs
             </span>
           </div>
@@ -83,10 +53,7 @@ export default function ProgramsExplore() {
             data-aos="fade-up"
           >
             Explore Our{" "}
-            <span
-              className="text-brand-gradient bg-clip-text text-transparent"
-              style={{ fontFamily: "Poppins, sans-serif" }}
-            >
+            <span className="text-brand-gradient bg-clip-text text-transparent" style={{ fontFamily: "Poppins, sans-serif" }}>
               Programs
             </span>
           </h2>
@@ -101,27 +68,36 @@ export default function ProgramsExplore() {
           </p>
         </div>
 
-        {/* Programs Grid */}
-        <div className="grid gap-8 lg:grid-cols-2">
-          {displayedPrograms.map((program, index) => (
-            <ProgramCard
-              key={index}
-              program={program}
-              index={index}
-            />
-          ))}
+           {/* Programs Grid */}
+<div className="grid gap-8 lg:grid-cols-2">
+  {isProgramsLoading
+    ? Array.from({ length: initialPrograms }).map((_, index) => (
+        <div
+          key={index}
+          className="rounded-3xl border border-dashed border-slate-200 bg-slate-50 p-6 shadow-sm animate-pulse"
+        >
+          <Skeleton className="h-48 w-full rounded-2xl mb-4" />
+          <Skeleton className="h-6 w-3/4 mb-2" />
+          <Skeleton className="h-4 w-full" />
+          <Skeleton className="h-4 w-5/6 mt-2" />
         </div>
+      ))
+    : displayedPrograms.map((program, index) => (
+        <ProgramCard key={index} program={program} index={index} />
+      ))}
+</div>
+
 
         {/* Show More / Show Less Button */}
         {programs.length > initialPrograms && (
           <div className="mt-12 text-center">
-<button
-        onClick={() => setShowAll(!showAll)}
+            <button
+              onClick={() => setShowAll(!showAll)}
               className="group inline-flex items-center justify-center rounded-full bg-brand-gradient px-6 py-3 text-base font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
               style={{ fontFamily: "Inter, sans-serif" }}
             >
               {showAll ? `Show Less` : `Show All ${programs.length} Programs`}
-              <ChevronDown className={`ml-2 h-5 w-5 transition-transform duration-300 ${showAll && 'rotate-180'}`} />
+              <ChevronDown className={`ml-2 h-5 w-5 transition-transform duration-300 ${showAll && "rotate-180"}`} />
             </button>
           </div>
         )}

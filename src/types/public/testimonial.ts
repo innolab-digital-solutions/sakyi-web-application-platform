@@ -3,6 +3,8 @@ export interface Testimonial {
     user: {
         picture: string;
         name: string;
+        age: number | null;
+
     };
     program: {
         title: string;
