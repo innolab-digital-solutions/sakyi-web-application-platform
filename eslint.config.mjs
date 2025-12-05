@@ -18,19 +18,20 @@ const compat = new FlatCompat({
 const eslintConfig = [
   // Core Next.js ESLint configurations for optimal performance and TypeScript support
   ...compat.extends("next/core-web-vitals", "next/typescript"),
-
   // Security hardening - prevents common security vulnerabilities
   {
-    ...security.configs.recommended,
+    plugins: {
+      security,
+    },
     rules: {
-      ...security.configs.recommended?.rules,
+      ...security.configs.recommended.rules,
       "security/detect-object-injection": "off",
     },
   },
-
   // Code quality and modern JavaScript best practices enforcement
-  unicorn.configs.recommended,
-
+  ...(Array.isArray(unicorn.configs.recommended)
+    ? unicorn.configs.recommended
+    : [unicorn.configs.recommended]),
   // Automatic import organization and consistent sorting
   {
     plugins: {
@@ -41,7 +42,6 @@ const eslintConfig = [
       "simple-import-sort/exports": "error",
     },
   },
-
   // Development hygiene and debugging cleanup rules
   {
     plugins: {
@@ -64,8 +64,9 @@ const eslintConfig = [
       "no-commented-code/no-commented-code": "error",
     },
   },
-
-  // Prettier integration for consistent code formatting
   ...compat.extends("plugin:prettier/recommended"),
+  {
+    ignores: ["node_modules/**", ".next/**", "out/**", "build/**", "next-env.d.ts"],
+  },
 ];
 export default eslintConfig;
