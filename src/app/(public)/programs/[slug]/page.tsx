@@ -11,6 +11,7 @@ import {
   Play,
   Star,
   Users,
+  Zap,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -36,8 +37,6 @@ export default function ProgramPage({ params }: { params: Promise<{ slug: string
   }
 
   const program = programResponse?.data as Program | undefined;
-
-  console.log("Program Data:", program);
 
   if (!program) {
     return (
@@ -68,6 +67,16 @@ export default function ProgramPage({ params }: { params: Promise<{ slug: string
               data-aos-easing="ease-out-cubic"
             >
               {/* Badge */}
+              <div
+                className="inline-flex items-center gap-2 rounded-full bg-linear-to-r from-[#35bec5]/10 to-[#0c96c4]/10 px-4 py-2 text-sm font-medium text-[#35bec5]"
+                data-aos="slide-down"
+                data-aos-delay="200"
+                data-aos-duration="800"
+                data-aos-easing="ease-out-back"
+              >
+                <Zap className="h-4 w-4" />
+                <span style={{ fontFamily: "Inter, sans-serif" }}>Transform Your Life</span>
+              </div>
 
               {/* Program Title */}
               <div className="space-y-6">
@@ -513,44 +522,50 @@ export default function ProgramPage({ params }: { params: Promise<{ slug: string
       </section>
 
       {/* Success Stories */}
-      {program.testimonials && program.testimonials.length > 0 && (
-        <section className="relative overflow-hidden bg-slate-50 py-24">
-          <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
-            <div
-              className="mb-16 text-center"
-              data-aos="zoom-in"
-              data-aos-duration="1200"
+      <section className="relative overflow-hidden bg-slate-50 py-24">
+        <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
+          <div
+            className="mb-16 text-center"
+            data-aos="zoom-in"
+            data-aos-duration="1200"
+            data-aos-easing="ease-out-cubic"
+          >
+            <h2
+              className="text-3xl font-bold text-slate-900 sm:text-4xl lg:text-5xl"
+              style={{ fontFamily: "Poppins, sans-serif" }}
+              data-aos="fade-up"
+              data-aos-delay="200"
+              data-aos-duration="1000"
               data-aos-easing="ease-out-cubic"
             >
-              <h2
-                className="text-3xl font-bold text-slate-900 sm:text-4xl lg:text-5xl"
+              Success{" "}
+              <span
+                className="text-brand-gradient bg-clip-text text-transparent"
                 style={{ fontFamily: "Poppins, sans-serif" }}
-                data-aos="fade-up"
-                data-aos-delay="200"
-                data-aos-duration="1000"
-                data-aos-easing="ease-out-cubic"
               >
-                Success{" "}
-                <span
-                  className="text-brand-gradient bg-clip-text text-transparent"
-                  style={{ fontFamily: "Poppins, sans-serif" }}
-                >
-                  Stories
-                </span>
-              </h2>
-              <p
-                className="mx-auto mt-6 max-w-3xl text-lg leading-relaxed text-slate-600"
-                style={{ fontFamily: "Inter, sans-serif" }}
-                data-aos="slide-up"
-                data-aos-delay="400"
-                data-aos-duration="1000"
-                data-aos-easing="ease-out-cubic"
-              >
-                Real results from real people who transformed their lives with this program
-              </p>
-            </div>
+                Stories
+              </span>
+            </h2>
+            <p
+              className="mx-auto mt-6 max-w-3xl text-lg leading-relaxed text-slate-600"
+              style={{ fontFamily: "Inter, sans-serif" }}
+              data-aos="slide-up"
+              data-aos-delay="400"
+              data-aos-duration="1000"
+              data-aos-easing="ease-out-cubic"
+            >
+              Real results from real people who transformed their lives with this program
+            </p>
+          </div>
 
-            <div className="grid gap-8 lg:grid-cols-2">
+          {program.testimonials && (
+            <div
+              className={
+                program.testimonials.length > 1
+                  ? "grid grid-cols-1 justify-center gap-8 lg:grid-cols-2"
+                  : "mx-auto max-w-2xl"
+              }
+            >
               {program.testimonials?.map((story, index) => (
                 <div
                   key={index}
@@ -563,42 +578,44 @@ export default function ProgramPage({ params }: { params: Promise<{ slug: string
                   <div className="mb-6">
                     <div className="mb-2 flex items-center gap-3">
                       <div className="flex h-12 w-12 items-center justify-center rounded-full bg-linear-to-r from-[#35bec5] to-[#0c96c4] font-bold text-white">
-                        {story.comment.charAt(0)}
+                        {story.user?.name.charAt(0)}
                       </div>
                       <div>
                         <h4
                           className="font-semibold text-slate-900"
                           style={{ fontFamily: "Poppins, sans-serif" }}
                         >
-                          {story.comment}
+                          {story.user?.name}
                         </h4>
-                        <p
-                          className="text-sm text-slate-600"
-                          style={{ fontFamily: "Inter, sans-serif" }}
-                        >
-                          Age {story.user.age}
-                        </p>
+                        {story.user?.age && (
+                          <p
+                            className="text-sm text-slate-600"
+                            style={{ fontFamily: "Inter, sans-serif" }}
+                          >
+                            Age {story.user?.age}
+                          </p>
+                        )}
                       </div>
                     </div>
                     <p
                       className="mb-4 font-medium text-[#35bec5]"
                       style={{ fontFamily: "Inter, sans-serif" }}
                     >
-                      {story.result}
+                      Improved body composition by 12% in 16 weeks
                     </p>
                     <blockquote
                       className="text-slate-600 italic"
                       style={{ fontFamily: "Inter, sans-serif" }}
                     >
-                      &quot;{story.quote}&quot;
+                      &ldquo;{story.comment}&rdquo;
                     </blockquote>
                   </div>
                 </div>
               ))}
             </div>
-          </div>
-        </section>
-      )}
+          )}
+        </div>
+      </section>
 
       {/* FAQ Section */}
       <section className="relative overflow-hidden bg-white py-24">
