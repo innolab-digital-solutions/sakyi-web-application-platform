@@ -28,8 +28,9 @@ export interface Faq {
 }
 
 export interface Program {
-    id: number;
     thumbnail: string;
+    subtitle: string;
+    overview: string;
     title: string;
     slug: string;
     description: string;

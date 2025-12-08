@@ -13,6 +13,13 @@ const BaseProgramSchema = z.object({
     .max(255, "Title must not exceed 255 characters")
     .trim()
     .refine((value) => value.length > 0, "Title cannot be empty or contain only spaces"),
+  subtitle: z
+    .string("Short title is required")
+    .min(1, "Short title is required")
+    .max(100, "Short title must not exceed 100 characters")
+    .trim()
+    .refine((value) => value.length > 0, "Short title cannot be empty or contain only spaces"),
+  overview: z.string("Overview is required").min(1, "Overview is required").trim(),
   description: z.string("Description is required").min(1, "Description is required").trim(),
   duration_value: z
     .number("Duration value must be a number")

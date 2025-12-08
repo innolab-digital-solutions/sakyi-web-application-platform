@@ -19,9 +19,37 @@ import React from "react";
 
 import CallToAction from "@/components/public/sections/call-to-action";
 import ProgramDetailSkeleton from "@/components/public/shared/program-detail-skeleton";
+import TestimonialSkeleton from "@/components/public/shared/testimonial-skeleton";
 import { ENDPOINTS } from "@/config/endpoints";
 import { useRequest } from "@/hooks/use-request";
 import { Program } from "@/types/public/program";
+
+export function renderStars(rating: number) {
+  const fullStars = Math.floor(rating);
+  const hasHalfStar = rating % 1 >= 0.5;
+  const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+
+  return (
+    <div className="flex space-x-1">
+      {Array.from({ length: fullStars }).map((_, index) => (
+        <Star key={`full-${index}`} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+      ))}
+      {hasHalfStar && <Star key="half" className="h-4 w-4 fill-yellow-400/50 text-yellow-400" />}
+      {Array.from({ length: emptyStars }).map((_, index) => (
+        <Star key={`empty-${index}`} className="h-4 w-4 text-yellow-400" />
+      ))}
+    </div>
+  );
+}
+
+function getUserInitials(name: string) {
+  return name
+    .split(" ")
+    .map((n) => n.charAt(0))
+    .join("")
+    .toUpperCase()
+    .slice(0, 2);
+}
 
 export default function ProgramPage({ params }: { params: Promise<{ slug: string }> }) {
   // unwrap params safely
@@ -37,6 +65,7 @@ export default function ProgramPage({ params }: { params: Promise<{ slug: string
   }
 
   const program = programResponse?.data as Program | undefined;
+  console.log("Program Data:", program);
 
   if (!program) {
     return (
@@ -75,7 +104,7 @@ export default function ProgramPage({ params }: { params: Promise<{ slug: string
                 data-aos-easing="ease-out-back"
               >
                 <Zap className="h-4 w-4" />
-                <span style={{ fontFamily: "Inter, sans-serif" }}>Transform Your Life</span>
+                <span style={{ fontFamily: "Inter, sans-serif" }}>{program.subtitle}</span>
               </div>
 
               {/* Program Title */}
@@ -99,7 +128,7 @@ export default function ProgramPage({ params }: { params: Promise<{ slug: string
                   data-aos-duration="1000"
                   data-aos-easing="ease-out-cubic"
                 >
-                  {program.description}
+                  {program.overview}
                 </p>
               </div>
 
@@ -522,100 +551,187 @@ export default function ProgramPage({ params }: { params: Promise<{ slug: string
       </section>
 
       {/* Success Stories */}
-      <section className="relative overflow-hidden bg-slate-50 py-24">
-        <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
-          <div
-            className="mb-16 text-center"
-            data-aos="zoom-in"
-            data-aos-duration="1200"
-            data-aos-easing="ease-out-cubic"
-          >
-            <h2
-              className="text-3xl font-bold text-slate-900 sm:text-4xl lg:text-5xl"
-              style={{ fontFamily: "Poppins, sans-serif" }}
-              data-aos="fade-up"
-              data-aos-delay="200"
-              data-aos-duration="1000"
-              data-aos-easing="ease-out-cubic"
-            >
-              Success{" "}
-              <span
-                className="text-brand-gradient bg-clip-text text-transparent"
-                style={{ fontFamily: "Poppins, sans-serif" }}
-              >
-                Stories
-              </span>
-            </h2>
-            <p
-              className="mx-auto mt-6 max-w-3xl text-lg leading-relaxed text-slate-600"
-              style={{ fontFamily: "Inter, sans-serif" }}
-              data-aos="slide-up"
-              data-aos-delay="400"
-              data-aos-duration="1000"
-              data-aos-easing="ease-out-cubic"
-            >
-              Real results from real people who transformed their lives with this program
-            </p>
-          </div>
-
-          {program.testimonials && (
+      {program.testimonials && program.testimonials.length > 0 && (
+        <section className="relative overflow-hidden bg-slate-50 py-24">
+          <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
             <div
-              className={
-                program.testimonials.length > 1
-                  ? "grid grid-cols-1 justify-center gap-8 lg:grid-cols-2"
-                  : "mx-auto max-w-2xl"
-              }
+              className="mb-16 text-center"
+              data-aos="zoom-in"
+              data-aos-duration="1200"
+              data-aos-easing="ease-out-cubic"
             >
-              {program.testimonials?.map((story, index) => (
-                <div
-                  key={index}
-                  className="group rounded-2xl border border-slate-200 bg-white p-8 shadow-sm transition-all duration-300 hover:border-[#35bec5]/50 hover:shadow-lg"
-                  data-aos="flip-up"
-                  data-aos-delay={`${index * 200 + 400}`}
-                  data-aos-duration="1000"
-                  data-aos-easing="ease-out-cubic"
+              <h2
+                className="text-3xl font-bold text-slate-900 sm:text-4xl lg:text-5xl"
+                style={{ fontFamily: "Poppins, sans-serif" }}
+                data-aos="fade-up"
+                data-aos-delay="200"
+                data-aos-duration="1000"
+                data-aos-easing="ease-out-cubic"
+              >
+                Success{" "}
+                <span
+                  className="text-brand-gradient bg-clip-text text-transparent"
+                  style={{ fontFamily: "Poppins, sans-serif" }}
                 >
-                  <div className="mb-6">
-                    <div className="mb-2 flex items-center gap-3">
-                      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-linear-to-r from-[#35bec5] to-[#0c96c4] font-bold text-white">
-                        {story.user?.name.charAt(0)}
-                      </div>
-                      <div>
-                        <h4
-                          className="font-semibold text-slate-900"
-                          style={{ fontFamily: "Poppins, sans-serif" }}
-                        >
-                          {story.user?.name}
-                        </h4>
-                        {story.user?.age && (
-                          <p
-                            className="text-sm text-slate-600"
-                            style={{ fontFamily: "Inter, sans-serif" }}
-                          >
-                            Age {story.user?.age}
-                          </p>
-                        )}
-                      </div>
+                  Stories
+                </span>
+              </h2>
+              <p
+                className="mx-auto mt-6 max-w-3xl text-lg leading-relaxed text-slate-600"
+                style={{ fontFamily: "Inter, sans-serif" }}
+                data-aos="slide-up"
+                data-aos-delay="400"
+                data-aos-duration="1000"
+                data-aos-easing="ease-out-cubic"
+              >
+                Real results from real people who transformed their lives with this program
+              </p>
+            </div>
+
+            {programLoading ? (
+              // Loading Skeletons
+              <>
+                <div className="block lg:hidden">
+                  <TestimonialSkeleton index={0} />
+                </div>
+                <div className="hidden lg:grid lg:grid-cols-2 lg:gap-8">
+                  <TestimonialSkeleton index={0} />
+                  <TestimonialSkeleton index={1} />
+                </div>
+              </>
+            ) : (
+              <>
+                {/* Mobile/Tablet: Single Column */}
+                <div className="block lg:hidden">
+                  <div className="relative overflow-hidden">
+                    <div className="flex flex-wrap transition-transform duration-700 ease-in-out">
+                      {program.testimonials.map((testimonial, index) => (
+                        <div key={testimonial.id || index} className="w-full px-4">
+                          <div className="flex h-80 flex-col justify-between text-center">
+                            {/* Quote */}
+                            <div className="flex flex-1 items-center justify-center px-2">
+                              <div className="text-center">
+                                {/* Star Rating */}
+                                <div className="mb-4 flex justify-center">
+                                  {renderStars(testimonial.rating)}
+                                </div>
+                                <blockquote
+                                  className="text-base leading-relaxed text-slate-700"
+                                  style={{ fontFamily: "Inter, sans-serif" }}
+                                >
+                                  &quot;{testimonial.comment}&quot;
+                                </blockquote>
+                              </div>
+                            </div>
+
+                            {/* Client Info */}
+                            <div className="flex flex-col items-center space-y-3">
+                              {testimonial.user.picture ? (
+                                <div className="relative h-12 w-12 overflow-hidden rounded-full">
+                                  <Image
+                                    src={testimonial.user.picture}
+                                    alt={testimonial.user.name}
+                                    fill
+                                    className="object-cover"
+                                  />
+                                </div>
+                              ) : (
+                                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-r from-[#35bec5] to-[#0c96c4]">
+                                  <span className="text-sm font-bold text-white">
+                                    {getUserInitials(testimonial.user.name)}
+                                  </span>
+                                </div>
+                              )}
+                              <div className="text-center">
+                                <h4
+                                  className="text-base font-semibold text-slate-900"
+                                  style={{ fontFamily: "Poppins, sans-serif" }}
+                                >
+                                  {testimonial.user.name}
+                                </h4>
+                                <p
+                                  className="text-sm text-slate-600"
+                                  style={{ fontFamily: "Inter, sans-serif" }}
+                                >
+                                  {program.title}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
                     </div>
-                    <p
-                      className="mb-4 font-medium text-[#35bec5]"
-                      style={{ fontFamily: "Inter, sans-serif" }}
-                    >
-                      Improved body composition by 12% in 16 weeks
-                    </p>
-                    <blockquote
-                      className="text-slate-600 italic"
-                      style={{ fontFamily: "Inter, sans-serif" }}
-                    >
-                      &ldquo;{story.comment}&rdquo;
-                    </blockquote>
                   </div>
                 </div>
-              ))}
-            </div>
-          )}
-        </div>
-      </section>
+
+                {/* Desktop: Two Columns */}
+                <div
+                  className={`hidden gap-12 lg:grid ${
+                    program.testimonials?.length === 1
+                      ? "grid-cols-1 justify-center"
+                      : "grid-cols-2"
+                  }`}
+                >
+                  {program.testimonials?.map((testimonial, index) => (
+                    <div key={testimonial.id || index} className="w-full">
+                      <div className="flex h-80 flex-col justify-between text-center">
+                        {/* Quote */}
+                        <div className="flex flex-1 items-center justify-center px-2">
+                          <div className="text-center">
+                            <div className="mb-4 flex justify-center">
+                              {renderStars(testimonial.rating)}
+                            </div>
+                            <blockquote
+                              className="text-base leading-relaxed text-slate-700"
+                              style={{ fontFamily: "Inter, sans-serif" }}
+                            >
+                              &quot;{testimonial.comment}&quot;
+                            </blockquote>
+                          </div>
+                        </div>
+
+                        {/* Client Info */}
+                        <div className="flex flex-col items-center space-y-3">
+                          {testimonial.user.picture ? (
+                            <div className="relative h-12 w-12 overflow-hidden rounded-full">
+                              <Image
+                                src={testimonial.user.picture}
+                                alt={testimonial.user.name}
+                                fill
+                                className="object-cover"
+                              />
+                            </div>
+                          ) : (
+                            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-r from-[#35bec5] to-[#0c96c4]">
+                              <span className="text-sm font-bold text-white">
+                                {getUserInitials(testimonial.user.name)}
+                              </span>
+                            </div>
+                          )}
+                          <div className="text-center">
+                            <h4
+                              className="text-base font-semibold text-slate-900"
+                              style={{ fontFamily: "Poppins, sans-serif" }}
+                            >
+                              {testimonial.user.name}
+                            </h4>
+                            <p
+                              className="text-sm text-slate-600"
+                              style={{ fontFamily: "Inter, sans-serif" }}
+                            >
+                              {program.title}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
+        </section>
+      )}
 
       {/* FAQ Section */}
       <section className="relative overflow-hidden bg-white py-24">

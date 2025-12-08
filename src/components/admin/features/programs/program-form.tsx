@@ -75,6 +75,8 @@ export default function ProgramFormPage({ program }: ProgramFormPageProperties) 
   const form = useForm(
     {
       title: "",
+      subtitle: "",
+      overview: "",
       description: "",
       thumbnail: undefined as File | string | undefined,
       duration_value: 1,
@@ -194,6 +196,8 @@ export default function ProgramFormPage({ program }: ProgramFormPageProperties) 
 
       const newData = {
         title: program.title ?? "",
+        subtitle: program.subtitle ?? "",
+        overview: program.overview ?? "",
         description: program.description ?? "",
         thumbnail: program.thumbnail_url || undefined,
         duration_value: parseNumber(program.duration_value, 1),
@@ -237,6 +241,8 @@ export default function ProgramFormPage({ program }: ProgramFormPageProperties) 
   const buildFormData = (payload: typeof form.data) => {
     const fd = new FormData();
     fd.append("title", String(payload.title ?? ""));
+    fd.append("subtitle", String(payload.subtitle ?? ""));
+    fd.append("overview", String(payload.overview ?? ""));
     fd.append("description", String(payload.description ?? ""));
     if (payload.thumbnail instanceof File) {
       fd.append("thumbnail", payload.thumbnail);
@@ -323,6 +329,32 @@ export default function ProgramFormPage({ program }: ProgramFormPageProperties) 
                 placeholder="Program title"
                 required
                 disabled={form.processing}
+              />
+
+              <InputField
+                id="subtitle"
+                name="subtitle"
+                type="text"
+                value={String(form.data.subtitle ?? "")}
+                onChange={(event) => form.setData("subtitle", event.target.value)}
+                error={form.errors.subtitle as string}
+                label="Subtitle"
+                placeholder="Program subtitle"
+                required
+                disabled={form.processing}
+              />
+
+              <TextareaField
+                id="overview"
+                name="overview"
+                className="min-h-[96px]"
+                placeholder="Describe the program..."
+                value={String(form.data.overview ?? "")}
+                onChange={(event) => form.setData("overview", event.target.value)}
+                error={form.errors.overview as string}
+                label="Overview"
+                disabled={form.processing}
+                required
               />
 
               <TextareaField
