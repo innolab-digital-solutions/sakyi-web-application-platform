@@ -65,7 +65,6 @@ export default function ProgramPage({ params }: { params: Promise<{ slug: string
   }
 
   const program = programResponse?.data as Program | undefined;
-  console.log("Program Data:", program);
 
   if (!program) {
     return (

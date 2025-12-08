@@ -52,8 +52,8 @@ export default function ProgramsHero() {
             data-aos-delay="200"
             data-aos-duration="800"
           >
-            Choose from our comprehensive range of personalized wellness programs, each designed by certified doctors 
-            and tailored to help you achieve your specific health and wellness goals.
+              Explore our carefully curated wellness programs, crafted by health experts to support your journey 
+  towards better fitness, nutrition, and overall well-being, personalized to fit your lifestyle.
           </p>
 
           {/* CTA Button */}
