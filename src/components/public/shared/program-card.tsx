@@ -22,7 +22,6 @@ interface ProgramCardProperties {
 
 
 export default function ProgramCard({ program, index = 0, className = "" }: ProgramCardProperties) {
-  console.log("Program in ProgramCard:", program);
   return (
     <div
       className={`group relative rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-all duration-300 hover:shadow-md ${className}`}
