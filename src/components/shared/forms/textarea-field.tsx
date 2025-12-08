@@ -6,10 +6,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/utils/shared/cn";
 
-export interface TextareaFieldProperties extends Omit<
-  React.TextareaHTMLAttributes<HTMLTextAreaElement>,
-  "id"
-> {
+export interface TextareaFieldProperties
+  extends Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, "id"> {
   id: string;
   label?: React.ReactNode;
   error?: string;
