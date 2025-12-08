@@ -8,7 +8,7 @@ import { PATHS } from "@/config/paths";
 interface Program {
   title: string;
   description: string;
-  slug: string;
+  slug?: string | undefined;
   readTime?: string;
   image: string;
   href?: string;
@@ -20,7 +20,9 @@ interface ProgramCardProperties {
   className?: string;
 }
 
+
 export default function ProgramCard({ program, index = 0, className = "" }: ProgramCardProperties) {
+  console.log("Program in ProgramCard:", program);
   return (
     <div
       className={`group relative rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-all duration-300 hover:shadow-md ${className}`}
@@ -59,7 +61,7 @@ export default function ProgramCard({ program, index = 0, className = "" }: Prog
           {/* CTA Link */}
           <div className="pt-2">
             <Link
-              href={PATHS.PUBLIC.PROGRAMS_DETAIL(program.slug)}
+              href={program.slug ? PATHS.PUBLIC.PROGRAMS_DETAIL(program.slug) : ""}
               className="group/link inline-flex items-center text-sm font-medium text-[#35bec5] transition-all duration-300 hover:text-[#0c96c4]"
               style={{ fontFamily: "Inter, sans-serif" }}
             >
