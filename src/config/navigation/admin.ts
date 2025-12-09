@@ -134,12 +134,12 @@ export const adminNavigation: NavGroup[] = [
     title: "Health Data & Plans",
     items: [
       {
-        name: "Doctor Plans",
+        name: "Doctor Instructions",
         icon: BookOpenCheck,
-        path: "/admin/plans",
+        path: PATHS.ADMIN.INSTRUCTIONS.LIST,
         params: {},
         active: false,
-        permission: "plans.view",
+        permission: "instructions.view",
         subitems: [],
       },
       {
