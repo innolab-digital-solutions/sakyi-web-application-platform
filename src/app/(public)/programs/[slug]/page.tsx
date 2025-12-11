@@ -664,13 +664,7 @@ export default function ProgramPage({ params }: { params: Promise<{ slug: string
                 </div>
 
                 {/* Desktop: Two Columns */}
-                <div
-                  className={`hidden gap-12 lg:grid ${
-                    program.testimonials?.length === 1
-                      ? "grid-cols-1 justify-center"
-                      : "grid-cols-2"
-                  }`}
-                >
+                <div className="hidden lg:grid lg:grid-cols-2 lg:gap-8">
                   {program.testimonials?.map((testimonial, index) => (
                     <div key={testimonial.id || index} className="w-full">
                       <div className="flex h-80 flex-col justify-between text-center">

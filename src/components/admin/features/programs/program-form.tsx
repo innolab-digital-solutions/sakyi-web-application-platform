@@ -348,7 +348,7 @@ export default function ProgramFormPage({ program }: ProgramFormPageProperties) 
                 id="overview"
                 name="overview"
                 className="min-h-[96px]"
-                placeholder="Describe the program..."
+                placeholder="Provide a brief overview of the program..."
                 value={String(form.data.overview ?? "")}
                 onChange={(event) => form.setData("overview", event.target.value)}
                 error={form.errors.overview as string}
