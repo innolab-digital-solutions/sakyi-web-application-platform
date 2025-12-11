@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/utils/shared/cn";
 
+// prettier-ignore
 export interface TextareaFieldProperties extends Omit<
   React.TextareaHTMLAttributes<HTMLTextAreaElement>,
   "id"

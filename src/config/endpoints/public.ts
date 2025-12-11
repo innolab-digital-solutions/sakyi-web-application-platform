@@ -12,4 +12,8 @@ export const PUBLIC_ENDPOINTS = {
 
   HOME_BLOG_POSTS: "/public/home/blog-posts",
   HOME_TESTIMONIALS: "/public/home/testimonials",
+
+  PROGRAMS: "/public/programs",
+  PROGRAM: (slug: string) => `/public/programs/${slug}`,
+  PROGRAM_FAQS: "/public/programs/faqs",
 } as const;

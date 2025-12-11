@@ -31,6 +31,8 @@ export interface ProgramFAQ {
 
 export interface Program {
   id: number;
+  subtitle: string;
+  overview: string;
   thumbnail_url: string;
   title: string;
   slug: string;
