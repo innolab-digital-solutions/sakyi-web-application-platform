@@ -151,4 +151,12 @@ export const ADMIN_ENDPOINTS = {
     UPDATE: (id: string | number) => `/admin/invoices/${id}`,
     STORE: "/admin/invoices",
   },
+
+  INSTRUCTIONS: {
+    INDEX: "/admin/instructions",
+    SHOW: (id: string | number) => `/admin/instructions/${id}`,
+    STORE: "/admin/instructions",
+    UPDATE: (id: string | number) => `/admin/instructions/${id}`,
+    DESTROY: (id: string | number) => `/admin/instructions/${id}`,
+  },
 } as const;
