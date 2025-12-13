@@ -34,7 +34,7 @@ export interface UserProfile {
 
 export interface User {
   id: number;
-  role: string;
+  role: string | null;
   permissions?: Permission[];
   provider_id?: string | null;
   provider_name?: AuthProvider | null;

@@ -43,11 +43,13 @@ export default function UserForm({
     queryKey: ["lookup-roles"],
   });
 
-  const roleOptions =
-    rolesData?.data?.map((role: Role) => ({
+  const roleOptions = [
+    { value: "", label: "None" },
+    ...(rolesData?.data?.map((role: Role) => ({
       value: role.name,
       label: role.name,
-    })) ?? [];
+    })) ?? []),
+  ];
 
   const form = useForm(
     {
@@ -65,7 +67,12 @@ export default function UserForm({
     {
       validate: isEdit ? EditUserSchema : CreateUserSchema,
       tanstack: {
-        invalidateQueries: ["admin-users", "admin-user", "lookup-invoice-users"],
+        invalidateQueries: [
+          "admin-users",
+          "admin-user",
+          "lookup-invoice-users",
+          "team-members-lookup",
+        ],
         mutationOptions: {
           onSuccess: (response) => {
             form.queryCache.setQueryData<UserApiResponse>(
@@ -284,7 +291,7 @@ export default function UserForm({
         <InputField
           id="phone"
           label="Phone"
-          placeholder="e.g. +1 555 123 4567"
+          placeholder="e.g. 09xxxxxxx"
           value={form.data.phone}
           onChange={(event) => form.setData("phone", event.target.value)}
           error={form.errors.phone as string}
@@ -295,7 +302,7 @@ export default function UserForm({
         <DatepickerField
           id="dob"
           label="Date of Birth"
-          placeholder="YYYY-MM-DD"
+          placeholder="D-M-YYYY"
           value={form.data.dob}
           onChange={(value) => form.setData("dob", value)}
           error={form.errors.dob as string}

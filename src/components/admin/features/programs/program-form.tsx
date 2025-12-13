@@ -93,7 +93,7 @@ export default function ProgramFormPage({ program }: ProgramFormPageProperties) 
     {
       validate: isEdit ? EditProgramSchema : CreateProgramSchema,
       tanstack: {
-        invalidateQueries: ["admin-programs", "admin-program"],
+        invalidateQueries: ["admin-programs", "admin-program", "admin-onboarding-forms"],
         mutationOptions: {
           onSuccess: (response) => {
             // Optimistically update list cache like role-form

@@ -86,7 +86,7 @@ export const teamsTableColumns: ColumnDef<Team>[] = [
               <Tooltip>
                 <TooltipTrigger asChild>
                   <span className="bg-muted text-muted-foreground border-muted ml-1 flex size-8 cursor-pointer items-center justify-center rounded-full border border-dashed text-xs font-semibold">
-                    +{users.length - 3}
+                    +{users.length - 5}
                   </span>
                 </TooltipTrigger>
                 <TooltipContent
@@ -95,7 +95,7 @@ export const teamsTableColumns: ColumnDef<Team>[] = [
                   className="bg-popover text-popover-foreground border-border rounded-md border px-3 py-2 shadow-lg"
                 >
                   <div className="text-xs font-medium">
-                    {users.slice(3).map((member, index) => (
+                    {users.slice(5).map((member, index) => (
                       <div key={member.name + index} className="mb-1 last:mb-0">
                         <span className="text-foreground text-xs font-semibold">{member.name}</span>
                         {member.role && (
