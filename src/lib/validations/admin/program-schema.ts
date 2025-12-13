@@ -39,7 +39,7 @@ const BaseProgramSchema = z.object({
   onboarding_form_id: z
     .number("Onboarding form is required")
     .int("Onboarding form ID must be an integer")
-    .positive("Onboarding form ID must be a positive number"),
+    .positive("Onboarding form is required"),
 
   // Relationship arrays (nullable)
   ideals: z
