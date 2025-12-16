@@ -8,6 +8,7 @@ import RoleDeletionDialog from "@/components/admin/features/roles/role-deletion-
 import RoleForm from "@/components/admin/features/roles/role-form";
 import DisabledTooltip from "@/components/shared/disabled-tooltip";
 import SortableHeader from "@/components/shared/table/sortable-header";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -45,7 +46,80 @@ export const rolesTableColumns: ColumnDef<Role>[] = [
       );
     },
   },
+  {
+    accessorKey: "users",
+    header: () => "Assigned Users",
+    cell: ({ row }) => {
+      const users = row.getValue("users") as Role["users"];
 
+      if (users.length === 0) {
+        return (
+          <div className="flex items-center justify-start">
+            <Badge
+              variant="outline"
+              className="bg-muted/60 text-muted-foreground pointer-events-none border-dashed text-[13px] font-semibold"
+            >
+              None
+            </Badge>
+          </div>
+        );
+      }
+
+      return (
+        <div className="flex items-center">
+          <div className="flex -space-x-2">
+            {users.slice(0, 4).map((user, index) => {
+              const initial = user.name?.[0] ?? "?";
+              return (
+                <div key={user.name + index} className="relative z-0">
+                  <span className="sr-only">{user.name}</span>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Avatar className="border-muted size-8 cursor-pointer border ring-2 ring-white">
+                        <AvatarImage src={user.picture ?? undefined} alt={user.name} />
+                        <AvatarFallback>{initial}</AvatarFallback>
+                      </Avatar>
+                    </TooltipTrigger>
+                    <TooltipContent
+                      side="top"
+                      align="center"
+                      className="bg-popover text-popover-foreground border-border rounded-md border px-3 py-2 shadow-lg"
+                    >
+                      <div className="flex flex-col gap-0.5">
+                        <span className="text-foreground text-xs font-semibold">{user.name}</span>
+                      </div>
+                    </TooltipContent>
+                  </Tooltip>
+                </div>
+              );
+            })}
+            {users.length > 4 && (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <span className="bg-muted text-muted-foreground border-muted ml-1 flex size-8 cursor-pointer items-center justify-center rounded-full border border-dashed text-xs font-semibold">
+                    +{users.length - 4}
+                  </span>
+                </TooltipTrigger>
+                <TooltipContent
+                  side="top"
+                  align="center"
+                  className="bg-popover text-popover-foreground border-border rounded-md border px-3 py-2 shadow-lg"
+                >
+                  <div className="text-xs font-medium">
+                    {users.slice(4).map((member, index) => (
+                      <div key={member.name + index} className="mb-1 last:mb-0">
+                        <span className="text-foreground text-xs font-semibold">{member.name}</span>
+                      </div>
+                    ))}
+                  </div>
+                </TooltipContent>
+              </Tooltip>
+            )}
+          </div>
+        </div>
+      );
+    },
+  },
   {
     accessorKey: "permissions",
     header: "Permissions",
@@ -136,6 +210,7 @@ export const rolesTableColumns: ColumnDef<Role>[] = [
     },
     enableSorting: false,
   },
+
   {
     id: "actions",
     enableHiding: false,

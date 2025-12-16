@@ -6,6 +6,10 @@ export interface Role {
   name: string;
   description: string | null;
   permissions: Permission | Permission[];
+  users: {
+    name: string;
+    picture: string;
+  }[];
   actions: {
     edit: {
       allowed: boolean;
