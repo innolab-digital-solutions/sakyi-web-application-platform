@@ -80,10 +80,10 @@ export default function DashboardSidebar() {
                 />
               </div>
               <div className="flex flex-col gap-0.5">
-                <h3 className="text-sm font-semibold tracking-tight">SaKyi Health & Wellness</h3>
-                <p className="text-muted-foreground text-xs font-medium">
-                  Platform-Wide Control Panel
-                </p>
+                <h3 className="text-sm font-semibold tracking-tight text-slate-900">
+                  SaKyi Health & Wellness
+                </h3>
+                <p className="text-xs font-medium text-slate-500">Platform-Wide Control Panel</p>
               </div>
             </div>
           </SidebarMenuItem>
