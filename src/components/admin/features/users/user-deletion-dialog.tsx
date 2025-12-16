@@ -58,15 +58,23 @@ export default function UserDeletionDialog({ user, className }: UserDeletionDial
     <>
       {(() => {
         const isLoading = request.loading;
-        const isDisabled = isLoading;
-        const disabledReason = isLoading ? "Deleting in progress. Please wait." : undefined;
+        const deleteAllowed = Boolean(user.actions?.delete?.allowed);
+        const deleteReasons = user.actions?.delete?.reasons ?? [];
+        const isDisabled = isLoading || !deleteAllowed;
+
+        let disabledReason: string | undefined;
+        if (isLoading) {
+          disabledReason = "Deleting in progress. Please wait.";
+        } else if (!deleteAllowed && deleteReasons.length > 0) {
+          disabledReason = deleteReasons.join(" ").trim() || undefined;
+        }
 
         return (
           <DisabledTooltip reason={disabledReason}>
             <Button
               variant="outline"
-              className={`hover:!bg-destructive/10 text-destructive group hover:text-destructive-900 hover:!ring-none flex w-full !cursor-pointer items-center justify-start gap-1.5 !border-none text-sm font-medium shadow-none ${className ?? ""}`}
-              onClick={() => setShowDeleteDialog(true)}
+              className={`hover:bg-destructive/10! text-destructive group hover:text-destructive-900 hover:ring-none! flex w-full cursor-pointer! items-center justify-start gap-1.5 border-none! text-sm font-medium shadow-none ${className ?? ""}`}
+              onClick={() => (deleteAllowed ? setShowDeleteDialog(true) : undefined)}
               disabled={isDisabled}
               type="button"
               aria-label="Delete user"
@@ -80,7 +88,7 @@ export default function UserDeletionDialog({ user, className }: UserDeletionDial
 
       <ConfirmationDialog
         title="Delete User"
-        description={`Permanently delete the user "${user.name}"? This action cannot be undone.`}
+        description={`Permanently delete the user "${user.profile.name}"? This action cannot be undone.`}
         icon={TriangleAlert}
         variant="destructive"
         confirmText="Yes, Delete It"

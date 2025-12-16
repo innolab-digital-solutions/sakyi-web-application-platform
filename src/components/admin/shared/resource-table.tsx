@@ -11,6 +11,7 @@ interface ResourceTableProperties<TData> {
   queryKey: string[];
   columns: unknown;
   defaultSort?: { field: string; direction: "asc" | "desc" };
+  showColumnVisibility?: boolean;
   emptyMessage?: string;
   filters?: React.ReactNode;
   skeleton?: {
@@ -23,6 +24,7 @@ export default function ResourceTable<TData>({
   queryKey,
   columns,
   defaultSort = { field: "id", direction: "desc" },
+  showColumnVisibility = false,
   emptyMessage = "No records found.",
   filters,
   skeleton,
@@ -44,7 +46,7 @@ export default function ResourceTable<TData>({
       skeleton={skeleton}
       ui={{
         emptyMessage,
-        showColumnVisibility: false,
+        showColumnVisibility,
         toolbarActions: filters,
         showToolbar: true,
       }}
