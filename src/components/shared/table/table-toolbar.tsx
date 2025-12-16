@@ -1,4 +1,5 @@
 import { Table } from "@tanstack/react-table";
+import { Search } from "lucide-react";
 
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
@@ -35,12 +36,15 @@ export default function TableToolbar<TData>({
     <div className="flex w-full items-center justify-between">
       <div className="flex flex-1 items-center space-x-2">
         <div className="relative w-full sm:w-80">
+          <span className="text-muted-foreground pointer-events-none absolute top-1/2 left-3 -translate-y-1/2">
+            <Search size={16} />
+          </span>
           <Input
             type="search"
             placeholder={search.placeholder}
             value={searchValue}
             onChange={(event) => handleSearch(event.target.value)}
-            className="h-10 w-full font-medium"
+            className="h-10 w-full pl-9 font-medium"
             disabled={isLoading}
           />
           {isLoading && (

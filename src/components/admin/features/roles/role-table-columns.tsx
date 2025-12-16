@@ -142,46 +142,50 @@ export const rolesTableColumns: ColumnDef<Role>[] = [
     header: "Actions",
     cell: ({ row }) => {
       const role = row.original;
-      const hasPermissions = role.has_permissions;
 
-      return role.name === "Super Admin" ? (
-        <></>
-      ) : (
+      if (role.name === "Super Admin") {
+        return <></>;
+      }
+
+      return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
               variant="outline"
               size="icon"
               aria-label="Open actions"
-              className="hover:!text-foreground ml-auto size-8 cursor-pointer items-center justify-center hover:!bg-gray-100"
+              className="hover:text-foreground! ml-auto size-8 cursor-pointer items-center justify-center hover:bg-gray-100!"
             >
               <Ellipsis className="h-5 w-5" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" sideOffset={8} className="p-3.5">
             <DropdownMenuLabel className="text-muted-foreground text-[13px] font-semibold">
-              Role Actions
+              Actions
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
               {(() => {
-                const isEditable = Boolean(role.actions?.editable);
-                const disabledReason = isEditable
-                  ? undefined
-                  : "You don't have permission to assign permissions for this role.";
+                const editAllowed = Boolean(role.actions?.edit?.allowed);
+                const reasons = role.actions?.edit?.reasons ?? [];
+                const disabledReason =
+                  editAllowed || reasons.length === 0
+                    ? undefined
+                    : reasons.join(" ").trim() || undefined;
+
                 return (
                   <DisabledTooltip reason={disabledReason}>
                     <Button
                       asChild
                       variant="outline"
-                      className="hover:!bg-accent/10 hover:!text-accent group flex w-full !cursor-pointer items-center justify-start gap-1.5 !border-none text-sm font-medium text-gray-700 shadow-none hover:!ring-0"
-                      aria-label={hasPermissions ? "Manage permissions" : "Assign permissions"}
-                      disabled={!isEditable}
+                      className="hover:bg-accent/10! hover:text-accent! group flex w-full cursor-pointer! items-center justify-start gap-1.5 border-none! text-sm font-medium text-gray-700 shadow-none hover:ring-0!"
+                      aria-label="Manage permissions"
+                      disabled={!editAllowed}
                     >
                       <Link
                         href={PATHS.ADMIN.ROLES.ASSIGN_PERMISSIONS(role.id)}
-                        aria-disabled={!isEditable}
-                        tabIndex={isEditable ? 0 : -1}
+                        aria-disabled={!editAllowed}
+                        tabIndex={editAllowed ? 0 : -1}
                       >
                         <FileKey className="group-hover:text-accent h-4 w-4 transition-colors duration-150" />
                         <span>Assign Permissions</span>
@@ -196,17 +200,20 @@ export const rolesTableColumns: ColumnDef<Role>[] = [
                 mode="edit"
                 defaultValues={role}
                 trigger={(() => {
-                  const isEditable = Boolean(role.actions?.editable);
-                  const disabledReason = isEditable
-                    ? undefined
-                    : "You don't have permission to edit this role.";
+                  const editAllowed = Boolean(role.actions?.edit?.allowed);
+                  const reasons = role.actions?.edit?.reasons ?? [];
+                  const disabledReason =
+                    editAllowed || reasons.length === 0
+                      ? undefined
+                      : reasons.join(" ").trim() || undefined;
+
                   return (
                     <DisabledTooltip reason={disabledReason}>
                       <Button
                         variant="outline"
-                        className="hover:!bg-accent/10 group hover:!text-accent hover:!ring-none flex w-full !cursor-pointer items-center justify-start gap-1.5 !border-none text-sm font-medium text-gray-700 shadow-none disabled:hover:!bg-transparent disabled:hover:!text-inherit"
+                        className="hover:bg-accent/10! group hover:text-accent! hover:ring-none! flex w-full cursor-pointer! items-center justify-start gap-1.5 border-none! text-sm font-medium text-gray-700 shadow-none disabled:hover:bg-transparent! disabled:hover:text-inherit!"
                         aria-label="Edit role"
-                        disabled={!isEditable}
+                        disabled={!editAllowed}
                       >
                         <SquarePen className="group-hover:text-accent h-4 w-4 transition-colors duration-150" />
                         <span>Edit Role</span>

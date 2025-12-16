@@ -58,21 +58,26 @@ export default function RoleDeletionDialog({ role, className }: RoleDeletionDial
     <>
       {(() => {
         const isLoading = request.loading;
-        const isDeletable = Boolean(role.actions?.deletable);
-        const isDisabled = isLoading || !isDeletable;
+        const deleteAllowed = Boolean(role.actions?.delete?.allowed);
+        const deleteReasons = role.actions?.delete?.reasons ?? [];
+        const isDisabled = isLoading || !deleteAllowed;
+
         let disabledReason: string | undefined;
         if (isLoading) {
           disabledReason = "Deleting in progress. Please wait.";
-        } else if (!isDeletable) {
-          disabledReason = "You don't have permission to delete this role.";
+        } else if (!deleteAllowed && deleteReasons.length > 0) {
+          disabledReason = deleteReasons.join(" ").trim() || undefined;
         }
 
+        const hasReason = Boolean(disabledReason);
+        const tooltipCursorClass = isDisabled && hasReason ? "cursor-help" : undefined;
+
         return (
-          <DisabledTooltip reason={disabledReason}>
+          <DisabledTooltip reason={disabledReason} className={tooltipCursorClass}>
             <Button
               variant="outline"
-              className={`hover:!bg-destructive/10 text-destructive group hover:text-destructive-900 hover:!ring-none flex w-full !cursor-pointer items-center justify-start gap-1.5 !border-none text-sm font-medium shadow-none ${className ?? ""}`}
-              onClick={() => (isDeletable ? setShowDeleteDialog(true) : undefined)}
+              className={`hover:bg-destructive/10 text-destructive group hover:text-destructive-900 hover:ring-none! flex w-full cursor-pointer! items-center justify-start gap-1.5 border-none text-sm font-medium shadow-none ${className ?? ""}`}
+              onClick={() => (deleteAllowed ? setShowDeleteDialog(true) : undefined)}
               disabled={isDisabled}
               type="button"
               aria-label="Delete role"

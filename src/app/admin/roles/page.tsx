@@ -1,4 +1,3 @@
-import { ShieldCheck } from "lucide-react";
 import type { Metadata } from "next";
 
 import RoleForm from "@/components/admin/features/roles/role-form";
@@ -15,9 +14,8 @@ export const metadata: Metadata = {
 export default function RolesListPage() {
   return (
     <ResourceListPage
-      icon={ShieldCheck}
       title="Roles & Permissions"
-      description="Create roles and fine‑tune permissions to ensure the right people have the right access—nothing more, nothing less."
+      description="View, manage, and assign roles to control user permissions and maintain secure access throughout the platform."
       createTrigger={<RoleForm mode="create" trigger={<CreateButton label="Add Role" />} />}
       table={<RoleTable />}
     />
