@@ -119,4 +119,9 @@ export const ADMIN_PATHS = {
     CREATE: "/admin/instructions/create",
     EDIT: (id: string | number) => `/admin/instructions/${id}/edit`,
   },
+
+  /** Clients routes */
+  CLIENTS: {
+    LIST: "/admin/clients",
+  },
 } as const;

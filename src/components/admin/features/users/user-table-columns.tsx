@@ -178,10 +178,10 @@ export const usersTableColumns: ColumnDef<User>[] = [
     accessorKey: "created at",
     header: "Created At",
     cell: ({ row }) => {
-      const createdAt = row.original.profile?.created_at;
+      const createdAt = row.original?.created_at || "";
       const formattedCreatedAt =
         createdAt && dayjs(createdAt).isValid()
-          ? dayjs(createdAt).format("DD-MMMM-YYYY ( hh:mm ) A")
+          ? dayjs(createdAt).format("DD-MMMM-YYYY (hh:mm) A")
           : (createdAt ?? "");
 
       return (
@@ -194,13 +194,14 @@ export const usersTableColumns: ColumnDef<User>[] = [
               className="bg-muted/60 text-muted-foreground pointer-events-none border-dashed text-[13px] font-semibold"
             >
               <CalendarDays className="h-3.5 w-3.5" />
-              <span className="ml-1">Not provided</span>
+              <span className="ml-1">Not available</span>
             </Badge>
           )}
         </div>
       );
     },
   },
+
   {
     id: "actions",
     enableHiding: false,

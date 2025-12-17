@@ -33,6 +33,11 @@ export const ADMIN_ENDPOINTS = {
     DESTROY: (id: string | number) => `/admin/users/${id}`,
   },
 
+  CLIENTS: {
+    INDEX: "/admin/clients",
+    SHOW: (id: string | number) => `/admin/clients/${id}`,
+  },
+
   TEAMS: {
     INDEX: "/admin/teams",
     SHOW: (id: string | number) => `/admin/teams/${id}`,

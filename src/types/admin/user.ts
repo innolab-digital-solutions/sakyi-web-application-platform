@@ -2,6 +2,7 @@ import { ApiResponse } from "@/types/shared/api";
 
 export interface User {
   id: number;
+  created_at: string;
   profile: {
     role: string;
     name: string;

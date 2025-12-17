@@ -121,7 +121,7 @@ export const adminNavigation: NavGroup[] = [
       {
         name: "Clients",
         icon: Users,
-        path: "/admin/users",
+        path: PATHS.ADMIN.CLIENTS.LIST,
         params: {},
         active: false,
         permission: "clients.view",
