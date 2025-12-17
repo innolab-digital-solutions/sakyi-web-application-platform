@@ -1,7 +1,7 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { Ellipsis, FileKey, SquarePen } from "lucide-react";
+import { Ellipsis, ShieldPlus, ShieldX, SquarePen, UserX } from "lucide-react";
 import Link from "next/link";
 
 import RoleDeletionDialog from "@/components/admin/features/roles/role-deletion-dialog";
@@ -59,7 +59,8 @@ export const rolesTableColumns: ColumnDef<Role>[] = [
               variant="outline"
               className="bg-muted/60 text-muted-foreground pointer-events-none border-dashed text-[13px] font-semibold"
             >
-              None
+              <UserX className="h-3.5 w-3.5" />
+              <span className="ml-1">None</span>
             </Badge>
           </div>
         );
@@ -134,7 +135,8 @@ export const rolesTableColumns: ColumnDef<Role>[] = [
               variant="outline"
               className="bg-muted/60 text-muted-foreground pointer-events-none border-dashed text-[13px] font-semibold"
             >
-              No permissions
+              <ShieldX className="h-3.5 w-3.5" />
+              <span className="ml-1">No permissions</span>
             </Badge>
           </div>
         );
@@ -236,7 +238,7 @@ export const rolesTableColumns: ColumnDef<Role>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" sideOffset={8} className="p-3.5">
             <DropdownMenuLabel className="text-muted-foreground text-[13px] font-semibold">
-              Actions
+              Role Actions
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
@@ -253,7 +255,7 @@ export const rolesTableColumns: ColumnDef<Role>[] = [
                     <Button
                       asChild
                       variant="outline"
-                      className="hover:bg-accent/10! hover:text-accent! group flex w-full cursor-pointer! items-center justify-start gap-1.5 border-none! text-sm font-medium text-gray-700 shadow-none hover:ring-0!"
+                      className="hover:bg-muted! hover:text-accent! group flex w-full cursor-pointer! items-center justify-start gap-1.5 border-none! text-sm font-medium text-gray-700 shadow-none hover:ring-0!"
                       aria-label="Manage permissions"
                       disabled={!editAllowed}
                     >
@@ -262,7 +264,7 @@ export const rolesTableColumns: ColumnDef<Role>[] = [
                         aria-disabled={!editAllowed}
                         tabIndex={editAllowed ? 0 : -1}
                       >
-                        <FileKey className="group-hover:text-accent h-4 w-4 transition-colors duration-150" />
+                        <ShieldPlus className="group-hover:text-accent h-4 w-4 transition-colors duration-150" />
                         <span>Assign Permissions</span>
                       </Link>
                     </Button>

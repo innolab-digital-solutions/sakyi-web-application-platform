@@ -4,7 +4,6 @@ import { ColumnDef } from "@tanstack/react-table";
 import dayjs from "dayjs";
 import {
   CalendarDays,
-  Copy as CopyIcon,
   Ellipsis,
   MapPinned,
   Mars,
@@ -13,7 +12,7 @@ import {
   UserRound,
   Venus,
 } from "lucide-react";
-import React, { useState } from "react";
+import React from "react";
 
 import UserDeletionDialog from "@/components/admin/features/users/user-deletion-dialog";
 import UserForm from "@/components/admin/features/users/user-form";
@@ -30,54 +29,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { User } from "@/types/admin/user";
 
-function CopyPublicId({ publicId }: { publicId: string | undefined }) {
-  const [copied, setCopied] = useState(false);
-
-  if (!publicId) return;
-
-  return (
-    <TooltipProvider>
-      <Tooltip open={copied ? true : undefined} onOpenChange={(o) => !o && setCopied(false)}>
-        <TooltipTrigger asChild>
-          <button
-            type="button"
-            className="text-muted-foreground hover:text-primary ml-1 cursor-pointer transition"
-            aria-label="Copy public id"
-            onClick={async (event) => {
-              event.stopPropagation();
-              if (publicId) {
-                await navigator.clipboard.writeText(publicId);
-                setCopied(true);
-                setTimeout(() => setCopied(false), 1200);
-              }
-            }}
-          >
-            <CopyIcon size={16} />
-          </button>
-        </TooltipTrigger>
-        <TooltipContent className="bg-popover text-popover-foreground border-border rounded-md border px-3 py-2 shadow-lg">
-          {copied ? "Copied!" : "Copy"}
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
-  );
-}
-
 export const usersTableColumns: ColumnDef<User>[] = [
-  {
-    accessorKey: "public_id",
-    header: ({ column }) => <SortableHeader column={column}>Public ID</SortableHeader>,
-    cell: ({ row }) => (
-      <div className="text-foreground flex items-center gap-1 text-[13px] font-semibold">
-        {row.original.public_id ?? "-"}
-        <CopyPublicId publicId={row.original.public_id ?? undefined} />
-      </div>
-    ),
-    enableHiding: false,
-  },
   {
     accessorKey: "name",
     header: ({ column }) => <SortableHeader column={column}>Name</SortableHeader>,
@@ -221,7 +175,7 @@ export const usersTableColumns: ColumnDef<User>[] = [
     },
   },
   {
-    accessorKey: "created_at",
+    accessorKey: "created at",
     header: "Created At",
     cell: ({ row }) => {
       const createdAt = row.original.profile?.created_at;
