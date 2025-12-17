@@ -57,7 +57,7 @@ export default function SortableHeader<TData, TValue>({
       variant="ghost"
       onClick={handleClick}
       className={cn(
-        "flex cursor-pointer items-center justify-center !gap-x-1 border-none bg-transparent !px-0 !py-2 text-xs font-bold tracking-wide text-gray-600 !uppercase hover:bg-transparent hover:text-gray-500",
+        "flex cursor-pointer items-center justify-center gap-x-1! border-none bg-transparent px-0! py-2! text-xs font-bold tracking-wide text-gray-600 uppercase! hover:bg-transparent hover:text-gray-500",
         className,
       )}
       title={
@@ -72,13 +72,13 @@ export default function SortableHeader<TData, TValue>({
         <MoveUp
           className={cn(
             String(isSorted) === "asc" ? "text-primary" : "text-gray-400",
-            "!h-3.5 !w-3.5",
+            "h-3.5! w-3.5!",
           )}
         />
         <MoveDown
           className={cn(
             String(isSorted) === "desc" ? "text-primary" : "text-gray-400",
-            "!h-3.5 !w-3.5",
+            "h-3.5! w-3.5!",
           )}
         />
       </div>

@@ -68,7 +68,7 @@ export const usersTableColumns: ColumnDef<User>[] = [
   },
   {
     accessorKey: "email",
-    header: ({ column }) => <SortableHeader column={column}>Email</SortableHeader>,
+    header: ({ column }) => <SortableHeader column={column}>Email Address</SortableHeader>,
     cell: ({ row }) => (
       <span className="text-sm font-medium text-neutral-800">
         {row.original.profile?.email ?? "-"}
@@ -77,7 +77,7 @@ export const usersTableColumns: ColumnDef<User>[] = [
   },
   {
     accessorKey: "phone",
-    header: "Phone",
+    header: "Phone Number",
     cell: ({ row }) => {
       const phone = row.original.profile?.phone;
 

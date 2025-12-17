@@ -2,7 +2,7 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import dayjs from "dayjs";
-import { Activity, CalendarDays, CopyIcon, Mars, Phone, UserRound, Venus } from "lucide-react";
+import { Activity, CalendarDays, CopyIcon, Phone } from "lucide-react";
 import { useState } from "react";
 
 import SortableHeader from "@/components/shared/table/sortable-header";
@@ -71,6 +71,12 @@ export const clientsTableColumns: ColumnDef<Client>[] = [
       const enrollments = client.enrollments ?? [];
       const activeEnrollment = getCurrentActiveEnrollment(enrollments);
 
+      const lastActivity = client.last_activity;
+      const formatted =
+        lastActivity && dayjs(lastActivity).isValid()
+          ? dayjs(lastActivity).format("DD-MMMM-YYYY (hh:mm) A")
+          : (lastActivity ?? "");
+
       return (
         <div className="flex items-center gap-2">
           <Avatar>
@@ -104,17 +110,25 @@ export const clientsTableColumns: ColumnDef<Client>[] = [
                           <span className="text-primary font-medium">{activeEnrollment.code}</span>
                         </div>
                         <div className="text-foreground text-xs font-medium">
-                          Team:{" "}
+                          Assigned Team:{" "}
                           <span className="text-muted-foreground font-medium">
                             {activeEnrollment.team?.name}
                           </span>
                         </div>
                         <div className="text-foreground text-xs font-medium">
-                          Started:{" "}
+                          Started Date:{" "}
                           <span className="text-muted-foreground font-medium">
                             {dayjs(activeEnrollment.started_at).isValid()
                               ? dayjs(activeEnrollment.started_at).format("DD-MMMM-YYYY")
                               : activeEnrollment.started_at}
+                          </span>
+                        </div>
+                        <div className="text-foreground text-xs font-medium">
+                          Will End On:{" "}
+                          <span className="text-muted-foreground font-medium">
+                            {dayjs(activeEnrollment.ended_at).isValid()
+                              ? dayjs(activeEnrollment.ended_at).format("DD-MMMM-YYYY")
+                              : activeEnrollment.ended_at}
                           </span>
                         </div>
                       </div>
@@ -123,13 +137,16 @@ export const clientsTableColumns: ColumnDef<Client>[] = [
                 </TooltipProvider>
               )}
             </div>
-            <span className="text-muted-foreground text-xs font-semibold">{profile?.email}</span>
+            <span className="text-muted-foreground text-xs font-semibold">
+              Last Activity: {formatted ?? "-"}
+            </span>
           </div>
         </div>
       );
     },
     enableHiding: false,
   },
+
   {
     accessorKey: "contact phone",
     header: "Contact Phone",
@@ -150,34 +167,6 @@ export const clientsTableColumns: ColumnDef<Client>[] = [
             </Badge>
           )}
         </div>
-      );
-    },
-  },
-  {
-    accessorKey: "gender",
-    header: "Gender",
-    cell: ({ row }) => {
-      const gender = row.original.profile?.gender;
-      if (!gender) {
-        return (
-          <Badge
-            variant="outline"
-            className="bg-muted/60 text-muted-foreground pointer-events-none border-dashed text-[13px] font-semibold"
-          >
-            <span className="ml-1">Not provided</span>
-          </Badge>
-        );
-      }
-
-      const label = gender === "male" ? "Male" : gender === "female" ? "Female" : (gender ?? "");
-
-      return (
-        <span className="inline-flex items-center gap-1 text-sm font-medium text-neutral-800">
-          {gender === "male" && <Mars className="h-3.5 w-3.5" />}
-          {gender === "female" && <Venus className="h-3.5 w-3.5" />}
-          {gender !== "male" && gender !== "female" && <UserRound className="h-3.5 w-3.5" />}
-          <span className="capitalize">{label}</span>
-        </span>
       );
     },
   },
@@ -371,34 +360,6 @@ export const clientsTableColumns: ColumnDef<Client>[] = [
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
-      );
-    },
-  },
-
-  {
-    accessorKey: "last activity",
-    header: "Last Activity",
-    cell: ({ row }) => {
-      const lastActivity = row.original.last_activity;
-      const formatted =
-        lastActivity && dayjs(lastActivity).isValid()
-          ? dayjs(lastActivity).format("DD-MMMM-YYYY (hh:mm) A")
-          : (lastActivity ?? "");
-
-      return (
-        <div className="flex items-center gap-2">
-          {formatted ? (
-            <span className="text-sm font-medium text-neutral-800">{formatted}</span>
-          ) : (
-            <Badge
-              variant="outline"
-              className="bg-muted/60 text-muted-foreground pointer-events-none border-dashed text-[13px] font-semibold"
-            >
-              <CalendarDays className="h-3.5 w-3.5" />
-              <span className="ml-1">Not available</span>
-            </Badge>
-          )}
-        </div>
       );
     },
   },
