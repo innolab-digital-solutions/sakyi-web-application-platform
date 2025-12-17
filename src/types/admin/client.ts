@@ -16,7 +16,7 @@ export interface Enrollment {
   program: {
     id: number;
     code: string;
-    name: string;
+    title: string;
   };
 }
 

@@ -99,7 +99,7 @@ export const usersTableColumns: ColumnDef<User>[] = [
     },
   },
   {
-    accessorKey: "dob",
+    accessorKey: "date of birth",
     header: "Date of Birth",
     cell: ({ row }) => {
       const dob = row.original.profile?.dob;
