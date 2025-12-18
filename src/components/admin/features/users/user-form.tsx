@@ -47,7 +47,7 @@ export default function UserForm({
     { value: "", label: "None" },
     ...(rolesData && rolesData.status === "success" && Array.isArray(rolesData.data)
       ? rolesData.data.map((role: Role) => ({
-          value: role.name,
+          value: String(role.id),
           label: role.name,
         }))
       : []),
@@ -162,8 +162,10 @@ export default function UserForm({
       fd.append("password", String(payload.password ?? ""));
       fd.append("password_confirmation", String(payload.password_confirmation ?? ""));
     }
+
+    // Backend expects nullable integer role_id
     if (payload.role) {
-      fd.append("role", payload.role); // singular
+      fd.append("role_id", String(payload.role));
     }
 
     return fd;
@@ -291,10 +293,12 @@ export default function UserForm({
         <InputField
           id="phone"
           label="Phone"
-          placeholder="e.g. 09xxxxxxx"
+          type="tel"
+          placeholder="e.g. 0912345678"
           value={form.data.phone}
           onChange={(event) => form.setData("phone", event.target.value)}
           error={form.errors.phone as string}
+          required={!isEdit}
         />
       </div>
 
@@ -313,14 +317,16 @@ export default function UserForm({
           id="gender"
           label="Gender"
           value={String(form.data.gender ?? "")}
-          onChange={(v) => form.setData("gender", v as "male" | "female")}
+          onChange={(v) => form.setData("gender", v as "male" | "female" | "other")}
           options={[
             { value: "male", label: "Male" },
             { value: "female", label: "Female" },
+            { value: "other", label: "Other" },
           ]}
           disabled={form.processing}
           placeholder="Select gender"
           required
+          error={form.errors.gender as string}
         />
       </div>
 
