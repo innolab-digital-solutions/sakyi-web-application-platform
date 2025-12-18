@@ -1,6 +1,6 @@
 "use client";
 
-import { Plus, UserCog2 } from "lucide-react";
+import { Plus } from "lucide-react";
 
 import UserForm from "@/components/admin/features/users/user-form";
 import UserTable from "@/components/admin/features/users/user-table";
@@ -10,10 +10,8 @@ import { Button } from "@/components/ui/button";
 export default function UserListPage() {
   return (
     <ResourceListPage
-      icon={UserCog2}
       title="User Management"
-      description="Create, organize, and maintain user accounts(light profile) with ease. Assign role and keep your team structure clear and up to date.
-"
+      description="Create and maintain all user accounts in the system. Use roles to promote accounts to admin or staff access while leaving others as standard client profiles."
       createTrigger={
         <UserForm
           mode="create"

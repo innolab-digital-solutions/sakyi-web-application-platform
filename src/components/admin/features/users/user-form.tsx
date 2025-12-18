@@ -194,7 +194,11 @@ export default function UserForm({
         dob: defaultValues.profile?.dob ?? "",
         gender: defaultValues.profile?.gender ?? undefined,
         address: defaultValues.profile?.address ?? "",
-        role: defaultValues.profile?.role ?? "",
+        // Use the role id when editing so the select receives the correct value
+        role:
+          defaultValues.profile?.role && defaultValues.profile.role.id !== undefined
+            ? String(defaultValues.profile.role.id)
+            : "",
       };
 
       form.setDataAndDefaults(newData as Partial<typeof form.data>);
@@ -243,12 +247,12 @@ export default function UserForm({
       open={dialogOpen}
       onOpenChange={handleDialogOpenChange}
       onClose={() => form.reset()}
-      title={title ?? (isEdit ? "Edit User" : "Create User")}
+      title={title ?? (isEdit ? "Edit User Account" : "Create New User")}
       description={
         description ??
         (isEdit
-          ? "Update user information and role with confidence. Ensure each account stays accurate, organized, and aligned with your system's access requirements."
-          : "Fill in the user's basic details such as name, email, contact information, profile settings, and assign a role.")
+          ? "Update this user’s details or adjust their role if their responsibilities have changed."
+          : "Capture the user’s basic details and, when needed, assign a role for admin or staff access.")
       }
       onSubmit={handleSubmit}
       processing={form.processing}
@@ -262,7 +266,6 @@ export default function UserForm({
         label="Avatar"
         value={form.data.picture}
         onChange={(file) => form.setData("picture", file as File | undefined)}
-        maxSize={2 * 1024 * 1024}
         accept="image/jpg,image/jpeg,image/png,image/webp"
         error={form.errors.picture as string}
         disabled={form.processing}
@@ -334,6 +337,7 @@ export default function UserForm({
         label="Role"
         id="role"
         placeholder="Choose a role"
+        description="Choose an internal role for staff or admin, or leave as none for standard access."
         options={roleOptions}
         value={form.data.role ?? ""}
         onChange={(value) => form.setData("role", value ?? "")}

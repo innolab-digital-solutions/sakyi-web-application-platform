@@ -43,7 +43,10 @@ export const usersTableColumns: ColumnDef<User>[] = [
         <div className="flex items-center gap-2">
           <div>
             <Avatar>
-              <AvatarImage src={profile?.picture ?? ""} alt={profile?.name ?? "User avatar"} />
+              <AvatarImage
+                src={profile?.picture ?? undefined}
+                alt={profile?.name ?? "User avatar"}
+              />
               <AvatarFallback>{profile?.name?.[0] ?? "U"}</AvatarFallback>
             </Avatar>
           </div>
@@ -57,7 +60,7 @@ export const usersTableColumns: ColumnDef<User>[] = [
                 variant="secondary"
                 className="bg-primary/10 text-primary flex items-center gap-1 font-semibold!"
               >
-                {profile.role}
+                {profile.role.name}
               </Badge>
             )}
           </div>

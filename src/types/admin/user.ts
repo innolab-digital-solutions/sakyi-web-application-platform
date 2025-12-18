@@ -4,7 +4,6 @@ export interface User {
   id: number;
   created_at: string;
   profile: {
-    role: string;
     name: string;
     email: string;
     phone: string;
@@ -12,6 +11,10 @@ export interface User {
     dob: string;
     gender: "male" | "female" | "other" | null;
     address: string;
+    role: {
+      id: number;
+      name: string;
+    };
   };
   actions: {
     edit: {
