@@ -11,7 +11,7 @@ export const LOOKUP_ENDPOINTS = {
   ROLES: "/lookup/roles",
   USERS: "/lookup/users",
   PROGRAMS: "/lookup/programs",
-  TEAM_MEMBERS: "/lookup/members",
+  TEAM_MEMBERS: "/lookup/team-members",
   WORKOUT_CATEGORIES: "/lookup/workout-categories",
   FOOD_CATEGORIES: "/lookup/food-categories",
   FOOD_ITEMS: "/lookup/food-items",

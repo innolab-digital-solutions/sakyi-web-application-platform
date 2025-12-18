@@ -58,15 +58,15 @@ export default function TeamDeletionDialog({ team, className }: TeamDeletionDial
     <>
       {(() => {
         const isLoading = request.loading;
-        const isDeletable = Boolean(team.actions?.deletable);
-        const isDisabled = isLoading || !isDeletable;
+        const deleteAllowed = Boolean(team.actions?.delete?.allowed);
+        const deleteReasons = team.actions?.delete?.reasons ?? [];
+        const isDisabled = isLoading || !deleteAllowed;
 
         let disabledReason: string | undefined;
-
         if (isLoading) {
           disabledReason = "Deleting in progress. Please wait.";
-        } else if (!isDeletable) {
-          disabledReason = "You don't have permission to delete this team.";
+        } else if (!deleteAllowed && deleteReasons.length > 0) {
+          disabledReason = deleteReasons.join(" ").trim() || undefined;
         }
 
         return (
@@ -79,7 +79,7 @@ export default function TeamDeletionDialog({ team, className }: TeamDeletionDial
                 className,
               )}
               disabled={isDisabled}
-              onClick={() => (isDeletable ? setShowDeleteDialog(true) : undefined)}
+              onClick={() => (deleteAllowed ? setShowDeleteDialog(true) : undefined)}
               aria-label="Delete team"
             >
               <Trash2 className="h-2 w-2" />

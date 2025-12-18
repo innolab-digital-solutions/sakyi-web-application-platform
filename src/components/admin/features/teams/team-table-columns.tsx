@@ -1,7 +1,7 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { SquarePen } from "lucide-react";
+import { SquarePen, UserX } from "lucide-react";
 import React from "react";
 
 import TeamDeletionDialog from "@/components/admin/features/teams/team-deletion-dialog";
@@ -33,19 +33,20 @@ export const teamsTableColumns: ColumnDef<Team>[] = [
     },
   },
   {
-    accessorKey: "users",
+    accessorKey: "members",
     header: () => <span>Members</span>,
     cell: ({ row }) => {
-      const users = row.original.users ?? [];
+      const members = row.original.members ?? [];
 
-      if (users.length === 0) {
+      if (members.length === 0) {
         return (
           <div className="flex items-center justify-start">
             <Badge
               variant="outline"
               className="bg-muted/60 text-muted-foreground pointer-events-none border-dashed text-[13px] font-semibold"
             >
-              No members
+              <UserX className="h-3.5 w-3.5" />
+              <span className="ml-1">No members</span>
             </Badge>
           </div>
         );
@@ -54,7 +55,7 @@ export const teamsTableColumns: ColumnDef<Team>[] = [
       return (
         <div className="flex items-center">
           <div className="flex -space-x-2">
-            {users.slice(0, 5).map((member, index) => {
+            {members.slice(0, 5).map((member, index) => {
               const initial = member.name?.[0] ?? "?";
               return (
                 <div key={member.name + index} className="relative z-0">
@@ -82,11 +83,11 @@ export const teamsTableColumns: ColumnDef<Team>[] = [
                 </div>
               );
             })}
-            {users.length > 5 && (
+            {members.length > 5 && (
               <Tooltip>
                 <TooltipTrigger asChild>
                   <span className="bg-muted text-muted-foreground border-muted ml-1 flex size-8 cursor-pointer items-center justify-center rounded-full border border-dashed text-xs font-semibold">
-                    +{users.length - 5}
+                    +{members.length - 5}
                   </span>
                 </TooltipTrigger>
                 <TooltipContent
@@ -95,7 +96,7 @@ export const teamsTableColumns: ColumnDef<Team>[] = [
                   className="bg-popover text-popover-foreground border-border rounded-md border px-3 py-2 shadow-lg"
                 >
                   <div className="text-xs font-medium">
-                    {users.slice(5).map((member, index) => (
+                    {members.slice(5).map((member, index) => (
                       <div key={member.name + index} className="mb-1 last:mb-0">
                         <span className="text-foreground text-xs font-semibold">{member.name}</span>
                         {member.role && (
@@ -121,10 +122,14 @@ export const teamsTableColumns: ColumnDef<Team>[] = [
     header: "Actions",
     cell: ({ row }) => {
       const team = row.original;
-      const isEditable = Boolean(team.actions?.editable);
-      const disabledReason = isEditable
-        ? undefined
-        : "You don't have permission to edit this workout.";
+
+      const editAllowed = Boolean(team.actions?.edit?.allowed);
+      const editReasons = team.actions?.edit?.reasons ?? [];
+      const editDisabledReason =
+        editAllowed || editReasons.length === 0
+          ? undefined
+          : editReasons.join(" ").trim() || undefined;
+
       return (
         <div className="flex items-center space-x-0.5">
           <TeamForm
@@ -132,14 +137,15 @@ export const teamsTableColumns: ColumnDef<Team>[] = [
             defaultValues={team}
             trigger={(() => {
               return (
-                <DisabledTooltip reason={disabledReason}>
+                <DisabledTooltip reason={editDisabledReason}>
                   <Button
                     variant="ghost"
                     size="sm"
                     className="text-accent hover:bg-accent/10 hover:text-accent flex cursor-pointer items-center justify-center text-sm font-semibold"
-                    disabled={!isEditable}
+                    disabled={!editAllowed}
+                    aria-label="Edit team"
                   >
-                    <SquarePen className="h-2 w-2" />
+                    <SquarePen className="group-hover:text-accent h-4 w-4 transition-colors duration-150" />
                     <span>Edit</span>
                   </Button>
                 </DisabledTooltip>

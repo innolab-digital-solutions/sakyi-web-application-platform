@@ -1,4 +1,3 @@
-import { Users } from "lucide-react";
 import type { Metadata } from "next";
 
 import TeamForm from "@/components/admin/features/teams/team-form";
@@ -15,9 +14,8 @@ export const metadata: Metadata = {
 export default function TeamListPage() {
   return (
     <ResourceListPage
-      icon={Users}
       title="Team Management"
-      description="Organize and manage your teams efficiently—add new teams, edit existing ones, and maintain member details for better coordination."
+      description="Define and oversee the internal teams that support your clients. Assign members to each team so responsibilities and ownership stay clear."
       createTrigger={<TeamForm mode="create" trigger={<CreateButton label="Add Team" />} />}
       table={<TeamTable />}
     />

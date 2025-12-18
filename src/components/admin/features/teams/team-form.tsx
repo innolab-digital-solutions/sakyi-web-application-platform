@@ -1,6 +1,5 @@
 "use client";
 
-import { Users } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -162,7 +161,7 @@ export default function TeamForm({
   const [addedMembers, setAddedMembers] = useState<
     { id: number; name: string; role: string | null; picture: string | null }[]
   >(
-    defaultValues?.users?.map((u) => ({
+    defaultValues?.members?.map((u) => ({
       id: u.id,
       name: u.name,
       role: u.role,
@@ -211,12 +210,12 @@ export default function TeamForm({
         const newData = {
           name: defaultValues.name,
           description: defaultValues.description,
-          member_ids: defaultValues?.users?.map((u) => u.id.toString()) ?? [],
+          member_ids: defaultValues?.members?.map((u) => u.id.toString()) ?? [],
         };
         form.setDataAndDefaults(newData);
 
         setAddedMembers(
-          defaultValues.users?.map((u) => ({
+          defaultValues.members?.map((u) => ({
             id: Number(u.id),
             name: u.name,
             role: u.role,
@@ -262,14 +261,13 @@ export default function TeamForm({
       trigger={trigger}
       open={dialogOpen}
       onOpenChange={handleDialogOpenChange}
-      title={title ?? (isEdit ? "Edit Team" : "Create Team")}
+      title={title ?? (isEdit ? "Edit Team" : "Create New Team")}
       description={
         description ??
         (isEdit
-          ? "Update your team’s details and manage its members."
-          : "Fill out the form below to create a new team and assign its members.")
+          ? "Update this team’s name or members so responsibilities stay clear."
+          : "Set up a new team by giving it a clear name and selecting the members who will belong to it.")
       }
-      icon={<Users className="h-5 w-5" />}
       isEdit={isEdit}
       processing={form.processing}
       submitLabel={isEdit ? "Save Changes" : "Create Team"}
