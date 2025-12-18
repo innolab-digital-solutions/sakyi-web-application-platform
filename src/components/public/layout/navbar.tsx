@@ -1,14 +1,10 @@
 "use client";
 
-import {
-Menu,
-Smartphone,
-  X,
-} from "lucide-react";
+import { Menu, Smartphone, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import React, {  useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { publicNavigation } from "@/config/navigation/public";
@@ -65,7 +61,7 @@ export default function Navbar() {
 
         {/* Clean Desktop Navigation */}
         <div className="hidden items-center space-x-8 md:flex">
-            {items.map((item) => {
+          {items.map((item) => {
             return (
               <Link
                 key={item.path}
@@ -130,6 +126,7 @@ export default function Navbar() {
                 <Link
                   key={item.path}
                   href={item.path}
+                  onClick={() => setIsMenuOpen(false)}
                   className={`block py-2 text-sm font-medium transition-all duration-300 ease-in-out ${
                     item.active
                       ? "rounded-lg bg-linear-to-r from-[#35bec5]/10 via-[#4bc4db]/10 to-[#0c96c4]/10 px-3 text-slate-900"
@@ -140,7 +137,6 @@ export default function Navbar() {
                     animationDelay: `${index * 50}ms`,
                     animation: isMenuOpen ? "slideInDown 0.3s ease-out forwards" : "none"
                   }}
-                  onClick={() => setIsMenuOpen(false)}
                 >
                   {item.name}
                 </Link>

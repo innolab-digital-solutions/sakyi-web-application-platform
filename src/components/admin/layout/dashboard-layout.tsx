@@ -6,6 +6,7 @@ import React from "react";
 import AccessControl from "@/components/admin/layout/access-control";
 import DashboardHeader from "@/components/admin/layout/dashboard-header";
 import DashboardSidebar from "@/components/admin/layout/dashboard-sidebar";
+import TopLoadingBar from "@/components/admin/layout/top-loading-bar";
 import NoSSR from "@/components/shared/no-ssr";
 import PageTransition from "@/components/shared/page-transition";
 import QueryProvider from "@/components/shared/query-provider";
@@ -29,6 +30,7 @@ export default function DashboardLayout({
       <AuthProvider>
         <TransitionProvider defaultTransition="scale">
           <AccessControl requireAuth={!isLoginPage} checkPermissions={!isLoginPage}>
+            <TopLoadingBar />
             {isLoginPage ? (
               children
             ) : (
