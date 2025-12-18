@@ -45,7 +45,7 @@ export default function UserTable() {
         },
       }}
       emptyMessage="No users found. Create your first user to get started."
-      filters={<UserFiltersDropdown />}
+      filters={({ isLoading }) => <UserFiltersDropdown isLoading={isLoading} />}
     />
   );
 }

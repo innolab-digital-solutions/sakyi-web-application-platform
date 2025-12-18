@@ -1,6 +1,5 @@
 "use client";
 
-import { UserCog2 } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect } from "react";
 import { toast } from "sonner";
@@ -15,7 +14,8 @@ import { ENDPOINTS } from "@/config/endpoints";
 import { useForm } from "@/hooks/use-form";
 import { useRequest } from "@/hooks/use-request";
 import { CreateUserSchema, EditUserSchema } from "@/lib/validations/admin/user-schema";
-import { Role, User, UserApiResponse, UserFormProperties } from "@/types/admin/user";
+import { Role, RoleApiResponse } from "@/types/admin/role";
+import { User, UserApiResponse, UserFormProperties } from "@/types/admin/user";
 import { buildDefaultListUrl } from "@/utils/shared/parameters";
 
 export default function UserForm({
@@ -38,17 +38,19 @@ export default function UserForm({
   const isEdit = mode === "edit";
 
   // Fetch roles
-  const { data: rolesData } = useRequest<Role[]>({
+  const { data: rolesData } = useRequest<RoleApiResponse>({
     url: ENDPOINTS.LOOKUP.ROLES,
     queryKey: ["lookup-roles"],
   });
 
   const roleOptions = [
     { value: "", label: "None" },
-    ...(rolesData?.data?.map((role: Role) => ({
-      value: role.name,
-      label: role.name,
-    })) ?? []),
+    ...(rolesData && rolesData.status === "success" && Array.isArray(rolesData.data)
+      ? rolesData.data.map((role: Role) => ({
+          value: role.name,
+          label: role.name,
+        }))
+      : []),
   ];
 
   const form = useForm(
@@ -183,17 +185,17 @@ export default function UserForm({
   useEffect(() => {
     if (isEdit && defaultValues) {
       const newData = {
-        name: defaultValues.name ?? "",
-        picture: defaultValues.picture || undefined,
-        email: defaultValues.email ?? "",
-        phone: defaultValues.phone ?? "",
-        dob: defaultValues.dob ?? "",
-        gender: defaultValues.gender ?? undefined,
-        address: defaultValues.address ?? "",
-        role: defaultValues.role ?? "",
+        name: defaultValues.profile?.name ?? "",
+        picture: defaultValues.profile?.picture || undefined,
+        email: defaultValues.profile?.email ?? "",
+        phone: defaultValues.profile?.phone ?? "",
+        dob: defaultValues.profile?.dob ?? "",
+        gender: defaultValues.profile?.gender ?? undefined,
+        address: defaultValues.profile?.address ?? "",
+        role: defaultValues.profile?.role ?? "",
       };
 
-      form.setDataAndDefaults(newData);
+      form.setDataAndDefaults(newData as Partial<typeof form.data>);
     } else {
       const newData = {
         name: "",
@@ -208,19 +210,18 @@ export default function UserForm({
         role: "",
       };
 
-      form.setDataAndDefaults(newData);
+      form.setDataAndDefaults(newData as Partial<typeof form.data>);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     defaultValues?.id,
-    defaultValues?.name,
-    defaultValues?.email,
-    defaultValues?.phone,
-    defaultValues?.dob,
-    defaultValues?.picture,
-    defaultValues?.gender,
-    defaultValues?.address,
-    defaultValues?.role,
+    defaultValues?.profile?.name,
+    defaultValues?.profile?.email,
+    defaultValues?.profile?.phone,
+    defaultValues?.profile?.dob,
+    defaultValues?.profile?.gender,
+    defaultValues?.profile?.address,
+    defaultValues?.profile?.role,
     isEdit,
   ]);
 
@@ -247,7 +248,6 @@ export default function UserForm({
           ? "Update user information and role with confidence. Ensure each account stays accurate, organized, and aligned with your system's access requirements."
           : "Fill in the user's basic details such as name, email, contact information, profile settings, and assign a role.")
       }
-      icon={<UserCog2 className="h-5 w-5" />}
       onSubmit={handleSubmit}
       processing={form.processing}
       isEdit={isEdit}

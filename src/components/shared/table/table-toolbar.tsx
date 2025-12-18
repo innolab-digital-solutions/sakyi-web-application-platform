@@ -57,7 +57,7 @@ export default function TableToolbar<TData>({
 
       <div className="flex items-center space-x-2">
         {toolbarActions && <div className="flex items-center space-x-2">{toolbarActions}</div>}
-        {showColumnVisibility && table && <TableViewOptions table={table} />}
+        {showColumnVisibility && <TableViewOptions table={table} isLoading={isLoading} />}
       </div>
     </div>
   );

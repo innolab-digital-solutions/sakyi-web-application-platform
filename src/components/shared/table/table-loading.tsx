@@ -70,11 +70,11 @@ export default function TableLoading<TData, TValue>({
         <Table>
           {/* Table header - keep headers visible */}
           <TableHeader className="border-border bg-muted/30 border-b">
-            <TableRow className="hover:!bg-transparent">
+            <TableRow className="hover:bg-transparent!">
               {columns.map((column, index) => (
                 <TableHead
                   key={column.id || index}
-                  className="text-xs font-semibold tracking-wide text-gray-600 !uppercase"
+                  className="text-xs font-semibold tracking-wide text-gray-600 uppercase!"
                 >
                   <div className="px-3.5 py-1.5">
                     {typeof column.header === "string" ? column.header : "Loading..."}

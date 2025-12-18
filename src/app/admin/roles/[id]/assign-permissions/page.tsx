@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeft, ShieldCheck } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 
@@ -30,14 +30,13 @@ export default function RolePermissionsAssignmentPage({
   return (
     <div className="flex flex-col gap-2">
       <PageHeader
-        icon={ShieldCheck}
         title="Assign Permissions"
-        description="Grant or revoke capabilities for this role to precisely control what members can see and do across the admin. Choose individual permissions or whole groups—changes take effect immediately."
+        description="Choose exactly what this role can see and do in the admin. Turn on only the permissions they need so access stays least‑privilege and easy to audit."
         actions={
           <Button variant="outline" asChild>
             <Link
               href={PATHS.ADMIN.ROLES.LIST}
-              className="flex items-center gap-2 text-sm font-semibold text-gray-800 hover:!bg-gray-100 hover:!text-gray-800"
+              className="flex items-center gap-2 text-sm font-semibold text-gray-800 hover:bg-gray-100! hover:text-gray-800!"
             >
               <ArrowLeft className="h-4 w-4" />
               Go Back

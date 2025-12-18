@@ -248,11 +248,11 @@ export default function DataTable<TData, TValue>({
           {/* Table header with sortable columns */}
           <TableHeader className="border-border bg-muted/30 border-b">
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id} className="hover:!bg-transparent">
+              <TableRow key={headerGroup.id} className="hover:bg-transparent!">
                 {headerGroup.headers.map((header) => (
                   <TableHead
                     key={header.id}
-                    className="text-xs font-bold tracking-wide text-gray-600 !uppercase"
+                    className="text-xs font-bold tracking-wide text-gray-600 uppercase!"
                   >
                     <div className="px-3.5 py-1.5">
                       {header.isPlaceholder

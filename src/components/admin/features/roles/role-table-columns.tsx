@@ -45,6 +45,7 @@ export const rolesTableColumns: ColumnDef<Role>[] = [
         </div>
       );
     },
+    enableHiding: false,
   },
   {
     accessorKey: "users",

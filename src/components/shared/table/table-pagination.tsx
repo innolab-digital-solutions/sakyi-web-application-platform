@@ -95,12 +95,12 @@ export default function TablePagination<TData>({
           <SelectTrigger className="h-8 w-[70px] cursor-pointer hover:bg-gray-100">
             <SelectValue placeholder={String(actualPageSize)} />
           </SelectTrigger>
-          <SelectContent side="top" className="!min-w-[2rem]">
+          <SelectContent side="top" className="min-w-8!">
             {[10, 20, 30, 40, 50].map((pageSize) => (
               <SelectItem
                 key={pageSize}
                 value={String(pageSize)}
-                className="hover:!bg-accent/10 hover:!text-accent focus:!bg-accent/20 focus:!text-accent font-medium"
+                className="hover:bg-accent/10! hover:text-accent! focus:bg-accent/20! focus:text-accent! font-medium"
               >
                 {pageSize}
               </SelectItem>

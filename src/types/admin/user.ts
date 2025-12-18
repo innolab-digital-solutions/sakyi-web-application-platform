@@ -12,11 +12,6 @@ export interface User {
     dob: string;
     gender: "male" | "female" | "other" | null;
     address: string;
-    created_at: string;
-    focus: {
-      goal: string | null;
-      interests: string[] | null;
-    };
   };
   actions: {
     edit: {

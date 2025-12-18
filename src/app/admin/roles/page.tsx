@@ -15,7 +15,7 @@ export default function RolesListPage() {
   return (
     <ResourceListPage
       title="Roles & Permissions"
-      description="View, manage, and assign roles to control user permissions and maintain secure access throughout the platform."
+      description="Review all roles in your workspace, adjust who should use each one, and keep access levels aligned with your team structure and security policies."
       createTrigger={<RoleForm mode="create" trigger={<CreateButton label="Add Role" />} />}
       table={<RoleTable />}
     />
