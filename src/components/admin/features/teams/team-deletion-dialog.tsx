@@ -66,7 +66,7 @@ export default function TeamDeletionDialog({ team, className }: TeamDeletionDial
         if (isLoading) {
           disabledReason = "Deleting in progress. Please wait.";
         } else if (!deleteAllowed && deleteReasons.length > 0) {
-          disabledReason = deleteReasons.join(" ").trim() || undefined;
+          disabledReason = deleteReasons[0]?.trim() || undefined;
         }
 
         return (
@@ -75,7 +75,7 @@ export default function TeamDeletionDialog({ team, className }: TeamDeletionDial
               variant="ghost"
               size="sm"
               className={cn(
-                "hover:bg-destructive/10 hover:text-destructive text-destructive flex cursor-pointer items-center justify-center text-sm font-semibold disabled:!pointer-events-auto disabled:cursor-help disabled:bg-transparent",
+                "hover:bg-destructive/10 hover:text-destructive text-destructive flex cursor-pointer items-center justify-center text-sm font-semibold disabled:pointer-events-auto! disabled:cursor-help disabled:bg-transparent",
                 className,
               )}
               disabled={isDisabled}

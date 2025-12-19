@@ -126,9 +126,7 @@ export const teamsTableColumns: ColumnDef<Team>[] = [
       const editAllowed = Boolean(team.actions?.edit?.allowed);
       const editReasons = team.actions?.edit?.reasons ?? [];
       const editDisabledReason =
-        editAllowed || editReasons.length === 0
-          ? undefined
-          : editReasons.join(" ").trim() || undefined;
+        editAllowed || editReasons.length === 0 ? undefined : editReasons[0]?.trim() || undefined;
 
       return (
         <div className="flex items-center space-x-0.5">

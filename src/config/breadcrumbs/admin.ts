@@ -174,6 +174,31 @@ export const adminBreadcrumbs: Breadcrumbs = {
     { label: "Blog Categories", href: PATHS.ADMIN.BLOG_CATEGORIES.LIST },
   ],
 
+  /** Blog posts list page */
+  "/admin/blog-posts": [
+    { label: "Admin Control Panel" },
+    { label: "Content Management" },
+    { label: "Blog" },
+    { label: "Blog Posts", href: PATHS.ADMIN.BLOG_POSTS.LIST },
+  ],
+
+  /** Blog posts create page */
+  "/admin/blog-posts/create": [
+    { label: "Admin Control Panel" },
+    { label: "Content Management" },
+    { label: "Blog" },
+    { label: "Blog Posts", href: PATHS.ADMIN.BLOG_POSTS.LIST },
+    { label: "Create" },
+  ],
+
+  /** Blog posts edit page (dynamic: :id replaced at runtime) */
+  "/admin/blog-posts/:id/edit": [
+    { label: "Admin Control Panel" },
+    { label: "Content Management" },
+    { label: "Blog" },
+    { label: "Blog Posts", href: PATHS.ADMIN.BLOG_POSTS.LIST },
+    { label: "Edit" },
+  ],
   /** Testimonials list page */
   "/admin/testimonials": [
     { label: "Admin Control Panel" },

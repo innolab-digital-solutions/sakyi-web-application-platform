@@ -66,7 +66,7 @@ export default function RoleDeletionDialog({ role, className }: RoleDeletionDial
         if (isLoading) {
           disabledReason = "Deleting in progress. Please wait.";
         } else if (!deleteAllowed && deleteReasons.length > 0) {
-          disabledReason = deleteReasons.join(" ").trim() || undefined;
+          disabledReason = deleteReasons[0]?.trim() || undefined;
         }
 
         const hasReason = Boolean(disabledReason);

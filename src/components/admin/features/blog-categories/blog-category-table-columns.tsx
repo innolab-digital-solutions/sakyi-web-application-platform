@@ -23,7 +23,7 @@ export const blogCategoriesTableColumns: ColumnDef<BlogCategory>[] = [
       return (
         <div>
           <div className="text-foreground text-sm font-semibold">{name}</div>
-          <div className="text-muted-foreground max-w-full break-words whitespace-pre-line">
+          <div className="text-muted-foreground max-w-full wrap-break-word whitespace-pre-line">
             {description}
           </div>
         </div>
@@ -37,23 +37,25 @@ export const blogCategoriesTableColumns: ColumnDef<BlogCategory>[] = [
     cell: ({ row }) => {
       const blogCategory = row.original;
 
+      const editAllowed = Boolean(blogCategory.actions?.edit?.allowed);
+      const editReasons = blogCategory.actions?.edit?.reasons ?? [];
+      const editDisabledReason =
+        editAllowed || editReasons.length === 0 ? undefined : editReasons[0]?.trim() || undefined;
+
       return (
         <div className="flex items-center space-x-0.5">
           <BlogCategoryForm
             mode="edit"
             defaultValues={blogCategory}
             trigger={(() => {
-              const isEditable = Boolean(blogCategory.actions?.editable);
-              const disabledReason = isEditable
-                ? undefined
-                : "You don't have permission to edit this category.";
               return (
-                <DisabledTooltip reason={disabledReason}>
+                <DisabledTooltip reason={editDisabledReason}>
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="hover:bg-accent/10 hover:text-accent text-accent flex cursor-pointer items-center justify-center text-sm font-semibold"
-                    disabled={!isEditable}
+                    className="text-accent hover:bg-accent/10 hover:text-accent flex cursor-pointer items-center justify-center text-sm font-semibold"
+                    disabled={!editAllowed}
+                    aria-label="Edit blog category"
                   >
                     <SquarePen className="h-2 w-2" />
                     <span>Edit</span>

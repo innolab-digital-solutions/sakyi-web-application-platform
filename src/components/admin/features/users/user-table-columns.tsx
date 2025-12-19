@@ -240,7 +240,7 @@ export const usersTableColumns: ColumnDef<User>[] = [
                   const disabledReason =
                     editAllowed || reasons.length === 0
                       ? undefined
-                      : reasons.join(" ").trim() || undefined;
+                      : reasons[0]?.trim() || undefined;
                   return (
                     <DisabledTooltip reason={disabledReason}>
                       <Button

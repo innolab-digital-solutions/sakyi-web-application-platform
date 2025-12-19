@@ -18,7 +18,7 @@ const DisabledTooltip = React.forwardRef<HTMLSpanElement, DisabledTooltipPropert
   ) => {
     return (
       <Tooltip>
-        <TooltipTrigger asChild className="!border-transparent !bg-transparent !p-0">
+        <TooltipTrigger asChild className="border-transparent! bg-transparent! p-0!">
           <span ref={reference} className={cn(className)} {...restProperties}>
             {children}
           </span>
@@ -27,7 +27,7 @@ const DisabledTooltip = React.forwardRef<HTMLSpanElement, DisabledTooltipPropert
           <TooltipContent
             side={side}
             align={align}
-            className="bg-popover text-popover-foreground border-border max-w-xs rounded-md border px-3 py-2 shadow-lg"
+            className="bg-popover text-popover-foreground border-border w-fit rounded-md border px-3 py-2 shadow-lg"
           >
             {reason}
           </TooltipContent>

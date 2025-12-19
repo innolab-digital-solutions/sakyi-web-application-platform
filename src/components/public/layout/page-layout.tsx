@@ -5,10 +5,10 @@ import "aos/dist/aos.css";
 import AOS from "aos";
 import React, { useEffect } from "react";
 
-import TopLoadingBar from "@/components/admin/layout/top-loading-bar";
 import Footer from "@/components/public/layout/footer";
 import Navbar from "@/components/public/layout/navbar";
 import QueryProvider from "@/components/shared/query-provider";
+import TopLoadingBar from "@/components/shared/top-loading-bar";
 import { TransitionProvider } from "@/context/transition-context";
 
 export default function PageLayout({ children }: { children: React.ReactNode }) {

@@ -2,15 +2,24 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import dayjs from "dayjs";
-import { Archive, CalendarDays, CheckCircle, FileEdit, SquarePen } from "lucide-react";
+import { Archive, CalendarDays, CheckCircle, Ellipsis, FileEdit, SquarePen } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
 import DisabledTooltip from "@/components/shared/disabled-tooltip";
 import SortableHeader from "@/components/shared/table/sortable-header";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { PATHS } from "@/config/paths";
 import { BlogPost } from "@/types/admin/blog-post";
 import { cn } from "@/utils/shared/cn";
@@ -55,14 +64,13 @@ export const blogPostsTableColumns: ColumnDef<BlogPost>[] = [
 
       return (
         <div className="flex min-w-0 items-start gap-4">
-          <div className="bg-muted/50 ring-muted-foreground/5 relative size-12 shrink-0 overflow-hidden rounded-md ring-1">
-            {thumbnailUrl ? (
-              <Image src={thumbnailUrl} alt={title} width={48} height={48} />
-            ) : (
-              <div className="text-muted-foreground/50 flex h-full w-full items-center justify-center text-xs font-medium">
-                N/A
-              </div>
-            )}
+          <div>
+            <Avatar className="size-12 rounded-md">
+              <AvatarImage src={thumbnailUrl} alt={title} className="object-cover" />
+              <AvatarFallback className="border-muted size-12 rounded-md border bg-gray-100">
+                <Image src="/images/no-image.png" alt="No image" width={32} height={32} />
+              </AvatarFallback>
+            </Avatar>
           </div>
           <div className="flex min-w-0 flex-1 flex-col gap-1">
             <div className="flex flex-wrap items-center gap-2">
@@ -78,7 +86,7 @@ export const blogPostsTableColumns: ColumnDef<BlogPost>[] = [
                 <span>{meta.label}</span>
               </Badge>
             </div>
-            <div className="text-muted-foreground line-clamp-1 max-w-full break-words whitespace-pre-line">
+            <div className="text-muted-foreground line-clamp-1 max-w-full wrap-break-word whitespace-pre-line">
               {description}
             </div>
           </div>
@@ -96,14 +104,14 @@ export const blogPostsTableColumns: ColumnDef<BlogPost>[] = [
   },
   {
     accessorKey: "published_at",
-    header: ({ column }) => <SortableHeader column={column}>Published</SortableHeader>,
+    header: () => "Published At",
     cell: ({ row }) => {
       const publishedAt = row.getValue("published_at") as string | null;
       if (!publishedAt) {
         return (
           <Badge
             variant="outline"
-            className="bg-muted/60 text-muted-foreground border-dashed !font-semibold"
+            className="bg-muted/60 text-muted-foreground border-dashed font-semibold!"
           >
             <CalendarDays className="h-3.5 w-3.5" />
             <span className="ml-1">Not published</span>
@@ -126,32 +134,90 @@ export const blogPostsTableColumns: ColumnDef<BlogPost>[] = [
       const blogPost = row.original;
 
       return (
-        <div className="flex items-center space-x-0.5">
-          <DisabledTooltip
-            reason={
-              blogPost.actions?.editable
-                ? undefined
-                : "You don't have permission to edit this post."
-            }
-          >
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
             <Button
-              variant="ghost"
-              size="sm"
-              asChild
-              disabled={!Boolean(blogPost.actions?.editable)}
+              variant="outline"
+              size="icon"
+              aria-label="Open actions"
+              className="hover:text-foreground! ml-auto size-8 cursor-pointer items-center justify-center hover:bg-gray-100!"
             >
-              <Link
-                href={PATHS.ADMIN.BLOG_POSTS.EDIT(blogPost.id)}
-                className="hover:bg-accent/10 hover:text-accent text-accent flex cursor-pointer items-center justify-center text-sm font-semibold disabled:hover:!bg-transparent disabled:hover:!text-inherit"
-              >
-                <SquarePen className="h-2 w-2" />
-                <span>Edit</span>
-              </Link>
+              <Ellipsis className="h-5 w-5" />
             </Button>
-          </DisabledTooltip>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" sideOffset={8} className="p-3.5">
+            <DropdownMenuLabel className="text-muted-foreground text-[13px] font-semibold">
+              Blog Post Actions
+            </DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem asChild>
+              {(() => {
+                const editAllowed = Boolean(blogPost.actions?.edit?.allowed);
+                const editReasons = blogPost.actions?.edit?.reasons ?? [];
+                const editDisabledReason =
+                  editAllowed || editReasons.length === 0
+                    ? undefined
+                    : editReasons[0]?.trim() || undefined;
 
-          <BlogPostDeletionDialog blogPost={blogPost} />
-        </div>
+                return (
+                  <DisabledTooltip reason={editDisabledReason}>
+                    <Button
+                      asChild
+                      variant="outline"
+                      className="hover:bg-accent/10! group hover:text-accent! hover:ring-none! flex w-full cursor-pointer! items-center justify-start gap-1.5 border-none! text-sm font-medium text-gray-700 shadow-none disabled:hover:bg-transparent! disabled:hover:text-inherit!"
+                      aria-label="Edit blog post"
+                      disabled={!editAllowed}
+                    >
+                      <Link
+                        href={PATHS.ADMIN.BLOG_POSTS.EDIT(blogPost.id)}
+                        aria-disabled={!editAllowed}
+                        tabIndex={editAllowed ? 0 : -1}
+                      >
+                        <Archive className="group-hover:text-accent h-4 w-4 transition-colors duration-150" />
+                        <span>Move to Archive</span>
+                      </Link>
+                    </Button>
+                  </DisabledTooltip>
+                );
+              })()}
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              {(() => {
+                const editAllowed = Boolean(blogPost.actions?.edit?.allowed);
+                const editReasons = blogPost.actions?.edit?.reasons ?? [];
+                const editDisabledReason =
+                  editAllowed || editReasons.length === 0
+                    ? undefined
+                    : editReasons[0]?.trim() || undefined;
+
+                return (
+                  <DisabledTooltip reason={editDisabledReason}>
+                    <Button
+                      asChild
+                      variant="outline"
+                      className="hover:bg-accent/10! group hover:text-accent! hover:ring-none! flex w-full cursor-pointer! items-center justify-start gap-1.5 border-none! text-sm font-medium text-gray-700 shadow-none disabled:hover:bg-transparent! disabled:hover:text-inherit!"
+                      aria-label="Edit blog post"
+                      disabled={!editAllowed}
+                    >
+                      <Link
+                        href={PATHS.ADMIN.BLOG_POSTS.EDIT(blogPost.id)}
+                        aria-disabled={!editAllowed}
+                        tabIndex={editAllowed ? 0 : -1}
+                      >
+                        <SquarePen className="group-hover:text-accent h-4 w-4 transition-colors duration-150" />
+                        <span>Edit Post</span>
+                      </Link>
+                    </Button>
+                  </DisabledTooltip>
+                );
+              })()}
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem asChild>
+              <BlogPostDeletionDialog blogPost={blogPost} />
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       );
     },
   },

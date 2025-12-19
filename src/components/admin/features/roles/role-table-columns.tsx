@@ -247,9 +247,7 @@ export const rolesTableColumns: ColumnDef<Role>[] = [
                 const editAllowed = Boolean(role.actions?.edit?.allowed);
                 const reasons = role.actions?.edit?.reasons ?? [];
                 const disabledReason =
-                  editAllowed || reasons.length === 0
-                    ? undefined
-                    : reasons.join(" ").trim() || undefined;
+                  editAllowed || reasons.length === 0 ? undefined : reasons[0]?.trim() || undefined;
 
                 return (
                   <DisabledTooltip reason={disabledReason}>

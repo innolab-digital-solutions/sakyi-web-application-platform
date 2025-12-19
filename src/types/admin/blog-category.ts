@@ -1,23 +1,18 @@
 import { ApiResponse } from "@/types/shared/api";
-import { Pagination } from "@/types/shared/common";
 
 export interface BlogCategory {
   id: number;
   name: string;
-  slug: string;
   description: string | null;
-  actions?: {
-    editable?: boolean;
-    deletable?: boolean;
-  };
-}
-
-export interface BlogCategoriesResponse {
-  status: string;
-  message: string;
-  data: BlogCategory[];
-  meta: {
-    pagination: Pagination;
+  actions: {
+    edit: {
+      allowed: boolean;
+      reasons: string[];
+    };
+    delete: {
+      allowed: boolean;
+      reasons: string[];
+    };
   };
 }
 

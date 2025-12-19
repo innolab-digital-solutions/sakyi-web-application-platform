@@ -1,5 +1,4 @@
 import { ApiResponse } from "@/types/shared/api";
-import { Pagination } from "@/types/shared/common";
 
 export interface BlogPost {
   id: number;
@@ -14,18 +13,15 @@ export interface BlogPost {
     id: number;
     name: string;
   };
-  actions?: {
-    editable?: boolean;
-    deletable?: boolean;
-  };
-}
-
-export interface BlogPostsResponse {
-  status: string;
-  message: string;
-  data: BlogPost[];
-  meta: {
-    pagination: Pagination;
+  actions: {
+    edit: {
+      allowed: boolean;
+      reasons: string[];
+    };
+    delete: {
+      allowed: boolean;
+      reasons: string[];
+    };
   };
 }
 

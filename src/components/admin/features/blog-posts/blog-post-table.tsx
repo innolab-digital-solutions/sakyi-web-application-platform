@@ -18,7 +18,7 @@ export default function BlogPostTable() {
         customSkeletons: {
           title: (
             <div className="flex min-w-0 items-start gap-4">
-              <Skeleton className="size-12 flex-shrink-0 animate-pulse rounded-md" />
+              <Skeleton className="size-12 shrink-0 animate-pulse rounded-md" />
               <div className="flex min-w-0 flex-1 flex-col gap-1">
                 <div className="flex flex-wrap items-center gap-2">
                   <Skeleton className="h-4 w-48 animate-pulse rounded" />
@@ -28,7 +28,7 @@ export default function BlogPostTable() {
               </div>
             </div>
           ),
-          category: <Skeleton className="h-4 w-24 animate-pulse rounded" />,
+          category: <Skeleton className="h-5 w-24 animate-pulse rounded" />,
           published_at: <Skeleton className="h-5 w-32 animate-pulse rounded" />,
           actions: (
             <div className="flex items-center space-x-1">

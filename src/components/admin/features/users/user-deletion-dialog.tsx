@@ -66,7 +66,7 @@ export default function UserDeletionDialog({ user, className }: UserDeletionDial
         if (isLoading) {
           disabledReason = "Deleting in progress. Please wait.";
         } else if (!deleteAllowed && deleteReasons.length > 0) {
-          disabledReason = deleteReasons.join(" ").trim() || undefined;
+          disabledReason = deleteReasons[0]?.trim() || undefined;
         }
 
         return (
