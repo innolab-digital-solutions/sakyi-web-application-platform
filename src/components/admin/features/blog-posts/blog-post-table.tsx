@@ -2,11 +2,13 @@
 
 import React from "react";
 
-import { blogPostsTableColumns } from "@/components/admin/features/blog-posts/blog-post-table-columns";
 import ResourceTable from "@/components/admin/shared/resource-table";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ENDPOINTS } from "@/config/endpoints";
 import { BlogPost } from "@/types/admin/blog-post";
+
+import BlogPostFiltersDropdown from "./blog-post-filters-dropdown";
+import { blogPostsTableColumns } from "./blog-post-table-columns";
 
 export default function BlogPostTable() {
   return (
@@ -32,13 +34,13 @@ export default function BlogPostTable() {
           published_at: <Skeleton className="h-5 w-32 animate-pulse rounded" />,
           actions: (
             <div className="flex items-center space-x-1">
-              <Skeleton className="h-8 w-16 animate-pulse rounded" />
-              <Skeleton className="h-8 w-16 animate-pulse rounded" />
+              <Skeleton className="h-8 w-8 animate-pulse rounded" />
             </div>
           ),
         },
       }}
       emptyMessage="No blog posts found. Create your first blog post to get started."
+      filters={({ isLoading }) => <BlogPostFiltersDropdown isLoading={isLoading} />}
     />
   );
 }
