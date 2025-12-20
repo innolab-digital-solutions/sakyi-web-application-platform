@@ -38,19 +38,23 @@ export const foodItemsTableColumns: ColumnDef<FoodItem>[] = [
     },
   },
   {
-    accessorKey: "unit.name",
-    header: "Unit",
-    cell: ({ row }) => {
-      const unitName = row.original.unit?.name || "—";
-      return <div className="text-sm font-medium text-neutral-800">{unitName}</div>;
-    },
-  },
-  {
     accessorKey: "calories_per_unit",
-    header: "Calories / Unit",
+    header: () => "Nutrition",
     cell: ({ row }) => {
-      const calories = row.getValue("calories_per_unit") as number;
-      return <div className="text-sm font-medium text-neutral-800">{calories}</div>;
+      const foodItem = row.original;
+      const calories = foodItem.calories_per_unit ?? 0;
+      const unitName = foodItem.unit?.name || "—";
+
+      if (unitName === "—") {
+        return <div className="text-sm font-medium text-neutral-800">—</div>;
+      }
+
+      return (
+        <div className="flex flex-col gap-0.5">
+          <div className="text-sm font-semibold text-neutral-900">{calories} kcal</div>
+          <div className="text-xs text-neutral-500">per {unitName}</div>
+        </div>
+      );
     },
   },
   {
@@ -60,25 +64,27 @@ export const foodItemsTableColumns: ColumnDef<FoodItem>[] = [
     cell: ({ row }) => {
       const foodItem = row.original;
 
+      const editAllowed = Boolean(foodItem.actions?.edit?.allowed);
+      const editReasons = foodItem.actions?.edit?.reasons ?? [];
+      const editDisabledReason =
+        editAllowed || editReasons.length === 0 ? undefined : editReasons[0]?.trim() || undefined;
+
       return (
         <div className="flex items-center space-x-0.5">
           <FoodItemForm
             mode="edit"
             defaultValues={foodItem}
             trigger={(() => {
-              const isEditable = Boolean(foodItem.actions?.editable);
-              const disabledReason = isEditable
-                ? undefined
-                : "You don't have permission to edit this item.";
               return (
-                <DisabledTooltip reason={disabledReason}>
+                <DisabledTooltip reason={editDisabledReason}>
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="hover:bg-accent/10 hover:text-accent text-accent flex cursor-pointer items-center justify-center text-sm font-semibold"
-                    disabled={!isEditable}
+                    className="text-accent hover:bg-accent/10 hover:text-accent flex cursor-pointer items-center justify-center text-sm font-semibold"
+                    disabled={!editAllowed}
+                    aria-label="Edit food item"
                   >
-                    <SquarePen className="h-2 w-2" />
+                    <SquarePen className="h-4 w-4" />
                     <span>Edit</span>
                   </Button>
                 </DisabledTooltip>

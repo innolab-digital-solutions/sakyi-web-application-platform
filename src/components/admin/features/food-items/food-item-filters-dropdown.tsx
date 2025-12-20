@@ -23,7 +23,6 @@ import {
 import { ENDPOINTS } from "@/config/endpoints";
 import { useRequest } from "@/hooks/use-request";
 import type { FoodCategory } from "@/types/admin/food-category";
-import type { Unit } from "@/types/admin/unit";
 
 interface FoodItemFiltersDropdownProperties {
   isLoading?: boolean;
@@ -41,23 +40,12 @@ export default function FoodItemFiltersDropdown({
     message: string;
     data: FoodCategory[];
   }>({
-    url: ENDPOINTS.LOOKUP.FOOD_ITEMS,
-    queryKey: ["lookup-food-items"],
-    staleTime: 1000 * 60 * 5,
-  });
-
-  const { data: unitData, isFetching: loadingUnits } = useRequest<{
-    status: string;
-    message: string;
-    data: Unit[];
-  }>({
-    url: ENDPOINTS.LOOKUP.UNITS,
-    queryKey: ["lookup-units"],
+    url: ENDPOINTS.LOOKUP.FOOD_CATEGORIES,
+    queryKey: ["lookup-food-categories"],
     staleTime: 1000 * 60 * 5,
   });
 
   const categoryList = (categoryData?.data ?? []) as FoodCategory[];
-  const unitList = (unitData?.data ?? []) as Unit[];
 
   const replaceParameters = (next: URLSearchParams) => {
     next.set("page", "1");
@@ -80,14 +68,12 @@ export default function FoodItemFiltersDropdown({
   const clearFilters = () => {
     if (isLoading) return;
     const next = new URLSearchParams(searchParameters.toString());
-    for (const key of ["category", "unit"]) next.delete(key);
+    for (const key of ["category"]) next.delete(key);
     replaceParameters(next);
   };
 
   const currentCategory = searchParameters.get("category");
-  const currentUnit = searchParameters.get("unit");
-
-  const activeFiltersCount = [currentCategory, currentUnit].filter(Boolean).length;
+  const activeFiltersCount = [currentCategory].filter(Boolean).length;
   const hasActiveFilters = activeFiltersCount > 0;
 
   return (
@@ -97,7 +83,7 @@ export default function FoodItemFiltersDropdown({
           <Button
             variant="outline"
             size="sm"
-            className="hover:!text-foreground relative ml-auto hidden h-10 font-medium hover:!bg-gray-100 disabled:cursor-not-allowed disabled:opacity-60 lg:flex"
+            className="hover:text-foreground! relative ml-auto hidden h-10 font-medium hover:bg-gray-100! disabled:cursor-not-allowed disabled:opacity-60 lg:flex"
             disabled={isLoading}
             aria-label="Open food item filters"
           >
@@ -120,7 +106,7 @@ export default function FoodItemFiltersDropdown({
         </DropdownMenuTrigger>
 
         <DropdownMenuContent align="end" className="w-[300px]">
-          <DropdownMenuLabel>Filter Food Items</DropdownMenuLabel>
+          <DropdownMenuLabel>Record Filters</DropdownMenuLabel>
           <DropdownMenuSeparator />
 
           {/* Category Select */}
@@ -129,7 +115,7 @@ export default function FoodItemFiltersDropdown({
           </DropdownMenuLabel>
           <div className="px-2 py-1.5">
             <Select
-              value={currentCategory ?? undefined}
+              value={currentCategory ?? "__all__"}
               onValueChange={(value) =>
                 setParameter("category", value === "__all__" ? undefined : value)
               }
@@ -151,40 +137,14 @@ export default function FoodItemFiltersDropdown({
             </Select>
           </div>
 
-          {/* Unit Select */}
-          <DropdownMenuLabel className="text-muted-foreground text-xs font-semibold">
-            Unit
-          </DropdownMenuLabel>
-          <div className="px-2 py-1.5">
-            <Select
-              value={currentUnit ?? undefined}
-              onValueChange={(value) =>
-                setParameter("unit", value === "__all__" ? undefined : value)
-              }
-              disabled={isLoading || loadingUnits}
-            >
-              <SelectTrigger className="h-9 w-full">
-                <SelectValue placeholder={loadingUnits ? "Loading units..." : "All units"} />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="__all__">All Units</SelectItem>
-                {unitList.map((unit: Unit) => (
-                  <SelectItem key={unit.id} value={String(unit.name)}>
-                    {unit.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
           <DropdownMenuSeparator />
           <DropdownMenuItem
             onClick={clearFilters}
             onSelect={(event) => event.preventDefault()}
             disabled={isLoading}
-            className="hover:!bg-destructive/10 hover:!text-destructive group text-destructive flex cursor-pointer items-center rounded-md px-2 py-2 font-semibold transition-colors duration-150"
+            className="hover:bg-destructive/10! hover:text-destructive! group text-destructive flex cursor-pointer items-center rounded-md px-2 py-2 font-semibold transition-colors duration-150"
           >
-            <RotateCcw className="text-destructive group-hover:!text-destructive mr-2 h-4 w-4 transition-colors duration-150" />
+            <RotateCcw className="text-destructive group-hover:text-destructive! mr-2 h-4 w-4 transition-colors duration-150" />
             Reset Filters
           </DropdownMenuItem>
         </DropdownMenuContent>

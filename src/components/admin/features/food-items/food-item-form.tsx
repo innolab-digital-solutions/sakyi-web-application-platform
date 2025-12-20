@@ -1,6 +1,5 @@
 "use client";
 
-import { Carrot } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect } from "react";
 import { toast } from "sonner";
@@ -172,14 +171,13 @@ export default function FoodItemForm({
       open={dialogOpen}
       onOpenChange={handleDialogOpenChange}
       onClose={() => form.reset()}
-      title={title ?? (isEdit ? "Edit Food Item" : "Create Food Item")}
+      title={title ?? (isEdit ? "Edit Food Item" : "Create New Food Item")}
       description={
         description ??
         (isEdit
-          ? "Update the item’s name, category, unit, and nutrition details. Changes apply anywhere this item is referenced."
-          : "Add a food with category, unit, and nutrition info to keep planning accurate and consistent.")
+          ? "Update this food item's details, nutritional information, category, or unit to keep your food catalog accurate and up-to-date."
+          : "Add a new food item with name, description, calories per unit, category, and measurement unit to expand your food database.")
       }
-      icon={<Carrot className="h-5 w-5" />}
       onSubmit={handleSubmit}
       processing={form.processing}
       isEdit={isEdit}

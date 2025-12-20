@@ -1,4 +1,3 @@
-import { Carrot } from "lucide-react";
 import type { Metadata } from "next";
 
 import FoodItemForm from "@/components/admin/features/food-items/food-item-form";
@@ -15,9 +14,8 @@ export const metadata: Metadata = {
 export default function FoodItemListPage() {
   return (
     <ResourceListPage
-      icon={Carrot}
       title="Food Items"
-      description="Add and maintain foods with categories, units, and nutrition details—your single source of truth for planning."
+      description="Manage your food catalog with detailed nutritional information. Add, edit, and organize food items with calories, categories, and units to support accurate meal planning and nutrition tracking."
       createTrigger={
         <FoodItemForm mode="create" trigger={<CreateButton label="Add Food Item" />} />
       }

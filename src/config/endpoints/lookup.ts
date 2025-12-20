@@ -14,7 +14,6 @@ export const LOOKUP_ENDPOINTS = {
   TEAM_MEMBERS: "/lookup/team-members",
   WORKOUT_CATEGORIES: "/lookup/workout-categories",
   FOOD_CATEGORIES: "/lookup/food-categories",
-  FOOD_ITEMS: "/lookup/food-items",
   UNITS: "/lookup/units",
   BLOG_CATEGORIES: "/lookup/blog-categories",
   ONBOARDING_FORMS: "/lookup/onboarding-forms",
