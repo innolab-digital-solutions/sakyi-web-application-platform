@@ -127,6 +127,7 @@ export const ADMIN_ENDPOINTS = {
     SHOW: (id: string | number) => `/admin/blog-posts/${id}`,
     STORE: "/admin/blog-posts",
     UPDATE: (id: string | number) => `/admin/blog-posts/${id}`,
+    STATUS: (id: string | number) => `/admin/blog-posts/${id}/status`,
     DESTROY: (id: string | number) => `/admin/blog-posts/${id}`,
   },
 

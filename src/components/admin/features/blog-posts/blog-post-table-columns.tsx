@@ -24,6 +24,7 @@ import { PATHS } from "@/config/paths";
 import { BlogPost } from "@/types/admin/blog-post";
 import { cn } from "@/utils/shared/cn";
 
+import BlogPostArchiveButton from "./blog-post-archive-button";
 import BlogPostDeletionDialog from "./blog-post-deletion-dialog";
 
 const statusMeta = {
@@ -151,35 +152,7 @@ export const blogPostsTableColumns: ColumnDef<BlogPost>[] = [
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
-              {(() => {
-                const editAllowed = Boolean(blogPost.actions?.edit?.allowed);
-                const editReasons = blogPost.actions?.edit?.reasons ?? [];
-                const editDisabledReason =
-                  editAllowed || editReasons.length === 0
-                    ? undefined
-                    : editReasons[0]?.trim() || undefined;
-
-                return (
-                  <DisabledTooltip reason={editDisabledReason}>
-                    <Button
-                      asChild
-                      variant="outline"
-                      className="hover:bg-accent/10! group hover:text-accent! hover:ring-none! flex w-full cursor-pointer! items-center justify-start gap-1.5 border-none! text-sm font-medium text-gray-700 shadow-none disabled:hover:bg-transparent! disabled:hover:text-inherit!"
-                      aria-label="Edit blog post"
-                      disabled={!editAllowed}
-                    >
-                      <Link
-                        href={PATHS.ADMIN.BLOG_POSTS.EDIT(blogPost.id)}
-                        aria-disabled={!editAllowed}
-                        tabIndex={editAllowed ? 0 : -1}
-                      >
-                        <Archive className="group-hover:text-accent h-4 w-4 transition-colors duration-150" />
-                        <span>Move to Archive</span>
-                      </Link>
-                    </Button>
-                  </DisabledTooltip>
-                );
-              })()}
+              <BlogPostArchiveButton blogPost={blogPost} />
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
               {(() => {
