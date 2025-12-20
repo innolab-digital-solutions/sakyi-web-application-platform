@@ -1,6 +1,5 @@
 "use client";
 
-import { UtensilsCrossed } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect } from "react";
 import { toast } from "sonner";
@@ -131,7 +130,7 @@ export default function FoodCategoryForm({
   useEffect(() => {
     if (isEdit && defaultValues) {
       const newData = {
-        parent_id: defaultValues.parent?.id ?? "",
+        parent_id: defaultValues.parent?.id ? String(defaultValues.parent.id) : "",
         name: defaultValues.name ?? "",
         description: defaultValues.description ?? "",
       };
@@ -171,14 +170,13 @@ export default function FoodCategoryForm({
       open={dialogOpen}
       onOpenChange={handleDialogOpenChange}
       onClose={() => form.reset()}
-      title={title ?? (isEdit ? "Edit Food Category" : "Create Food Category")}
+      title={title ?? (isEdit ? "Edit Food Category" : "Create New Food Category")}
       description={
         description ??
         (isEdit
-          ? "Update the category’s name, parent, or description. Changes apply to all items within this category."
-          : "Add a category with a clear name and optional parent to keep your food catalog organized and scalable.")
+          ? "Update this category's name, description, or parent category to maintain accurate food organization."
+          : "Add a new food category with a clear name and optional description. You can set a parent category to create a hierarchical structure.")
       }
-      icon={<UtensilsCrossed className="h-5 w-5" />}
       onSubmit={handleSubmit}
       processing={form.processing}
       isEdit={isEdit}

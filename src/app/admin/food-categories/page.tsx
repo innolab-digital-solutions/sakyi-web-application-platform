@@ -1,4 +1,3 @@
-import { UtensilsCrossed } from "lucide-react";
 import type { Metadata } from "next";
 
 import FoodCategoryForm from "@/components/admin/features/food-categories/food-category-form";
@@ -15,9 +14,8 @@ export const metadata: Metadata = {
 export default function FoodCategoryListPage() {
   return (
     <ResourceListPage
-      icon={UtensilsCrossed}
       title="Food Categories"
-      description="Create parent and child categories to keep your food catalog tidy and easy to navigate."
+      description="Organize foods into clear, hierarchical categories to simplify meal planning, nutrition tracking, and food management. Create parent categories and subcategories for better organization."
       createTrigger={
         <FoodCategoryForm mode="create" trigger={<CreateButton label="Add Food Category" />} />
       }

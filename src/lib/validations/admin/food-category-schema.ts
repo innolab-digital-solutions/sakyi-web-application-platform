@@ -7,7 +7,7 @@ import { z } from "zod";
  * Parent can be string (from form select) or number (from API).
  */
 const BaseFoodCategorySchema = z.object({
-  parent_id: z.string().or(z.number()).optional().nullable(),
+  parent_id: z.string().optional().nullable(),
   name: z
     .string("Category name is required")
     .min(1, "Category name is required")
@@ -33,7 +33,7 @@ export const CreateFoodCategorySchema = BaseFoodCategorySchema;
  * Name must be unique but can be the same as the current category.
  */
 export const UpdateFoodCategorySchema = BaseFoodCategorySchema.extend({
-  parent_id: z.number().nullable().optional(),
+  parent_id: z.string().nullable().optional(),
 });
 
 // Default schema
