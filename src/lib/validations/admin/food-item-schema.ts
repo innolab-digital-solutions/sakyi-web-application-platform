@@ -10,7 +10,7 @@ export const CreateFoodItemSchema = z.object({
 
   calories_per_unit: z.preprocess(
     (value) => (typeof value === "string" ? Number.parseFloat(value) : value),
-    z.number().min(0, "Calories must be greater than or equal to 0"),
+    z.number().min(0.01, "Calories must be greater than 0"),
   ),
 
   food_category_id: z.preprocess(

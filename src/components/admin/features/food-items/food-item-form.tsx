@@ -184,6 +184,26 @@ export default function FoodItemForm({
       submitLabel={isEdit ? "Save Changes" : "Create Food Item"}
       submittingLabel={isEdit ? "Saving Changes..." : "Creating Food Item..."}
     >
+      {/* Category */}
+      <ComboBoxField
+        id="food_category_id"
+        name="food_category_id"
+        label="Food Category"
+        placeholder="Select a category..."
+        searchPlaceholder="Search categories..."
+        emptyMessage="No categories found."
+        options={(Array.isArray(categories?.data)
+          ? (categories?.data as unknown as FoodCategory[])
+          : []
+        ).map((category: FoodCategory) => ({ value: String(category.id), label: category.name }))}
+        value={String(form.data.food_category_id ?? "")}
+        onChange={(value: string) => form.setData("food_category_id", Number(value))}
+        error={form.errors.food_category_id as string}
+        required
+        disabled={form.processing}
+        allowClear
+      />
+
       {/* Name */}
       <InputField
         id="name"
@@ -211,60 +231,42 @@ export default function FoodItemForm({
         disabled={form.processing}
       />
 
-      {/* Calories */}
-      <InputField
-        id="calories_per_unit"
-        name="calories_per_unit"
-        type="number"
-        step={0.01}
-        min={0}
-        value={String(form.data.calories_per_unit ?? "")}
-        onChange={(event) => form.setData("calories_per_unit", Number(event.target.value))}
-        error={form.errors.calories_per_unit as string}
-        label="Calories per Unit"
-        placeholder="e.g., 250"
-        required
-        disabled={form.processing}
-      />
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+        {/* Calories */}
+        <InputField
+          id="calories_per_unit"
+          name="calories_per_unit"
+          type="number"
+          step={0.01}
+          min={0}
+          value={String(form.data.calories_per_unit ?? "")}
+          onChange={(event) => form.setData("calories_per_unit", Number(event.target.value))}
+          error={form.errors.calories_per_unit as string}
+          label="Calories per Unit"
+          placeholder="e.g., 250"
+          required
+          disabled={form.processing}
+        />
 
-      {/* Category */}
-      <ComboBoxField
-        id="food_category_id"
-        name="food_category_id"
-        label="Food Category"
-        placeholder="Select a category..."
-        searchPlaceholder="Search categories..."
-        emptyMessage="No categories found."
-        options={(Array.isArray(categories?.data)
-          ? (categories?.data as unknown as FoodCategory[])
-          : []
-        ).map((category: FoodCategory) => ({ value: String(category.id), label: category.name }))}
-        value={String(form.data.food_category_id ?? "")}
-        onChange={(value: string) => form.setData("food_category_id", Number(value))}
-        error={form.errors.food_category_id as string}
-        required
-        disabled={form.processing}
-        allowClear
-      />
-
-      {/* Unit */}
-      <ComboBoxField
-        id="unit_id"
-        name="unit_id"
-        label="Unit"
-        placeholder="Select a unit..."
-        searchPlaceholder="Search units..."
-        emptyMessage="No units found."
-        options={(Array.isArray(units?.data) ? (units?.data as unknown as Unit[]) : []).map(
-          (unit: Unit) => ({ value: String(unit.id), label: unit.name }),
-        )}
-        value={String(form.data.unit_id ?? "")}
-        onChange={(value: string) => form.setData("unit_id", Number(value))}
-        error={form.errors.unit_id as string}
-        required
-        disabled={form.processing}
-        allowClear
-      />
+        {/* Unit */}
+        <ComboBoxField
+          id="unit_id"
+          name="unit_id"
+          label="Unit"
+          placeholder="Select a unit..."
+          searchPlaceholder="Search units..."
+          emptyMessage="No units found."
+          options={(Array.isArray(units?.data) ? (units?.data as unknown as Unit[]) : []).map(
+            (unit: Unit) => ({ value: String(unit.id), label: unit.name }),
+          )}
+          value={String(form.data.unit_id ?? "")}
+          onChange={(value: string) => form.setData("unit_id", Number(value))}
+          error={form.errors.unit_id as string}
+          required
+          disabled={form.processing}
+          allowClear
+        />
+      </div>
     </FormDialog>
   );
 }
