@@ -1,5 +1,4 @@
 import { ApiResponse } from "@/types/shared/api";
-import { Pagination } from "@/types/shared/common";
 
 export interface FoodCategoryChild {
   id: number;
@@ -13,18 +12,15 @@ export interface FoodCategory {
   description: string | null;
   parent: FoodCategoryChild | null;
   children: FoodCategoryChild[];
-  actions?: {
-    editable?: boolean;
-    deletable?: boolean;
-  };
-}
-
-export interface FoodCategoriesResponse {
-  status: string;
-  message: string;
-  data: FoodCategory[];
-  meta: {
-    pagination: Pagination;
+  actions: {
+    edit: {
+      allowed: boolean;
+      reasons: string[];
+    };
+    delete: {
+      allowed: boolean;
+      reasons: string[];
+    };
   };
 }
 

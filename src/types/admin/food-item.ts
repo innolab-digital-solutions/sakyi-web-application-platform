@@ -1,29 +1,27 @@
-import { FoodCategory } from "@/types/admin/food-category";
-import { Unit } from "@/types/admin/unit";
 import { ApiResponse } from "@/types/shared/api";
-import { Pagination } from "@/types/shared/common";
 
 export interface FoodItem {
   id: number;
-  food_category_id: number;
-  unit_id: number;
   name: string;
   description: string | null;
   calories_per_unit: number;
-  category: FoodCategory;
-  unit: Unit;
-  actions?: {
-    editable?: boolean;
-    deletable?: boolean;
+  category: {
+    id: number;
+    name: string;
   };
-}
-
-export interface FoodItemsResponse {
-  status: string;
-  message: string;
-  data: FoodItem[];
-  meta: {
-    pagination: Pagination;
+  unit: {
+    id: number;
+    name: string;
+  };
+  actions: {
+    edit: {
+      allowed: boolean;
+      reasons: string[];
+    };
+    delete: {
+      allowed: boolean;
+      reasons: string[];
+    };
   };
 }
 

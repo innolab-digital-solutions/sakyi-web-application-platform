@@ -59,13 +59,15 @@ export default function UnitDeletionDialog({ unit, className }: UnitDeletionDial
     <>
       {(() => {
         const isLoading = request.loading;
-        const isDeletable = Boolean(unit.actions?.deletable);
-        const isDisabled = isLoading || !isDeletable;
+        const deleteAllowed = Boolean(unit.actions?.delete?.allowed);
+        const deleteReasons = unit.actions?.delete?.reasons ?? [];
+        const isDisabled = isLoading || !deleteAllowed;
+
         let disabledReason: string | undefined;
         if (isLoading) {
           disabledReason = "Deleting in progress. Please wait.";
-        } else if (!isDeletable) {
-          disabledReason = "You don't have permission to delete this unit.";
+        } else if (!deleteAllowed && deleteReasons.length > 0) {
+          disabledReason = deleteReasons[0]?.trim() || undefined;
         }
 
         return (
@@ -74,11 +76,11 @@ export default function UnitDeletionDialog({ unit, className }: UnitDeletionDial
               variant="ghost"
               size="sm"
               className={cn(
-                "hover:bg-destructive/10 hover:text-destructive text-destructive flex cursor-pointer items-center justify-center text-sm font-semibold disabled:!pointer-events-auto disabled:cursor-help disabled:bg-transparent",
+                "hover:bg-destructive/10 hover:text-destructive text-destructive flex cursor-pointer items-center justify-center text-sm font-semibold disabled:pointer-events-auto! disabled:cursor-help disabled:bg-transparent",
                 className,
               )}
               disabled={isDisabled}
-              onClick={() => (isDeletable ? setShowDeleteDialog(true) : undefined)}
+              onClick={() => (deleteAllowed ? setShowDeleteDialog(true) : undefined)}
               aria-label="Delete unit"
             >
               <Trash2 className="h-2 w-2" />

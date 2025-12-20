@@ -1,6 +1,5 @@
 "use client";
 
-import { Scale } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect } from "react";
 import { toast } from "sonner";
@@ -143,13 +142,12 @@ export default function UnitForm({
       open={dialogOpen}
       onOpenChange={handleDialogOpenChange}
       onClose={() => form.reset()}
-      title={isEdit ? "Edit Unit" : "Create Unit"}
+      title={isEdit ? "Edit Unit" : "Create New Unit"}
       description={
         isEdit
-          ? "Update the unit’s name or abbreviation. Changes apply everywhere this unit is used."
-          : "Add a unit with a clear name and short abbreviation to standardize measurements across the admin."
+          ? "Update this unit's name or abbreviation to maintain consistency across your nutrition and workout data."
+          : "Add a new measurement unit with a clear name and abbreviation (e.g., Kilogram - kg) to standardize data entry across the platform."
       }
-      icon={<Scale className="h-5 w-5" />}
       onSubmit={handleSubmit}
       processing={form.processing}
       isEdit={isEdit}

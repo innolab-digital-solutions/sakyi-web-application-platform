@@ -12,8 +12,8 @@ export default function UnitTable() {
       columns={unitsTableColumns}
       skeleton={{
         customSkeletons: {
-          name: <Skeleton className="h-4 w-40 animate-pulse rounded" />, // matches single-line name cell
-          abbreviation: <Skeleton className="h-4 w-20 animate-pulse rounded" />, // short code
+          name: <Skeleton className="h-4 w-40 animate-pulse rounded" />,
+          abbreviation: <Skeleton className="h-4 w-20 animate-pulse rounded" />,
           actions: (
             <div className="flex items-center space-x-1">
               <Skeleton className="h-8 w-16 animate-pulse rounded" />
