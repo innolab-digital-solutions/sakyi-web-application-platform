@@ -84,7 +84,7 @@ export default function FormDialog({
       {trigger ? <DialogTrigger asChild>{trigger}</DialogTrigger> : undefined}
       <DialogContent
         showCloseButton={false}
-        className="flex max-h-[98vh] w-[95vw] max-w-md flex-col rounded-md sm:max-w-lg md:max-w-xl lg:max-w-2xl"
+        className="flex max-h-[98vh] w-[95vw] max-w-md flex-col rounded-md sm:max-w-lg md:max-w-2xl lg:max-w-3xl xl:max-w-4xl"
       >
         <form
           onSubmit={onSubmit}

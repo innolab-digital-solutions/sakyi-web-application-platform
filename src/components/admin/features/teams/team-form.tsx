@@ -60,16 +60,14 @@ export default function TeamForm({
       .map((n) => n[0])
       .join("")
       .toUpperCase()
-      .slice(0, 2);
+      .slice(0, 1);
     return {
       value: m.id.toString(),
       label: (
         <div className="flex items-center gap-3">
           <Avatar className="h-8 w-8">
             <AvatarImage src={m.picture} alt={m.name} />
-            <AvatarFallback className="bg-indigo-100 text-sm font-semibold text-indigo-700">
-              {initials}
-            </AvatarFallback>
+            <AvatarFallback>{initials}</AvatarFallback>
           </Avatar>
           <div className="flex min-w-0 flex-col">
             <span className="truncate text-sm font-medium">{m.name}</span>
@@ -280,7 +278,7 @@ export default function TeamForm({
         name="name"
         type="text"
         label="Team Name"
-        placeholder="e.g., Marketing Team"
+        placeholder="e.g., Team Alpha, Care Team, Wellness Support Team"
         value={form.data.name ?? ""}
         onChange={(event) => form.setData("name", event.target.value)}
         error={form.errors.name as string}
@@ -293,7 +291,7 @@ export default function TeamForm({
         name="description"
         label="Description"
         className="min-h-[96px]"
-        placeholder="Short description about the team..."
+        placeholder="Enter a brief description of the team's purpose and responsibilities..."
         value={form.data.description ?? ""}
         onChange={(event) => form.setData("description", event.target.value)}
         error={form.errors.description as string}
@@ -304,7 +302,7 @@ export default function TeamForm({
         id="member_ids"
         name="member_ids"
         label="Members"
-        placeholder="Choose team members"
+        placeholder="Select team members to add..."
         options={membersOptions}
         value={comboValue}
         selectedValues={addedMembers.map((m) => m.id.toString())}

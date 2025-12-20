@@ -164,7 +164,7 @@ export default function UnitForm({
         onChange={(event) => form.setData("name", event.target.value)}
         error={form.errors.name as string}
         label="Name"
-        placeholder="e.g., Kilogram, Gram, Liter"
+        placeholder="e.g., Kilogram, Gram, Liter, Pound, Ounce, Cup"
         required
         disabled={form.processing}
       />
@@ -178,7 +178,7 @@ export default function UnitForm({
         onChange={(event) => form.setData("abbreviation", event.target.value)}
         error={form.errors.abbreviation as string}
         label="Abbreviation"
-        placeholder="e.g., kg, g, L"
+        placeholder="e.g., kg, g, L, lb, oz, cup"
         required
         disabled={form.processing}
       />

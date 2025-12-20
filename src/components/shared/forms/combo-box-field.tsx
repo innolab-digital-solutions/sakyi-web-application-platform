@@ -153,9 +153,9 @@ export const ComboBoxField = forwardRef<HTMLButtonElement, ComboBoxFieldProperti
               disabled={disabled}
               className={cn(
                 selectedOption?.value
-                  ? "text-foreground hover:!text-foreground"
-                  : "text-muted-foreground hover:!text-muted-foreground",
-                "h-11 w-full cursor-pointer justify-between hover:!bg-transparent",
+                  ? "text-foreground hover:text-foreground!"
+                  : "text-muted-foreground hover:text-muted-foreground!",
+                "h-11 w-full cursor-pointer justify-between hover:bg-transparent!",
                 // Error styling
                 hasError && "border-red-500 focus-visible:ring-red-500",
                 buttonClassName,
@@ -168,7 +168,7 @@ export const ComboBoxField = forwardRef<HTMLButtonElement, ComboBoxFieldProperti
             </Button>
           </PopoverTrigger>
           <PopoverContent
-            className={cn("!w-[var(--radix-popover-trigger-width)] p-0", popoverClassName)}
+            className={cn("w-(--radix-popover-trigger-width)! p-0", popoverClassName)}
             align="start"
             sideOffset={4}
             style={{ minWidth: "100%" }}
@@ -188,7 +188,7 @@ export const ComboBoxField = forwardRef<HTMLButtonElement, ComboBoxFieldProperti
                       disabled={option.disabled}
                       className={cn(
                         option.disabled && "cursor-not-allowed opacity-50",
-                        "hover:!bg-accent/10 hover:!text-accent text-foreground data-[selected=true]:!bg-primary/10 data-[selected=true]:!text-primary font-medium",
+                        "hover:bg-accent/10! hover:text-accent! text-foreground data-[selected=true]:bg-primary/10! data-[selected=true]:text-primary! font-medium",
                       )}
                     >
                       {option.label}

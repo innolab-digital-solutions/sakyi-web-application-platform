@@ -223,7 +223,7 @@ export default function WorkoutForm({
         id="workout_category_id"
         name="workout_category_id"
         label="Category"
-        placeholder="Select a category..."
+        placeholder="Select a workout category..."
         searchPlaceholder="Search categories..."
         emptyMessage="No categories found."
         options={
@@ -255,7 +255,7 @@ export default function WorkoutForm({
         onChange={(event) => form.setData("name", event.target.value)}
         error={form.errors.name as string}
         label="Name"
-        placeholder="Enter workout name"
+        placeholder="e.g., Push-ups, Squats, Plank, Deadlift, Bench Press"
         required
         disabled={form.processing}
       />
@@ -267,7 +267,7 @@ export default function WorkoutForm({
         onChange={(event) => form.setData("description", event.target.value)}
         error={form.errors.description as string}
         label="Description"
-        placeholder="Enter workout description"
+        placeholder="Enter a detailed description of the workout exercise, including proper form, target muscles, and execution steps..."
         disabled={form.processing}
       />
       {/* GIF Upload */}
@@ -290,7 +290,7 @@ export default function WorkoutForm({
         onChange={(event) => form.setData("video", event.target.value)}
         error={form.errors.video as string}
         label="Video URL"
-        placeholder="Enter video URL"
+        placeholder="e.g., https://youtube.com/watch?v=..., https://vimeo.com/..., or direct video URL"
         disabled={form.processing}
       />
 
@@ -303,7 +303,7 @@ export default function WorkoutForm({
         onChange={(event) => form.setData("equipment", event.target.value)}
         error={form.errors.equipment as string}
         label="Equipment"
-        placeholder="Enter required equipment"
+        placeholder="e.g., Dumbbells, Barbell, Resistance Bands, None (Bodyweight)"
         disabled={form.processing}
       />
 
@@ -313,7 +313,7 @@ export default function WorkoutForm({
         name="difficulty"
         label="Difficulty"
         value={String(form.data.difficulty ?? "beginner")}
-        placeholder="Select a difficulty..."
+        placeholder="Select difficulty level..."
         onChange={(value) =>
           form.setData("difficulty", value as "beginner" | "intermediate" | "advanced")
         }

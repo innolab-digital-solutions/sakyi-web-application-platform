@@ -172,7 +172,7 @@ export default function RoleForm({
         onChange={(event) => form.setData("name", event.target.value)}
         error={form.errors.name as string}
         label="Name"
-        placeholder="e.g., Administrator, Moderator, etc."
+        placeholder="e.g., Administrator, Moderator, Coach, Manager"
         required
         disabled={form.processing}
       />
@@ -182,7 +182,7 @@ export default function RoleForm({
         id="description"
         name="description"
         className="min-h-[96px]"
-        placeholder="Describe the role's purpose and responsibilities..."
+        placeholder="Enter a clear description of the role's purpose, responsibilities, and permissions..."
         value={String(form.data.description ?? "")}
         onChange={(event) => form.setData("description", event.target.value)}
         error={form.errors.description as string}

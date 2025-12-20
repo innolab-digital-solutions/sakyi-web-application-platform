@@ -209,7 +209,7 @@ export default function BlogPostForm({ blogPost }: { blogPost?: BlogPost }) {
               id="blog_category_id"
               name="blog_category_id"
               label="Category"
-              placeholder="Select a category..."
+              placeholder="Select a blog category..."
               searchPlaceholder="Search categories..."
               emptyMessage="No categories found."
               options={
@@ -239,7 +239,7 @@ export default function BlogPostForm({ blogPost }: { blogPost?: BlogPost }) {
               onChange={(event) => form.setData("title", event.target.value)}
               error={form.errors.title as string}
               label="Title"
-              placeholder="Enter blog post title"
+              placeholder="e.g., 10 Tips for Healthy Living, The Benefits of Regular Exercise"
               required
               disabled={form.processing}
             />
@@ -248,7 +248,7 @@ export default function BlogPostForm({ blogPost }: { blogPost?: BlogPost }) {
               id="description"
               name="description"
               className="min-h-24"
-              placeholder="Enter a brief description that will appear in previews and excerpts..."
+              placeholder="Enter a brief description that will appear in previews, excerpts, and search results..."
               value={String(form.data.description ?? "")}
               onChange={(event) => form.setData("description", event.target.value)}
               error={form.errors.description as string}
@@ -261,7 +261,7 @@ export default function BlogPostForm({ blogPost }: { blogPost?: BlogPost }) {
               id="content"
               name="content"
               className="min-h-[300px]"
-              placeholder="Write your blog post content here. Use clear paragraphs and formatting to make it easy to read..."
+              placeholder="Write your blog post content here. Use clear paragraphs, headings, and formatting to make it easy to read..."
               value={String(form.data.content ?? "")}
               onChange={(event) => form.setData("content", event.target.value)}
               error={form.errors.content as string}
@@ -277,7 +277,7 @@ export default function BlogPostForm({ blogPost }: { blogPost?: BlogPost }) {
                 variant="outline"
                 onClick={() => router.push(PATHS.ADMIN.BLOG_POSTS.LIST)}
                 disabled={form.processing}
-                className="flex cursor-pointer items-center gap-2 font-semibold"
+                className="cursor-pointer bg-gray-100 hover:bg-gray-50 hover:text-gray-800"
               >
                 Cancel
               </Button>

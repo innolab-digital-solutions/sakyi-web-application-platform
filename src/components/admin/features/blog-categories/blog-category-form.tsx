@@ -181,7 +181,7 @@ export default function BlogCategoryForm({
         onChange={(event) => form.setData("name", event.target.value)}
         error={form.errors.name as string}
         label="Name"
-        placeholder="e.g., Technology, Health, etc."
+        placeholder="e.g., Technology, Health & Wellness, Nutrition, Fitness"
         required
         disabled={form.processing}
       />
@@ -191,7 +191,7 @@ export default function BlogCategoryForm({
         id="description"
         name="description"
         className="min-h-[96px]"
-        placeholder="Describe the blog category's purpose and content..."
+        placeholder="Enter a brief description of the category's purpose and the type of content it will contain..."
         value={String(form.data.description ?? "")}
         onChange={(event) => form.setData("description", event.target.value)}
         error={form.errors.description as string}

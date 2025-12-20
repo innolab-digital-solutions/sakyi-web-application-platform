@@ -190,7 +190,7 @@ export default function FoodCategoryForm({
         name="parent_id"
         label="Parent Category"
         description="Select a parent category if this is a subcategory"
-        placeholder="Select parent category..."
+        placeholder="Select a parent category (optional)..."
         searchPlaceholder="Search categories..."
         emptyMessage="No categories found."
         options={[
@@ -220,7 +220,7 @@ export default function FoodCategoryForm({
         onChange={(event) => form.setData("name", event.target.value)}
         error={form.errors.name as string}
         label="Name"
-        placeholder="e.g., Appetizers, Desserts, Beverages..."
+        placeholder="e.g., Appetizers, Desserts, Beverages, Main Courses"
         required
         disabled={form.processing}
       />
@@ -230,7 +230,7 @@ export default function FoodCategoryForm({
         id="description"
         name="description"
         className="min-h-[96px]"
-        placeholder="Describe the category's purpose..."
+        placeholder="Enter a brief description of the category's purpose and the types of food items it will contain..."
         value={String(form.data.description ?? "")}
         onChange={(event) => form.setData("description", event.target.value)}
         error={form.errors.description as string}

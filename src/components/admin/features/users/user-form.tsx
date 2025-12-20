@@ -274,7 +274,7 @@ export default function UserForm({
       <InputField
         id="name"
         label="Full Name"
-        placeholder="eg. John Doe"
+        placeholder="e.g., John Doe, Jane Smith, Michael Johnson"
         value={form.data.name}
         onChange={(event) => form.setData("name", event.target.value)}
         error={form.errors.name as string}
@@ -285,7 +285,7 @@ export default function UserForm({
         <InputField
           id="email"
           label="Email"
-          placeholder="name@example.com"
+          placeholder="e.g., john.doe@example.com"
           type="email"
           value={form.data.email}
           onChange={(event) => form.setData("email", event.target.value)}
@@ -297,7 +297,7 @@ export default function UserForm({
           id="phone"
           label="Phone"
           type="tel"
-          placeholder="e.g. 0912345678"
+          placeholder="e.g., 0912345678, +1234567890"
           value={form.data.phone}
           onChange={(event) => form.setData("phone", event.target.value)}
           error={form.errors.phone as string}
@@ -309,7 +309,7 @@ export default function UserForm({
         <DatepickerField
           id="dob"
           label="Date of Birth"
-          placeholder="D-M-YYYY"
+          placeholder="Select date of birth (DD-MM-YYYY)"
           value={form.data.dob}
           onChange={(value) => form.setData("dob", value)}
           error={form.errors.dob as string}
@@ -336,7 +336,7 @@ export default function UserForm({
       <ComboBoxField
         label="Role"
         id="role"
-        placeholder="Choose a role"
+        placeholder="Select a role (optional)"
         description="Choose an internal role for staff or admin, or leave as none for standard access."
         options={roleOptions}
         value={form.data.role ?? ""}
@@ -346,7 +346,7 @@ export default function UserForm({
       <InputField
         id="address"
         label="Address"
-        placeholder="Street address, city, state"
+        placeholder="e.g., 123 Main Street, City, State, ZIP Code"
         value={form.data.address}
         onChange={(event) => form.setData("address", event.target.value)}
         error={form.errors.address as string}
@@ -358,7 +358,7 @@ export default function UserForm({
             id="password"
             label="Password"
             type="password"
-            placeholder="Minimum 8 characters"
+            placeholder="Enter password (minimum 8 characters)"
             value={form.data.password}
             onChange={(event) => form.setData("password", event.target.value)}
             error={form.errors.password as string}
@@ -369,7 +369,7 @@ export default function UserForm({
             id="password_confirmation"
             label="Confirm Password"
             type="password"
-            placeholder="Re-enter password"
+            placeholder="Re-enter password to confirm"
             value={form.data.password_confirmation}
             onChange={(event) => form.setData("password_confirmation", event.target.value)}
             error={form.errors.password_confirmation as string}

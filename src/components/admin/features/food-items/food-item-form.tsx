@@ -189,7 +189,7 @@ export default function FoodItemForm({
         id="food_category_id"
         name="food_category_id"
         label="Food Category"
-        placeholder="Select a category..."
+        placeholder="Select a food category..."
         searchPlaceholder="Search categories..."
         emptyMessage="No categories found."
         options={(Array.isArray(categories?.data)
@@ -213,7 +213,7 @@ export default function FoodItemForm({
         onChange={(event) => form.setData("name", event.target.value)}
         error={form.errors.name as string}
         label="Name"
-        placeholder="e.g., Fried Rice"
+        placeholder="e.g., Fried Rice, Grilled Chicken, Apple, Banana"
         required
         disabled={form.processing}
       />
@@ -227,7 +227,7 @@ export default function FoodItemForm({
         onChange={(event) => form.setData("description", event.target.value)}
         error={form.errors.description as string}
         label="Description"
-        placeholder="Short description of the food item"
+        placeholder="Enter a brief description of the food item, including preparation method or key characteristics..."
         disabled={form.processing}
       />
 
@@ -243,7 +243,7 @@ export default function FoodItemForm({
           onChange={(event) => form.setData("calories_per_unit", Number(event.target.value))}
           error={form.errors.calories_per_unit as string}
           label="Calories per Unit"
-          placeholder="e.g., 250"
+          placeholder="e.g., 250, 150.5, 320"
           required
           disabled={form.processing}
         />
@@ -253,7 +253,7 @@ export default function FoodItemForm({
           id="unit_id"
           name="unit_id"
           label="Unit"
-          placeholder="Select a unit..."
+          placeholder="Select a measurement unit..."
           searchPlaceholder="Search units..."
           emptyMessage="No units found."
           options={(Array.isArray(units?.data) ? (units?.data as unknown as Unit[]) : []).map(
