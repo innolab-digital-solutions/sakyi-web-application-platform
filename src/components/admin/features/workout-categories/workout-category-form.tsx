@@ -1,6 +1,5 @@
 "use client";
 
-import { Dumbbell } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect } from "react";
 import { toast } from "sonner";
@@ -58,7 +57,7 @@ export default function WorkoutCategoryForm({
     {
       validate: isEdit ? UpdateWorkoutCategorySchema : CreateWorkoutCategorySchema,
       tanstack: {
-        invalidateQueries: ["admin-workout-categories", "meta-workout-categories"],
+        invalidateQueries: ["admin-workout-categories", "lookup-workout-categories"],
         mutationOptions: {
           onSuccess: (response) => {
             form.queryCache.setQueryData<WorkoutCategoryApiResponse>(
@@ -138,7 +137,7 @@ export default function WorkoutCategoryForm({
   useEffect(() => {
     if (isEdit && defaultValues) {
       const newData = {
-        parent_id: defaultValues.parent?.id ?? "",
+        parent_id: defaultValues.parent?.id ? String(defaultValues.parent.id) : "",
         name: defaultValues.name ?? "",
         description: defaultValues.description ?? "",
       };
@@ -178,14 +177,13 @@ export default function WorkoutCategoryForm({
       open={dialogOpen}
       onOpenChange={handleDialogOpenChange}
       onClose={() => form.reset()}
-      title={title ?? (isEdit ? "Edit Workout Category" : "Create Workout Category")}
+      title={title ?? (isEdit ? "Edit Workout Category" : "Create New Workout Category")}
       description={
         description ??
         (isEdit
-          ? "Update the category’s name, parent, or description. Changes apply to all workouts in this category."
-          : "Add a category with a clear name and optional parent to keep your workout library organized and scalable.")
+          ? "Update this category's name, description, or parent category to maintain accurate workout organization."
+          : "Add a new workout category with a clear name and optional description. You can set a parent category to create a hierarchical structure.")
       }
-      icon={<Dumbbell className="h-5 w-5" />}
       onSubmit={handleSubmit}
       processing={form.processing}
       isEdit={isEdit}

@@ -80,7 +80,7 @@ export default function WorkoutFiltersDropdown({
   const activeFiltersCount = [currentCategory, currentDifficulty].filter(Boolean).length;
   const hasActiveFilters = activeFiltersCount > 0;
 
-  const categoryList = Array.isArray(categoryData?.data) ? categoryData.data : [];
+  const categoryList = categoryData && Array.isArray(categoryData.data) ? categoryData.data : [];
 
   return (
     <div className="ml-auto hidden lg:flex">
@@ -89,7 +89,7 @@ export default function WorkoutFiltersDropdown({
           <Button
             variant="outline"
             size="sm"
-            className="hover:!text-foreground relative ml-auto hidden h-10 font-medium hover:!bg-gray-100 disabled:cursor-not-allowed disabled:opacity-60 lg:flex"
+            className="hover:text-foreground! relative ml-auto hidden h-10 font-medium hover:bg-gray-100! disabled:cursor-not-allowed disabled:opacity-60 lg:flex"
             disabled={isLoading}
             aria-label="Open workout filters"
           >
@@ -112,7 +112,7 @@ export default function WorkoutFiltersDropdown({
         </DropdownMenuTrigger>
 
         <DropdownMenuContent align="end" className="w-[300px]">
-          <DropdownMenuLabel>Filter Workouts</DropdownMenuLabel>
+          <DropdownMenuLabel>Record Filters</DropdownMenuLabel>
           <DropdownMenuSeparator />
 
           {/* Category Select */}
@@ -173,9 +173,9 @@ export default function WorkoutFiltersDropdown({
             onClick={clearFilters}
             onSelect={(event) => event.preventDefault()}
             disabled={isLoading}
-            className="hover:!bg-destructive/10 hover:!text-destructive group text-destructive flex cursor-pointer items-center rounded-md px-2 py-2 font-semibold transition-colors duration-150"
+            className="hover:bg-destructive/10! hover:text-destructive! group text-destructive flex cursor-pointer items-center rounded-md px-2 py-2 font-semibold transition-colors duration-150"
           >
-            <RotateCcw className="text-destructive group-hover:!text-destructive mr-2 h-4 w-4 transition-colors duration-150" />
+            <RotateCcw className="text-destructive group-hover:text-destructive! mr-2 h-4 w-4 transition-colors duration-150" />
             Reset Filters
           </DropdownMenuItem>
         </DropdownMenuContent>

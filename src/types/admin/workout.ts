@@ -1,5 +1,4 @@
 import { ApiResponse } from "@/types/shared/api";
-import { Pagination } from "@/types/shared/common";
 
 export interface Workout {
   id: number;
@@ -13,32 +12,20 @@ export interface Workout {
     id: number;
     name: string;
   };
-  actions?: {
-    editable?: boolean;
-    deletable?: boolean;
+  actions: {
+    edit: {
+      allowed: boolean;
+      reasons: string[];
+    };
+    delete: {
+      allowed: boolean;
+      reasons: string[];
+    };
   };
 }
 
-/**
- * API response containing multiple workouts with pagination
- */
-export interface WorkoutsResponse {
-  status: string;
-  message: string;
-  data: Workout[];
-  meta: {
-    pagination: Pagination;
-  };
-}
-
-/**
- * Type for API response
- */
 export type WorkoutApiResponse = ApiResponse<Workout[]> | undefined;
 
-/**
- * Form properties for creating or editing a workout
- */
 export type WorkoutFormProperties = {
   mode: "create" | "edit";
   trigger?: React.ReactNode;

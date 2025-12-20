@@ -57,7 +57,7 @@ export default function FoodCategoryForm({
     {
       validate: isEdit ? UpdateFoodCategorySchema : CreateFoodCategorySchema,
       tanstack: {
-        invalidateQueries: ["admin-food-categories", "meta-food-categories"],
+        invalidateQueries: ["admin-food-categories", "lookup-food-categories"],
         mutationOptions: {
           onSuccess: (response) => {
             form.queryCache.setQueryData<FoodCategoryApiResponse>(
