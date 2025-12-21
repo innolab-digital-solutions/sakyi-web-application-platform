@@ -18,13 +18,14 @@ export default function PaymentMethodTable() {
       skeleton={{
         customSkeletons: {
           name: (
-            <div className="flex items-center gap-3">
-              <Skeleton className="size-12 flex-shrink-0 animate-pulse rounded-md" />
-              <Skeleton className="h-3 w-96 animate-pulse rounded" />
+            <div className="flex items-center gap-2">
+              <Skeleton className="size-12 shrink-0 animate-pulse rounded-md" />
+              <div className="flex items-center gap-2">
+                <Skeleton className="h-4 w-32 animate-pulse rounded" />
+                <Skeleton className="h-5 w-16 animate-pulse rounded-full" />
+              </div>
             </div>
           ),
-          qr_code: <Skeleton className="size-12 flex-shrink-0 animate-pulse rounded-md" />,
-          status: <Skeleton className="h-5 w-16 animate-pulse rounded-lg" />,
           actions: (
             <div className="flex items-center space-x-1">
               <Skeleton className="h-8 w-16 animate-pulse rounded" />

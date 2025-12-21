@@ -206,6 +206,12 @@ export const adminBreadcrumbs: Breadcrumbs = {
     { label: "Testimonials", href: PATHS.ADMIN.TESTIMONIALS.LIST },
   ],
 
+  "/admin/payment-methods": [
+    { label: "Admin Control Panel" },
+    { label: "Finance" },
+    { label: "Payment Methods", href: PATHS.ADMIN.PAYMENT_METHODS.LIST },
+  ],
+
   "/admin/invoices": [
     { label: "Admin Control Panel" },
     { label: "Finance" },

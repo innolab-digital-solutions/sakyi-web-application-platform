@@ -263,7 +263,7 @@ export const adminNavigation: NavGroup[] = [
         path: "/admin/payment-methods",
         params: {},
         active: false,
-        permission: "payment-methods.view",
+        permission: "payment.methods.view",
         subitems: [],
       },
       {
@@ -272,7 +272,7 @@ export const adminNavigation: NavGroup[] = [
         path: PATHS.ADMIN.INVOICES.LIST,
         params: {},
         active: false,
-        permission: "invoices.view",
+        permission: "payment.invoices.view",
         subitems: [],
       },
     ],
