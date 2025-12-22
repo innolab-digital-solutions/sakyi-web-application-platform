@@ -5,6 +5,7 @@ import Link from "next/link";
 import React from "react";
 
 import OnboardingForm from "@/components/admin/features/onboarding-forms/onboarding-form";
+import OnboardingFormSkeleton from "@/components/admin/features/onboarding-forms/onboarding-form-skeleton";
 import PageHeader from "@/components/admin/shared/page-header";
 import { Button } from "@/components/ui/button";
 import { ENDPOINTS } from "@/config/endpoints";
@@ -46,13 +47,7 @@ export default function EditOnboardingFormPage({
         }
       />
 
-      {isLoading && (
-        <div className="rounded-md border border-gray-200 p-6">
-          <div className="h-5 w-40 animate-pulse rounded bg-gray-200" />
-          <div className="mt-4 h-10 w-full animate-pulse rounded bg-gray-200" />
-          <div className="mt-3 h-24 w-full animate-pulse rounded bg-gray-200" />
-        </div>
-      )}
+      {isLoading && <OnboardingFormSkeleton />}
 
       {!isLoading && loadedForm && <OnboardingForm onboardingForm={loadedForm} />}
     </div>
