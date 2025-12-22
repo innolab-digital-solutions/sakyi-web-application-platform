@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeft, ClipboardCheck } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 
@@ -29,16 +29,15 @@ export default function EditOnboardingFormPage({
   const loadedForm = onboardingForm?.data as OnboardingFormType | undefined;
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 p-6">
       <PageHeader
-        icon={ClipboardCheck}
         title="Edit Onboarding Form"
-        description="Update sections, questions, and settings. Changes apply immediately anywhere this form is used."
+        description="Update this intake form's sections and questions to keep client and medical information accurate and aligned with your programs."
         actions={
           <Button variant="outline" asChild>
             <Link
               href={PATHS.ADMIN.ONBOARDING_FORMS.LIST}
-              className="flex items-center gap-2 text-sm font-semibold text-gray-800 hover:!bg-gray-100 hover:!text-gray-800"
+              className="flex items-center gap-2 text-sm font-semibold text-gray-800 hover:bg-gray-100! hover:text-gray-800!"
             >
               <ArrowLeft className="h-4 w-4" />
               Go Back

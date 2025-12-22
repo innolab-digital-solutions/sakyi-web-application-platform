@@ -43,7 +43,7 @@ export const CreateOnboardingFormSchema = z.object({
     .refine((value) => (value ? value.length <= 2000 : true), {
       message: "Description must not exceed 2000 characters",
     }),
-  status: z.enum(["draft", "published", "archived"]).default("draft"),
+  status: z.enum(["active", "inactive"]).default("active"),
   published_at: z.string().min(1).nullable().optional(),
   sections: z.array(OnboardingSectionSchema).min(1, "Add at least one section"),
 });

@@ -1,4 +1,4 @@
-import { ClipboardCheck, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import React from "react";
@@ -17,9 +17,8 @@ export const metadata: Metadata = {
 export default function OnboardingFormsListPage() {
   return (
     <ResourceListPage
-      icon={ClipboardCheck}
       title="Onboarding Forms"
-      description="Create structured intake forms to capture the right information—clear, guided, and reusable across programs."
+      description="Manage the intake forms used before clients enroll in programs, including health, lifestyle, and background questions."
       createTrigger={
         <Button
           asChild

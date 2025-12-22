@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { ENDPOINTS } from "@/config/endpoints";
 import { useRequest } from "@/hooks/use-request";
 import { OnboardingForm, OnboardingFormApiResponse } from "@/types/admin/onboarding-form";
+import { cn } from "@/utils/shared/cn";
 
 interface OnboardingFormDeletionDialogProperties {
   onboardingForm: OnboardingForm;
@@ -61,21 +62,25 @@ export default function OnboardingFormDeletionDialog({
     <>
       {(() => {
         const isLoading = request.loading;
-        const isDeletable = Boolean(onboardingForm.actions?.deletable);
-        const isDisabled = isLoading || !isDeletable;
+        const deleteAllowed = Boolean(onboardingForm.actions?.delete?.allowed);
+        const deleteReasons = onboardingForm.actions?.delete?.reasons ?? [];
+        const isDisabled = isLoading || !deleteAllowed;
         let disabledReason: string | undefined;
         if (isLoading) {
           disabledReason = "Deleting in progress. Please wait.";
-        } else if (!isDeletable) {
-          disabledReason = "You don't have permission to delete this onboarding form.";
+        } else if (!deleteAllowed && deleteReasons.length > 0) {
+          disabledReason = deleteReasons[0]?.trim() || undefined;
         }
 
         return (
           <DisabledTooltip reason={disabledReason}>
             <Button
               variant="outline"
-              className={`hover:!bg-destructive/10 text-destructive group hover:text-destructive-900 hover:!ring-none flex w-full !cursor-pointer items-center justify-start gap-1.5 !border-none text-sm font-semibold shadow-none ${className ?? ""}`}
-              onClick={() => (isDeletable ? setShowDeleteDialog(true) : undefined)}
+              className={cn(
+                "hover:bg-destructive/10 text-destructive group hover:text-destructive-900 hover:ring-none! flex w-full cursor-pointer! items-center justify-start gap-1.5 border-none text-sm font-medium shadow-none",
+                className,
+              )}
+              onClick={() => (deleteAllowed ? setShowDeleteDialog(true) : undefined)}
               disabled={isDisabled}
               type="button"
               aria-label="Delete onboarding form"

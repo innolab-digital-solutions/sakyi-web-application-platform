@@ -67,6 +67,7 @@ export default function ProgramFormPage({ program }: ProgramFormPageProperties) 
   const { data: onboardingFormsData } = useRequest<OnboardingForm>({
     url: ENDPOINTS.LOOKUP.ONBOARDING_FORMS,
     queryKey: ["lookup-onboarding-forms"],
+    data: { status: "active" },
     staleTime: 1000 * 60 * 5,
   });
 

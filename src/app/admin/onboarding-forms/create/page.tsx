@@ -1,4 +1,4 @@
-import { ArrowLeft, ClipboardCheck } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import React from "react";
@@ -16,16 +16,15 @@ export const metadata: Metadata = {
 
 export default function CreateOnboardingFormPage() {
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 p-6">
       <PageHeader
-        icon={ClipboardCheck}
         title="Create Onboarding Form"
-        description="Build a structured form with sections and customizable questions. Attach it to one or more programs for a smooth client intake."
+        description="Design a new intake form to capture client details, health history, and goals before they enroll in a program."
         actions={
           <Button variant="outline" asChild>
             <Link
               href={PATHS.ADMIN.ONBOARDING_FORMS.LIST}
-              className="flex items-center gap-2 text-sm font-semibold text-gray-800 hover:!bg-gray-100 hover:!text-gray-800"
+              className="flex items-center gap-2 text-sm font-semibold text-gray-800 hover:bg-gray-100! hover:text-gray-800!"
             >
               <ArrowLeft className="h-4 w-4" />
               Go Back
