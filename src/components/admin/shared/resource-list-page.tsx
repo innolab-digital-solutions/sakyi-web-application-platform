@@ -16,7 +16,7 @@ export default function ResourceListPage({
   table,
 }: ResourceListPageProperties) {
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 p-6">
       <PageHeader title={title} description={description} actions={createTrigger} />
       {table}
     </div>

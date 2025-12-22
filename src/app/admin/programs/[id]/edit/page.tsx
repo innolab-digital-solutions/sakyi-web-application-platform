@@ -34,7 +34,7 @@ export default function EditProgramPage({
   }
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 p-6">
       <PageHeader
         title="Edit Program"
         description="Update this program's details including title, description, duration, price, thumbnail, and target audience. Modify key features, expected outcomes, program structure, and FAQs to keep program information accurate and up-to-date."

@@ -78,7 +78,7 @@ export default function ProgramDeletionDialog({
             <Button
               variant="outline"
               className={cn(
-                "hover:bg-destructive/10! text-destructive group hover:text-destructive-900! hover:ring-none! flex w-full cursor-pointer! items-center justify-start gap-1.5 border-none! text-sm font-medium shadow-none disabled:hover:bg-transparent! disabled:hover:text-inherit!",
+                "hover:bg-destructive/10 text-destructive group hover:text-destructive-900 hover:ring-none! flex w-full cursor-pointer! items-center justify-start gap-1.5 border-none text-sm font-medium shadow-none",
                 className,
               )}
               onClick={() => (deleteAllowed ? setShowDeleteDialog(true) : undefined)}

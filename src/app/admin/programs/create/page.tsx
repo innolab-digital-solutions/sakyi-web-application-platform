@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 
 export default function CreateProgramPage() {
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 p-6">
       <PageHeader
         title="Create New Program"
         description="Set up a new wellness program with essential details including title, description, duration, price, thumbnail, and target audience. Add key features, expected outcomes, program structure, and FAQs to provide comprehensive information for potential participants."

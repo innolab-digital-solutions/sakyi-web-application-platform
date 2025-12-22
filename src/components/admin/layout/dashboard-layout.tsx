@@ -42,7 +42,7 @@ export default function DashboardLayout({
                   {/* Main Content */}
                   <SidebarInset className="flex min-w-0 flex-1 flex-col">
                     <DashboardHeader />
-                    <div className="flex flex-1 flex-col p-6">
+                    <div className="flex flex-1 flex-col">
                       <PageTransition transitionType="scale">{children}</PageTransition>
                     </div>
                   </SidebarInset>

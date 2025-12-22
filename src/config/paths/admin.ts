@@ -41,6 +41,7 @@ export const ADMIN_PATHS = {
     CREATE: "/admin/programs/create",
     EDIT: (id: string | number) => `/admin/programs/${id}/edit`,
     DETAIL: (id: string | number) => `/admin/programs/${id}`,
+    PREVIEW: (slug: string) => `/admin/programs/${slug}/preview`,
   },
 
   /** Onboarding forms routes */
@@ -90,6 +91,7 @@ export const ADMIN_PATHS = {
     LIST: "/admin/blog-posts",
     CREATE: "/admin/blog-posts/create",
     EDIT: (id: string | number) => `/admin/blog-posts/${id}/edit`,
+    PREVIEW: (slug: string) => `/admin/blog-posts/${slug}/preview`,
   },
 
   /** Payment methods routes */

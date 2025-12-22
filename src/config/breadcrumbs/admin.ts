@@ -70,6 +70,14 @@ export const adminBreadcrumbs: Breadcrumbs = {
     { label: "Edit" },
   ],
 
+  /** Programs preview page (dynamic: :id replaced at runtime) */
+  "/admin/programs/:id/preview": [
+    { label: "Admin Control Panel" },
+    { label: "Programs & Clients" },
+    { label: "Program Management", href: PATHS.ADMIN.PROGRAMS.LIST },
+    { label: "Preview" },
+  ],
+
   /** Users list page */
   "/admin/users": [
     { label: "Admin Control Panel" },
@@ -199,6 +207,15 @@ export const adminBreadcrumbs: Breadcrumbs = {
     { label: "Blog Posts", href: PATHS.ADMIN.BLOG_POSTS.LIST },
     { label: "Edit" },
   ],
+  /** Blog posts preview page (dynamic: :id replaced at runtime) */
+  "/admin/blog-posts/:id/preview": [
+    { label: "Admin Control Panel" },
+    { label: "Content Management" },
+    { label: "Blog" },
+    { label: "Blog Posts", href: PATHS.ADMIN.BLOG_POSTS.LIST },
+    { label: "Preview" },
+  ],
+
   /** Testimonials list page */
   "/admin/testimonials": [
     { label: "Admin Control Panel" },

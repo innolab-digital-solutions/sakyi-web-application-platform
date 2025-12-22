@@ -41,6 +41,7 @@ export const routePermissions: Record<string, string | undefined> = {
 
   // Programs
   "/admin/programs": "programs.view",
+  "/admin/programs/:slug/preview": "programs.view",
 
   // Onboarding Forms
   "/admin/onboarding-forms": "onboarding.forms.view",
@@ -65,6 +66,8 @@ export const routePermissions: Record<string, string | undefined> = {
 
   // Blog Categories
   "/admin/blog-categories": "blog.categories.view",
+  // Blog Posts
+  "/admin/blog-posts/:slug/preview": "blog.posts.view",
 
   // Payment Methods
   "/admin/payment-methods": "payment.methods.view",

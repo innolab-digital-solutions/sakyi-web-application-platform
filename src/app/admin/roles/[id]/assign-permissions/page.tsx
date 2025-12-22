@@ -28,7 +28,7 @@ export default function RolePermissionsAssignmentPage({
   });
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 p-6">
       <PageHeader
         title="Assign Permissions"
         description="Choose exactly what this role can see and do in the admin. Turn on only the permissions they need so access stays least‑privilege and easy to audit."

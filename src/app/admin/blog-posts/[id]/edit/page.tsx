@@ -30,7 +30,7 @@ export default function EditBlogPostPage({
   const loadedPost = blogPost?.data as BlogPost | undefined;
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 p-6">
       <PageHeader
         title="Edit Blog Post"
         description="Update this post’s content, category, or publication status. Changes take effect immediately when saved."

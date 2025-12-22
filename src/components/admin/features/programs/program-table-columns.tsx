@@ -2,7 +2,15 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import dayjs from "dayjs";
-import { Archive, CalendarDays, CheckCircle, Ellipsis, FileEdit, SquarePen } from "lucide-react";
+import {
+  Archive,
+  CalendarDays,
+  CheckCircle,
+  Ellipsis,
+  Eye,
+  FileEdit,
+  SquarePen,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
@@ -193,6 +201,19 @@ export const programsTableColumns: ColumnDef<Program>[] = [
               Program Actions
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
+            <DropdownMenuItem asChild>
+              <Button
+                asChild
+                variant="outline"
+                className="hover:bg-accent/10! group hover:text-accent! hover:ring-none! focus:ring-none! flex w-full cursor-pointer! items-center justify-start gap-1.5 border-none! text-sm font-medium text-gray-700 shadow-none hover:border-0! disabled:hover:bg-transparent! disabled:hover:text-inherit!"
+                aria-label="Preview program"
+              >
+                <Link href={PATHS.ADMIN.PROGRAMS.PREVIEW(program.slug)}>
+                  <Eye className="group-hover:text-accent h-4 w-4 transition-colors duration-150" />
+                  <span>Preview</span>
+                </Link>
+              </Button>
+            </DropdownMenuItem>
             <DropdownMenuItem asChild>
               <ProgramArchiveButton program={program} />
             </DropdownMenuItem>

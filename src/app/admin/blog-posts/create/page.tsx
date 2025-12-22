@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 
 export default function CreateBlogPostPage() {
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 p-6">
       <PageHeader
         title="Create New Blog Post"
         description="Write a new article by adding a title, thumbnail, summary, content, and assigning it to a category. Save as draft or publish when ready."
