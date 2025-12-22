@@ -12,8 +12,8 @@ export default function PageHeader({ title, description, actions }: PageHeaderPr
       <div className="flex w-full flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-start gap-2">
           <div className="flex flex-col">
-            <h1 className="text-foreground text-md flex items-center font-bold">{title}</h1>
-            <p className="text-muted-foreground text-sm font-medium">{description}</p>
+            <h1 className="text-foreground text-md mb-1.5 flex items-center font-bold">{title}</h1>
+            <p className="text-muted-foreground max-w-7xl text-sm font-medium">{description}</p>
           </div>
         </div>
 

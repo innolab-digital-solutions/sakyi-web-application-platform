@@ -2,23 +2,16 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import dayjs from "dayjs";
-import {
-  Archive,
-  CalendarDays,
-  CheckCircle,
-  ClipboardCheck,
-  Ellipsis,
-  FileEdit,
-  SquarePen,
-} from "lucide-react";
+import { Archive, CalendarDays, CheckCircle, Ellipsis, FileEdit, SquarePen } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
+import ProgramArchiveButton from "@/components/admin/features/programs/program-archive-button";
 import ProgramDeletionDialog from "@/components/admin/features/programs/program-deletion-dialog";
-import ProgramStatusDialog from "@/components/admin/features/programs/program-status-dialog";
 import DisabledTooltip from "@/components/shared/disabled-tooltip";
 import SortableHeader from "@/components/shared/table/sortable-header";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -32,8 +25,6 @@ import {
 import { PATHS } from "@/config/paths";
 import { Program } from "@/types/admin/program";
 import { cn } from "@/utils/shared/cn";
-
-import ProgramStatusSwitch from "./program-status-switch";
 
 const statusMeta: Record<
   Program["status"],
@@ -76,34 +67,34 @@ const durationUnitLabel: Record<Program["duration_unit"], string> = {
 
 export const programsTableColumns: ColumnDef<Program>[] = [
   {
+    accessorKey: "code",
+    header: () => "Code",
+    cell: ({ row }) => (
+      <div className="text-foreground flex items-center gap-1 text-[13px] font-semibold">
+        {row.original.code ?? "-"}
+      </div>
+    ),
+    enableHiding: false,
+  },
+  {
     accessorKey: "title",
     header: ({ column }) => <SortableHeader column={column}>Program</SortableHeader>,
     cell: ({ row }) => {
       const title = row.getValue("title") as string;
       const program = row.original;
       const description = program.description || "-";
-      const thumbnailUrl = program.thumbnail_url;
+      const thumbnailUrl = program.thumbnail;
 
       const meta = statusMeta[program.status];
 
       return (
         <div className="flex min-w-0 items-start gap-4">
-          <div className="bg-muted/50 ring-muted-foreground/5 relative size-12 flex-shrink-0 overflow-hidden rounded-md ring-1">
-            {thumbnailUrl ? (
-              <Image
-                src={thumbnailUrl}
-                alt={title}
-                fill
-                className="object-cover"
-                sizes="(max-width: 768px) 48px, 48px"
-                unoptimized={thumbnailUrl.startsWith("http")}
-              />
-            ) : (
-              <div className="text-muted-foreground/50 flex h-full w-full items-center justify-center text-xs font-medium">
-                N/A
-              </div>
-            )}
-          </div>
+          <Avatar className="size-12 shrink-0 rounded-md">
+            <AvatarImage src={thumbnailUrl} alt={title} className="object-cover" />
+            <AvatarFallback className="border-muted size-12 rounded-md border bg-gray-100">
+              <Image src="/images/no-image.png" alt="No image" width={32} height={32} />
+            </AvatarFallback>
+          </Avatar>
           <div className="flex min-w-0 flex-1 flex-col gap-1">
             <div className="flex flex-wrap items-center gap-2">
               <span className="text-foreground text-sm font-semibold">{title}</span>
@@ -111,50 +102,25 @@ export const programsTableColumns: ColumnDef<Program>[] = [
                 variant={meta.variant}
                 className={cn(
                   meta.badgeClass,
-                  "pointer-events-none flex items-center gap-1 !font-semibold",
+                  "pointer-events-none flex items-center gap-1 font-semibold",
                 )}
               >
                 <meta.icon className={meta.iconClass} />
                 <span>{meta.label}</span>
               </Badge>
             </div>
-            <div className="text-muted-foreground max-w-full break-words whitespace-pre-line">
+            <div className="text-muted-foreground line-clamp-1 max-w-full wrap-break-word whitespace-pre-line">
               {description}
             </div>
           </div>
         </div>
       );
     },
+    enableHiding: false,
   },
-  {
-    id: "onboarding_form",
-    header: () => "Onboarding Form",
-    cell: ({ row }) => {
-      const program = row.original;
-      const attachedForm = program.attached_onboarding_form;
 
-      if (!attachedForm || !attachedForm.title) {
-        return (
-          <Badge
-            variant="outline"
-            className="bg-muted/60 text-muted-foreground pointer-events-none border-dashed text-[13px] font-semibold"
-          >
-            <ClipboardCheck className="h-3.5 w-3.5" />
-            <span className="ml-1">No form</span>
-          </Badge>
-        );
-      }
-
-      return (
-        <div className="flex items-center gap-2">
-          <ClipboardCheck className="text-muted-foreground h-4 w-4 flex-shrink-0" />
-          <span className="text-sm font-medium text-neutral-800">{attachedForm.title}</span>
-        </div>
-      );
-    },
-  },
   {
-    accessorKey: "duration_value",
+    accessorKey: "duration",
     header: () => "Duration",
     cell: ({ row }) => {
       const { duration_value, duration_unit } = row.original;
@@ -168,7 +134,7 @@ export const programsTableColumns: ColumnDef<Program>[] = [
   },
   {
     accessorKey: "price",
-    header: ({ column }) => <SortableHeader column={column}>Price</SortableHeader>,
+    header: () => "Price",
     cell: ({ row }) => {
       const price = row.getValue("price") as string;
       const currency = row.original.currency;
@@ -180,26 +146,10 @@ export const programsTableColumns: ColumnDef<Program>[] = [
     },
   },
   {
-    accessorKey: "status",
-    header: () => "Publish ?",
+    accessorKey: "published at",
+    header: () => "Published At",
     cell: ({ row }) => {
-      const program = row.original;
-      return (
-        <div className="flex items-center justify-center">
-          {program.status === "archived" ? (
-            <span className="text-muted-foreground text-sm font-medium">-</span>
-          ) : (
-            <ProgramStatusSwitch program={program} />
-          )}
-        </div>
-      );
-    },
-  },
-  {
-    accessorKey: "published_at",
-    header: ({ column }) => <SortableHeader column={column}>Published At</SortableHeader>,
-    cell: ({ row }) => {
-      const publishedAt = row.getValue("published_at") as string | null;
+      const publishedAt = row.original.published_at as string | null;
       if (!publishedAt) {
         return (
           <Badge
@@ -233,7 +183,7 @@ export const programsTableColumns: ColumnDef<Program>[] = [
               variant="outline"
               size="icon"
               aria-label="Open actions"
-              className="hover:!text-foreground ml-auto size-8 cursor-pointer items-center justify-center hover:!bg-gray-100"
+              className="hover:text-foreground! ml-auto size-8 cursor-pointer items-center justify-center hover:bg-gray-100!"
             >
               <Ellipsis className="h-5 w-5" />
             </Button>
@@ -244,21 +194,31 @@ export const programsTableColumns: ColumnDef<Program>[] = [
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
+              <ProgramArchiveButton program={program} />
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
               {(() => {
-                const isEditable = Boolean(program.actions?.editable);
-                const disabledReason = isEditable
-                  ? undefined
-                  : "You don't have permission to edit this program.";
+                const editAllowed = Boolean(program.actions?.edit?.allowed);
+                const editReasons = program.actions?.edit?.reasons ?? [];
+                const editDisabledReason =
+                  editAllowed || editReasons.length === 0
+                    ? undefined
+                    : editReasons[0]?.trim() || undefined;
+
                 return (
-                  <DisabledTooltip reason={disabledReason}>
+                  <DisabledTooltip reason={editDisabledReason}>
                     <Button
                       asChild
                       variant="outline"
-                      className="hover:!bg-accent/10 group hover:!text-accent hover:!ring-none flex w-full !cursor-pointer items-center justify-start gap-1.5 !border-none text-sm font-medium text-gray-700 shadow-none"
+                      className="hover:bg-accent/10! group hover:text-accent! hover:ring-none! flex w-full cursor-pointer! items-center justify-start gap-1.5 border-none! text-sm font-medium text-gray-700 shadow-none disabled:hover:bg-transparent! disabled:hover:text-inherit!"
                       aria-label="Edit program"
-                      disabled={!isEditable}
+                      disabled={!editAllowed}
                     >
-                      <Link href={PATHS.ADMIN.PROGRAMS.EDIT(program.id)}>
+                      <Link
+                        href={PATHS.ADMIN.PROGRAMS.EDIT(program.id)}
+                        aria-disabled={!editAllowed}
+                        tabIndex={editAllowed ? 0 : -1}
+                      >
                         <SquarePen className="group-hover:text-accent h-4 w-4 transition-colors duration-150" />
                         <span>Edit Program</span>
                       </Link>
@@ -266,9 +226,6 @@ export const programsTableColumns: ColumnDef<Program>[] = [
                   </DisabledTooltip>
                 );
               })()}
-            </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <ProgramStatusDialog program={program} />
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>

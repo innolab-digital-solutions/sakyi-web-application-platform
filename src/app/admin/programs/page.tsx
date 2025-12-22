@@ -1,4 +1,4 @@
-import { ClipboardList, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 
@@ -16,9 +16,8 @@ export const metadata: Metadata = {
 export default function ProgramsListPage() {
   return (
     <ResourceListPage
-      icon={ClipboardList}
       title="Program Management"
-      description="Design, organize, and maintain your programs. Publish with clear outcomes and structure so clients know exactly what to expect."
+      description="Create and manage wellness programs with comprehensive details including features, outcomes, structure, and FAQs. Organize programs by duration, price, and target audience to support client enrollment and program delivery."
       createTrigger={
         <Button asChild>
           <Link
