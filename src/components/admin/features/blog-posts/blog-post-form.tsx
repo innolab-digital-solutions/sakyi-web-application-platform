@@ -266,7 +266,6 @@ export default function BlogPostForm({ blogPost }: { blogPost?: BlogPost }) {
               error={form.errors.content as string}
               required
               disabled={form.processing}
-              description="Write your blog post content. Use headings, lists, and formatting to keep it readable."
             />
 
             {/* Actions Section */}

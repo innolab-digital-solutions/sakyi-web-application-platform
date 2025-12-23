@@ -138,8 +138,13 @@ export default function EditorField({
 
       <div
         className={cn(
-          "border-input bg-background ring-offset-background focus-within:ring-ring flex min-h-[220px] flex-col overflow-hidden rounded-md border text-sm shadow-sm transition-all transition-colors duration-300 focus-within:ring-2 focus-within:ring-offset-2 focus-within:outline-none",
-          hasError && "border-red-500 focus-within:ring-red-500",
+          // Base border + background to match textarea/input
+          "border-input bg-background flex min-h-[220px] flex-col overflow-hidden rounded-md border text-base shadow-xs transition-[color,box-shadow] outline-none md:text-sm",
+          // Focus state (use focus-within because the actual editable area is inside)
+          "focus-within:border-ring focus-within:ring-ring/50 focus-within:ring-[3px]",
+          // Error state
+          hasError && "border-red-500 focus-within:ring-red-500/60",
+          // Disabled state
           disabled && "pointer-events-none opacity-60",
           editorClassName,
         )}
@@ -419,10 +424,16 @@ export default function EditorField({
                         const url = globalThis.prompt("Enter URL", previousUrl ?? "https://");
                         if (url === null) return;
                         if (url === "") {
-                          editor.chain().focus().unsetLink().run();
+                          // Link extension is registered at runtime; cast to any to satisfy TS.
+                          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                          (editor.chain().focus() as any).unsetLink().run();
                           return;
                         }
-                        editor.chain().focus().extendMarkRange("link").setLink({ href: url }).run();
+                        // TipTap's Link commands are added via extension; cast chain to any for TS.
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                        (editor.chain().focus().extendMarkRange("link") as any)
+                          .setLink({ href: url })
+                          .run();
                       }}
                       disabled={!editor}
                       aria-label="Insert link"

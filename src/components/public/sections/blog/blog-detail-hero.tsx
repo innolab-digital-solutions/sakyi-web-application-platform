@@ -1,12 +1,17 @@
+ "use client";
+
 import dayjs from "dayjs";
 import { Calendar, Clock, ImageIcon, Share2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 import { PATHS } from "@/config/paths";
 import { BlogPost } from "@/types/public/blog";
 
 export default function BlogDetailHero({ post }: { post: BlogPost }) {
+  const pathname = usePathname();
+  const hideBackButton = pathname?.startsWith("/admin/");
   return (
     <section className="relative overflow-hidden bg-slate-50 py-16">
       {/* Background Elements */}
@@ -17,19 +22,29 @@ export default function BlogDetailHero({ post }: { post: BlogPost }) {
 
       <div className="relative mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
         {/* Navigation and Category */}
-        <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between" data-aos="fade-up">
-          {/* Back Button */}
-          <Link
-            href={PATHS.PUBLIC.BLOG}
-            className="group inline-flex items-center font-medium gap-2 text-slate-600 transition-colors duration-300 hover:text-[#35bec5]"
-            style={{ fontFamily: "Inter, sans-serif" }}
+        {!hideBackButton && (
+          <div
+            className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
+            data-aos="fade-up"
           >
-            <svg className="h-4 w-4 transition-transform duration-300 group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-            Back to Blog
-          </Link>
-        </div>
+            {/* Back Button */}
+            <Link
+              href={PATHS.PUBLIC.BLOG}
+              className="group inline-flex items-center gap-2 font-medium text-slate-600 transition-colors duration-300 hover:text-[#35bec5]"
+              style={{ fontFamily: "Inter, sans-serif" }}
+            >
+              <svg
+                className="h-4 w-4 transition-transform duration-300 group-hover:-translate-x-1"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+              Back to Blog
+            </Link>
+          </div>
+        )}
 
         {/* Article Header */}
         <div className="mb-8" data-aos="fade-up" data-aos-delay="200">
