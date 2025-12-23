@@ -17,8 +17,5 @@
     "ui": "@/components/ui",
     "lib": "@/lib",
     "hooks": "@/hooks"
-  },
-  "registries": {
-    "@shadcn-editor": "https://shadcn-editor.vercel.app/r/{name}.json"
   }
 }
