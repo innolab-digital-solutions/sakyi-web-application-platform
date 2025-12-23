@@ -5,6 +5,7 @@ import React, { useEffect } from "react";
 import { toast } from "sonner";
 
 import ComboBoxField from "@/components/shared/forms/combo-box-field";
+import EditorField from "@/components/shared/forms/editor-field";
 import FileUploadField from "@/components/shared/forms/file-upload-field";
 import InputField from "@/components/shared/forms/input-field";
 import TextareaField from "@/components/shared/forms/textarea-field";
@@ -257,17 +258,15 @@ export default function BlogPostForm({ blogPost }: { blogPost?: BlogPost }) {
               required
             />
 
-            <TextareaField
+            <EditorField
               id="content"
-              name="content"
-              className="min-h-[300px]"
-              placeholder="Write your blog post content here. Use clear paragraphs, headings, and formatting to make it easy to read..."
-              value={String(form.data.content ?? "")}
-              onChange={(event) => form.setData("content", event.target.value)}
-              error={form.errors.content as string}
               label="Content"
-              disabled={form.processing}
+              value={String(form.data.content ?? "")}
+              onChange={(nextValue) => form.setData("content", nextValue)}
+              error={form.errors.content as string}
               required
+              disabled={form.processing}
+              description="Write your blog post content. Use headings, lists, and formatting to keep it readable."
             />
 
             {/* Actions Section */}
