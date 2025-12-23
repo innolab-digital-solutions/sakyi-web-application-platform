@@ -30,6 +30,7 @@ export const ADMIN_ENDPOINTS = {
     SHOW: (id: string | number) => `/admin/users/${id}`,
     STORE: "/admin/users",
     UPDATE: (id: string | number) => `/admin/users/${id}`,
+    STATUS: (id: string | number) => `/admin/users/${id}/status`,
     DESTROY: (id: string | number) => `/admin/users/${id}`,
   },
 

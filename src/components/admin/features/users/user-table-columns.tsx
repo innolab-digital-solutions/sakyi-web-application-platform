@@ -4,6 +4,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import dayjs from "dayjs";
 import {
   CalendarDays,
+  CheckCircle,
   Ellipsis,
   MapPinned,
   Mars,
@@ -11,11 +12,13 @@ import {
   SquarePen,
   UserRound,
   Venus,
+  XCircle,
 } from "lucide-react";
 import React from "react";
 
 import UserDeletionDialog from "@/components/admin/features/users/user-deletion-dialog";
 import UserForm from "@/components/admin/features/users/user-form";
+import UserStatusButton from "@/components/admin/features/users/user-status-button";
 import DisabledTooltip from "@/components/shared/disabled-tooltip";
 import SortableHeader from "@/components/shared/table/sortable-header";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -30,6 +33,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { User } from "@/types/admin/user";
+import { cn } from "@/utils/shared/cn";
 
 export const usersTableColumns: ColumnDef<User>[] = [
   {
@@ -178,6 +182,29 @@ export const usersTableColumns: ColumnDef<User>[] = [
     },
   },
   {
+    accessorKey: "status",
+    header: "Status",
+    cell: ({ row }) => {
+      const status = row.original.status;
+
+      return (
+        <div className="flex items-center gap-2">
+          <Badge
+            variant="secondary"
+            className={cn(
+              "pointer-events-none text-[13px] font-semibold",
+              status === "active" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700",
+            )}
+          >
+            {status === "active" && <CheckCircle className="h-3.5 w-3.5" />}
+            {status === "suspended" && <XCircle className="h-3.5 w-3.5" />}
+            <span className="ml-1 capitalize">{status}</span>
+          </Badge>
+        </div>
+      );
+    },
+  },
+  {
     accessorKey: "created at",
     header: "Created At",
     cell: ({ row }) => {
@@ -225,8 +252,13 @@ export const usersTableColumns: ColumnDef<User>[] = [
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" sideOffset={8} className="min-w-[180px] p-3">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+            <DropdownMenuLabel className="text-muted-foreground text-[13px] font-semibold">
+              User Actions
+            </DropdownMenuLabel>
             <DropdownMenuSeparator />
+            <DropdownMenuItem asChild>
+              <UserStatusButton user={user} />
+            </DropdownMenuItem>
             <DropdownMenuItem asChild>
               <UserForm
                 mode="edit"

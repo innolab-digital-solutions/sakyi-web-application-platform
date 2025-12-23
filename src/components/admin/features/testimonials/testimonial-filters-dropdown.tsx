@@ -112,8 +112,8 @@ export default function TestimonialFiltersDropdown({
             <span className="hidden sm:block">Filters</span>
             {hasActiveFilters && (
               <Badge
-                variant="default"
-                className="bg-primary text-primary-foreground absolute -top-1 -right-1 flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-[10px] font-semibold"
+                variant="secondary"
+                className="text-accent absolute -top-2.5 -right-2 flex h-5 min-w-3 items-center justify-center rounded-full px-1.5 text-[10px] font-bold"
               >
                 {activeFiltersCount}
               </Badge>
@@ -188,9 +188,9 @@ export default function TestimonialFiltersDropdown({
             onClick={clearFilters}
             onSelect={(event) => event.preventDefault()}
             disabled={isLoading}
-            className="hover:!bg-destructive/10 hover:!text-destructive group text-destructive flex cursor-pointer items-center rounded-md px-2 py-2 font-semibold transition-colors duration-150"
+            className="hover:bg-destructive/10! hover:text-destructive! group text-destructive flex cursor-pointer items-center rounded-md px-5 py-2 font-semibold transition-colors duration-150"
           >
-            <RotateCcw className="text-destructive group-hover:!text-destructive mr-2 h-4 w-4 transition-colors duration-150" />
+            <RotateCcw className="text-destructive group-hover:text-destructive! h-4 w-4 transition-colors duration-150" />
             Reset Filters
           </DropdownMenuItem>
         </DropdownMenuContent>

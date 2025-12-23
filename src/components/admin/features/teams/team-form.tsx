@@ -47,6 +47,9 @@ export default function TeamForm({
   const { data: membersResponse } = useRequest({
     url: ENDPOINTS.LOOKUP.TEAM_MEMBERS,
     queryKey: ["team-members-lookup"],
+    data: {
+      status: "active",
+    },
     staleTime: 1000 * 60 * 5,
   });
 
