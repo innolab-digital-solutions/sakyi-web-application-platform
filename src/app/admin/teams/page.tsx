@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 export default function TeamListPage() {
   return (
     <ResourceListPage
-      title="Team Management"
+      title="Teams"
       description="Define and oversee the internal teams that support your clients. Assign members to each team so responsibilities and ownership stay clear."
       createTrigger={<TeamForm mode="create" trigger={<CreateButton label="Add Team" />} />}
       table={<TeamTable />}

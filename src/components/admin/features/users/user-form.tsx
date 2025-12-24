@@ -247,7 +247,7 @@ export default function UserForm({
       open={dialogOpen}
       onOpenChange={handleDialogOpenChange}
       onClose={() => form.reset()}
-      title={title ?? (isEdit ? "Edit User Account" : "Create New User")}
+      title={title ?? (isEdit ? "Edit Account" : "Create New Account")}
       description={
         description ??
         (isEdit

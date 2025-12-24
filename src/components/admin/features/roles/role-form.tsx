@@ -148,7 +148,7 @@ export default function RoleForm({
       open={dialogOpen}
       onOpenChange={handleDialogOpenChange}
       onClose={() => form.reset()}
-      title={title ?? (isEdit ? "Edit Role Details" : "Create New Role")}
+      title={title ?? (isEdit ? "Edit Role" : "Create New Role")}
       description={
         description ??
         (isEdit

@@ -205,7 +205,7 @@ export default function WorkoutForm({
       open={dialogOpen}
       onOpenChange={handleDialogOpenChange}
       onClose={() => form.reset()}
-      title={isEdit ? "Edit Workout" : "Create New Workout"}
+      title={isEdit ? "Edit Exercise" : "Create New Exercise"}
       description={
         isEdit
           ? "Update this workout's details, category, difficulty, equipment, or multimedia resources to keep your exercise library accurate and up-to-date."
@@ -214,8 +214,8 @@ export default function WorkoutForm({
       onSubmit={handleSubmit}
       processing={form.processing}
       isEdit={isEdit}
-      submitLabel={isEdit ? "Save Changes" : "Create Workout"}
-      submittingLabel={isEdit ? "Saving Changes..." : "Creating Workout..."}
+      submitLabel={isEdit ? "Save Changes" : "Create Exercise"}
+      submittingLabel={isEdit ? "Saving Changes..." : "Creating Exercise..."}
       disabled={isEdit && !form.isDirty}
     >
       {/* Category */}

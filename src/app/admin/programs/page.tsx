@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 export default function ProgramsListPage() {
   return (
     <ResourceListPage
-      title="Program Management"
+      title="Programs"
       description="Create and manage wellness programs with comprehensive details including features, outcomes, structure, and FAQs. Organize programs by duration, price, and target audience to support client enrollment and program delivery."
       createTrigger={
         <Button asChild>

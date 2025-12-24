@@ -142,7 +142,7 @@ export default function UnitForm({
       open={dialogOpen}
       onOpenChange={handleDialogOpenChange}
       onClose={() => form.reset()}
-      title={isEdit ? "Edit Unit" : "Create New Unit"}
+      title={isEdit ? "Edit Measurement Unit" : "Create New Measurement Unit"}
       description={
         isEdit
           ? "Update this unit's name or abbreviation to maintain consistency across your nutrition and workout data."

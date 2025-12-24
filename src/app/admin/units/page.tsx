@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 export default function UnitsListPage() {
   return (
     <ResourceListPage
-      title="Units"
+      title="Measurement Units"
       description="Manage measurement units used across nutrition tracking, workout plans, and program data. Standardize units like kilograms, grams, liters, and more to ensure consistent data entry and reporting."
       createTrigger={<UnitForm mode="create" trigger={<CreateButton label="Add Unit" />} />}
       table={<UnitTable />}

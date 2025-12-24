@@ -14,9 +14,9 @@ export const metadata: Metadata = {
 export default function WorkoutListPage() {
   return (
     <ResourceListPage
-      title="Workouts"
+      title="Exercises"
       description="Manage your workout library with detailed exercise information. Add, edit, and organize workouts with categories, difficulty levels, equipment, and multimedia resources to support comprehensive fitness programs."
-      createTrigger={<WorkoutForm mode="create" trigger={<CreateButton label="Add Workout" />} />}
+      createTrigger={<WorkoutForm mode="create" trigger={<CreateButton label="Add Exercise" />} />}
       table={<WorkoutTable />}
     />
   );
