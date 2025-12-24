@@ -1,5 +1,4 @@
 import { ArrowRight, ChevronRight, Heart, Mail } from "lucide-react";
-import { Metadata } from "next";
 import Link from "next/link";
 
 import CallToAction from "@/components/public/sections/call-to-action";
@@ -9,78 +8,6 @@ import Hero from "@/components/public/sections/home/hero";
 import HowItWorks from "@/components/public/sections/home/how-it-works";
 import MobileApp from "@/components/public/sections/home/mobile-app";
 import Testimonials from "@/components/public/sections/home/testimonials";
-
-export const metadata: Metadata = {
-  title: "SaKyi Health & Wellness - Transform Your Life with Personalized Wellness Programs",
-  description:
-    "Discover personalized wellness programs designed by certified doctors. Join thousands who've transformed their lives with SaKyi's evidence-based approach to health, nutrition, and mental wellness.",
-  keywords: [
-    "wellness programs",
-    "personalized health",
-    "mental wellness",
-    "nutrition counseling",
-    "holistic health",
-    "wellness coaching",
-    "health transformation",
-    "certified doctors",
-    "wellness journey",
-    "healthy living",
-  ],
-  authors: [{ name: "SaKyi Health & Wellness Team" }],
-  creator: "SaKyi Health & Wellness",
-  publisher: "SaKyi Health & Wellness",
-  formatDetection: {
-    email: false,
-    address: false,
-    telephone: false,
-  },
-  metadataBase: new URL("https://sakyihealthandwellness.com"),
-  alternates: {
-    canonical: "/",
-  },
-  openGraph: {
-    title: "SaKyi Health & Wellness - Transform Your Life with Personalized Wellness Programs",
-    description:
-      "Discover personalized wellness programs designed by certified doctors. Join thousands who've transformed their lives with SaKyi's evidence-based approach to health, nutrition, and mental wellness.",
-    url: "https://sakyihealthandwellness.com",
-    siteName: "SaKyi Health & Wellness",
-    images: [
-      {
-        url: "/images/og-home.jpg",
-        width: 1200,
-        height: 630,
-        alt: "SaKyi Health & Wellness - Personalized Wellness Programs",
-      },
-    ],
-    locale: "en_US",
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "SaKyi Health & Wellness - Transform Your Life with Personalized Wellness Programs",
-    description:
-      "Discover personalized wellness programs designed by certified doctors. Join thousands who've transformed their lives with SaKyi's evidence-based approach to health, nutrition, and mental wellness.",
-    images: ["/images/og-home.jpg"],
-    creator: "@sakyiwellness",
-    site: "@sakyiwellness",
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      "max-video-preview": -1,
-      "max-image-preview": "large",
-      "max-snippet": -1,
-    },
-  },
-  verification: {
-    google: "your-google-verification-code",
-    yandex: "your-yandex-verification-code",
-    yahoo: "your-yahoo-verification-code",
-  },
-};
 
 export default function HomePage() {
   return (

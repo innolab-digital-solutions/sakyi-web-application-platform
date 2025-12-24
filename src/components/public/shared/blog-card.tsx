@@ -1,6 +1,9 @@
-import { ArrowRight, ImageIcon } from "lucide-react";
+"use client";
+
+import { ArrowRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 
 import { PATHS } from "@/config/paths";
 import { BlogPost } from "@/types/public/blog";
@@ -13,6 +16,8 @@ interface BlogCardProperties {
 
 export default function BlogCard({ blog, index = 0, className = "" }: BlogCardProperties) {
   const hasThumbnail = blog.thumbnail && blog.thumbnail.trim() !== "";
+  const [imageError, setImageError] = useState(false);
+  const thumbnailSource = hasThumbnail && !imageError ? blog.thumbnail : "/images/no-image.png";
 
   return (
     <div
@@ -23,28 +28,20 @@ export default function BlogCard({ blog, index = 0, className = "" }: BlogCardPr
       {/* Image */}
       <div className="mb-6 overflow-hidden rounded-xl">
         <div className="group/image relative aspect-[16/10] w-full">
-          {hasThumbnail ? (
-            <Image
-              src={blog.thumbnail}
-              alt={blog.title}
-              width={600}
-              height={375}
-              className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-            />
-          ) : (
-            <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-[#35bec5]/20 via-[#4bc4db]/20 to-[#0c96c4]/20">
-              <div className="text-center">
-                <div className="mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-r from-[#35bec5] to-[#0c96c4] text-white">
-                  <ImageIcon className="h-6 w-6" />
-                </div>
-                <p className="text-sm font-medium text-slate-600" style={{ fontFamily: "Inter, sans-serif" }}>
-                  No image
-                </p>
-              </div>
-            </div>
-          )}
+          <Image
+            src={thumbnailSource}
+            alt={blog.title}
+            width={1200}
+            height={750}
+            quality={95}
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
+            className={`h-full w-full transition-transform duration-300 group-hover:scale-105 ${
+              hasThumbnail && !imageError ? "object-cover" : "object-contain bg-gray-100"
+            }`}
+            onError={() => setImageError(true)}
+          />
           {/* Subtle dark overlay that disappears on hover */}
-          {hasThumbnail && (
+          {hasThumbnail && !imageError && (
             <div className="absolute inset-0 bg-gradient-to-br from-slate-900/20 to-slate-800/10 transition-opacity duration-300 group-hover:opacity-0"></div>
           )}
         </div>

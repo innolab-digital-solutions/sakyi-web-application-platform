@@ -1,53 +1,71 @@
 import { ApiResponse } from "@/types/shared/api";
 
-import { Testimonial } from "./testimonial";
-
-export interface Ideal {
+export interface ProgramIdeal {
+    id: number;
     description: string;
-}
-
-export interface Structure {
+  }
+  
+  export interface ProgramKeyFeature {
+    id: number;
+    feature: string;
+  }
+  
+  export interface ProgramExpectedOutcome {
+    id: number;
+    outcome: string;
+  }
+  
+  export interface ProgramStructure {
+    id: number;
+    week: string;
     title: string;
     description: string;
-    week: number;
-}
-
-export interface KeyFeature {
-    feature: string;
-}
-
-export interface ExpectedOutcome {
-    outcome: string;
-}
-
-export interface Faq {
+  }
+  
+  export interface ProgramFAQ {
+    id: number;
     question: string;
     answer: string;
-    program_id?: number; 
-    program_slug?: string; 
-}
-
-export interface Program {
+  }
+  
+  export interface ProgramTestimonial {
+    id: number;
+    rating: number;
+    comment: string;
+    reviewer: {
+        name: string;
+        picture: string;
+    };
+  }
+  
+  export interface Program {
+    id: number;
+    code: string;
     thumbnail: string;
-    subtitle: string;
-    overview: string;
+    background_image: string;
+    tagline: string;
     title: string;
     slug: string;
+    overview: string;
     description: string;
     duration_value: number;
-    duration_unit: string;
-    price: number;
-    participants: number;
-    published_at: string | null;
-    testimonials: Testimonial[];
-    rating: number;
-
-    ideals?: Ideal[];
-    structures?: Structure[];
-    key_features?: KeyFeature[];
-    expected_outcomes?: ExpectedOutcome[];
-    faqs?: Faq[];
-}
-
-export type ProgramsApiResponse = ApiResponse<Program[]> | undefined;
-export type ProgramApiResponse = ApiResponse<Program> | undefined;
+    duration_unit: "days" | "weeks" | "months";
+    price: string;
+    status: "draft" | "published" | "archived";
+    currency: string;
+    published_at?: string;
+    avg_rating: number;
+participants: number;
+    ideals?: ProgramIdeal[];
+    key_features?: ProgramKeyFeature[];
+    expected_outcomes?: ProgramExpectedOutcome[];
+    structures?: ProgramStructure[];
+    attached_onboarding_form?: {
+      id: number;
+      title: string;
+    };
+    faqs?: ProgramFAQ[];
+    testimonials?: ProgramTestimonial[];
+  }
+  
+  export type ProgramApiResponse = ApiResponse<Program[]> | undefined;

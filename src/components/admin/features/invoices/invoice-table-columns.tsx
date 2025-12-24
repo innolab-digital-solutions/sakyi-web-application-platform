@@ -2,7 +2,7 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import dayjs from "dayjs";
-import { CalendarDays, CircleCheck, FileText, Receipt, XCircle } from "lucide-react";
+import { CalendarDays, CircleCheck, FileEdit, Receipt, XCircle } from "lucide-react";
 import Image from "next/image";
 import React from "react";
 
@@ -21,7 +21,7 @@ const statusMeta: Record<
   }
 > = {
   draft: {
-    icon: <FileText className="h-3.5 w-3.5" />,
+    icon: <FileEdit className="h-3.5 w-3.5" />,
     label: "Draft",
     badgeClass: "bg-yellow-100 text-yellow-700",
   },

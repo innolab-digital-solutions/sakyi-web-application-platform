@@ -4,7 +4,6 @@ import Link from "next/link";
 import React from "react";
 
 import BlogArticles from "@/components/public/sections/blog/blog-articles";
-import BlogEditorsPick from "@/components/public/sections/blog/blog-editors-pick";
 import BlogHero from "@/components/public/sections/blog/blog-hero";
 import CallToAction from "@/components/public/sections/call-to-action";
 
@@ -81,8 +80,6 @@ export default function BlogPage() {
       <BlogHero />
 
       <BlogArticles />
-
-      <BlogEditorsPick />
 
       <CallToAction
         title="Ready to Apply What You've Learned?"

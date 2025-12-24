@@ -1,18 +1,12 @@
+"use client";
+
 import { ArrowRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import { useState } from "react";
 
 import { PATHS } from "@/config/paths";
-
-interface Program {
-  title: string;
-  description: string;
-  slug?: string | undefined;
-  readTime?: string;
-  image: string;
-  href?: string;
-}
+import { Program } from "@/types/public/program";
 
 interface ProgramCardProperties {
   program: Program;
@@ -20,8 +14,11 @@ interface ProgramCardProperties {
   className?: string;
 }
 
-
 export default function ProgramCard({ program, index = 0, className = "" }: ProgramCardProperties) {
+  const hasThumbnail = program.thumbnail && program.thumbnail.trim() !== "";
+  const [imageError, setImageError] = useState(false);
+  const thumbnailSource = hasThumbnail && !imageError ? program.thumbnail : "/images/no-image.png";
+
   return (
     <div
       className={`group relative rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-all duration-300 hover:shadow-md ${className}`}
@@ -32,16 +29,21 @@ export default function ProgramCard({ program, index = 0, className = "" }: Prog
         {/* Image - Top (Full Width) */}
         <div className="group/image relative w-full overflow-hidden rounded-xl bg-slate-100">
           <Image
-            src={program.image}
+            src={thumbnailSource}
             alt={program.title}
-            width={600}
-            height={400}
-            className="h-auto w-full object-cover transition-transform duration-300 group-hover:scale-105"
-            quality={90}
-            priority
+            width={1200}
+            height={800}
+            quality={95}
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
+            className={`h-auto w-full transition-transform duration-300 group-hover:scale-105 ${
+              hasThumbnail && !imageError ? "object-cover" : "object-contain bg-gray-100"
+            }`}
+            onError={() => setImageError(true)}
           />
           {/* Subtle dark overlay that disappears on hover */}
-          <div className="absolute inset-0 bg-gradient-to-br from-slate-900/20 to-slate-800/10 transition-opacity duration-300 group-hover:opacity-0"></div>
+          {hasThumbnail && !imageError && (
+            <div className="absolute inset-0 bg-gradient-to-br from-slate-900/20 to-slate-800/10 transition-opacity duration-300 group-hover:opacity-0"></div>
+          )}
         </div>
 
         {/* Content - Bottom (Full Width) */}
