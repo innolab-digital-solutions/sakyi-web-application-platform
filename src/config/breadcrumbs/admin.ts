@@ -78,6 +78,13 @@ export const adminBreadcrumbs: Breadcrumbs = {
     { label: "Preview" },
   ],
 
+  /** Enrollments list page */
+  "/admin/enrollments": [
+    { label: "Admin Control Panel" },
+    { label: "Programs & Clients" },
+    { label: "Enrollments", href: PATHS.ADMIN.ENROLLMENTS.LIST },
+  ],
+
   /** Users list page */
   "/admin/users": [
     { label: "Admin Control Panel" },

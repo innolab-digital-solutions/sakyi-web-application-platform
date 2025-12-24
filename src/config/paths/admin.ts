@@ -44,6 +44,11 @@ export const ADMIN_PATHS = {
     PREVIEW: (slug: string) => `/admin/programs/${slug}/preview`,
   },
 
+  /** Enrollments routes */
+  ENROLLMENTS: {
+    LIST: "/admin/enrollments",
+  },
+
   /** Onboarding forms routes */
   ONBOARDING_FORMS: {
     LIST: "/admin/onboarding-forms",
@@ -125,5 +130,10 @@ export const ADMIN_PATHS = {
   /** Clients routes */
   CLIENTS: {
     LIST: "/admin/clients",
+  },
+
+  /** Enrollments routes */
+  ENROLLMENTS: {
+    LIST: "/admin/enrollments",
   },
 } as const;

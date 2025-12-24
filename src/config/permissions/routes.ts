@@ -79,11 +79,8 @@ export const routePermissions: Record<string, string | undefined> = {
   "/admin/testimonials/create": "testimonials.create",
   "/admin/testimonials/:id/edit": "testimonials.update",
 
-  // Example route (user's request)
-  "/admin/example": "example.view",
-
-  // Add more routes as needed
-  // "/admin/your-route": "your-module.view",
+  // Enrollments
+  "/admin/enrollments": "enrollments.view",
 } as const;
 
 /**

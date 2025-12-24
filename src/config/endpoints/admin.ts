@@ -132,6 +132,15 @@ export const ADMIN_ENDPOINTS = {
     DESTROY: (id: string | number) => `/admin/blog-posts/${id}`,
   },
 
+  /** Enrollments endpoints */
+  ENROLLMENTS: {
+    INDEX: "/admin/enrollments",
+    SHOW: (id: string | number) => `/admin/enrollments/${id}`,
+    STORE: "/admin/enrollments",
+    UPDATE: (id: string | number) => `/admin/enrollments/${id}`,
+    DESTROY: (id: string | number) => `/admin/enrollments/${id}`,
+  },
+
   /** Payment methods endpoints */
   PAYMENT_METHODS: {
     INDEX: "/admin/payment-methods",
