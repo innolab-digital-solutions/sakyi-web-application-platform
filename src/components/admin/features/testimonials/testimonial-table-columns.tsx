@@ -1,9 +1,9 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { CopyIcon, SquarePen, Star, StarHalf } from "lucide-react";
+import { SquarePen, Star, StarHalf } from "lucide-react";
 import Image from "next/image";
-import React, { useState } from "react";
+import React from "react";
 
 import TestimonialDeletionDialog from "@/components/admin/features/testimonials/testimonial-deletion-dialog";
 import TestimonialForm from "@/components/admin/features/testimonials/testimonial-form";
@@ -11,7 +11,6 @@ import DisabledTooltip from "@/components/shared/disabled-tooltip";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Testimonial } from "@/types/admin/testimonial";
 
 // Utility to render rating stars
@@ -33,71 +32,27 @@ function RatingStars({ rating }: { rating: number }) {
   );
 }
 
-function CopyEnrollmentCode({ enrollmentCode }: { enrollmentCode: string | undefined }) {
-  const [copied, setCopied] = useState(false);
-
-  if (!enrollmentCode) return;
-
-  return (
-    <TooltipProvider>
-      <Tooltip open={copied ? true : undefined} onOpenChange={(o) => !o && setCopied(false)}>
-        <TooltipTrigger asChild>
-          <button
-            type="button"
-            className="text-muted-foreground hover:text-primary ml-1 cursor-pointer transition"
-            aria-label="Copy enrollment code"
-            onClick={async (event) => {
-              event.stopPropagation();
-              if (enrollmentCode) {
-                await navigator.clipboard.writeText(enrollmentCode);
-                setCopied(true);
-                setTimeout(() => setCopied(false), 1200);
-              }
-            }}
-          >
-            <CopyIcon size={16} />
-          </button>
-        </TooltipTrigger>
-        <TooltipContent className="bg-popover text-popover-foreground border-border rounded-md border px-3 py-2 shadow-lg">
-          {copied ? "Copied!" : "Copy"}
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
-  );
-}
-
 export const testimonialsTableColumns: ColumnDef<Testimonial>[] = [
-  {
-    accessorKey: "enrollment",
-    header: () => "Enrollment",
-    cell: ({ row }) => (
-      <div className="text-foreground flex items-center gap-1 text-[13px] font-semibold">
-        {row.original.enrollment?.code ?? "-"}
-        <CopyEnrollmentCode enrollmentCode={row.original.enrollment?.code ?? undefined} />
-      </div>
-    ),
-    enableHiding: false,
-  },
   {
     accessorKey: "reviewer",
     header: () => "Reviewer",
     cell: ({ row }) => {
-      const client = row.original.enrollment?.client;
+      const reviewer = row.original.reviewer;
 
       return (
         <div className="flex items-center gap-2">
           <div>
             <Avatar>
               <AvatarImage
-                src={client?.picture ?? undefined}
-                alt={client?.name ?? "Client avatar"}
+                src={reviewer?.picture ?? undefined}
+                alt={reviewer?.name ?? "Reviewer avatar"}
               />
-              <AvatarFallback>{client?.name?.[0] ?? "C"}</AvatarFallback>
+              <AvatarFallback>{reviewer?.name?.[0] ?? "C"}</AvatarFallback>
             </Avatar>
           </div>
           <div className="flex items-center gap-2">
             <div className="text-sm font-medium text-neutral-800">
-              {client?.name ?? "Unknown client"}
+              {reviewer?.name ?? "Unknown reviewer"}
             </div>
           </div>
         </div>
@@ -108,7 +63,7 @@ export const testimonialsTableColumns: ColumnDef<Testimonial>[] = [
     accessorKey: "reviewed program",
     header: () => "Reviewed Program",
     cell: ({ row }) => {
-      const program = row.original.enrollment?.program;
+      const program = row.original.program;
 
       return (
         <div className="flex items-center gap-2">

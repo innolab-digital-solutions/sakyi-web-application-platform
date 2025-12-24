@@ -15,7 +15,7 @@ export default function TestimonialListPage() {
   return (
     <ResourceListPage
       title="Testimonials"
-      description=""
+      description="Manage client testimonials and reviews. Add, edit, and organize testimonials by program, including reviewer information, ratings, and comments to showcase authentic client experiences."
       createTrigger={
         <TestimonialForm mode="create" trigger={<CreateButton label="Add Testimonial" />} />
       }

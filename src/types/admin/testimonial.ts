@@ -4,19 +4,16 @@ export interface Testimonial {
   id: number;
   rating: number;
   comment: string;
-  enrollment: {
-    code: string;
-    client: {
-      id: number;
-      name: string;
-      picture: string;
-    };
-    program: {
-      id: number;
-      title: string;
-      thumbnail: string;
-    };
+  reviewer: {
+    name: string;
+    picture: string;
   };
+  program: {
+    id: number;
+    title: string;
+    thumbnail: string;
+  };
+
   actions: {
     edit: {
       allowed: boolean;

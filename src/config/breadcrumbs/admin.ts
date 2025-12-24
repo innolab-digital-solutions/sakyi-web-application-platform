@@ -103,6 +103,33 @@ export const adminBreadcrumbs: Breadcrumbs = {
   /* Nutrition & Training Library                                                  */
   /* -------------------------------------------------------------------------- */
 
+  "/admin/onboarding-forms": [
+    { label: "Admin Control Panel" },
+    { label: "Health Planning & Tracking" },
+    { label: "Onboarding" },
+    { label: "Forms", href: PATHS.ADMIN.ONBOARDING_FORMS.LIST },
+  ],
+
+  "/admin/onboarding-forms/create": [
+    { label: "Admin Control Panel" },
+    { label: "Health Planning & Tracking" },
+    { label: "Onboarding" },
+    { label: "Forms", href: PATHS.ADMIN.ONBOARDING_FORMS.LIST },
+    { label: "Create" },
+  ],
+
+  "/admin/onboarding-forms/:id/edit": [
+    { label: "Admin Control Panel" },
+    { label: "Health Planning & Tracking" },
+    { label: "Onboarding" },
+    { label: "Forms", href: PATHS.ADMIN.ONBOARDING_FORMS.LIST },
+    { label: "Edit" },
+  ],
+
+  /* -------------------------------------------------------------------------- */
+  /* Nutrition & Training Library                                                  */
+  /* -------------------------------------------------------------------------- */
+
   "/admin/units": [
     { label: "Admin Control Panel" },
     { label: "Nutrition & Training Library" },
@@ -198,45 +225,5 @@ export const adminBreadcrumbs: Breadcrumbs = {
     { label: "Admin Control Panel" },
     { label: "Content & Engagement" },
     { label: "Testimonials", href: PATHS.ADMIN.TESTIMONIALS.LIST },
-  ],
-
-  /** Onboarding forms list page */
-  "/admin/onboarding-forms": [
-    { label: "Admin Control Panel" },
-    { label: "Health Data & Plans" },
-    { label: "Onboarding" },
-    { label: "Forms", href: PATHS.ADMIN.ONBOARDING_FORMS.LIST },
-  ],
-
-  /** Onboarding forms create page */
-  "/admin/onboarding-forms/create": [
-    { label: "Admin Control Panel" },
-    { label: "Health Data & Plans" },
-    { label: "Onboarding" },
-    { label: "Forms", href: PATHS.ADMIN.ONBOARDING_FORMS.LIST },
-    { label: "Create" },
-  ],
-
-  /** Onboarding forms edit page (dynamic: :id replaced at runtime) */
-  "/admin/onboarding-forms/:id/edit": [
-    { label: "Admin Control Panel" },
-    { label: "Health Data & Plans" },
-    { label: "Onboarding" },
-    { label: "Forms", href: PATHS.ADMIN.ONBOARDING_FORMS.LIST },
-    { label: "Edit" },
-  ],
-
-  "/admin/invoices/:id/edit": [
-    { label: "Admin Control Panel" },
-    { label: "Finance" },
-    { label: "Invoices", href: PATHS.ADMIN.INVOICES.LIST },
-    { label: "Edit" },
-  ],
-
-  "/admin/invoices/create": [
-    { label: "Admin Control Panel" },
-    { label: "Finance" },
-    { label: "Invoices", href: PATHS.ADMIN.INVOICES.LIST },
-    { label: "Create" },
   ],
 };
