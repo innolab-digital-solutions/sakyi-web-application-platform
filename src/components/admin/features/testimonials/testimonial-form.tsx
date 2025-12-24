@@ -17,7 +17,6 @@ import {
   UpdateTestimonialSchema,
 } from "@/lib/validations/admin/testimonial-schema";
 import {
-  Enrollment,
   Testimonial,
   TestimonialApiResponse,
   TestimonialFormProperties,
@@ -188,11 +187,8 @@ export default function TestimonialForm({
       open={dialogOpen}
       onOpenChange={handleDialogOpenChange}
       onClose={() => form.reset()}
-      title={isEdit ? "Edit Testimonial" : "Create Testimonial"}
-      description={
-        isEdit ? "Update testimonial details." : "Add a new testimonial linked to an enrollment."
-      }
-      icon={<User2 className="h-5 w-5" />}
+      title={isEdit ? "" : ""}
+      description={isEdit ? "" : ""}
       onSubmit={handleSubmit}
       processing={form.processing}
       isEdit={isEdit}

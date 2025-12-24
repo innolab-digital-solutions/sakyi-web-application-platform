@@ -284,7 +284,7 @@ export default function UserForm({
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <InputField
           id="email"
-          label="Email"
+          label="Email Address"
           placeholder="e.g., john.doe@example.com"
           type="email"
           value={form.data.email}
@@ -295,7 +295,7 @@ export default function UserForm({
 
         <InputField
           id="phone"
-          label="Phone"
+          label="Phone Number"
           type="tel"
           placeholder="e.g., 0912345678, +1234567890"
           value={form.data.phone}

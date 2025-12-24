@@ -1,4 +1,3 @@
-import { ClipboardList } from "lucide-react";
 import type { Metadata } from "next";
 
 import TestimonialForm from "@/components/admin/features/testimonials/testimonial-form";
@@ -15,9 +14,8 @@ export const metadata: Metadata = {
 export default function TestimonialListPage() {
   return (
     <ResourceListPage
-      icon={ClipboardList}
       title="Testimonials"
-      description="Manage and organize user testimonials—add, edit, and maintain client feedback to highlight experiences and improve services."
+      description=""
       createTrigger={
         <TestimonialForm mode="create" trigger={<CreateButton label="Add Testimonial" />} />
       }

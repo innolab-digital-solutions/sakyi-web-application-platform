@@ -61,14 +61,15 @@ export default function TestimonialDeletionDialog({
     <>
       {(() => {
         const isLoading = request.loading;
-        const isDeletable = Boolean(testimonial.actions?.deletable);
-        const isDisabled = isLoading || !isDeletable;
-        let disabledReason: string | undefined;
+        const deleteAllowed = Boolean(testimonial.actions?.delete?.allowed);
+        const deleteReasons = testimonial.actions?.delete?.reasons ?? [];
+        const isDisabled = isLoading || !deleteAllowed;
 
+        let disabledReason: string | undefined;
         if (isLoading) {
           disabledReason = "Deleting in progress. Please wait.";
-        } else if (!isDeletable) {
-          disabledReason = "You don't have permission to delete this testimonial.";
+        } else if (!deleteAllowed && deleteReasons.length > 0) {
+          disabledReason = deleteReasons[0]?.trim() || undefined;
         }
 
         return (
@@ -81,7 +82,7 @@ export default function TestimonialDeletionDialog({
                 className,
               )}
               disabled={isDisabled}
-              onClick={() => (isDeletable ? setShowDeleteDialog(true) : undefined)}
+              onClick={() => (deleteAllowed ? setShowDeleteDialog(true) : undefined)}
               aria-label="Delete testimonial"
             >
               <Trash2 className="h-2 w-2" />
@@ -93,7 +94,7 @@ export default function TestimonialDeletionDialog({
 
       <ConfirmationDialog
         title="Delete Testimonial"
-        description={`Permanently delete the testimonial from "${testimonial.enrollment?.user.name}"? This action cannot be undone.`}
+        description={`Permanently delete the testimonial from "${testimonial.enrollment?.client?.name ?? "Unknown client"}"? This action cannot be undone.`}
         icon={TriangleAlert}
         variant="destructive"
         confirmText="Yes, Delete It"

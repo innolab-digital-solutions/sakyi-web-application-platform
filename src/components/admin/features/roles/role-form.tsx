@@ -170,7 +170,7 @@ export default function RoleForm({
         value={String(form.data.name ?? "")}
         onChange={(event) => form.setData("name", event.target.value)}
         error={form.errors.name as string}
-        label="Name"
+        label="Role Name"
         placeholder="e.g., Administrator, Moderator, Coach, Manager"
         required
         disabled={form.processing}

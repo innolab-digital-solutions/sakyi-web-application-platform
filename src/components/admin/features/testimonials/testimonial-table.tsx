@@ -2,13 +2,12 @@
 
 import React from "react";
 
+import TestimonialFiltersDropdown from "@/components/admin/features/testimonials/testimonial-filters-dropdown";
+import { testimonialsTableColumns } from "@/components/admin/features/testimonials/testimonial-table-columns";
 import ResourceTable from "@/components/admin/shared/resource-table";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ENDPOINTS } from "@/config/endpoints";
 import { Testimonial } from "@/types/admin/testimonial";
-
-import TestimonialFiltersDropdown from "./testimonial-filters-dropdown";
-import { testimonialsTableColumns } from "./testimonial-table-columns";
 
 export default function TestimonialTable() {
   return (
@@ -42,7 +41,7 @@ export default function TestimonialTable() {
         },
       }}
       emptyMessage="No testimonials found. Add one to get started."
-      filters={<TestimonialFiltersDropdown />}
+      // filters={<TestimonialFiltersDropdown />}
     />
   );
 }
