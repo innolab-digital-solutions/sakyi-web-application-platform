@@ -62,30 +62,35 @@ export default function BlogPostDeletionDialog({
     <>
       {(() => {
         const isLoading = request.loading;
-        const isDeletable = Boolean(blogPost.actions?.deletable);
-        const isDisabled = isLoading || !isDeletable;
+        const deleteAllowed = Boolean(blogPost.actions?.delete?.allowed);
+        const deleteReasons = blogPost.actions?.delete?.reasons ?? [];
+        const isDisabled = isLoading || !deleteAllowed;
+
         let disabledReason: string | undefined;
         if (isLoading) {
           disabledReason = "Deleting in progress. Please wait.";
-        } else if (!isDeletable) {
-          disabledReason = "You don't have permission to delete this post.";
+        } else if (!deleteAllowed && deleteReasons.length > 0) {
+          disabledReason = deleteReasons[0]?.trim() || undefined;
         }
 
+        const hasReason = Boolean(disabledReason);
+        const tooltipCursorClass = isDisabled && hasReason ? "cursor-help" : undefined;
+
         return (
-          <DisabledTooltip reason={disabledReason}>
+          <DisabledTooltip reason={disabledReason} className={tooltipCursorClass}>
             <Button
-              variant="ghost"
-              size="sm"
+              variant="outline"
               className={cn(
-                "hover:bg-destructive/10 hover:text-destructive text-destructive flex cursor-pointer items-center justify-center text-sm font-semibold",
+                "hover:bg-destructive/10 text-destructive group hover:text-destructive-900 hover:ring-none! flex w-full cursor-pointer! items-center justify-start gap-1.5 border-none text-sm font-medium shadow-none",
                 className,
               )}
+              onClick={() => (deleteAllowed ? setShowDeleteDialog(true) : undefined)}
               disabled={isDisabled}
-              onClick={() => (isDeletable ? setShowDeleteDialog(true) : undefined)}
+              type="button"
               aria-label="Delete blog post"
             >
-              <Trash2 className="h-2 w-2" />
-              <span>Delete</span>
+              <Trash2 className="group-hover:text-destructive-900 text-destructive h-4 w-4 transition-colors duration-150" />
+              <span>Delete Post</span>
             </Button>
           </DisabledTooltip>
         );

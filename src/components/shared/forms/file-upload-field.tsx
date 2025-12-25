@@ -5,6 +5,7 @@ import { Upload, X } from "lucide-react";
 import Image from "next/image";
 import React, { useCallback, useRef, useState } from "react";
 
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/utils/shared/cn";
@@ -293,7 +294,7 @@ export function FileUploadField({
           "relative flex min-h-[88px] cursor-pointer items-center gap-3 overflow-hidden rounded-md border-2 border-dashed bg-neutral-50 px-4 py-3 transition-colors",
           "focus-visible:border-ring/50 hover:bg-neutral-100",
           dragOver && "border-primary/30 bg-accent/30",
-          hasError && "border-red-500 !bg-red-50",
+          hasError && "border-red-500 bg-red-50!",
           disabled && "cursor-not-allowed opacity-50",
         )}
         onDragOver={handleDragOver}
@@ -340,17 +341,12 @@ export function FileUploadField({
           {/* Existing URL preview */}
           {existingUrl && normalizedValue.length === 0 && (
             <div className="relative flex items-center gap-2.5 rounded-md border p-3">
-              <div className="relative flex size-10 shrink-0 items-center justify-center overflow-hidden rounded border bg-white">
-                {existingUrl && (
-                  <Image
-                    src={existingUrl}
-                    alt="Current image"
-                    fill
-                    className="object-cover"
-                    unoptimized={existingUrl.startsWith("blob:")}
-                  />
-                )}
-              </div>
+              <Avatar className="size-10 shrink-0 rounded-md">
+                <AvatarImage src={existingUrl} alt="Current image" className="object-cover" />
+                <AvatarFallback className="border-muted size-10 rounded-md border bg-gray-100">
+                  <Image src="/images/no-image.png" alt="No image" width={32} height={32} />
+                </AvatarFallback>
+              </Avatar>
               <div className="flex min-w-0 flex-1 flex-col">
                 <span className="truncate text-sm font-medium">Current image</span>
                 <span className="text-muted-foreground truncate text-xs">Existing file</span>
@@ -374,23 +370,22 @@ export function FileUploadField({
               key={`${file.name}-${file.size}-${index}`}
               className="relative flex items-center gap-2.5 rounded-md border p-3"
             >
-              <div className="relative flex size-10 shrink-0 items-center justify-center overflow-hidden rounded border bg-white">
-                {file.type.startsWith("image/") ? (
-                  previewUrls.get(file) ? (
-                    <Image
-                      src={previewUrls.get(file) || ""}
-                      alt={file.name}
-                      fill
-                      className="object-cover"
-                      unoptimized
-                    />
-                  ) : (
-                    <span className="text-2xl">{getFileIcon(file)}</span>
-                  )
-                ) : (
+              {file.type.startsWith("image/") && previewUrls.get(file) ? (
+                <Avatar className="size-10 shrink-0 rounded-md">
+                  <AvatarImage
+                    src={previewUrls.get(file) || ""}
+                    alt={file.name}
+                    className="object-cover"
+                  />
+                  <AvatarFallback className="border-muted size-10 rounded-md border bg-gray-100">
+                    <Image src="/images/no-image.png" alt="No image" width={32} height={32} />
+                  </AvatarFallback>
+                </Avatar>
+              ) : (
+                <div className="flex size-10 shrink-0 items-center justify-center rounded-md border bg-white">
                   <span className="text-2xl">{getFileIcon(file)}</span>
-                )}
-              </div>
+                </div>
+              )}
               <div className="flex min-w-0 flex-1 flex-col">
                 <span className="truncate text-sm font-medium">{file.name}</span>
                 <span className="text-muted-foreground truncate text-xs">

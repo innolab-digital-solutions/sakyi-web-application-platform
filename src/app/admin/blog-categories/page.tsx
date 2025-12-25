@@ -1,4 +1,3 @@
-import { FileText } from "lucide-react";
 import type { Metadata } from "next";
 
 import BlogCategoryForm from "@/components/admin/features/blog-categories/blog-category-form";
@@ -14,9 +13,8 @@ export const metadata: Metadata = {
 export default function FoodCategoryListPage() {
   return (
     <ResourceListPage
-      icon={FileText}
       title="Blog Categories"
-      description="Create and maintain categories to structure your content and improve discoverability."
+      description="Organize your blog content into clear categories so readers can find what they need and your content stays easy to manage and discover."
       createTrigger={
         <BlogCategoryForm mode="create" trigger={<CreateButton label="Add Blog Category" />} />
       }

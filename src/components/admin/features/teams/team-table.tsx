@@ -17,14 +17,28 @@ export default function TeamTable() {
       columns={teamsTableColumns}
       skeleton={{
         customSkeletons: {
-          name: <Skeleton className="h-4 w-40 animate-pulse rounded" />,
-          description: <Skeleton className="h-4 w-64 animate-pulse rounded" />,
-          users: (
-            <div className="flex items-center gap-2">
-              <Skeleton className="h-6 w-16 animate-pulse rounded-lg" />
+          name: (
+            <div className="space-y-2">
+              <Skeleton className="h-4 w-32 animate-pulse rounded" />
+              <Skeleton className="h-3 w-96 animate-pulse rounded" />
             </div>
           ),
-          created_at: <Skeleton className="h-4 w-24 animate-pulse rounded" />,
+          members: (
+            <div className="flex items-center">
+              <div className="flex -space-x-2">
+                <Skeleton className="h-8 w-8 animate-pulse rounded-full border border-gray-100" />
+                <Skeleton className="h-8 w-8 animate-pulse rounded-full border border-gray-100" />
+                <Skeleton className="h-8 w-8 animate-pulse rounded-full border border-gray-100" />
+                <Skeleton className="h-8 w-8 animate-pulse rounded-full border border-gray-100" />
+              </div>
+            </div>
+          ),
+          actions: (
+            <div className="flex items-center space-x-1">
+              <Skeleton className="bg-muted/60 h-8 w-16 animate-pulse rounded" />
+              <Skeleton className="bg-muted/60 h-8 w-16 animate-pulse rounded" />
+            </div>
+          ),
         },
       }}
       emptyMessage="No teams found. Add one to get started."

@@ -2,7 +2,7 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import dayjs from "dayjs";
-import { Archive, CheckCircle, Clock, Ellipsis, FileEdit, SquarePen, XCircle } from "lucide-react";
+import { CheckCircle, Clock, Ellipsis, FileEdit, SquarePen, XCircle } from "lucide-react";
 import Link from "next/link";
 import React, { useState } from "react";
 

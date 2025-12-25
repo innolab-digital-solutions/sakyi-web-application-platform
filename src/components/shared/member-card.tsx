@@ -1,7 +1,8 @@
 "use client";
 
 import { X } from "lucide-react";
-import Image from "next/image";
+
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 interface MemberCardProperties {
   id: number;
@@ -14,17 +15,15 @@ interface MemberCardProperties {
 }
 
 export default function MemberCard({ id, name, role, picture, onRemove }: MemberCardProperties) {
-  const initial = name?.[0] ?? "?";
   return (
     <div className="rounded-md border border-gray-200 bg-white p-2 shadow-sm transition-shadow duration-200">
       <div className="flex items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-indigo-100 text-base font-semibold text-indigo-700">
-            {picture ? (
-              <Image src={picture} alt={name} width={40} height={40} />
-            ) : (
-              <span className="text-sm font-semibold text-gray-800">{initial}</span>
-            )}
+            <Avatar>
+              <AvatarImage src={picture ?? undefined} alt={name} />
+              <AvatarFallback>{name?.[0] ?? "M"}</AvatarFallback>
+            </Avatar>
           </div>
 
           <div className="flex min-w-0 flex-col gap-1">

@@ -1,6 +1,5 @@
 "use client";
 
-import { Carrot } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect } from "react";
 import { toast } from "sonner";
@@ -172,69 +171,25 @@ export default function FoodItemForm({
       open={dialogOpen}
       onOpenChange={handleDialogOpenChange}
       onClose={() => form.reset()}
-      title={title ?? (isEdit ? "Edit Food Item" : "Create Food Item")}
+      title={title ?? (isEdit ? "Edit Food Item" : "Create New Food Item")}
       description={
         description ??
         (isEdit
-          ? "Update the item’s name, category, unit, and nutrition details. Changes apply anywhere this item is referenced."
-          : "Add a food with category, unit, and nutrition info to keep planning accurate and consistent.")
+          ? "Update this food item's details, nutritional information, category, or unit to keep your food catalog accurate and up-to-date."
+          : "Add a new food item with name, description, calories per unit, category, and measurement unit to expand your food database.")
       }
-      icon={<Carrot className="h-5 w-5" />}
       onSubmit={handleSubmit}
       processing={form.processing}
       isEdit={isEdit}
       submitLabel={isEdit ? "Save Changes" : "Create Food Item"}
       submittingLabel={isEdit ? "Saving Changes..." : "Creating Food Item..."}
     >
-      {/* Name */}
-      <InputField
-        id="name"
-        name="name"
-        type="text"
-        value={String(form.data.name ?? "")}
-        onChange={(event) => form.setData("name", event.target.value)}
-        error={form.errors.name as string}
-        label="Name"
-        placeholder="e.g., Fried Rice"
-        required
-        disabled={form.processing}
-      />
-
-      {/* Description */}
-      <TextareaField
-        id="description"
-        name="description"
-        className="min-h-[96px]"
-        value={String(form.data.description ?? "")}
-        onChange={(event) => form.setData("description", event.target.value)}
-        error={form.errors.description as string}
-        label="Description"
-        placeholder="Short description of the food item"
-        disabled={form.processing}
-      />
-
-      {/* Calories */}
-      <InputField
-        id="calories_per_unit"
-        name="calories_per_unit"
-        type="number"
-        step={0.01}
-        min={0}
-        value={String(form.data.calories_per_unit ?? "")}
-        onChange={(event) => form.setData("calories_per_unit", Number(event.target.value))}
-        error={form.errors.calories_per_unit as string}
-        label="Calories per Unit"
-        placeholder="e.g., 250"
-        required
-        disabled={form.processing}
-      />
-
       {/* Category */}
       <ComboBoxField
         id="food_category_id"
         name="food_category_id"
         label="Food Category"
-        placeholder="Select a category..."
+        placeholder="Select a food category..."
         searchPlaceholder="Search categories..."
         emptyMessage="No categories found."
         options={(Array.isArray(categories?.data)
@@ -249,24 +204,69 @@ export default function FoodItemForm({
         allowClear
       />
 
-      {/* Unit */}
-      <ComboBoxField
-        id="unit_id"
-        name="unit_id"
-        label="Unit"
-        placeholder="Select a unit..."
-        searchPlaceholder="Search units..."
-        emptyMessage="No units found."
-        options={(Array.isArray(units?.data) ? (units?.data as unknown as Unit[]) : []).map(
-          (unit: Unit) => ({ value: String(unit.id), label: unit.name }),
-        )}
-        value={String(form.data.unit_id ?? "")}
-        onChange={(value: string) => form.setData("unit_id", Number(value))}
-        error={form.errors.unit_id as string}
+      {/* Name */}
+      <InputField
+        id="name"
+        name="name"
+        type="text"
+        value={String(form.data.name ?? "")}
+        onChange={(event) => form.setData("name", event.target.value)}
+        error={form.errors.name as string}
+        label="Name"
+        placeholder="e.g., Fried Rice, Grilled Chicken, Apple, Banana"
         required
         disabled={form.processing}
-        allowClear
       />
+
+      {/* Description */}
+      <TextareaField
+        id="description"
+        name="description"
+        className="min-h-[96px]"
+        value={String(form.data.description ?? "")}
+        onChange={(event) => form.setData("description", event.target.value)}
+        error={form.errors.description as string}
+        label="Description"
+        placeholder="Enter a brief description of the food item, including preparation method or key characteristics..."
+        disabled={form.processing}
+      />
+
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+        {/* Calories */}
+        <InputField
+          id="calories_per_unit"
+          name="calories_per_unit"
+          type="number"
+          step={0.01}
+          min={0}
+          value={String(form.data.calories_per_unit ?? "")}
+          onChange={(event) => form.setData("calories_per_unit", Number(event.target.value))}
+          error={form.errors.calories_per_unit as string}
+          label="Calories per Unit"
+          placeholder="e.g., 250, 150.5, 320"
+          required
+          disabled={form.processing}
+        />
+
+        {/* Unit */}
+        <ComboBoxField
+          id="unit_id"
+          name="unit_id"
+          label="Unit"
+          placeholder="Select a measurement unit..."
+          searchPlaceholder="Search units..."
+          emptyMessage="No units found."
+          options={(Array.isArray(units?.data) ? (units?.data as unknown as Unit[]) : []).map(
+            (unit: Unit) => ({ value: String(unit.id), label: unit.name }),
+          )}
+          value={String(form.data.unit_id ?? "")}
+          onChange={(value: string) => form.setData("unit_id", Number(value))}
+          error={form.errors.unit_id as string}
+          required
+          disabled={form.processing}
+          allowClear
+        />
+      </div>
     </FormDialog>
   );
 }

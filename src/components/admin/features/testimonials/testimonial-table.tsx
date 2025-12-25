@@ -2,13 +2,11 @@
 
 import React from "react";
 
+import { testimonialsTableColumns } from "@/components/admin/features/testimonials/testimonial-table-columns";
 import ResourceTable from "@/components/admin/shared/resource-table";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ENDPOINTS } from "@/config/endpoints";
 import { Testimonial } from "@/types/admin/testimonial";
-
-import TestimonialFiltersDropdown from "./testimonial-filters-dropdown";
-import { testimonialsTableColumns } from "./testimonial-table-columns";
 
 export default function TestimonialTable() {
   return (
@@ -18,23 +16,29 @@ export default function TestimonialTable() {
       columns={testimonialsTableColumns}
       skeleton={{
         customSkeletons: {
-          "enrollment.user.name": (
-            <div className="flex items-center gap-3">
-              <Skeleton className="h-10 w-10 flex-shrink-0 animate-pulse rounded-full" />
-              <Skeleton className="h-3 w-40 animate-pulse rounded" />
+          reviewer: (
+            <div className="flex items-center gap-2">
+              <Skeleton className="h-10 w-10 animate-pulse rounded-full" />
+              <Skeleton className="h-4 w-32 animate-pulse rounded" />
             </div>
           ),
-          "enrollment.program.name": <Skeleton className="h-4 w-40 animate-pulse rounded-lg" />,
+          "reviewed program": (
+            <div className="flex items-center gap-2">
+              <Skeleton className="size-12 shrink-0 animate-pulse rounded-md" />
+              <Skeleton className="h-4 w-40 animate-pulse rounded" />
+            </div>
+          ),
           rating: (
             <div className="flex items-center gap-1">
               {Array.from({ length: 5 }).map((_, index) => (
                 <Skeleton key={index} className="h-4 w-4 animate-pulse rounded-full" />
               ))}
+              <Skeleton className="ml-1 h-5 w-12 animate-pulse rounded-full" />
             </div>
           ),
           comment: <Skeleton className="h-4 w-64 animate-pulse rounded" />,
           actions: (
-            <div className="flex items-center space-x-1">
+            <div className="flex items-center space-x-0.5">
               <Skeleton className="h-8 w-16 animate-pulse rounded" />
               <Skeleton className="h-8 w-16 animate-pulse rounded" />
             </div>
@@ -42,7 +46,6 @@ export default function TestimonialTable() {
         },
       }}
       emptyMessage="No testimonials found. Add one to get started."
-      filters={<TestimonialFiltersDropdown />}
     />
   );
 }

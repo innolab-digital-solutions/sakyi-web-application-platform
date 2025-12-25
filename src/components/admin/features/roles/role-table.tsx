@@ -18,6 +18,16 @@ export default function RoleTable() {
               <Skeleton className="h-3 w-96 animate-pulse rounded" />
             </div>
           ),
+          users: (
+            <div className="flex items-center">
+              <div className="flex -space-x-2">
+                <Skeleton className="h-8 w-8 animate-pulse rounded-full border border-gray-100" />
+                <Skeleton className="h-8 w-8 animate-pulse rounded-full border border-gray-100" />
+                <Skeleton className="h-8 w-8 animate-pulse rounded-full border border-gray-100" />
+                <Skeleton className="h-8 w-8 animate-pulse rounded-full border border-gray-100" />
+              </div>
+            </div>
+          ),
           permissions: (
             <div className="flex items-center gap-2">
               <Skeleton className="h-6 w-16 animate-pulse rounded-full" />

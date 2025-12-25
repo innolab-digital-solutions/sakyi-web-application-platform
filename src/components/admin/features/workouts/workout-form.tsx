@@ -1,6 +1,5 @@
 "use client";
 
-import { Dumbbell } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect } from "react";
 import { toast } from "sonner";
@@ -49,7 +48,7 @@ export default function WorkoutForm({
       gif: undefined as unknown as File | string,
       video: "",
       equipment: "",
-      difficulty: "beginner",
+      difficulty: undefined as "beginner" | "intermediate" | "advanced" | undefined,
       workout_category_id: undefined as number | undefined,
     },
     {
@@ -206,20 +205,47 @@ export default function WorkoutForm({
       open={dialogOpen}
       onOpenChange={handleDialogOpenChange}
       onClose={() => form.reset()}
-      title={isEdit ? "Edit Workout" : "Create Workout"}
+      title={isEdit ? "Edit Exercise" : "Create New Exercise"}
       description={
         isEdit
-          ? "Update workout details including name, description, media, difficulty, or equipment."
-          : "Add a new workout with name, description, GIF/video, difficulty, and category."
+          ? "Update this workout's details, category, difficulty, equipment, or multimedia resources to keep your exercise library accurate and up-to-date."
+          : "Add a new workout with name, description, category, difficulty level, equipment requirements, and optional GIF or video resources to expand your exercise database."
       }
-      icon={<Dumbbell className="h-5 w-5" />}
       onSubmit={handleSubmit}
       processing={form.processing}
       isEdit={isEdit}
-      submitLabel={isEdit ? "Save Changes" : "Create Workout"}
-      submittingLabel={isEdit ? "Saving Changes..." : "Creating Workout..."}
+      submitLabel={isEdit ? "Save Changes" : "Create Exercise"}
+      submittingLabel={isEdit ? "Saving Changes..." : "Creating Exercise..."}
       disabled={isEdit && !form.isDirty}
     >
+      {/* Category */}
+      <ComboBoxField
+        id="workout_category_id"
+        name="workout_category_id"
+        label="Category"
+        placeholder="Select a workout category..."
+        searchPlaceholder="Search categories..."
+        emptyMessage="No categories found."
+        options={
+          Array.isArray(categories?.data) && categories !== undefined
+            ? categories.data.map((category: WorkoutCategory) => ({
+                value: String(category.id),
+                label: category.name,
+              }))
+            : []
+        }
+        value={
+          form.data.workout_category_id === undefined ? "" : String(form.data.workout_category_id)
+        }
+        onChange={(value: string) => {
+          form.setData("workout_category_id", value === "" ? undefined : Number(value));
+        }}
+        error={form.errors.workout_category_id as string}
+        required
+        disabled={form.processing || !categories}
+        allowClear={true}
+      />
+
       {/* Name */}
       <InputField
         id="name"
@@ -229,7 +255,7 @@ export default function WorkoutForm({
         onChange={(event) => form.setData("name", event.target.value)}
         error={form.errors.name as string}
         label="Name"
-        placeholder="Enter workout name"
+        placeholder="e.g., Push-ups, Squats, Plank, Deadlift, Bench Press"
         required
         disabled={form.processing}
       />
@@ -241,7 +267,7 @@ export default function WorkoutForm({
         onChange={(event) => form.setData("description", event.target.value)}
         error={form.errors.description as string}
         label="Description"
-        placeholder="Enter workout description"
+        placeholder="Enter a detailed description of the workout exercise, including proper form, target muscles, and execution steps..."
         disabled={form.processing}
       />
       {/* GIF Upload */}
@@ -264,7 +290,7 @@ export default function WorkoutForm({
         onChange={(event) => form.setData("video", event.target.value)}
         error={form.errors.video as string}
         label="Video URL"
-        placeholder="Enter video URL"
+        placeholder="e.g., https://youtube.com/watch?v=..., https://vimeo.com/..., or direct video URL"
         disabled={form.processing}
       />
 
@@ -277,15 +303,17 @@ export default function WorkoutForm({
         onChange={(event) => form.setData("equipment", event.target.value)}
         error={form.errors.equipment as string}
         label="Equipment"
-        placeholder="Enter required equipment"
+        placeholder="e.g., Dumbbells, Barbell, Resistance Bands, None (Bodyweight)"
         disabled={form.processing}
       />
+
       {/* Difficulty */}
       <SelectField
         id="difficulty"
         name="difficulty"
         label="Difficulty"
         value={String(form.data.difficulty ?? "beginner")}
+        placeholder="Select difficulty level..."
         onChange={(value) =>
           form.setData("difficulty", value as "beginner" | "intermediate" | "advanced")
         }
@@ -296,33 +324,6 @@ export default function WorkoutForm({
           { label: "Advanced", value: "advanced" },
         ]}
         disabled={form.processing}
-      />
-      {/* Category */}
-      <ComboBoxField
-        id="workout_category_id"
-        name="workout_category_id"
-        label="Category"
-        placeholder="Select a category..."
-        searchPlaceholder="Search categories..."
-        emptyMessage="No categories found."
-        options={
-          Array.isArray(categories?.data) && categories !== undefined
-            ? categories.data.map((category: WorkoutCategory) => ({
-                value: String(category.id),
-                label: category.name,
-              }))
-            : []
-        }
-        value={
-          form.data.workout_category_id === undefined ? "" : String(form.data.workout_category_id)
-        }
-        onChange={(value: string) => {
-          form.setData("workout_category_id", value === "" ? undefined : Number(value));
-        }}
-        error={form.errors.workout_category_id as string}
-        required
-        disabled={form.processing || !categories}
-        allowClear={true}
       />
     </FormDialog>
   );

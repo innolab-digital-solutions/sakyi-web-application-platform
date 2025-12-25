@@ -1,4 +1,4 @@
-import { NotebookText, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 
@@ -15,9 +15,8 @@ export const metadata: Metadata = {
 export default function BlogPostListPage() {
   return (
     <ResourceListPage
-      icon={NotebookText}
       title="Blog Posts"
-      description="Draft, review, and publish posts with the right metadata and categories for a great reading experience."
+      description="Create, edit, and manage your blog content. Organize posts by category, control publication status, and keep your content library organized and discoverable."
       createTrigger={
         <Button
           asChild

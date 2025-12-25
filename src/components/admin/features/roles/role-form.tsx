@@ -1,6 +1,5 @@
 "use client";
 
-import { ShieldCheck } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect } from "react";
 import { toast } from "sonner";
@@ -149,14 +148,13 @@ export default function RoleForm({
       open={dialogOpen}
       onOpenChange={handleDialogOpenChange}
       onClose={() => form.reset()}
-      title={title ?? (isEdit ? "Edit Role" : "Create Role")}
+      title={title ?? (isEdit ? "Edit Role" : "Create New Role")}
       description={
         description ??
         (isEdit
-          ? "Update the role’s name or description. Changes apply immediately to all members assigned to this role."
-          : "Give this role a clear name and a short description. You can assign permissions after creating it to control what admins can view and manage.")
+          ? "Adjust this role’s name and description so it clearly reflects its responsibilities and permissions."
+          : "Define a clear, purpose‑driven role (for example, “Coach” or “Back‑office Admin”) and briefly describe how it should be used.")
       }
-      icon={<ShieldCheck className="h-5 w-5" />}
       onSubmit={handleSubmit}
       processing={form.processing}
       isEdit={isEdit}
@@ -172,8 +170,8 @@ export default function RoleForm({
         value={String(form.data.name ?? "")}
         onChange={(event) => form.setData("name", event.target.value)}
         error={form.errors.name as string}
-        label="Name"
-        placeholder="e.g., Administrator, Moderator, etc."
+        label="Role Name"
+        placeholder="e.g., Administrator, Moderator, Coach, Manager"
         required
         disabled={form.processing}
       />
@@ -183,7 +181,7 @@ export default function RoleForm({
         id="description"
         name="description"
         className="min-h-[96px]"
-        placeholder="Describe the role's purpose and responsibilities..."
+        placeholder="Enter a clear description of the role's purpose, responsibilities, and permissions..."
         value={String(form.data.description ?? "")}
         onChange={(event) => form.setData("description", event.target.value)}
         error={form.errors.description as string}

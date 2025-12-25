@@ -8,6 +8,7 @@ import { toast } from "sonner";
 
 import ComboBoxField from "@/components/shared/forms/combo-box-field";
 import InputField from "@/components/shared/forms/input-field";
+import SelectField from "@/components/shared/forms/select-field";
 import TextareaField from "@/components/shared/forms/textarea-field";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -80,20 +81,23 @@ export default function OnboardingFormCreateForm({
         })
       : [];
 
+    const description = onboardingForm.description ?? undefined;
     return {
       title: String(onboardingForm.title ?? ""),
-      description: String(onboardingForm.description ?? ""),
-      status: (onboardingForm.status as "draft" | "published" | "archived") ?? "draft",
+      description: description || undefined,
+      status: ((onboardingForm.status as "active" | "inactive") ?? "active") as
+        | "active"
+        | "inactive",
       published_at: onboardingForm.published_at ?? null,
       sections,
-    } as CreateOnboardingFormInput;
+    } as unknown as CreateOnboardingFormInput;
   }, [onboardingForm]);
 
   const form = useForm(
-    mappedFromProperties ?? {
+    (mappedFromProperties ?? {
       title: "",
       description: "",
-      status: "draft" as const,
+      status: "active" as const,
       published_at: null,
       sections: [
         {
@@ -109,7 +113,7 @@ export default function OnboardingFormCreateForm({
           ],
         },
       ],
-    },
+    }) as unknown as CreateOnboardingFormInput,
     {
       validate: CreateOnboardingFormSchema,
       tanstack: {
@@ -151,10 +155,7 @@ export default function OnboardingFormCreateForm({
                           ...existing,
                           title: String(form.data.title ?? ""),
                           description: String(form.data.description ?? ""),
-                          status: String(form.data.status ?? "draft") as
-                            | "draft"
-                            | "published"
-                            | "archived",
+                          status: String(form.data.status ?? "active") as "active" | "inactive",
                           published_at: form.data.published_at ?? existing.published_at,
                         }
                       : undefined);
@@ -248,13 +249,15 @@ export default function OnboardingFormCreateForm({
         }))
       : [];
 
-    const nextData: CreateOnboardingFormInput = {
+    const nextData = {
       title: String(onboardingForm.title ?? ""),
       description: String(onboardingForm.description ?? ""),
-      status: (onboardingForm.status as "draft" | "published" | "archived") ?? "draft",
+      status: ((onboardingForm.status as "active" | "inactive") ?? "active") as
+        | "active"
+        | "inactive",
       published_at: onboardingForm.published_at ?? null,
       sections: mappedSections,
-    };
+    } as unknown as CreateOnboardingFormInput;
 
     form.setDataAndDefaults(nextData);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -445,7 +448,7 @@ export default function OnboardingFormCreateForm({
               id="title"
               name="title"
               label="Form title"
-              placeholder="e.g., Client Intake Questionnaire"
+              placeholder="e.g., New Client Intake Form"
               value={String(form.data.title ?? "")}
               onChange={(event_) => form.setData("title", event_.target.value)}
               error={form.errors.title as string}
@@ -456,11 +459,31 @@ export default function OnboardingFormCreateForm({
               id="description"
               name="description"
               label="Short description"
-              placeholder="A concise summary to help admins identify this form"
+              placeholder="Brief summary so admins know when to use this form"
               className="min-h-[92px]"
               value={String(form.data.description ?? "")}
               onChange={(event_) => form.setData("description", event_.target.value)}
               error={form.errors.description as string}
+            />
+
+            <SelectField
+              id="status"
+              name="status"
+              label="Status"
+              value={String(form.data.status ?? "active")}
+              onChange={(value) => {
+                form.setData(
+                  "status",
+                  value as "active" | "inactive" as unknown as CreateOnboardingFormInput["status"],
+                );
+              }}
+              error={form.errors.status as string}
+              required
+              options={[
+                { label: "Active", value: "active" },
+                { label: "Inactive", value: "inactive" },
+              ]}
+              disabled={form.processing}
             />
           </div>
         </div>
@@ -481,7 +504,7 @@ export default function OnboardingFormCreateForm({
               variant="ghost"
               size="sm"
               onClick={addSection}
-              className="text-primary hover:text-primary/80 hover:bg-primary/10 flex cursor-pointer items-center gap-2"
+              className="text-accent hover:text-accent/80 hover:bg-accent/10 flex cursor-pointer items-center gap-2"
             >
               <Plus className="h-3.5 w-3.5" /> Add section
             </Button>
@@ -532,7 +555,7 @@ export default function OnboardingFormCreateForm({
                       <InputField
                         id={`section-${sectionIndex}-title`}
                         label="Section title"
-                        placeholder="e.g., Personal Information"
+                        placeholder="e.g., Personal & Contact Information"
                         value={String(section.title ?? "")}
                         onChange={(event_) => {
                           const sections = [
@@ -548,7 +571,7 @@ export default function OnboardingFormCreateForm({
                       <InputField
                         id={`section-${sectionIndex}-description`}
                         label="Short description"
-                        placeholder="Optional summary for this section"
+                        placeholder="Optional note describing what this section covers"
                         value={String(section.description ?? "")}
                         onChange={(event_) => {
                           const sections = [
@@ -578,7 +601,7 @@ export default function OnboardingFormCreateForm({
                         variant="ghost"
                         size="sm"
                         onClick={() => addQuestion(sectionIndex)}
-                        className="text-primary hover:text-primary/80 hover:bg-primary/10 flex cursor-pointer items-center gap-2"
+                        className="text-accent hover:text-accent/80 hover:bg-accent/10 flex cursor-pointer items-center gap-2"
                       >
                         <Plus className="h-3.5 w-3.5" /> Add question
                       </Button>
@@ -601,7 +624,7 @@ export default function OnboardingFormCreateForm({
                                   <InputField
                                     id={`q-${sectionIndex}-${questionIndex}-text`}
                                     label="Question"
-                                    placeholder="Ask something..."
+                                    placeholder="Write the question clients should answer"
                                     value={String(q.question ?? "")}
                                     onChange={(event_) =>
                                       updateQuestion(
@@ -621,7 +644,7 @@ export default function OnboardingFormCreateForm({
                                   <ComboBoxField
                                     id={`q-${sectionIndex}-${questionIndex}-type`}
                                     label="Type"
-                                    placeholder="Select question type"
+                                    placeholder="Select the type of answer you want"
                                     options={questionTypeOptions}
                                     value={q.type}
                                     onChange={(value) =>
@@ -727,9 +750,20 @@ export default function OnboardingFormCreateForm({
           )}
         </div>
 
-        <Separator className="my-5" />
+        <Separator className="my-6" />
 
-        <div className="flex items-center justify-end">
+        {/* Actions Section */}
+        <div className="flex items-center justify-end gap-3">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => router.push(PATHS.ADMIN.ONBOARDING_FORMS.LIST)}
+            disabled={form.processing}
+            className="cursor-pointer bg-gray-100 hover:bg-gray-50 hover:text-gray-800"
+          >
+            Cancel
+          </Button>
+
           <Button
             type="submit"
             disabled={form.processing || (isEdit && !form.isDirty)}
@@ -757,7 +791,7 @@ function AddChoiceInline({ onAdd }: { onAdd: (value: string) => void }) {
         type="text"
         value={value}
         onChange={(event_) => setValue(event_.target.value)}
-        placeholder="Add a choice and press Add"
+        placeholder="Type an option label and click Add"
         className="border-input bg-background text-foreground ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring focus-visible:border-ring flex h-10 w-full rounded-md border px-3 py-2 text-sm shadow-sm transition-colors outline-none file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:cursor-not-allowed disabled:opacity-50"
       />
       <Button

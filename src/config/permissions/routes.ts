@@ -41,6 +41,7 @@ export const routePermissions: Record<string, string | undefined> = {
 
   // Programs
   "/admin/programs": "programs.view",
+  "/admin/programs/:slug/preview": "programs.view",
 
   // Onboarding Forms
   "/admin/onboarding-forms": "onboarding.forms.view",
@@ -65,22 +66,21 @@ export const routePermissions: Record<string, string | undefined> = {
 
   // Blog Categories
   "/admin/blog-categories": "blog.categories.view",
+  // Blog Posts
+  "/admin/blog-posts/:slug/preview": "blog.posts.view",
 
   // Payment Methods
-  "/admin/payment-methods": "payment-methods.view",
-  "/admin/payment-methods/create": "payment-methods.create",
-  "/admin/payment-methods/:id/edit": "payment-methods.update",
+  "/admin/payment-methods": "payment.methods.view",
+  "/admin/payment-methods/create": "payment.methods.create",
+  "/admin/payment-methods/:id/edit": "payment.methods.update",
 
   // Testimonials
   "/admin/testimonials": "testimonials.view",
   "/admin/testimonials/create": "testimonials.create",
   "/admin/testimonials/:id/edit": "testimonials.update",
 
-  // Example route (user's request)
-  "/admin/example": "example.view",
-
-  // Add more routes as needed
-  // "/admin/your-route": "your-module.view",
+  // Enrollments
+  "/admin/enrollments": "enrollments.view",
 } as const;
 
 /**

@@ -1,6 +1,5 @@
 "use client";
 
-import { UtensilsCrossed } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect } from "react";
 import { toast } from "sonner";
@@ -58,7 +57,7 @@ export default function FoodCategoryForm({
     {
       validate: isEdit ? UpdateFoodCategorySchema : CreateFoodCategorySchema,
       tanstack: {
-        invalidateQueries: ["admin-food-categories", "meta-food-categories"],
+        invalidateQueries: ["admin-food-categories", "lookup-food-categories"],
         mutationOptions: {
           onSuccess: (response) => {
             form.queryCache.setQueryData<FoodCategoryApiResponse>(
@@ -131,7 +130,7 @@ export default function FoodCategoryForm({
   useEffect(() => {
     if (isEdit && defaultValues) {
       const newData = {
-        parent_id: defaultValues.parent?.id ?? "",
+        parent_id: defaultValues.parent?.id ? String(defaultValues.parent.id) : "",
         name: defaultValues.name ?? "",
         description: defaultValues.description ?? "",
       };
@@ -171,14 +170,13 @@ export default function FoodCategoryForm({
       open={dialogOpen}
       onOpenChange={handleDialogOpenChange}
       onClose={() => form.reset()}
-      title={title ?? (isEdit ? "Edit Food Category" : "Create Food Category")}
+      title={title ?? (isEdit ? "Edit Food Category" : "Create New Food Category")}
       description={
         description ??
         (isEdit
-          ? "Update the category’s name, parent, or description. Changes apply to all items within this category."
-          : "Add a category with a clear name and optional parent to keep your food catalog organized and scalable.")
+          ? "Update this category's name, description, or parent category to maintain accurate food organization."
+          : "Add a new food category with a clear name and optional description. You can set a parent category to create a hierarchical structure.")
       }
-      icon={<UtensilsCrossed className="h-5 w-5" />}
       onSubmit={handleSubmit}
       processing={form.processing}
       isEdit={isEdit}
@@ -192,7 +190,7 @@ export default function FoodCategoryForm({
         name="parent_id"
         label="Parent Category"
         description="Select a parent category if this is a subcategory"
-        placeholder="Select parent category..."
+        placeholder="Select a parent category (optional)..."
         searchPlaceholder="Search categories..."
         emptyMessage="No categories found."
         options={[
@@ -222,7 +220,7 @@ export default function FoodCategoryForm({
         onChange={(event) => form.setData("name", event.target.value)}
         error={form.errors.name as string}
         label="Name"
-        placeholder="e.g., Appetizers, Desserts, Beverages..."
+        placeholder="e.g., Appetizers, Desserts, Beverages, Main Courses"
         required
         disabled={form.processing}
       />
@@ -232,7 +230,7 @@ export default function FoodCategoryForm({
         id="description"
         name="description"
         className="min-h-[96px]"
-        placeholder="Describe the category's purpose..."
+        placeholder="Enter a brief description of the category's purpose and the types of food items it will contain..."
         value={String(form.data.description ?? "")}
         onChange={(event) => form.setData("description", event.target.value)}
         error={form.errors.description as string}

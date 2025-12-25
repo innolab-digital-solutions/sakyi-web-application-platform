@@ -1,6 +1,5 @@
 "use client";
 
-import { CreditCard } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect } from "react";
 import { toast } from "sonner";
@@ -42,7 +41,6 @@ export default function PaymentMethodForm({
   const form = useForm(
     {
       name: "",
-      qr_code: undefined as unknown as File | string,
       logo: undefined as unknown as File | string,
       status: "active",
     },
@@ -76,10 +74,6 @@ export default function PaymentMethodForm({
                       ? {
                           ...existing,
                           name: String(form.data.name ?? ""),
-                          qr_code:
-                            typeof form.data.qr_code === "string"
-                              ? form.data.qr_code
-                              : existing.qr_code,
                           logo: typeof form.data.logo === "string" ? form.data.logo : existing.logo,
                           status: String(form.data.status ?? "active"),
                         }
@@ -130,40 +124,27 @@ export default function PaymentMethodForm({
     if (isEdit && defaultValues) {
       const newData = {
         name: defaultValues.name ?? "",
-        qr_code: defaultValues.qr_code ?? undefined,
         logo: defaultValues.logo ?? undefined,
-        status: (defaultValues.status ?? "active") as "active" | "inactive" | "archived",
+        status: (defaultValues.status ?? "active") as "active" | "inactive",
       };
 
       form.setDataAndDefaults(newData);
     } else {
       const newData = {
         name: "",
-        qr_code: undefined as File | string | undefined,
         logo: undefined as File | string | undefined,
-        status: "active" as "active" | "inactive" | "archived",
+        status: "active" as "active" | "inactive",
       };
 
       form.setDataAndDefaults(newData);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    defaultValues?.id,
-    defaultValues?.name,
-    defaultValues?.qr_code,
-    defaultValues?.logo,
-    defaultValues?.status,
-    isEdit,
-  ]);
+  }, [defaultValues?.id, defaultValues?.name, defaultValues?.logo, defaultValues?.status, isEdit]);
 
   const buildFormData = () => {
     const fd = new FormData();
     fd.append("name", String(form.data.name ?? ""));
     fd.append("status", String(form.data.status ?? "active"));
-
-    if (form.data.qr_code instanceof File) {
-      fd.append("qr_code", form.data.qr_code);
-    }
 
     if (form.data.logo instanceof File) {
       fd.append("logo", form.data.logo);
@@ -190,13 +171,12 @@ export default function PaymentMethodForm({
       open={dialogOpen}
       onOpenChange={handleDialogOpenChange}
       onClose={() => form.reset()}
-      title={isEdit ? "Edit Payment Method" : "Create Payment Method"}
+      title={isEdit ? "Edit Payment Method" : "Create New Payment Method"}
       description={
         isEdit
-          ? "Update the payment method details such as name, logo, QR code, or status."
-          : "Add a payment method with a name, logo, and QR code to make it available for transactions."
+          ? "Update this payment method's name, logo, or status to keep your payment options accurate and up-to-date."
+          : "Add a new payment method with a clear name and logo. This will be available for clients to use when making payments for programs and services."
       }
-      icon={<CreditCard className="h-5 w-5" />}
       onSubmit={handleSubmit}
       processing={form.processing}
       isEdit={isEdit}
@@ -204,6 +184,18 @@ export default function PaymentMethodForm({
       submittingLabel={isEdit ? "Saving Changes..." : "Creating Payment Method..."}
       disabled={isEdit && !form.isDirty}
     >
+      {/* Logo Upload Field */}
+      <FileUploadField
+        id="logo"
+        label="Logo"
+        value={form.data.logo}
+        onChange={(file) => form.setData("logo", file as File | undefined)}
+        maxSize={2 * 1024 * 1024}
+        accept="image/jpg,image/jpeg,image/png,image/webp"
+        required={!isEdit}
+        error={form.errors.logo as string}
+      />
+
       {/* Name Field */}
       <InputField
         id="name"
@@ -218,42 +210,18 @@ export default function PaymentMethodForm({
         disabled={form.processing}
       />
 
-      {/* Logo Upload Field */}
-      <FileUploadField
-        id="logo"
-        label="Logo"
-        value={form.data.logo}
-        onChange={(file) => form.setData("logo", file as File | undefined)}
-        maxSize={2 * 1024 * 1024}
-        accept="image/jpg,image/jpeg,image/png,image/webp"
-        required={!isEdit}
-        error={form.errors.logo as string}
-      />
-
-      {/* QR code Upload Field */}
-      <FileUploadField
-        id="qr_code"
-        label="QR Code"
-        value={form.data.qr_code}
-        onChange={(file) => form.setData("qr_code", file as File | undefined)}
-        maxSize={2 * 1024 * 1024}
-        accept="image/jpg,image/jpeg,image/png,image/webp"
-        required={!isEdit}
-        error={form.errors.qr_code as string}
-      />
-
       {/* Status Select */}
       <SelectField
         id="status"
         name="status"
         label="Status"
         value={String(form.data.status ?? "active")}
-        onChange={(value) => form.setData("status", value as "active" | "inactive" | "archived")}
+        onChange={(value) => form.setData("status", value as "active" | "inactive")}
         error={form.errors.status as string}
+        required
         options={[
           { label: "Active", value: "active" },
           { label: "Inactive", value: "inactive" },
-          { label: "Archived", value: "archived" },
         ]}
         disabled={form.processing}
       />

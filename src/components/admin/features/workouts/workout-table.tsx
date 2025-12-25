@@ -19,15 +19,20 @@ export default function WorkoutTable() {
       skeleton={{
         customSkeletons: {
           name: (
-            <div className="flex items-center gap-3">
-              <Skeleton className="h-12 w-12 flex-shrink-0 animate-pulse rounded-md" />
+            <div className="flex flex-col gap-1">
+              <div className="flex items-center gap-2">
+                <Skeleton className="h-4 w-32 animate-pulse rounded" />
+                <Skeleton className="h-5 w-20 animate-pulse rounded-lg" />
+              </div>
               <Skeleton className="h-3 w-96 animate-pulse rounded" />
             </div>
           ),
-          category: <Skeleton className="h-5 w-32 animate-pulse rounded-lg" />,
-          difficulty: <Skeleton className="h-5 w-24 animate-pulse rounded-lg" />,
+          "category.name": <Skeleton className="h-4 w-24 animate-pulse rounded" />,
+          gif: <Skeleton className="h-12 w-12 animate-pulse rounded-md" />,
+          video: <Skeleton className="h-12 w-12 animate-pulse rounded-md" />,
+          equipment: <Skeleton className="h-4 w-32 animate-pulse rounded" />,
           actions: (
-            <div className="flex items-center space-x-1">
+            <div className="flex items-center space-x-0.5">
               <Skeleton className="h-8 w-16 animate-pulse rounded" />
               <Skeleton className="h-8 w-16 animate-pulse rounded" />
             </div>

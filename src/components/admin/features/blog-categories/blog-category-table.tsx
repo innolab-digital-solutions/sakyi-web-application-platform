@@ -24,8 +24,8 @@ export default function BlogCategoryTable() {
           ),
           actions: (
             <div className="flex items-center space-x-1">
-              <Skeleton className="bg-muted/60 h-8 w-16 animate-pulse rounded" />
-              <Skeleton className="bg-muted/60 h-8 w-16 animate-pulse rounded" />
+              <Skeleton className="h-8 w-16 animate-pulse rounded" />
+              <Skeleton className="h-8 w-16 animate-pulse rounded" />
             </div>
           ),
         },

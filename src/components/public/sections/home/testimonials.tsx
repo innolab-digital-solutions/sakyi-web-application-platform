@@ -1,10 +1,10 @@
 "use client";
 
 import { ArrowRight, Star } from "lucide-react";
-import Image from "next/image";
 import React, { useEffect, useState } from "react";
 
 import TestimonialSkeleton from "@/components/public/shared/testimonial-skeleton";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ENDPOINTS } from "@/config/endpoints";
 import { useRequest } from "@/hooks/use-request";
 import { Testimonial } from "@/types/public/testimonial";
@@ -238,34 +238,27 @@ export default function Testimonials() {
 
                             {/* Client Info */}
                             <div className="flex flex-col items-center space-y-3">
-                              {testimonial.user.picture ? (
-                                <div className="relative h-12 w-12 overflow-hidden rounded-full">
-                                  <Image
-                                    src={testimonial.user.picture}
-                                    alt={testimonial.user.name}
-                                    fill
-                                    className="object-cover"
+                              <Avatar>
+                                <AvatarImage
+                                  src={testimonial.reviewer?.picture ?? undefined}
+                                  alt={testimonial.reviewer?.name ?? "Reviewer avatar"}
                                   />
-                                </div>
-                              ) : (
-                                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-r from-[#35bec5] to-[#0c96c4]">
-                                  <span className="text-sm font-bold text-white">
-                                    {getUserInitials(testimonial.user.name)}
-                                  </span>
-                                </div>
-                              )}
+                                <AvatarFallback className="bg-gradient-to-r from-[#35bec5] to-[#0c96c4] text-white">
+                                  {getUserInitials(testimonial.reviewer?.name ?? "U")}
+                                </AvatarFallback>
+                              </Avatar>
                               <div className="text-center">
                                 <h4
                                   className="text-base font-semibold text-slate-900"
                                   style={{ fontFamily: "Poppins, sans-serif" }}
                                 >
-                                  {testimonial.user.name}
+                                  {testimonial.reviewer?.name ?? "Unknown"}
                                 </h4>
                                 <p
                                   className="text-sm text-slate-600"
                                   style={{ fontFamily: "Inter, sans-serif" }}
                                 >
-                                  {testimonial.program.title}
+                                  {testimonial.program?.title ?? "Program"}
                                 </p>
                               </div>
                             </div>
@@ -306,34 +299,27 @@ export default function Testimonials() {
 
                             {/* Client Info */}
                             <div className="flex flex-col items-center space-y-3">
-                              {testimonial.user.picture ? (
-                                <div className="relative h-12 w-12 overflow-hidden rounded-full">
-                                  <Image
-                                    src={testimonial.user.picture}
-                                    alt={testimonial.user.name}
-                                    fill
-                                    className="object-cover"
+                              <Avatar>
+                                <AvatarImage
+                                  src={testimonial.reviewer?.picture ?? undefined}
+                                  alt={testimonial.reviewer?.name ?? "Reviewer avatar"}
                                   />
-                                </div>
-                              ) : (
-                                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-r from-[#35bec5] to-[#0c96c4]">
-                                  <span className="text-sm font-bold text-white">
-                                    {getUserInitials(testimonial.user.name)}
-                                  </span>
-                                </div>
-                              )}
+                                <AvatarFallback className="bg-gradient-to-r from-[#35bec5] to-[#0c96c4] text-white">
+                                  {getUserInitials(testimonial.reviewer?.name ?? "U")}
+                                </AvatarFallback>
+                              </Avatar>
                               <div className="text-center">
                                 <h4
                                   className="text-base font-semibold text-slate-900"
                                   style={{ fontFamily: "Poppins, sans-serif" }}
                                 >
-                                  {testimonial.user.name}
+                                  {testimonial.reviewer?.name ?? "Unknown"}
                                 </h4>
                                 <p
                                   className="text-sm text-slate-600"
                                   style={{ fontFamily: "Inter, sans-serif" }}
                                 >
-                                  {testimonial.program.title}
+                                  {testimonial.program?.title ?? "Program"}
                                 </p>
                               </div>
                             </div>

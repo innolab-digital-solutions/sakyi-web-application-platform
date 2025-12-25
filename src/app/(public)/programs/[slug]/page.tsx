@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import React, { useState } from "react";
 
 import CallToAction from "@/components/public/sections/call-to-action";
 import ProgramDetailSkeleton from "@/components/public/shared/program-detail-skeleton";
@@ -54,6 +54,7 @@ function getUserInitials(name: string) {
 export default function ProgramPage({ params }: { params: Promise<{ slug: string }> }) {
   // unwrap params safely
   const { slug } = React.use(params);
+  const [imageError, setImageError] = useState(false);
 
   const { data: programResponse, loading: programLoading } = useRequest({
     url: ENDPOINTS.PUBLIC.PROGRAM(slug),
@@ -95,16 +96,18 @@ export default function ProgramPage({ params }: { params: Promise<{ slug: string
               data-aos-easing="ease-out-cubic"
             >
               {/* Badge */}
-              <div
-                className="inline-flex items-center gap-2 rounded-full bg-linear-to-r from-[#35bec5]/10 to-[#0c96c4]/10 px-4 py-2 text-sm font-medium text-[#35bec5]"
-                data-aos="slide-down"
-                data-aos-delay="200"
-                data-aos-duration="800"
-                data-aos-easing="ease-out-back"
-              >
-                <Zap className="h-4 w-4" />
-                <span style={{ fontFamily: "Inter, sans-serif" }}>{program.subtitle}</span>
-              </div>
+              {program.tagline && (
+                <div
+                  className="inline-flex items-center gap-2 rounded-full bg-linear-to-r from-[#35bec5]/10 to-[#0c96c4]/10 px-4 py-2 text-sm font-medium text-[#35bec5]"
+                  data-aos="slide-down"
+                  data-aos-delay="200"
+                  data-aos-duration="800"
+                  data-aos-easing="ease-out-back"
+                >
+                  <Zap className="h-4 w-4" />
+                  <span style={{ fontFamily: "Inter, sans-serif" }}>{program.tagline}</span>
+                </div>
+              )}
 
               {/* Program Title */}
               <div className="space-y-6">
@@ -194,7 +197,7 @@ export default function ProgramPage({ params }: { params: Promise<{ slug: string
                       className="font-semibold text-slate-900"
                       style={{ fontFamily: "Poppins, sans-serif" }}
                     >
-                      {program.rating}/5.0
+                      {program.avg_rating?.toFixed(1) ?? "0.0"}/5.0
                     </div>
                   </div>
                 </div>
@@ -261,20 +264,31 @@ export default function ProgramPage({ params }: { params: Promise<{ slug: string
               <div className="group relative overflow-hidden rounded-3xl shadow-2xl">
                 <div className="aspect-4/5 w-full sm:aspect-3/4">
                   <Image
-                    src={program.thumbnail}
+                    src={
+                      imageError || !program.thumbnail ? "/images/no-image.png" : program.thumbnail
+                    }
                     alt={program.title}
-                    width={600}
-                    height={600}
-                    className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                    quality={100}
+                    width={1200}
+                    height={1500}
+                    quality={95}
                     priority
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    className={`h-full w-full transition-transform duration-300 group-hover:scale-105 ${
+                      imageError || !program.thumbnail
+                        ? "bg-gray-100 object-contain"
+                        : "object-cover"
+                    }`}
+                    onError={() => setImageError(true)}
                   />
                 </div>
                 {/* Subtle dark overlay that disappears on hover */}
-                <div className="absolute inset-0 bg-linear-to-br from-slate-900/20 to-slate-800/10 transition-opacity duration-300 group-hover:opacity-0"></div>
+                {!imageError && program.thumbnail && (
+                  <div className="absolute inset-0 bg-linear-to-br from-slate-900/20 to-slate-800/10 transition-opacity duration-300 group-hover:opacity-0"></div>
+                )}
                 {/* Brand gradient overlay */}
-                <div className="absolute inset-0 bg-linear-to-br from-[#35bec5]/5 to-[#0c96c4]/5"></div>
+                {!imageError && program.thumbnail && (
+                  <div className="absolute inset-0 bg-linear-to-br from-[#35bec5]/5 to-[#0c96c4]/5"></div>
+                )}
               </div>
             </div>
           </div>
@@ -625,11 +639,11 @@ export default function ProgramPage({ params }: { params: Promise<{ slug: string
 
                             {/* Client Info */}
                             <div className="flex flex-col items-center space-y-3">
-                              {testimonial.user.picture ? (
+                              {testimonial.reviewer?.picture ? (
                                 <div className="relative h-12 w-12 overflow-hidden rounded-full">
                                   <Image
-                                    src={testimonial.user.picture}
-                                    alt={testimonial.user.name}
+                                    src={testimonial.reviewer.picture}
+                                    alt={testimonial.reviewer.name}
                                     fill
                                     className="object-cover"
                                   />
@@ -637,7 +651,7 @@ export default function ProgramPage({ params }: { params: Promise<{ slug: string
                               ) : (
                                 <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-r from-[#35bec5] to-[#0c96c4]">
                                   <span className="text-sm font-bold text-white">
-                                    {getUserInitials(testimonial.user.name)}
+                                    {getUserInitials(testimonial.reviewer?.name ?? "U")}
                                   </span>
                                 </div>
                               )}
@@ -646,7 +660,7 @@ export default function ProgramPage({ params }: { params: Promise<{ slug: string
                                   className="text-base font-semibold text-slate-900"
                                   style={{ fontFamily: "Poppins, sans-serif" }}
                                 >
-                                  {testimonial.user.name}
+                                  {testimonial.reviewer?.name ?? "Unknown"}
                                 </h4>
                                 <p
                                   className="text-sm text-slate-600"
@@ -685,11 +699,11 @@ export default function ProgramPage({ params }: { params: Promise<{ slug: string
 
                         {/* Client Info */}
                         <div className="flex flex-col items-center space-y-3">
-                          {testimonial.user.picture ? (
+                          {testimonial.reviewer?.picture ? (
                             <div className="relative h-12 w-12 overflow-hidden rounded-full">
                               <Image
-                                src={testimonial.user.picture}
-                                alt={testimonial.user.name}
+                                src={testimonial.reviewer.picture}
+                                alt={testimonial.reviewer.name}
                                 fill
                                 className="object-cover"
                               />
@@ -697,7 +711,7 @@ export default function ProgramPage({ params }: { params: Promise<{ slug: string
                           ) : (
                             <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-r from-[#35bec5] to-[#0c96c4]">
                               <span className="text-sm font-bold text-white">
-                                {getUserInitials(testimonial.user.name)}
+                                {getUserInitials(testimonial.reviewer?.name ?? "U")}
                               </span>
                             </div>
                           )}
@@ -706,7 +720,7 @@ export default function ProgramPage({ params }: { params: Promise<{ slug: string
                               className="text-base font-semibold text-slate-900"
                               style={{ fontFamily: "Poppins, sans-serif" }}
                             >
-                              {testimonial.user.name}
+                              {testimonial.reviewer?.name ?? "Unknown"}
                             </h4>
                             <p
                               className="text-sm text-slate-600"

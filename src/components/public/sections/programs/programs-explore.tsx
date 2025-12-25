@@ -20,16 +20,12 @@ export default function ProgramsExplore() {
     staleTime: 1000 * 60 * 5,
   });
 
-const programs = useMemo(() => {
-  if (!programsResponse?.data) return [];
-  return (programsResponse.data as Program[]).map((program: Program) => ({
-    title: program.title,
-    description: program.description,
-    image: program.thumbnail,
-    slug: program.slug,
-    href: `/programs/${program.slug}`,
-  }));
-}, [programsResponse]);
+  const programs = useMemo(() => {
+    if (!programsResponse?.data) return [];
+    return (programsResponse.data as Program[]).filter(
+      (program: Program) => program.status === "published",
+    );
+  }, [programsResponse]);
 
   const isProgramsLoading = programsLoading || programsFetching;
 
@@ -68,24 +64,36 @@ const programs = useMemo(() => {
           </p>
         </div>
 
-           {/* Programs Grid */}
-<div className="grid gap-8 lg:grid-cols-2">
-  {isProgramsLoading
-    ? Array.from({ length: initialPrograms }).map((_, index) => (
-        <div
-          key={index}
-          className="rounded-3xl border border-dashed border-slate-200 bg-slate-50 p-6 shadow-sm animate-pulse"
-        >
-          <Skeleton className="h-48 w-full rounded-2xl mb-4" />
-          <Skeleton className="h-6 w-3/4 mb-2" />
-          <Skeleton className="h-4 w-full" />
-          <Skeleton className="h-4 w-5/6 mt-2" />
+        {/* Programs Grid */}
+        <div className="grid gap-8 lg:grid-cols-2">
+          {isProgramsLoading
+            ? Array.from({ length: initialPrograms }).map((_, index) => (
+                <div
+                  key={index}
+                  className="group relative rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
+                >
+                  <div className="flex h-full flex-col gap-6">
+                    {/* Image Skeleton */}
+                    <div className="relative w-full overflow-hidden rounded-xl bg-slate-100">
+                      <Skeleton className="aspect-[3/2] w-full" />
+                    </div>
+
+                    {/* Content Skeleton */}
+                    <div className="flex w-full flex-col justify-center space-y-4">
+                      <Skeleton className="h-7 w-3/4" />
+                      <Skeleton className="h-4 w-full" />
+                      <Skeleton className="h-4 w-5/6" />
+                      <div className="pt-2">
+                        <Skeleton className="h-5 w-24" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))
+            : displayedPrograms.map((program, index) => (
+                <ProgramCard key={program.id} program={program} index={index} />
+              ))}
         </div>
-      ))
-    : displayedPrograms.map((program, index) => (
-        <ProgramCard key={index} program={program} index={index} />
-      ))}
-</div>
 
 
         {/* Show More / Show Less Button */}

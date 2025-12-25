@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeft, FileText } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 
@@ -30,16 +30,15 @@ export default function EditBlogPostPage({
   const loadedPost = blogPost?.data as BlogPost | undefined;
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 p-6">
       <PageHeader
-        icon={FileText}
         title="Edit Blog Post"
-        description="Update title, summary, content, thumbnail, or category to keep your article accurate and up to date."
+        description="Update this post’s content, category, or publication status. Changes take effect immediately when saved."
         actions={
           <Button variant="outline" asChild>
             <Link
               href={PATHS.ADMIN.BLOG_POSTS.LIST}
-              className="flex items-center gap-2 text-sm font-semibold text-gray-800 hover:!bg-gray-100 hover:!text-gray-800"
+              className="flex items-center gap-2 text-sm font-semibold text-gray-800 hover:bg-gray-100! hover:text-gray-800!"
             >
               <ArrowLeft className="h-4 w-4" />
               Go Back

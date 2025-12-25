@@ -5,11 +5,14 @@ import React, { useEffect } from "react";
 import { toast } from "sonner";
 
 import ComboBoxField from "@/components/shared/forms/combo-box-field";
+import EditorField from "@/components/shared/forms/editor-field";
 import FileUploadField from "@/components/shared/forms/file-upload-field";
 import InputField from "@/components/shared/forms/input-field";
-import SelectField from "@/components/shared/forms/select-field";
 import TextareaField from "@/components/shared/forms/textarea-field";
 import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { ENDPOINTS } from "@/config/endpoints";
 import { PATHS } from "@/config/paths";
 import { useForm } from "@/hooks/use-form";
@@ -90,7 +93,7 @@ export default function BlogPostForm({ blogPost }: { blogPost?: BlogPost }) {
         title: blogPost.title ?? "",
         description: blogPost.description ?? "",
         content: blogPost.content ?? "",
-        status: (blogPost.status ?? "draft").toLowerCase() as "draft" | "published" | "archived",
+        status: (blogPost.status ?? "draft").toLowerCase() as "draft" | "published",
       };
 
       form.setDataAndDefaults(newData);
@@ -101,7 +104,7 @@ export default function BlogPostForm({ blogPost }: { blogPost?: BlogPost }) {
         title: "",
         description: "",
         content: "",
-        status: "draft" as "draft" | "published" | "archived",
+        status: "draft" as "draft" | "published",
       };
 
       form.setDataAndDefaults(newData);
@@ -130,13 +133,11 @@ export default function BlogPostForm({ blogPost }: { blogPost?: BlogPost }) {
 
   return (
     <div className="mx-auto w-full">
-      <form
-        onSubmit={handleSubmit}
-        onKeyDown={handleKeyDown}
-        className="space-y-6 rounded-md border border-gray-200 bg-white p-5 shadow-sm"
-      >
-        <div className="space-y-5">
-          <div className="space-y-5">
+      <form onSubmit={handleSubmit} onKeyDown={handleKeyDown} className="space-y-6">
+        {/* Two Column Layout */}
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3 lg:items-start">
+          {/* Left Column: Thumbnail and Status */}
+          <div className="space-y-6 rounded-md border border-gray-200 bg-white p-5 shadow-sm lg:col-span-1 lg:self-start">
             <FileUploadField
               id="blog-post-thumbnail"
               label="Thumbnail"
@@ -149,12 +150,67 @@ export default function BlogPostForm({ blogPost }: { blogPost?: BlogPost }) {
               disabled={form.processing}
             />
 
-            {/* Category Field */}
+            {/* Status Field */}
+            <div className="space-y-3">
+              <Label htmlFor="status" className="text-sm font-semibold text-gray-700">
+                Publication Status
+              </Label>
+              <div className="flex items-center justify-between rounded-lg border border-gray-200 bg-gray-50 p-4">
+                <div className="flex flex-col gap-1">
+                  <div className="flex items-center gap-2">
+                    <span
+                      className={`text-sm font-semibold ${
+                        form.data.status === "published" ? "text-primary" : "text-gray-600"
+                      }`}
+                    >
+                      {form.data.status === "published" ? "Published" : "Draft"}
+                    </span>
+                  </div>
+                  <p className="text-xs text-gray-500">
+                    {form.data.status === "published"
+                      ? "This post is live and visible to readers"
+                      : "This post is saved as a draft and not yet published"}
+                  </p>
+                </div>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div>
+                      <Switch
+                        id="status"
+                        checked={form.data.status === "published"}
+                        onCheckedChange={(checked) => {
+                          form.setData("status", checked ? "published" : "draft");
+                        }}
+                        disabled={form.processing || (isEdit && blogPost?.status === "published")}
+                        aria-label="Toggle publication status"
+                        className="disabled:cursor-not-allowed"
+                      />
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent className="bg-popover text-popover-foreground border-border max-w-xs rounded-md border px-3 py-2 shadow-lg">
+                    <p className="text-sm">
+                      {isEdit && blogPost?.status === "published"
+                        ? "Published posts cannot be reverted to draft. Once published, the post remains live. If you no longer want this post visible, you can move it to archive from the blog posts list."
+                        : form.data.status === "published"
+                          ? "Toggle to save as draft"
+                          : "Toggle to publish this post"}
+                    </p>
+                  </TooltipContent>
+                </Tooltip>
+              </div>
+              {form.errors.status && (
+                <p className="text-sm text-red-600">{form.errors.status as string}</p>
+              )}
+            </div>
+          </div>
+
+          {/* Right Column: Category, Title, Description, Content */}
+          <div className="space-y-6 rounded-md border border-gray-200 bg-white p-5 shadow-sm lg:col-span-2">
             <ComboBoxField
               id="blog_category_id"
               name="blog_category_id"
               label="Category"
-              placeholder="Select a category..."
+              placeholder="Select a blog category..."
               searchPlaceholder="Search categories..."
               emptyMessage="No categories found."
               options={
@@ -176,7 +232,6 @@ export default function BlogPostForm({ blogPost }: { blogPost?: BlogPost }) {
               allowClear={false}
             />
 
-            {/* Title Field */}
             <InputField
               id="title"
               name="title"
@@ -185,17 +240,16 @@ export default function BlogPostForm({ blogPost }: { blogPost?: BlogPost }) {
               onChange={(event) => form.setData("title", event.target.value)}
               error={form.errors.title as string}
               label="Title"
-              placeholder="Enter blog post title"
+              placeholder="e.g., 10 Tips for Healthy Living, The Benefits of Regular Exercise"
               required
               disabled={form.processing}
             />
 
-            {/* Description Field */}
             <TextareaField
               id="description"
               name="description"
               className="min-h-24"
-              placeholder="Enter a brief description that will appear in previews and excerpts..."
+              placeholder="Enter a brief description that will appear in previews, excerpts, and search results..."
               value={String(form.data.description ?? "")}
               onChange={(event) => form.setData("description", event.target.value)}
               error={form.errors.description as string}
@@ -204,64 +258,42 @@ export default function BlogPostForm({ blogPost }: { blogPost?: BlogPost }) {
               required
             />
 
-            {/* Content Field */}
-            <TextareaField
+            <EditorField
               id="content"
-              name="content"
-              className="min-h-[300px]"
-              placeholder="Write your blog post content here. Use clear paragraphs and formatting to make it easy to read..."
-              value={String(form.data.content ?? "")}
-              onChange={(event) => form.setData("content", event.target.value)}
-              error={form.errors.content as string}
               label="Content"
-              disabled={form.processing}
+              value={String(form.data.content ?? "")}
+              onChange={(nextValue) => form.setData("content", nextValue)}
+              error={form.errors.content as string}
               required
-            />
-
-            {/* Status Field */}
-            <SelectField
-              id="status"
-              name="status"
-              label="Status"
-              value={String(form.data.status ?? "draft")}
-              onChange={(value) =>
-                form.setData("status", value as "draft" | "published" | "archived")
-              }
-              error={form.errors.status as string}
-              options={[
-                { label: "Draft", value: "draft" },
-                { label: "Published", value: "published" },
-                { label: "Archived", value: "archived" },
-              ]}
               disabled={form.processing}
             />
-          </div>
 
-          {/* Actions Section */}
-          <div className="flex items-center justify-end gap-3 border-t border-gray-200 pt-5">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => router.push(PATHS.ADMIN.BLOG_POSTS.LIST)}
-              disabled={form.processing}
-              className="flex cursor-pointer items-center gap-2 font-semibold"
-            >
-              Cancel
-            </Button>
-            <Button
-              type="submit"
-              variant="default"
-              disabled={form.processing || (isEdit && !form.isDirty)}
-              className="flex cursor-pointer items-center gap-2 font-semibold"
-            >
-              {form.processing
-                ? isEdit
-                  ? "Saving Changes..."
-                  : "Creating Blog Post..."
-                : isEdit
-                  ? "Save Changes"
-                  : "Create Blog Post"}
-            </Button>
+            {/* Actions Section */}
+            <div className="flex items-center justify-end gap-3 border-t border-gray-200 pt-5">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => router.push(PATHS.ADMIN.BLOG_POSTS.LIST)}
+                disabled={form.processing}
+                className="cursor-pointer bg-gray-100 hover:bg-gray-50 hover:text-gray-800"
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                variant="default"
+                disabled={form.processing || (isEdit && !form.isDirty)}
+                className="flex cursor-pointer items-center gap-2 font-semibold"
+              >
+                {form.processing
+                  ? isEdit
+                    ? "Saving Changes..."
+                    : "Creating Blog Post..."
+                  : isEdit
+                    ? "Save Changes"
+                    : "Create Blog Post"}
+              </Button>
+            </div>
           </div>
         </div>
       </form>

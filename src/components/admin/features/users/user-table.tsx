@@ -14,24 +14,29 @@ export default function UserTable() {
       endpoint={ENDPOINTS.ADMIN.USERS.INDEX}
       queryKey={["admin-users"]}
       columns={usersTableColumns}
+      showColumnVisibility={true}
       skeleton={{
         customSkeletons: {
-          title: (
-            <div className="flex min-w-0 items-start gap-4">
-              <div className="ring-muted-foreground/5 bg-muted relative size-12 flex-shrink-0 animate-pulse overflow-hidden rounded-md ring-1" />
-              <div className="flex min-w-0 flex-1 flex-col gap-2">
-                <div className="flex items-center gap-2">
-                  <Skeleton className="h-4 w-40 animate-pulse rounded" />
-                  <Skeleton className="h-5 w-16 animate-pulse rounded-full" />
-                </div>
-                <Skeleton className="h-3 w-80 animate-pulse rounded" />
+          name: (
+            <div className="flex items-center gap-2">
+              <Skeleton className="h-10 w-10 animate-pulse rounded-full" />
+              <div className="flex items-center gap-2">
+                <Skeleton className="h-4 w-32 animate-pulse rounded" />
+                <Skeleton className="h-5 w-16 animate-pulse rounded-full" />
               </div>
             </div>
           ),
-          onboarding_form: <Skeleton className="h-4 w-80 animate-pulse rounded" />,
-          duration_value: <Skeleton className="h-4 w-20 animate-pulse rounded" />,
-          price: <Skeleton className="h-4 w-24 animate-pulse rounded" />,
-          status: <Skeleton className="h-4 w-8 animate-pulse rounded-lg" />,
+          email: <Skeleton className="h-4 w-48 animate-pulse rounded" />,
+          phone: <Skeleton className="h-4 w-28 animate-pulse rounded" />,
+          dob: <Skeleton className="h-4 w-32 animate-pulse rounded" />,
+          gender: (
+            <div className="flex items-center gap-1">
+              <Skeleton className="h-3.5 w-3.5 animate-pulse rounded" />
+              <Skeleton className="h-4 w-12 animate-pulse rounded" />
+            </div>
+          ),
+          address: <Skeleton className="h-4 w-40 animate-pulse rounded" />,
+          "created at": <Skeleton className="h-4 w-36 animate-pulse rounded" />,
           actions: (
             <div className="flex items-center space-x-1">
               <Skeleton className="h-8 w-8 animate-pulse rounded" />
@@ -40,7 +45,7 @@ export default function UserTable() {
         },
       }}
       emptyMessage="No users found. Create your first user to get started."
-      filters={<UserFiltersDropdown />}
+      filters={({ isLoading }) => <UserFiltersDropdown isLoading={isLoading} />}
     />
   );
 }

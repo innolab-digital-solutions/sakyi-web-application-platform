@@ -11,10 +11,16 @@ export interface Team {
   id: number;
   name: string;
   description: string | null;
-  users: TeamMember[];
-  actions?: {
-    editable?: boolean;
-    deletable?: boolean;
+  members: TeamMember[];
+  actions: {
+    edit: {
+      allowed: boolean;
+      reasons: string[];
+    };
+    delete: {
+      allowed: boolean;
+      reasons: string[];
+    };
   };
 }
 

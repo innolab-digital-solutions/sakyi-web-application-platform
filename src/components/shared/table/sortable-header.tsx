@@ -2,7 +2,7 @@
 
 import { Column } from "@tanstack/react-table";
 import { MoveDown, MoveUp } from "lucide-react";
-import { useCallback, useRef } from "react";
+import { useCallback } from "react";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/utils/shared/cn";
@@ -18,31 +18,20 @@ export default function SortableHeader<TData, TValue>({
   children,
   className,
 }: SortableHeaderProperties<TData, TValue>) {
-  const clickCountReference = useRef(0);
-  const clickTimeoutReference = useRef<NodeJS.Timeout>(null);
-
   const handleClick = useCallback(() => {
-    // Clear any existing timeout
-    if (clickTimeoutReference.current) {
-      clearTimeout(clickTimeoutReference.current);
-    }
+    const currentSort = column.getIsSorted();
 
-    clickCountReference.current += 1;
-
-    // If this is the third click, reset sorting
-    if (clickCountReference.current === 3) {
+    // Cycle through: none -> asc -> desc -> none
+    if (currentSort === false) {
+      // First click: sort ascending
+      column.toggleSorting(false);
+    } else if (currentSort === "asc") {
+      // Second click: sort descending
+      column.toggleSorting(true);
+    } else {
+      // Third click: reset (clear sorting)
       column.clearSorting();
-      clickCountReference.current = 0;
-      return;
     }
-
-    // Normal sorting behavior for first two clicks
-    column.toggleSorting(column.getIsSorted() === "asc");
-
-    // Reset click count after a delay
-    clickTimeoutReference.current = setTimeout(() => {
-      clickCountReference.current = 0;
-    }, 500);
   }, [column]);
 
   if (!column.getCanSort()) {
@@ -57,13 +46,13 @@ export default function SortableHeader<TData, TValue>({
       variant="ghost"
       onClick={handleClick}
       className={cn(
-        "flex cursor-pointer items-center justify-center !gap-x-1 border-none bg-transparent !px-0 !py-2 text-xs font-bold tracking-wide text-gray-600 !uppercase hover:bg-transparent hover:text-gray-500",
+        "flex cursor-pointer items-center justify-center gap-x-1! border-none bg-transparent px-0! py-2! text-xs font-bold tracking-wide text-gray-600 uppercase! hover:bg-transparent hover:text-gray-500",
         className,
       )}
       title={
         canReset
-          ? "Click to sort ascending, click again for descending, triple-click to reset"
-          : "Click to sort"
+          ? "Click to sort ascending, click again for descending, click again to reset"
+          : "Click to sort ascending"
       }
     >
       <div>{children}</div>
@@ -72,13 +61,13 @@ export default function SortableHeader<TData, TValue>({
         <MoveUp
           className={cn(
             String(isSorted) === "asc" ? "text-primary" : "text-gray-400",
-            "!h-3.5 !w-3.5",
+            "h-3.5! w-3.5!",
           )}
         />
         <MoveDown
           className={cn(
             String(isSorted) === "desc" ? "text-primary" : "text-gray-400",
-            "!h-3.5 !w-3.5",
+            "h-3.5! w-3.5!",
           )}
         />
       </div>

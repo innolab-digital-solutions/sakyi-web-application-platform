@@ -28,7 +28,7 @@ export const workoutCategoryTableColumns: ColumnDef<WorkoutCategory>[] = [
             {parent ? (
               <Badge
                 variant="secondary"
-                className="bg-primary/10 text-primary flex items-center gap-1 !font-semibold"
+                className="bg-primary/10 text-primary flex items-center gap-1 font-semibold!"
               >
                 <CornerDownRight className="text-primary h-3.5 w-3.5" />
                 Parent: {parent.name}
@@ -36,14 +36,14 @@ export const workoutCategoryTableColumns: ColumnDef<WorkoutCategory>[] = [
             ) : (
               <Badge
                 variant="outline"
-                className="text-muted-foreground bg-muted/60 flex items-center gap-1 border-dashed !font-semibold"
+                className="text-muted-foreground bg-muted/60 flex items-center gap-1 border-dashed font-semibold!"
               >
                 <Network className="text-muted-foreground h-3.5 w-3.5" />
                 Root
               </Badge>
             )}
           </div>
-          <div className="text-muted-foreground max-w-full break-words whitespace-pre-line">
+          <div className="text-muted-foreground max-w-full wrap-break-word whitespace-pre-line">
             {description}
           </div>
         </div>
@@ -57,25 +57,27 @@ export const workoutCategoryTableColumns: ColumnDef<WorkoutCategory>[] = [
     cell: ({ row }) => {
       const workoutCategory = row.original;
 
+      const editAllowed = Boolean(workoutCategory.actions?.edit?.allowed);
+      const editReasons = workoutCategory.actions?.edit?.reasons ?? [];
+      const editDisabledReason =
+        editAllowed || editReasons.length === 0 ? undefined : editReasons[0]?.trim() || undefined;
+
       return (
         <div className="flex items-center space-x-0.5">
           <WorkoutCategoryForm
             mode="edit"
             defaultValues={workoutCategory}
             trigger={(() => {
-              const isEditable = Boolean(workoutCategory.actions?.editable);
-              const disabledReason = isEditable
-                ? undefined
-                : "You don't have permission to edit this category.";
               return (
-                <DisabledTooltip reason={disabledReason}>
+                <DisabledTooltip reason={editDisabledReason}>
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="hover:bg-accent/10 hover:text-accent text-accent flex cursor-pointer items-center justify-center text-sm font-semibold"
-                    disabled={!isEditable}
+                    className="text-accent hover:bg-accent/10 hover:text-accent flex cursor-pointer items-center justify-center text-sm font-semibold"
+                    disabled={!editAllowed}
+                    aria-label="Edit workout category"
                   >
-                    <SquarePen className="h-2 w-2" />
+                    <SquarePen className="h-4 w-4" />
                     <span>Edit</span>
                   </Button>
                 </DisabledTooltip>

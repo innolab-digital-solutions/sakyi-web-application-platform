@@ -1,4 +1,3 @@
-import { Dumbbell } from "lucide-react";
 import type { Metadata } from "next";
 
 import WorkoutForm from "@/components/admin/features/workouts/workout-form";
@@ -15,10 +14,9 @@ export const metadata: Metadata = {
 export default function WorkoutListPage() {
   return (
     <ResourceListPage
-      icon={Dumbbell}
-      title="Workouts"
-      description="Add, edit, and maintain workouts with categories, difficulty levels, instructional videos, and GIFs—your single source of truth for fitness content."
-      createTrigger={<WorkoutForm mode="create" trigger={<CreateButton label="Add Workout" />} />}
+      title="Exercises"
+      description="Manage your workout library with detailed exercise information. Add, edit, and organize workouts with categories, difficulty levels, equipment, and multimedia resources to support comprehensive fitness programs."
+      createTrigger={<WorkoutForm mode="create" trigger={<CreateButton label="Add Exercise" />} />}
       table={<WorkoutTable />}
     />
   );

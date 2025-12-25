@@ -1,12 +1,21 @@
+"use client";
+
 import dayjs from "dayjs";
-import { Calendar, Clock, ImageIcon, Share2 } from "lucide-react";
+import { Calendar, Clock, Share2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useState } from "react";
 
 import { PATHS } from "@/config/paths";
 import { BlogPost } from "@/types/public/blog";
 
 export default function BlogDetailHero({ post }: { post: BlogPost }) {
+  const pathname = usePathname();
+  const hideBackButton = pathname?.startsWith("/admin/");
+  const hasThumbnail = post.thumbnail && post.thumbnail.trim() !== "";
+  const [imageError, setImageError] = useState(false);
+  const thumbnailSource = hasThumbnail && !imageError ? post.thumbnail : "/images/no-image.png";
   return (
     <section className="relative overflow-hidden bg-slate-50 py-16">
       {/* Background Elements */}
@@ -17,19 +26,29 @@ export default function BlogDetailHero({ post }: { post: BlogPost }) {
 
       <div className="relative mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
         {/* Navigation and Category */}
-        <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between" data-aos="fade-up">
-          {/* Back Button */}
-          <Link
-            href={PATHS.PUBLIC.BLOG}
-            className="group inline-flex items-center font-medium gap-2 text-slate-600 transition-colors duration-300 hover:text-[#35bec5]"
-            style={{ fontFamily: "Inter, sans-serif" }}
+        {!hideBackButton && (
+          <div
+            className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
+            data-aos="fade-up"
           >
-            <svg className="h-4 w-4 transition-transform duration-300 group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-            Back to Blog
-          </Link>
-        </div>
+            {/* Back Button */}
+            <Link
+              href={PATHS.PUBLIC.BLOG}
+              className="group inline-flex items-center gap-2 font-medium text-slate-600 transition-colors duration-300 hover:text-[#35bec5]"
+              style={{ fontFamily: "Inter, sans-serif" }}
+            >
+              <svg
+                className="h-4 w-4 transition-transform duration-300 group-hover:-translate-x-1"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+              Back to Blog
+            </Link>
+          </div>
+        )}
 
         {/* Article Header */}
         <div className="mb-8" data-aos="fade-up" data-aos-delay="200">
@@ -73,27 +92,19 @@ export default function BlogDetailHero({ post }: { post: BlogPost }) {
         {/* Featured Image */}
         <div className="relative overflow-hidden rounded-2xl shadow-xl" data-aos="fade-up" data-aos-delay="400">
           <div className="aspect-[16/9] w-full">
-            {post?.thumbnail && post.thumbnail.trim() !== "" ? (
-              <Image
-                src={post.thumbnail}
-                alt={post.title}
-                width={800}
-                height={450}
-                className="h-full w-full object-cover"
-                priority
-              />
-            ) : (
-              <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-[#35bec5]/20 via-[#4bc4db]/20 to-[#0c96c4]/20">
-                <div className="text-center">
-                  <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-r from-[#35bec5] to-[#0c96c4] text-white">
-                    <ImageIcon className="h-8 w-8" />
-                  </div>
-                  <p className="text-sm font-medium text-slate-600" style={{ fontFamily: "Inter, sans-serif" }}>
-                    No image available
-                  </p>
-                </div>
-              </div>
-            )}
+            <Image
+              src={thumbnailSource}
+              alt={post.title}
+              width={1600}
+              height={900}
+              quality={95}
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 1200px"
+              className={`h-full w-full ${
+                hasThumbnail && !imageError ? "object-cover" : "object-contain bg-gray-100"
+              }`}
+              priority
+              onError={() => setImageError(true)}
+            />
           </div>
         </div>
       </div>

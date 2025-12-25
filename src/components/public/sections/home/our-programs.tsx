@@ -1,28 +1,69 @@
-import { ArrowRight,Award } from "lucide-react";
+import { ArrowRight, Award } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
 import ProgramCard from "@/components/public/shared/program-card";
+import { Program } from "@/types/public/program";
 
 export default function OurPrograms() {
-  const programs = [
+  // Mock programs data - these should be replaced with actual API data
+  const programs: Program[] = [
     {
+      id: 1,
+      code: "DIABETES-001",
+      thumbnail: "/images/program-1.jpg",
+      background_image: "/images/program-1.jpg",
+      tagline: "Comprehensive Diabetes Management",
       title: "Integrated Diabetes Care Program",
+      slug: "integrated-diabetes-care-program",
+      overview: "A medically supervised program",
       description:
         "A medically supervised program offering personalized nutrition guidance, medication management, and lifestyle coaching to support effective blood sugar control and improved overall health.",
-      image: "/images/program-1.jpg",
+      duration_value: 12,
+      duration_unit: "weeks",
+      price: "0",
+      status: "published",
+      currency: "USD",
+      avg_rating: 0,
+      participants: 0,
     },
     {
+      id: 2,
+      code: "CARDIAC-001",
+      thumbnail: "/images/program-2.jpg",
+      background_image: "/images/program-2.jpg",
+      tagline: "Heart Health Recovery",
       title: "Cardiac Health & Rehab Program",
+      slug: "cardiac-health-rehab-program",
+      overview: "Comprehensive recovery plan",
       description:
         "Comprehensive recovery and prevention plan for individuals with heart disease, featuring monitored exercise sessions, heart-healthy nutrition counseling, and one-on-one support from cardiac specialists.",
-      image: "/images/program-2.jpg",
+      duration_value: 16,
+      duration_unit: "weeks",
+      price: "0",
+      status: "published",
+      currency: "USD",
+      avg_rating: 0,
+      participants: 0,
     },
     {
+      id: 3,
+      code: "MINDFUL-001",
+      thumbnail: "/images/program-3.jpg",
+      background_image: "/images/program-3.jpg",
+      tagline: "Stress Reduction & Wellness",
       title: "Mindfulness-Based Stress Reduction Program",
+      slug: "mindfulness-stress-reduction-program",
+      overview: "Evidence-based mindfulness program",
       description:
         "An evidence-based program using mindfulness practices, guided meditation, and counseling to reduce stress, improve sleep, and foster emotional wellbeing.",
-      image: "/images/program-3.jpg",
+      duration_value: 8,
+      duration_unit: "weeks",
+      price: "0",
+      status: "published",
+      currency: "USD",
+      avg_rating: 0,
+      participants: 0,
     },
   ];
 
@@ -112,7 +153,7 @@ export default function OurPrograms() {
                    {/* Image - Top on mobile, Left on desktop */}
                    <div className="relative w-full overflow-hidden rounded-xl bg-slate-100 lg:w-1/2 lg:h-full">
                      <Image
-                       src={program.image}
+                       src={program.thumbnail}
                        alt={program.title}
                        width={400}
                        height={300}

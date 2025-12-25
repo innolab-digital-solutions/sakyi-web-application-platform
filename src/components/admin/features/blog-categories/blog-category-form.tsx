@@ -1,6 +1,5 @@
 "use client";
 
-import { FileText } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect } from "react";
 import { toast } from "sonner";
@@ -159,14 +158,13 @@ export default function BlogCategoryForm({
       open={dialogOpen}
       onOpenChange={handleDialogOpenChange}
       onClose={() => form.reset()}
-      title={title ?? (isEdit ? "Edit Blog Category" : "Create Blog Category")}
+      title={title ?? (isEdit ? "Edit Blog Category" : "Create New Blog Category")}
       description={
         description ??
         (isEdit
-          ? "Update the category’s name or description. Changes apply to all posts filed under this category."
-          : "Add a category with a clear name and short description to keep your content structured and discoverable.")
+          ? "Update this category’s name or description so it clearly reflects the content it groups."
+          : "Add a new category with a clear name and optional description to organize your blog posts.")
       }
-      icon={<FileText className="h-5 w-5" />}
       onSubmit={handleSubmit}
       processing={form.processing}
       isEdit={isEdit}
@@ -183,7 +181,7 @@ export default function BlogCategoryForm({
         onChange={(event) => form.setData("name", event.target.value)}
         error={form.errors.name as string}
         label="Name"
-        placeholder="e.g., Technology, Health, etc."
+        placeholder="e.g., Technology, Health & Wellness, Nutrition, Fitness"
         required
         disabled={form.processing}
       />
@@ -193,7 +191,7 @@ export default function BlogCategoryForm({
         id="description"
         name="description"
         className="min-h-[96px]"
-        placeholder="Describe the blog category's purpose and content..."
+        placeholder="Enter a brief description of the category's purpose and the type of content it will contain..."
         value={String(form.data.description ?? "")}
         onChange={(event) => form.setData("description", event.target.value)}
         error={form.errors.description as string}

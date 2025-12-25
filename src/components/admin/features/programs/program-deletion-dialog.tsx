@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { ENDPOINTS } from "@/config/endpoints";
 import { useRequest } from "@/hooks/use-request";
 import { Program, ProgramApiResponse } from "@/types/admin/program";
+import { cn } from "@/utils/shared/cn";
 
 interface ProgramDeletionDialogProperties {
   program: Program;
@@ -61,15 +62,26 @@ export default function ProgramDeletionDialog({
     <>
       {(() => {
         const isLoading = request.loading;
-        const isDisabled = isLoading;
-        const disabledReason = isLoading ? "Deleting in progress. Please wait." : undefined;
+        const deleteAllowed = Boolean(program.actions?.delete?.allowed);
+        const deleteReasons = program.actions?.delete?.reasons ?? [];
+        const isDisabled = isLoading || !deleteAllowed;
+
+        let disabledReason: string | undefined;
+        if (isLoading) {
+          disabledReason = "Deleting in progress. Please wait.";
+        } else if (!deleteAllowed && deleteReasons.length > 0) {
+          disabledReason = deleteReasons[0]?.trim() || undefined;
+        }
 
         return (
           <DisabledTooltip reason={disabledReason}>
             <Button
               variant="outline"
-              className={`hover:!bg-destructive/10 text-destructive group hover:text-destructive-900 hover:!ring-none flex w-full !cursor-pointer items-center justify-start gap-1.5 !border-none text-sm font-medium shadow-none ${className ?? ""}`}
-              onClick={() => setShowDeleteDialog(true)}
+              className={cn(
+                "hover:bg-destructive/10 text-destructive group hover:text-destructive-900 hover:ring-none! flex w-full cursor-pointer! items-center justify-start gap-1.5 border-none text-sm font-medium shadow-none",
+                className,
+              )}
+              onClick={() => (deleteAllowed ? setShowDeleteDialog(true) : undefined)}
               disabled={isDisabled}
               type="button"
               aria-label="Delete program"

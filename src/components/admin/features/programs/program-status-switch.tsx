@@ -26,7 +26,7 @@ export default function ProgramStatusSwitch({ program }: ProgramStatusSwitchProp
     const newStatus = checked ? "published" : "draft";
 
     request.patch(
-      ENDPOINTS.ADMIN.PROGRAMS.CHANGE_STATUS(program.id),
+      ENDPOINTS.ADMIN.PROGRAMS.STATUS(program.id),
       { status: newStatus },
       {
         tanstack: {

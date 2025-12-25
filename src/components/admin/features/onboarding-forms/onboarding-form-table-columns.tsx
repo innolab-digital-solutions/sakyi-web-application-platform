@@ -3,19 +3,18 @@
 import { ColumnDef } from "@tanstack/react-table";
 import dayjs from "dayjs";
 import {
-  Archive,
   CalendarDays,
   CheckCircle,
   ClipboardList,
   Ellipsis,
-  FileEdit,
   SquarePen,
+  XCircle,
 } from "lucide-react";
 import Link from "next/link";
-import React, { useState } from "react";
+import React from "react";
 
+import OnboardingFormArchiveButton from "@/components/admin/features/onboarding-forms/onboarding-form-archive-button";
 import OnboardingFormDeletionDialog from "@/components/admin/features/onboarding-forms/onboarding-form-deletion-dialog";
-import OnboardingFormStatusDialog from "@/components/admin/features/onboarding-forms/onboarding-form-status-dialog";
 import DisabledTooltip from "@/components/shared/disabled-tooltip";
 import SortableHeader from "@/components/shared/table/sortable-header";
 import { Badge } from "@/components/ui/badge";
@@ -33,89 +32,9 @@ import { PATHS } from "@/config/paths";
 import { OnboardingForm } from "@/types/admin/onboarding-form";
 import { cn } from "@/utils/shared/cn";
 
-import OnboardingFormStatusSwitch from "./onboarding-form-status-switch";
-
-function OnboardingFormActionsCell({ form }: { form: OnboardingForm }) {
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-
-  return (
-    <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
-      <DropdownMenuTrigger asChild>
-        <Button
-          variant="outline"
-          size="icon"
-          aria-label="Open actions"
-          className="hover:!text-foreground ml-auto size-8 cursor-pointer items-center justify-center hover:!bg-gray-100"
-        >
-          <Ellipsis className="h-5 w-5" />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" sideOffset={8} className="p-3.5">
-        <DropdownMenuLabel className="text-muted-foreground text-[13px] font-semibold">
-          Onboarding Form Actions
-        </DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem
-          asChild
-          onSelect={(event) => {
-            if (form.actions?.editable) {
-              setDropdownOpen(false);
-            } else {
-              event.preventDefault();
-            }
-          }}
-        >
-          {(() => {
-            const isEditable = Boolean(form.actions?.editable);
-            const disabledReason = isEditable
-              ? undefined
-              : "You don't have permission to edit this onboarding form.";
-            return (
-              <DisabledTooltip reason={disabledReason}>
-                <Button
-                  asChild
-                  variant="outline"
-                  className="hover:!bg-accent/10 group hover:!text-accent hover:!ring-none flex w-full !cursor-pointer items-center justify-start gap-1.5 !border-none text-sm font-medium text-gray-700 shadow-none"
-                  aria-label="Edit onboarding form"
-                  disabled={!isEditable}
-                >
-                  <Link href={PATHS.ADMIN.ONBOARDING_FORMS.EDIT(form.id)}>
-                    <SquarePen className="group-hover:text-accent h-4 w-4 transition-colors duration-150" />
-                    <span>Edit Form</span>
-                  </Link>
-                </Button>
-              </DisabledTooltip>
-            );
-          })()}
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          asChild
-          onSelect={(event) => {
-            setDropdownOpen(false);
-            event.preventDefault();
-          }}
-        >
-          <OnboardingFormStatusDialog onboardingForm={form} />
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem
-          asChild
-          onSelect={(event) => {
-            setDropdownOpen(false);
-            event.preventDefault();
-          }}
-        >
-          <OnboardingFormDeletionDialog onboardingForm={form} />
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
-  );
-}
-
 const statusMeta: Record<
   OnboardingForm["status"],
   {
-    variant: "secondary";
     icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
     label: string;
     badgeClass: string;
@@ -123,25 +42,22 @@ const statusMeta: Record<
   }
 > = {
   draft: {
-    variant: "secondary",
-    icon: FileEdit,
     label: "Draft",
     badgeClass: "bg-yellow-100 text-yellow-700",
+    icon: ClipboardList,
     iconClass: "text-yellow-700 h-3.5 w-3.5",
   },
   published: {
-    variant: "secondary",
-    icon: CheckCircle,
     label: "Published",
     badgeClass: "bg-green-100 text-green-700",
+    icon: CheckCircle,
     iconClass: "text-green-700 h-3.5 w-3.5",
   },
   archived: {
-    variant: "secondary",
-    icon: Archive,
     label: "Archived",
-    badgeClass: "bg-slate-100 text-slate-700",
-    iconClass: "text-slate-700 h-3.5 w-3.5",
+    badgeClass: "bg-red-100 text-red-700",
+    icon: XCircle,
+    iconClass: "text-red-700 h-3.5 w-3.5",
   },
 };
 
@@ -162,61 +78,21 @@ export const onboardingFormsTableColumns: ColumnDef<OnboardingForm>[] = [
           <div className="flex flex-wrap items-center gap-2">
             <span className="text-foreground text-sm font-semibold">{title}</span>
             <Badge
-              variant={meta.variant}
+              variant="secondary"
               className={cn(
                 meta.badgeClass,
-                "pointer-events-none flex items-center gap-1 !font-semibold",
+                "pointer-events-none flex items-center gap-1 font-semibold!",
               )}
             >
               <Icon className={meta.iconClass} />
               <span>{meta.label}</span>
             </Badge>
           </div>
-          <div className="text-muted-foreground max-w-full break-words whitespace-pre-line">
+          <div className="text-muted-foreground line-clamp-1 max-w-full wrap-break-word whitespace-pre-line">
             {description}
           </div>
         </div>
       );
-    },
-  },
-  {
-    accessorKey: "status",
-    header: () => "Publish ?",
-    cell: ({ row }) => {
-      const form = row.original;
-      return (
-        <div className="flex items-center justify-start">
-          {form.status === "archived" ? (
-            <span className="text-muted-foreground text-sm font-medium">-</span>
-          ) : (
-            <OnboardingFormStatusSwitch onboardingForm={form} />
-          )}
-        </div>
-      );
-    },
-  },
-  {
-    accessorKey: "published_at",
-    header: ({ column }) => <SortableHeader column={column}>Published At</SortableHeader>,
-    cell: ({ row }) => {
-      const publishedAt = row.getValue("published_at") as string | null;
-      if (!publishedAt) {
-        return (
-          <Badge
-            variant="outline"
-            className="bg-muted/60 text-muted-foreground pointer-events-none border-dashed text-[13px] font-semibold"
-          >
-            <CalendarDays className="h-3.5 w-3.5" />
-            <span className="ml-1">Not published</span>
-          </Badge>
-        );
-      }
-
-      const formatted = dayjs(publishedAt).isValid()
-        ? dayjs(publishedAt).format("DD-MMMM-YYYY")
-        : publishedAt;
-
-      return <div className="text-foreground text-sm font-medium">{formatted}</div>;
     },
   },
   {
@@ -246,9 +122,10 @@ export const onboardingFormsTableColumns: ColumnDef<OnboardingForm>[] = [
             <div className="flex cursor-help items-center gap-2">
               <Badge
                 variant="secondary"
-                className="bg-primary/15 text-primary flex max-w-[140px] cursor-help items-center gap-1 truncate text-[13px] !font-semibold capitalize"
+                className="bg-primary/15 text-primary flex max-w-[140px] cursor-help items-center gap-1 truncate text-[13px] font-semibold! capitalize"
               >
-                {programCount} {programCount === 1 ? "program" : "programs"}
+                <ClipboardList className="text-primary h-3.5 w-3.5" />
+                <span className="ml-1">Programs ({programCount})</span>
               </Badge>
             </div>
           </TooltipTrigger>
@@ -259,7 +136,9 @@ export const onboardingFormsTableColumns: ColumnDef<OnboardingForm>[] = [
                 {programs.map((program) => (
                   <li key={program.id}>
                     <Link
-                      href={PATHS.ADMIN.PROGRAMS.EDIT(program.id)}
+                      href={PATHS.ADMIN.PROGRAMS.PREVIEW(program.slug)}
+                      target="_blank"
+                      rel="noreferrer"
                       className="text-primary hover:underline"
                       onClick={(event_) => event_.stopPropagation()}
                     >
@@ -275,9 +154,89 @@ export const onboardingFormsTableColumns: ColumnDef<OnboardingForm>[] = [
     },
   },
   {
+    accessorKey: "published_at",
+    header: () => "Published At",
+    cell: ({ row }) => {
+      const publishedAt = row.getValue("published_at") as string | null;
+      if (!publishedAt) {
+        return (
+          <Badge
+            variant="outline"
+            className="bg-muted/60 text-muted-foreground pointer-events-none border-dashed text-[13px] font-semibold"
+          >
+            <CalendarDays className="h-3.5 w-3.5" />
+            <span className="ml-1">Not published</span>
+          </Badge>
+        );
+      }
+
+      const formatted = dayjs(publishedAt).isValid()
+        ? dayjs(publishedAt).format("DD-MMMM-YYYY")
+        : publishedAt;
+
+      return <div className="text-foreground text-sm font-medium">{formatted}</div>;
+    },
+  },
+  {
     id: "actions",
     enableHiding: false,
     header: "Actions",
-    cell: ({ row }) => <OnboardingFormActionsCell form={row.original} />,
+    cell: ({ row }) => {
+      const form = row.original;
+
+      return (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="outline"
+              size="icon"
+              aria-label="Open actions"
+              className="hover:text-foreground! ml-auto size-8 cursor-pointer items-center justify-center hover:bg-gray-100!"
+            >
+              <Ellipsis className="h-5 w-5" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" sideOffset={8} className="p-3.5">
+            <DropdownMenuLabel className="text-muted-foreground text-[13px] font-semibold">
+              Onboarding Form Actions
+            </DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem asChild>
+              <OnboardingFormArchiveButton onboardingForm={form} />
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              {(() => {
+                const editAllowed = Boolean(form.actions?.edit?.allowed);
+                const editReasons = form.actions?.edit?.reasons ?? [];
+                const editDisabledReason =
+                  editAllowed || editReasons.length === 0
+                    ? undefined
+                    : editReasons[0]?.trim() || undefined;
+                return (
+                  <DisabledTooltip reason={editDisabledReason}>
+                    <Button
+                      asChild
+                      variant="outline"
+                      className="hover:bg-accent/10! group hover:text-accent! hover:ring-none! flex w-full cursor-pointer! items-center justify-start gap-1.5 border-none! text-sm font-medium text-gray-700 shadow-none"
+                      aria-label="Edit onboarding form"
+                      disabled={!editAllowed}
+                    >
+                      <Link href={PATHS.ADMIN.ONBOARDING_FORMS.EDIT(form.id)}>
+                        <SquarePen className="group-hover:text-accent h-4 w-4 transition-colors duration-150" />
+                        <span>Edit Form</span>
+                      </Link>
+                    </Button>
+                  </DisabledTooltip>
+                );
+              })()}
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem asChild>
+              <OnboardingFormDeletionDialog onboardingForm={form} />
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      );
+    },
   },
 ];

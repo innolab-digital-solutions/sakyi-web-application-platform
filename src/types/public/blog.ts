@@ -1,7 +1,7 @@
 import { ApiResponse } from "@/types/shared/api";
 
 export interface BlogCategory{
-    id?: number;
+    id: number;
     name: string;
     slug: string;
 }

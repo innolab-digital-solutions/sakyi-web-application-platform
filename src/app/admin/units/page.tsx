@@ -1,4 +1,3 @@
-import { Scale } from "lucide-react";
 import type { Metadata } from "next";
 
 import UnitForm from "@/components/admin/features/units/unit-form";
@@ -15,9 +14,8 @@ export const metadata: Metadata = {
 export default function UnitsListPage() {
   return (
     <ResourceListPage
-      icon={Scale}
-      title="Units"
-      description="Define clear names and abbreviations so measurements stay consistent across meals, workouts, and programs."
+      title="Measurement Units"
+      description="Manage measurement units used across nutrition tracking, workout plans, and program data. Standardize units like kilograms, grams, liters, and more to ensure consistent data entry and reporting."
       createTrigger={<UnitForm mode="create" trigger={<CreateButton label="Add Unit" />} />}
       table={<UnitTable />}
     />

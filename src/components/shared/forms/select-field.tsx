@@ -98,7 +98,7 @@ export const SelectField = forwardRef<HTMLButtonElement, SelectFieldProperties>(
             aria-invalid={hasError}
             aria-describedby={cn(error && `${id}-error`, description && `${id}-description`)}
             className={cn(
-              "!h-11 !w-full",
+              "h-11! w-full!",
               hasError && "border-red-500 focus-visible:ring-red-500",
               triggerClassName,
             )}
@@ -114,7 +114,7 @@ export const SelectField = forwardRef<HTMLButtonElement, SelectFieldProperties>(
                   disabled={opt.disabled}
                   className={cn(
                     opt.disabled && "cursor-not-allowed opacity-50",
-                    "hover:!bg-accent/10 hover:!text-accent focus:!bg-accent/10 focus:!text-accent text-foreground data-[selected=true]:!bg-primary/10 data-[selected=true]:!text-primary font-medium",
+                    "hover:bg-accent/10! hover:text-accent! focus:bg-accent/10! focus:text-accent! text-foreground data-[selected=true]:bg-primary/10! data-[selected=true]:text-primary! font-medium",
                   )}
                 >
                   {opt.label}

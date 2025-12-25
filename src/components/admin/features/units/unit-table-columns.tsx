@@ -36,25 +36,27 @@ export const unitsTableColumns: ColumnDef<Unit>[] = [
     cell: ({ row }) => {
       const unit = row.original;
 
+      const editAllowed = Boolean(unit.actions?.edit?.allowed);
+      const editReasons = unit.actions?.edit?.reasons ?? [];
+      const editDisabledReason =
+        editAllowed || editReasons.length === 0 ? undefined : editReasons[0]?.trim() || undefined;
+
       return (
         <div className="flex items-center space-x-0.5">
           <UnitForm
             mode="edit"
             defaultValues={unit}
             trigger={(() => {
-              const isEditable = Boolean(unit.actions?.editable);
-              const disabledReason = isEditable
-                ? undefined
-                : "You don't have permission to edit this unit.";
               return (
-                <DisabledTooltip reason={disabledReason}>
+                <DisabledTooltip reason={editDisabledReason}>
                   <Button
                     variant="ghost"
                     size="sm"
                     className="text-accent hover:bg-accent/10 hover:text-accent flex cursor-pointer items-center justify-center text-sm font-semibold"
-                    disabled={!isEditable}
+                    disabled={!editAllowed}
+                    aria-label="Edit unit"
                   >
-                    <SquarePen className="h-2 w-2" />
+                    <SquarePen className="h-4 w-4" />
                     <span>Edit</span>
                   </Button>
                 </DisabledTooltip>

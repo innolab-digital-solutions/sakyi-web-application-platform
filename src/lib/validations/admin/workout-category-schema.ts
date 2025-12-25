@@ -7,7 +7,7 @@ import { z } from "zod";
  * Name is required and trimmed, description is optional.
  */
 const BaseWorkoutCategorySchema = z.object({
-  parent_id: z.string().or(z.number()).optional().nullable(),
+  parent_id: z.string().optional().nullable(),
   name: z
     .string("Category name is required")
     .min(1, "Category name is required")
@@ -33,7 +33,7 @@ export const CreateWorkoutCategorySchema = BaseWorkoutCategorySchema;
  * Name must be unique but can be the same as the current category.
  */
 export const UpdateWorkoutCategorySchema = BaseWorkoutCategorySchema.extend({
-  parent_id: z.number().nullable().optional(),
+  parent_id: z.string().nullable().optional(),
 });
 
 // Default schema

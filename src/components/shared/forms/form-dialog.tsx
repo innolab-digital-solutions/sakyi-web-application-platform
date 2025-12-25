@@ -84,21 +84,21 @@ export default function FormDialog({
       {trigger ? <DialogTrigger asChild>{trigger}</DialogTrigger> : undefined}
       <DialogContent
         showCloseButton={false}
-        className="flex max-h-[98vh] w-[95vw] max-w-md flex-col rounded-md sm:max-w-lg md:max-w-xl lg:max-w-2xl"
+        className="flex max-h-[98vh] w-[95vw] max-w-md flex-col rounded-md sm:max-w-lg md:max-w-2xl lg:max-w-3xl xl:max-w-4xl"
       >
         <form
           onSubmit={onSubmit}
           onKeyDown={handleKeyDown}
           className="flex min-h-0 w-full flex-1 flex-col p-2"
         >
-          <DialogHeader className="flex-shrink-0 !gap-1">
-            <DialogTitle className="text-md !mb-0 flex items-center !p-0 font-bold">
+          <DialogHeader className="shrink-0 gap-1!">
+            <DialogTitle className="text-md mb-0! flex items-center p-0! font-bold">
               {icon && <div className="mr-1.5">{icon}</div>}
               {title}
             </DialogTitle>
 
             {description ? (
-              <DialogDescription className="text-muted-foreground !p-0 text-sm font-medium">
+              <DialogDescription className="text-muted-foreground p-0! text-sm font-medium">
                 {description}
               </DialogDescription>
             ) : undefined}
@@ -108,7 +108,7 @@ export default function FormDialog({
             {children}
           </div>
 
-          <DialogFooter className="flex flex-shrink-0 items-center space-x-1 py-1">
+          <DialogFooter className="flex shrink-0 items-center space-x-1 py-1">
             <DialogClose asChild>
               <Button
                 type="button"

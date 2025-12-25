@@ -1,6 +1,7 @@
 "use client";
 
 import { CheckSquare, ShieldCheck, XSquare } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { toast } from "sonner";
@@ -216,7 +217,7 @@ export default function AssignPermissionsForm({ role }: AssignPermissionsFormPro
               variant="default"
               size="sm"
               onClick={() => toggleAll(!isAllChecked)}
-              className="bg-primary text-primary-foreground hover:bg-primary/90 flex cursor-pointer items-center space-x-2 !rounded-sm font-medium"
+              className="bg-primary text-primary-foreground hover:bg-primary/90 flex cursor-pointer items-center space-x-2 rounded-sm! font-medium"
             >
               {isAllChecked ? (
                 <>
@@ -322,6 +323,15 @@ export default function AssignPermissionsForm({ role }: AssignPermissionsFormPro
       <Separator className="bg-gray-200" />
 
       <div className="flex justify-end space-x-2">
+        <Button variant="outline" asChild>
+          <Link
+            href={PATHS.ADMIN.ROLES.LIST}
+            className="flex items-center gap-2 text-sm font-semibold text-gray-800 hover:bg-gray-100! hover:text-gray-800!"
+          >
+            Cancel
+          </Link>
+        </Button>
+
         {isLoadingPermissions ? (
           <Skeleton className="h-9 w-32" />
         ) : (

@@ -23,8 +23,6 @@ import {
   type InstructionActivityInput,
   type InstructionDayInput,
   type InstructionMealInput,
-  type InstructionSleepInput,
-  type InstructionWaterInput,
   type InstructionWorkoutInput,
   UpdateInstructionSchema,
 } from "@/lib/validations/admin/instruction-schema";
@@ -222,7 +220,13 @@ export default function InstructionForm({ instruction }: { instruction?: Instruc
 
   // Calculate dates when start_date or total_days changes
   React.useEffect(() => {
-    if (!isEdit && form.data.start_date && form.data.total_days) {
+    if (
+      !isEdit &&
+      form.data.start_date &&
+      typeof form.data.start_date === "string" &&
+      form.data.total_days &&
+      typeof form.data.total_days === "number"
+    ) {
       const startDate = new Date(form.data.start_date);
       if (!Number.isNaN(startDate.getTime())) {
         const endDate = new Date(startDate);
@@ -239,7 +243,7 @@ export default function InstructionForm({ instruction }: { instruction?: Instruc
           dayDate.setDate(dayDate.getDate() + index);
           const dayDateString = dayDate.toISOString().split("T")[0];
 
-          const existingDay = form.data.days[index];
+          const existingDay = form.data.days?.[index];
           days.push({
             id: existingDay?.id,
             day_number: index + 1,
@@ -259,7 +263,6 @@ export default function InstructionForm({ instruction }: { instruction?: Instruc
   }, [form.data.start_date, form.data.total_days, isEdit]);
 
   // Placeholder options - these should be fetched from API
-  // TODO: Replace with actual API calls
   const enrollmentOptions = [
     { value: "1", label: "Enrollment #1" },
     { value: "2", label: "Enrollment #2" },
@@ -342,7 +345,7 @@ export default function InstructionForm({ instruction }: { instruction?: Instruc
       const updateData = {
         title: form.data.title,
         notes: form.data.notes,
-        days: form.data.days.map((day) => ({
+        days: (form.data.days || []).map((day) => ({
           id: day.id,
           day_number: day.day_number,
           date: day.date,
@@ -381,7 +384,11 @@ export default function InstructionForm({ instruction }: { instruction?: Instruc
             : undefined,
         })),
       };
-      form.put(ENDPOINTS.ADMIN.INSTRUCTIONS.UPDATE(instruction.id), { data: updateData });
+      // Set the update data and then submit
+      form.setData(updateData);
+      form.put(ENDPOINTS.ADMIN.INSTRUCTIONS.UPDATE(instruction.id), {
+        transform: () => updateData,
+      });
     } else {
       form.post(ENDPOINTS.ADMIN.INSTRUCTIONS.STORE);
     }
@@ -440,7 +447,9 @@ export default function InstructionForm({ instruction }: { instruction?: Instruc
                 <DatepickerField
                   id="start_date"
                   label="Start Date"
-                  value={form.data.start_date}
+                  value={
+                    typeof form.data.start_date === "string" ? form.data.start_date : undefined
+                  }
                   onChange={(value) => form.setData("start_date", value || "")}
                   error={form.errors.start_date as string}
                   required

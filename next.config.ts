@@ -11,28 +11,18 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
-        hostname: "i.pravatar.cc",
-      },
-      {
-        protocol: "https",
         hostname: "picsum.photos",
-      },
-      {
-        protocol: "https",
-        hostname: "images.unsplash.com",
-      },
-      {
-        protocol: "https",
-        hostname: "media.giphy.com",
         pathname: "**",
       },
       {
         protocol: "https",
-        hostname: "www.youtube.com",
+        hostname: "images.unsplash.com",
+        pathname: "**",
       },
       {
         protocol: "https",
-        hostname: "img.youtube.com",
+        hostname: "i.pravatar.cc",
+        pathname: "**",
       },
       {
         protocol: "https",

@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { type ReactNode } from "react";
 
 import DataTable from "@/components/shared/table/data-table";
 import { useTable } from "@/hooks/use-table";
@@ -11,8 +11,9 @@ interface ResourceTableProperties<TData> {
   queryKey: string[];
   columns: unknown;
   defaultSort?: { field: string; direction: "asc" | "desc" };
+  showColumnVisibility?: boolean;
   emptyMessage?: string;
-  filters?: React.ReactNode;
+  filters?: ReactNode | ((options: { isLoading: boolean }) => ReactNode);
   skeleton?: {
     customSkeletons?: Record<string, React.ReactNode>;
   };
@@ -23,6 +24,7 @@ export default function ResourceTable<TData>({
   queryKey,
   columns,
   defaultSort = { field: "id", direction: "desc" },
+  showColumnVisibility = false,
   emptyMessage = "No records found.",
   filters,
   skeleton,
@@ -32,6 +34,9 @@ export default function ResourceTable<TData>({
     queryKey,
     defaultSort,
   });
+
+  const filtersContent =
+    typeof filters === "function" ? filters({ isLoading: serverConfig.loading }) : filters;
 
   return (
     <DataTable
@@ -44,8 +49,8 @@ export default function ResourceTable<TData>({
       skeleton={skeleton}
       ui={{
         emptyMessage,
-        showColumnVisibility: false,
-        toolbarActions: filters,
+        showColumnVisibility,
+        toolbarActions: filtersContent,
         showToolbar: true,
       }}
     />

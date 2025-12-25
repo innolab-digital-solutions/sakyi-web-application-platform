@@ -30,7 +30,13 @@ export const ADMIN_ENDPOINTS = {
     SHOW: (id: string | number) => `/admin/users/${id}`,
     STORE: "/admin/users",
     UPDATE: (id: string | number) => `/admin/users/${id}`,
+    STATUS: (id: string | number) => `/admin/users/${id}/status`,
     DESTROY: (id: string | number) => `/admin/users/${id}`,
+  },
+
+  CLIENTS: {
+    INDEX: "/admin/clients",
+    SHOW: (id: string | number) => `/admin/clients/${id}`,
   },
 
   TEAMS: {
@@ -48,7 +54,7 @@ export const ADMIN_ENDPOINTS = {
     SHOW: (id: string | number) => `/admin/programs/${id}`,
     STORE: "/admin/programs",
     UPDATE: (id: string | number) => `/admin/programs/${id}`,
-    CHANGE_STATUS: (id: string | number) => `/admin/programs/${id}/status`,
+    STATUS: (id: string | number) => `/admin/programs/${id}/status`,
     DESTROY: (id: string | number) => `/admin/programs/${id}`,
   },
 
@@ -58,7 +64,7 @@ export const ADMIN_ENDPOINTS = {
     SHOW: (id: string | number) => `/admin/onboarding-forms/${id}`,
     STORE: "/admin/onboarding-forms",
     UPDATE: (id: string | number) => `/admin/onboarding-forms/${id}`,
-    CHANGE_STATUS: (id: string | number) => `/admin/onboarding-forms/${id}/status`,
+    STATUS: (id: string | number) => `/admin/onboarding-forms/${id}/status`,
     DESTROY: (id: string | number) => `/admin/onboarding-forms/${id}`,
   },
 
@@ -122,7 +128,17 @@ export const ADMIN_ENDPOINTS = {
     SHOW: (id: string | number) => `/admin/blog-posts/${id}`,
     STORE: "/admin/blog-posts",
     UPDATE: (id: string | number) => `/admin/blog-posts/${id}`,
+    STATUS: (id: string | number) => `/admin/blog-posts/${id}/status`,
     DESTROY: (id: string | number) => `/admin/blog-posts/${id}`,
+  },
+
+  /** Enrollments endpoints */
+  ENROLLMENTS: {
+    INDEX: "/admin/enrollments",
+    SHOW: (id: string | number) => `/admin/enrollments/${id}`,
+    STORE: "/admin/enrollments",
+    UPDATE: (id: string | number) => `/admin/enrollments/${id}`,
+    DESTROY: (id: string | number) => `/admin/enrollments/${id}`,
   },
 
   /** Payment methods endpoints */

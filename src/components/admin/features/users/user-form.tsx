@@ -1,6 +1,5 @@
 "use client";
 
-import { UserCog2 } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect } from "react";
 import { toast } from "sonner";
@@ -15,7 +14,8 @@ import { ENDPOINTS } from "@/config/endpoints";
 import { useForm } from "@/hooks/use-form";
 import { useRequest } from "@/hooks/use-request";
 import { CreateUserSchema, EditUserSchema } from "@/lib/validations/admin/user-schema";
-import { Role, User, UserApiResponse, UserFormProperties } from "@/types/admin/user";
+import { Role, RoleApiResponse } from "@/types/admin/role";
+import { User, UserApiResponse, UserFormProperties } from "@/types/admin/user";
 import { buildDefaultListUrl } from "@/utils/shared/parameters";
 
 export default function UserForm({
@@ -38,17 +38,19 @@ export default function UserForm({
   const isEdit = mode === "edit";
 
   // Fetch roles
-  const { data: rolesData } = useRequest<Role[]>({
+  const { data: rolesData } = useRequest<RoleApiResponse>({
     url: ENDPOINTS.LOOKUP.ROLES,
     queryKey: ["lookup-roles"],
   });
 
   const roleOptions = [
     { value: "", label: "None" },
-    ...(rolesData?.data?.map((role: Role) => ({
-      value: role.name,
-      label: role.name,
-    })) ?? []),
+    ...(rolesData && rolesData.status === "success" && Array.isArray(rolesData.data)
+      ? rolesData.data.map((role: Role) => ({
+          value: String(role.id),
+          label: role.name,
+        }))
+      : []),
   ];
 
   const form = useForm(
@@ -160,8 +162,10 @@ export default function UserForm({
       fd.append("password", String(payload.password ?? ""));
       fd.append("password_confirmation", String(payload.password_confirmation ?? ""));
     }
+
+    // Backend expects nullable integer role_id
     if (payload.role) {
-      fd.append("role", payload.role); // singular
+      fd.append("role_id", String(payload.role));
     }
 
     return fd;
@@ -183,17 +187,21 @@ export default function UserForm({
   useEffect(() => {
     if (isEdit && defaultValues) {
       const newData = {
-        name: defaultValues.name ?? "",
-        picture: defaultValues.picture || undefined,
-        email: defaultValues.email ?? "",
-        phone: defaultValues.phone ?? "",
-        dob: defaultValues.dob ?? "",
-        gender: defaultValues.gender ?? undefined,
-        address: defaultValues.address ?? "",
-        role: defaultValues.role ?? "",
+        name: defaultValues.profile?.name ?? "",
+        picture: defaultValues.profile?.picture || undefined,
+        email: defaultValues.profile?.email ?? "",
+        phone: defaultValues.profile?.phone ?? "",
+        dob: defaultValues.profile?.dob ?? "",
+        gender: defaultValues.profile?.gender ?? undefined,
+        address: defaultValues.profile?.address ?? "",
+        // Use the role id when editing so the select receives the correct value
+        role:
+          defaultValues.profile?.role && defaultValues.profile.role.id !== undefined
+            ? String(defaultValues.profile.role.id)
+            : "",
       };
 
-      form.setDataAndDefaults(newData);
+      form.setDataAndDefaults(newData as Partial<typeof form.data>);
     } else {
       const newData = {
         name: "",
@@ -208,19 +216,18 @@ export default function UserForm({
         role: "",
       };
 
-      form.setDataAndDefaults(newData);
+      form.setDataAndDefaults(newData as Partial<typeof form.data>);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     defaultValues?.id,
-    defaultValues?.name,
-    defaultValues?.email,
-    defaultValues?.phone,
-    defaultValues?.dob,
-    defaultValues?.picture,
-    defaultValues?.gender,
-    defaultValues?.address,
-    defaultValues?.role,
+    defaultValues?.profile?.name,
+    defaultValues?.profile?.email,
+    defaultValues?.profile?.phone,
+    defaultValues?.profile?.dob,
+    defaultValues?.profile?.gender,
+    defaultValues?.profile?.address,
+    defaultValues?.profile?.role,
     isEdit,
   ]);
 
@@ -240,14 +247,13 @@ export default function UserForm({
       open={dialogOpen}
       onOpenChange={handleDialogOpenChange}
       onClose={() => form.reset()}
-      title={title ?? (isEdit ? "Edit User" : "Create User")}
+      title={title ?? (isEdit ? "Edit Account" : "Create New Account")}
       description={
         description ??
         (isEdit
-          ? "Update user information and role with confidence. Ensure each account stays accurate, organized, and aligned with your system's access requirements."
-          : "Fill in the user's basic details such as name, email, contact information, profile settings, and assign a role.")
+          ? "Update this user’s details or adjust their role if their responsibilities have changed."
+          : "Capture the user’s basic details and, when needed, assign a role for admin or staff access.")
       }
-      icon={<UserCog2 className="h-5 w-5" />}
       onSubmit={handleSubmit}
       processing={form.processing}
       isEdit={isEdit}
@@ -260,7 +266,6 @@ export default function UserForm({
         label="Avatar"
         value={form.data.picture}
         onChange={(file) => form.setData("picture", file as File | undefined)}
-        maxSize={2 * 1024 * 1024}
         accept="image/jpg,image/jpeg,image/png,image/webp"
         error={form.errors.picture as string}
         disabled={form.processing}
@@ -269,7 +274,7 @@ export default function UserForm({
       <InputField
         id="name"
         label="Full Name"
-        placeholder="eg. John Doe"
+        placeholder="e.g., John Doe, Jane Smith, Michael Johnson"
         value={form.data.name}
         onChange={(event) => form.setData("name", event.target.value)}
         error={form.errors.name as string}
@@ -279,8 +284,8 @@ export default function UserForm({
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <InputField
           id="email"
-          label="Email"
-          placeholder="name@example.com"
+          label="Email Address"
+          placeholder="e.g., john.doe@example.com"
           type="email"
           value={form.data.email}
           onChange={(event) => form.setData("email", event.target.value)}
@@ -290,11 +295,13 @@ export default function UserForm({
 
         <InputField
           id="phone"
-          label="Phone"
-          placeholder="e.g. 09xxxxxxx"
+          label="Phone Number"
+          type="tel"
+          placeholder="e.g., 0912345678, +1234567890"
           value={form.data.phone}
           onChange={(event) => form.setData("phone", event.target.value)}
           error={form.errors.phone as string}
+          required={!isEdit}
         />
       </div>
 
@@ -302,7 +309,7 @@ export default function UserForm({
         <DatepickerField
           id="dob"
           label="Date of Birth"
-          placeholder="D-M-YYYY"
+          placeholder="Select date of birth (DD-MM-YYYY)"
           value={form.data.dob}
           onChange={(value) => form.setData("dob", value)}
           error={form.errors.dob as string}
@@ -313,21 +320,24 @@ export default function UserForm({
           id="gender"
           label="Gender"
           value={String(form.data.gender ?? "")}
-          onChange={(v) => form.setData("gender", v as "male" | "female")}
+          onChange={(v) => form.setData("gender", v as "male" | "female" | "other")}
           options={[
             { value: "male", label: "Male" },
             { value: "female", label: "Female" },
+            { value: "other", label: "Other" },
           ]}
           disabled={form.processing}
           placeholder="Select gender"
           required
+          error={form.errors.gender as string}
         />
       </div>
 
       <ComboBoxField
         label="Role"
         id="role"
-        placeholder="Choose a role"
+        placeholder="Select a role (optional)"
+        description="Choose an internal role for staff or admin, or leave as none for standard access."
         options={roleOptions}
         value={form.data.role ?? ""}
         onChange={(value) => form.setData("role", value ?? "")}
@@ -336,7 +346,7 @@ export default function UserForm({
       <InputField
         id="address"
         label="Address"
-        placeholder="Street address, city, state"
+        placeholder="e.g., 123 Main Street, City, State, ZIP Code"
         value={form.data.address}
         onChange={(event) => form.setData("address", event.target.value)}
         error={form.errors.address as string}
@@ -348,7 +358,7 @@ export default function UserForm({
             id="password"
             label="Password"
             type="password"
-            placeholder="Minimum 8 characters"
+            placeholder="Enter password (minimum 8 characters)"
             value={form.data.password}
             onChange={(event) => form.setData("password", event.target.value)}
             error={form.errors.password as string}
@@ -359,7 +369,7 @@ export default function UserForm({
             id="password_confirmation"
             label="Confirm Password"
             type="password"
-            placeholder="Re-enter password"
+            placeholder="Re-enter password to confirm"
             value={form.data.password_confirmation}
             onChange={(event) => form.setData("password_confirmation", event.target.value)}
             error={form.errors.password_confirmation as string}

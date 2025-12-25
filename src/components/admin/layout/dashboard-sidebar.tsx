@@ -4,7 +4,7 @@ import { ChevronDown } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { MouseEvent, useCallback, useEffect, useState } from "react";
 
 import {
   Sidebar,
@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/sidebar";
 import { adminNavigation } from "@/config/navigation";
 import { useAuth } from "@/context/auth-context";
+import { useTransition } from "@/context/transition-context";
 import {
   filterNavByPermission,
   getActiveAdminNav,
@@ -29,6 +30,7 @@ import { addDefaultListParameters } from "@/utils/shared/parameters";
 export default function DashboardSidebar() {
   const pathname = usePathname();
   const { can } = useAuth();
+  const { setIsTransitioning } = useTransition();
 
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({});
 
@@ -43,6 +45,15 @@ export default function DashboardSidebar() {
   const filtered = filterNavByPermission(adminNavigation, can);
 
   const items = getActiveAdminNav(pathname, filtered);
+
+  const handleNavClick = (event: MouseEvent<HTMLAnchorElement>) => {
+    // Respect new-tab/middle-click/etc.
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) {
+      return;
+    }
+
+    setIsTransitioning(true);
+  };
 
   // Helper function to get href with default parameters for admin list pages
   const getHref = useCallback((path: string): string => {
@@ -132,6 +143,7 @@ export default function DashboardSidebar() {
                                   <SidebarMenuItem key={subitem.name}>
                                     <Link
                                       href={getHref(subitem.path)}
+                                      onClick={handleNavClick}
                                       className={cn(
                                         "hover:bg-accent hover:text-accent-foreground flex items-center rounded-sm px-3 py-2 text-sm transition-colors",
                                         subitem.active && "bg-accent text-accent-foreground",
@@ -151,6 +163,7 @@ export default function DashboardSidebar() {
                       <SidebarMenuItem>
                         <Link
                           href={getHref(item.path)}
+                          onClick={handleNavClick}
                           className={cn(
                             "hover:bg-accent hover:text-accent-foreground flex items-center rounded-sm px-3 py-2 transition-colors",
                             item.active && "bg-accent text-accent-foreground",

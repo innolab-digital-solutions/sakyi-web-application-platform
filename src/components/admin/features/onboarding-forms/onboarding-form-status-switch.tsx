@@ -28,7 +28,7 @@ export default function OnboardingFormStatusSwitch({
     const newStatus = checked ? "published" : "draft";
 
     request.patch(
-      ENDPOINTS.ADMIN.ONBOARDING_FORMS.CHANGE_STATUS(onboardingForm.id),
+      ENDPOINTS.ADMIN.ONBOARDING_FORMS.STATUS(onboardingForm.id),
       { status: newStatus },
       {
         tanstack: {

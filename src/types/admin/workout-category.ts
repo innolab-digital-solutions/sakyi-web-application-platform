@@ -1,5 +1,4 @@
 import { ApiResponse } from "@/types/shared/api";
-import { Pagination } from "@/types/shared/common";
 
 export interface WorkoutCategoryChild {
   id: number;
@@ -13,18 +12,15 @@ export interface WorkoutCategory {
   description: string | null;
   parent: WorkoutCategoryChild | null;
   children: WorkoutCategoryChild[];
-  actions?: {
-    editable?: boolean;
-    deletable?: boolean;
-  };
-}
-
-export interface WorkoutCategoriesResponse {
-  status: string;
-  message: string;
-  data: WorkoutCategory[];
-  meta: {
-    pagination: Pagination;
+  actions: {
+    edit: {
+      allowed: boolean;
+      reasons: string[];
+    };
+    delete: {
+      allowed: boolean;
+      reasons: string[];
+    };
   };
 }
 

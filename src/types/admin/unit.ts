@@ -1,30 +1,17 @@
-import { ApiResponse } from "../shared/api";
+import { ApiResponse } from "@/types/shared/api";
 
 export interface Unit {
   id: number;
   name: string;
-  abbreviation: string | null;
-  actions?: {
-    editable?: boolean;
-    deletable?: boolean;
-  };
-}
-
-export interface UnitsResponse {
-  status: string;
-  message: string;
-  data: Unit[];
-  meta: {
-    pagination: {
-      total: number;
-      count: number;
-      per_page: number;
-      current_page: number;
-      total_pages: number;
-      links: {
-        next: string | null;
-        previous: string | null;
-      };
+  abbreviation: string;
+  actions: {
+    edit: {
+      allowed: boolean;
+      reasons: string[];
+    };
+    delete: {
+      allowed: boolean;
+      reasons: string[];
     };
   };
 }

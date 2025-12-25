@@ -1,4 +1,3 @@
-import { Dumbbell } from "lucide-react";
 import type { Metadata } from "next";
 
 import WorkoutCategoryForm from "@/components/admin/features/workout-categories/workout-category-form";
@@ -15,9 +14,8 @@ export const metadata: Metadata = {
 export default function WorkoutCategoriesListPage() {
   return (
     <ResourceListPage
-      icon={Dumbbell}
       title="Workout Categories"
-      description="Create parent and child categories to keep your workout library tidy and easy to browse."
+      description="Organize workouts into clear, hierarchical categories to simplify exercise planning, program creation, and workout management. Create parent categories and subcategories for better organization."
       createTrigger={
         <WorkoutCategoryForm
           mode="create"

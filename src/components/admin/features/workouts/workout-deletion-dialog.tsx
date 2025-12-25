@@ -61,14 +61,15 @@ export default function WorkoutDeletionDialog({
     <>
       {(() => {
         const isLoading = request.loading;
-        const isDeletable = Boolean(workout.actions?.deletable);
-        const isDisabled = isLoading || !isDeletable;
-        let disabledReason: string | undefined;
+        const deleteAllowed = Boolean(workout.actions?.delete?.allowed);
+        const deleteReasons = workout.actions?.delete?.reasons ?? [];
+        const isDisabled = isLoading || !deleteAllowed;
 
+        let disabledReason: string | undefined;
         if (isLoading) {
           disabledReason = "Deleting in progress. Please wait.";
-        } else if (!isDeletable) {
-          disabledReason = "You don't have permission to delete this workout.";
+        } else if (!deleteAllowed && deleteReasons.length > 0) {
+          disabledReason = deleteReasons[0]?.trim() || undefined;
         }
 
         return (
@@ -77,11 +78,11 @@ export default function WorkoutDeletionDialog({
               variant="ghost"
               size="sm"
               className={cn(
-                "hover:bg-destructive/10 hover:text-destructive text-destructive flex cursor-pointer items-center justify-center text-sm font-semibold disabled:!pointer-events-auto disabled:cursor-help disabled:bg-transparent",
+                "hover:bg-destructive/10 hover:text-destructive text-destructive flex cursor-pointer items-center justify-center text-sm font-semibold disabled:pointer-events-auto! disabled:cursor-help disabled:bg-transparent",
                 className,
               )}
               disabled={isDisabled}
-              onClick={() => (isDeletable ? setShowDeleteDialog(true) : undefined)}
+              onClick={() => (deleteAllowed ? setShowDeleteDialog(true) : undefined)}
               aria-label="Delete workout"
             >
               <Trash2 className="h-2 w-2" />

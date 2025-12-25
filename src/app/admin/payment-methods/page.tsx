@@ -1,4 +1,3 @@
-import { CreditCard } from "lucide-react";
 import type { Metadata } from "next";
 
 import PaymentMethodForm from "@/components/admin/features/payment-methods/payment-method-form";
@@ -15,9 +14,8 @@ export const metadata: Metadata = {
 export default function PaymentListPage() {
   return (
     <ResourceListPage
-      icon={CreditCard}
       title="Payment Methods"
-      description="Track and manage all payment methods, including completed, pending, and refunded transactions."
+      description="Manage available payment methods that clients can use for transactions. Add payment providers with logos and configure their availability to ensure smooth payment processing for programs and services."
       createTrigger={
         <PaymentMethodForm mode="create" trigger={<CreateButton label="Add Payment Method" />} />
       }

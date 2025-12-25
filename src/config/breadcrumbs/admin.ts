@@ -18,186 +18,212 @@ import { Breadcrumbs } from "@/types/shared/breadcrumb";
  * 3. Page name (clickable if not current page)
  */
 export const adminBreadcrumbs: Breadcrumbs = {
-  /** Dashboard overview page */
+  /* -------------------------------------------------------------------------- */
+  /* Dashboard & Insights                                                           */
+  /* -------------------------------------------------------------------------- */
+
   "/admin/overview": [
     { label: "Admin Control Panel" },
     { label: "Dashboard & Insights" },
     { label: "Overview", href: PATHS.ADMIN.OVERVIEW },
   ],
 
-  /** Roles list page */
+  /* -------------------------------------------------------------------------- */
+  /* Access & Organization                                                           */
+  /* -------------------------------------------------------------------------- */
+
   "/admin/roles": [
     { label: "Admin Control Panel" },
-    { label: "Administration & Access Control" },
+    { label: "Access & Organization" },
     { label: "Roles & Permissions", href: PATHS.ADMIN.ROLES.LIST },
   ],
 
-  /** Assign permissions form page (dynamic: :id replaced at runtime) */
   "/admin/roles/:id/assign-permissions": [
     { label: "Admin Control Panel" },
-    { label: "Administration & Access Control" },
+    { label: "Access & Organization" },
     { label: "Roles & Permissions", href: PATHS.ADMIN.ROLES.LIST },
     { label: "Assign Permissions" },
   ],
 
-  /** Programs list page */
-  "/admin/programs": [
-    { label: "Admin Control Panel" },
-    { label: "Programs & Clients" },
-    { label: "Program Management", href: PATHS.ADMIN.PROGRAMS.LIST },
-  ],
-
-  /** Teams list page */
-  "/admin/teams": [
-    { label: "Admin Control Panel" },
-    { label: "Administration & Access Control" },
-    { label: "Team Management", href: PATHS.ADMIN.TEAMS.LIST },
-  ],
-
-  /** Programs create page */
-  "/admin/programs/create": [
-    { label: "Admin Control Panel" },
-    { label: "Programs & Clients" },
-    { label: "Program Management", href: PATHS.ADMIN.PROGRAMS.LIST },
-    { label: "Create" },
-  ],
-
-  /** Programs edit page (dynamic: :id replaced at runtime) */
-  "/admin/programs/:id/edit": [
-    { label: "Admin Control Panel" },
-    { label: "Programs & Clients" },
-    { label: "Program Management", href: PATHS.ADMIN.PROGRAMS.LIST },
-    { label: "Edit" },
-  ],
-
-  /** Users list page */
   "/admin/users": [
     { label: "Admin Control Panel" },
-    { label: "Administration & Access Control" },
-    { label: "User Management", href: PATHS.ADMIN.USERS.LIST },
+    { label: "Access & Organization" },
+    { label: "Accounts", href: PATHS.ADMIN.USERS.LIST },
   ],
 
-  /** Users create page */
-  "/admin/users/create": [
+  "/admin/teams": [
     { label: "Admin Control Panel" },
-    { label: "Administration & Access Control" },
-    { label: "User Management", href: PATHS.ADMIN.USERS.LIST },
+    { label: "Access & Organization" },
+    { label: "Teams", href: PATHS.ADMIN.TEAMS.LIST },
+  ],
+  /* -------------------------------------------------------------------------- */
+  /* Client Care & Services                                                  */
+  /* -------------------------------------------------------------------------- */
+
+  "/admin/programs": [
+    { label: "Admin Control Panel" },
+    { label: "Client Care & Services" },
+    { label: "Programs", href: PATHS.ADMIN.PROGRAMS.LIST },
+  ],
+
+  "/admin/programs/create": [
+    { label: "Admin Control Panel" },
+    { label: "Client Care & Services" },
+    { label: "Programs", href: PATHS.ADMIN.PROGRAMS.LIST },
     { label: "Create" },
   ],
 
-  /** Users edit page (dynamic: :id replaced at runtime) */
-  "/admin/users/:id/edit": [
+  "/admin/programs/:id/edit": [
     { label: "Admin Control Panel" },
-    { label: "Administration & Access Control" },
-    { label: "User Management", href: PATHS.ADMIN.USERS.LIST },
+    { label: "Client Care & Services" },
+    { label: "Programs", href: PATHS.ADMIN.PROGRAMS.LIST },
     { label: "Edit" },
   ],
 
-  /** Onboarding forms list page */
+  "/admin/programs/:id/preview": [
+    { label: "Admin Control Panel" },
+    { label: "Client Care & Services" },
+    { label: "Programs", href: PATHS.ADMIN.PROGRAMS.LIST },
+    { label: "Preview" },
+  ],
+
+  "/admin/clients": [
+    { label: "Admin Control Panel" },
+    { label: "Client Care & Services" },
+    { label: "Clients", href: PATHS.ADMIN.CLIENTS.LIST },
+  ],
+
+  "/admin/enrollments": [
+    { label: "Admin Control Panel" },
+    { label: "Client Care & Services" },
+    { label: "Enrollments", href: PATHS.ADMIN.ENROLLMENTS.LIST },
+  ],
+
+  /* -------------------------------------------------------------------------- */
+  /* Nutrition & Training Library                                                  */
+  /* -------------------------------------------------------------------------- */
+
   "/admin/onboarding-forms": [
     { label: "Admin Control Panel" },
-    { label: "Health Data & Plans" },
+    { label: "Health Planning & Tracking" },
     { label: "Onboarding" },
     { label: "Forms", href: PATHS.ADMIN.ONBOARDING_FORMS.LIST },
   ],
 
-  /** Onboarding forms create page */
   "/admin/onboarding-forms/create": [
     { label: "Admin Control Panel" },
-    { label: "Health Data & Plans" },
+    { label: "Health Planning & Tracking" },
     { label: "Onboarding" },
     { label: "Forms", href: PATHS.ADMIN.ONBOARDING_FORMS.LIST },
     { label: "Create" },
   ],
 
-  /** Onboarding forms edit page (dynamic: :id replaced at runtime) */
   "/admin/onboarding-forms/:id/edit": [
     { label: "Admin Control Panel" },
-    { label: "Health Data & Plans" },
+    { label: "Health Planning & Tracking" },
     { label: "Onboarding" },
     { label: "Forms", href: PATHS.ADMIN.ONBOARDING_FORMS.LIST },
     { label: "Edit" },
   ],
 
-  /** Units list page */
+  /* -------------------------------------------------------------------------- */
+  /* Nutrition & Training Library                                                  */
+  /* -------------------------------------------------------------------------- */
+
   "/admin/units": [
     { label: "Admin Control Panel" },
-    { label: "Health Data & Plans" },
-    { label: "Food & Nutrition" },
-    { label: "Units", href: PATHS.ADMIN.UNITS.LIST },
+    { label: "Nutrition & Training Library" },
+    { label: "Measurement Units", href: PATHS.ADMIN.UNITS.LIST },
   ],
 
-  /** Food categories list page */
   "/admin/food-categories": [
     { label: "Admin Control Panel" },
-    { label: "Health Data & Plans" },
-    { label: "Food & Nutrition" },
+    { label: "Nutrition & Training Library" },
+    { label: "Nutrition" },
     { label: "Food Categories", href: PATHS.ADMIN.FOOD_CATEGORIES.LIST },
   ],
-
-  /** Food items list page */
   "/admin/food-items": [
     { label: "Admin Control Panel" },
-    { label: "Health Data & Plans" },
-    { label: "Food & Nutrition" },
+    { label: "Nutrition & Training Library" },
+    { label: "Nutrition" },
     { label: "Food Items", href: PATHS.ADMIN.FOOD_ITEMS.LIST },
   ],
 
-  /** Workout categories list page */
   "/admin/workout-categories": [
     { label: "Admin Control Panel" },
-    { label: "Health Data & Plans" },
-    { label: "Workout Library" },
-    { label: "Workout Categories", href: PATHS.ADMIN.WORKOUT_CATEGORIES.LIST },
+    { label: "Nutrition & Training Library" },
+    { label: "Workouts" },
+    { label: "Categories", href: PATHS.ADMIN.WORKOUT_CATEGORIES.LIST },
   ],
 
-  /** Workouts list page */
   "/admin/workouts": [
     { label: "Admin Control Panel" },
-    { label: "Health Data & Plans" },
-    { label: "Workout Library" },
-    { label: "Workout Items", href: PATHS.ADMIN.WORKOUTS.LIST },
+    { label: "Nutrition & Training Library" },
+    { label: "Workouts" },
+    { label: "Exercises", href: PATHS.ADMIN.WORKOUTS.LIST },
   ],
 
-  /** Payment Methods list page */
-  "/admin/payments": [
+  /* -------------------------------------------------------------------------- */
+  /* Billing & Payments                                                          */
+  /* -------------------------------------------------------------------------- */
+
+  "/admin/payment-methods": [
     { label: "Admin Control Panel" },
-    { label: "Finance" },
+    { label: "Billing & Payments" },
     { label: "Payment Methods", href: PATHS.ADMIN.PAYMENT_METHODS.LIST },
-  ],
-
-  /** Blog categories list page */
-  "/admin/blog-categories": [
-    { label: "Admin Control Panel" },
-    { label: "Content Management" },
-    { label: "Blog" },
-    { label: "Blog Categories", href: PATHS.ADMIN.BLOG_CATEGORIES.LIST },
-  ],
-
-  /** Testimonials list page */
-  "/admin/testimonials": [
-    { label: "Admin Control Panel" },
-    { label: "Content Management" },
-    { label: "Testimonials", href: PATHS.ADMIN.TESTIMONIALS.LIST },
   ],
 
   "/admin/invoices": [
     { label: "Admin Control Panel" },
-    { label: "Finance" },
+    { label: "Billing & Payments" },
     { label: "Invoices", href: PATHS.ADMIN.INVOICES.LIST },
   ],
 
-  "/admin/invoices/:id/edit": [
+  /* -------------------------------------------------------------------------- */
+  /* Content & Engagement                                                          */
+  /* -------------------------------------------------------------------------- */
+
+  "/admin/blog-categories": [
     { label: "Admin Control Panel" },
-    { label: "Finance" },
-    { label: "Invoices", href: PATHS.ADMIN.INVOICES.LIST },
+    { label: "Content & Engagement" },
+    { label: "Blog" },
+    { label: "Categories", href: PATHS.ADMIN.BLOG_CATEGORIES.LIST },
+  ],
+
+  "/admin/blog-posts": [
+    { label: "Admin Control Panel" },
+    { label: "Content & Engagement" },
+    { label: "Blog" },
+    { label: "Posts", href: PATHS.ADMIN.BLOG_POSTS.LIST },
+  ],
+
+  "/admin/blog-posts/create": [
+    { label: "Admin Control Panel" },
+    { label: "Content & Engagement" },
+    { label: "Blog" },
+    { label: "Posts", href: PATHS.ADMIN.BLOG_POSTS.LIST },
+    { label: "Create" },
+  ],
+
+  "/admin/blog-posts/:id/edit": [
+    { label: "Admin Control Panel" },
+    { label: "Content & Engagement" },
+    { label: "Blog" },
+    { label: "Posts", href: PATHS.ADMIN.BLOG_POSTS.LIST },
     { label: "Edit" },
   ],
 
-  "/admin/invoices/create": [
+  "/admin/blog-posts/:id/preview": [
     { label: "Admin Control Panel" },
-    { label: "Finance" },
-    { label: "Invoices", href: PATHS.ADMIN.INVOICES.LIST },
-    { label: "Create" },
+    { label: "Content & Engagement" },
+    { label: "Blog" },
+    { label: "Posts", href: PATHS.ADMIN.BLOG_POSTS.LIST },
+    { label: "Preview" },
+  ],
+
+  "/admin/testimonials": [
+    { label: "Admin Control Panel" },
+    { label: "Content & Engagement" },
+    { label: "Testimonials", href: PATHS.ADMIN.TESTIMONIALS.LIST },
   ],
 };

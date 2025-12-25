@@ -1,4 +1,4 @@
-import { ArrowLeft, FileText } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import React from "react";
@@ -15,16 +15,15 @@ export const metadata: Metadata = {
 
 export default function CreateBlogPostPage() {
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 p-6">
       <PageHeader
-        icon={FileText}
-        title="Create Blog Post"
-        description="Add a thumbnail, title, short summary, content, and category. Save as draft or publish when ready."
+        title="Create New Blog Post"
+        description="Write a new article by adding a title, thumbnail, summary, content, and assigning it to a category. Save as draft or publish when ready."
         actions={
           <Button variant="outline" asChild>
             <Link
               href={PATHS.ADMIN.BLOG_POSTS.LIST}
-              className="flex items-center gap-2 text-sm font-semibold text-gray-800 hover:!bg-gray-100 hover:!text-gray-800"
+              className="flex items-center gap-2 text-sm font-semibold text-gray-800 hover:bg-gray-100! hover:text-gray-800!"
             >
               <ArrowLeft className="h-4 w-4" />
               Go Back

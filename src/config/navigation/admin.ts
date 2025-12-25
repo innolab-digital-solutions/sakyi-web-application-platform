@@ -1,45 +1,32 @@
 import {
   Activity,
+  Apple,
   BarChart3,
   BookOpen,
   BookOpenCheck,
   CalendarClock,
   ClipboardCheck,
-  ClipboardList,
   CreditCard,
+  Dumbbell,
+  FileText,
+  FolderKanban,
   LayoutDashboard,
   ListChecks,
-  MonitorCog,
   Receipt,
-  Settings,
+  Scale,
   ShieldCheck,
-  Stethoscope,
-  UserCog2,
+  UserCog,
   Users,
+  UserSquare2,
 } from "lucide-react";
 
 import { PATHS } from "@/config/paths";
 import { NavGroup } from "@/types/shared/navigation";
 
-/**
- * Admin sidebar navigation configuration
- *
- * Defines the navigation structure for the admin dashboard sidebar.
- * Organized into logical groups with icons, paths, and permission requirements.
- *
- * Properties:
- * - **name**: Display text for navigation item
- * - **icon**: Lucide icon component
- * - **path**: Route path (use PATHS constants)
- * - **permission**: Required permission string (empty = always visible)
- * - **params**: Reserved for future use (filtering, etc.)
- * - **active**: Managed at runtime by navigation utilities
- * - **subitems**: Nested navigation items
- *
- * Note: Active states and runtime params are managed by
- * `getActiveAdminNav()` utility, not defined here.
- */
 export const adminNavigation: NavGroup[] = [
+  /* -------------------------------------------------------------------------- */
+  /* Dashboard & Insights                                                           */
+  /* -------------------------------------------------------------------------- */
   {
     title: "Dashboard & Insights",
     items: [
@@ -55,18 +42,12 @@ export const adminNavigation: NavGroup[] = [
     ],
   },
 
+  /* -------------------------------------------------------------------------- */
+  /* Access & Organization                                                       */
+  /* -------------------------------------------------------------------------- */
   {
-    title: "Administration & Access Control",
+    title: "Access & Organization",
     items: [
-      {
-        name: "Team Management",
-        icon: Users,
-        path: PATHS.ADMIN.TEAMS.LIST,
-        params: {},
-        active: false,
-        permission: "teams.view",
-        subitems: [],
-      },
       {
         name: "Roles & Permissions",
         icon: ShieldCheck,
@@ -77,23 +58,35 @@ export const adminNavigation: NavGroup[] = [
         subitems: [],
       },
       {
-        name: "User Management",
-        icon: UserCog2,
+        name: "Accounts",
+        icon: UserCog,
         path: PATHS.ADMIN.USERS.LIST,
         params: {},
         active: false,
         permission: "users.view",
         subitems: [],
       },
+      {
+        name: "Teams",
+        icon: Users,
+        path: PATHS.ADMIN.TEAMS.LIST,
+        params: {},
+        active: false,
+        permission: "teams.view",
+        subitems: [],
+      },
     ],
   },
 
+  /* -------------------------------------------------------------------------- */
+  /* Client Care & Services                                                  */
+  /* -------------------------------------------------------------------------- */
   {
-    title: "Programs & Clients",
+    title: "Client Care & Services",
     items: [
       {
-        name: "Program Management",
-        icon: ClipboardList,
+        name: "Programs",
+        icon: FolderKanban,
         path: PATHS.ADMIN.PROGRAMS.LIST,
         params: {},
         active: false,
@@ -101,12 +94,12 @@ export const adminNavigation: NavGroup[] = [
         subitems: [],
       },
       {
-        name: "Appointments",
-        icon: CalendarClock,
-        path: "/admin/schedule",
+        name: "Clients",
+        icon: UserSquare2,
+        path: PATHS.ADMIN.CLIENTS.LIST,
         params: {},
         active: false,
-        permission: "appointments.view",
+        permission: "clients.view",
         subitems: [],
       },
       {
@@ -119,19 +112,22 @@ export const adminNavigation: NavGroup[] = [
         subitems: [],
       },
       {
-        name: "Clients",
-        icon: Users,
-        path: "/admin/users",
+        name: "Appointments",
+        icon: CalendarClock,
+        path: "/admin/schedule",
         params: {},
         active: false,
-        permission: "clients.view",
+        permission: "appointments.view",
         subitems: [],
       },
     ],
   },
 
+  /* -------------------------------------------------------------------------- */
+  /* Health Planning & Tracking                                                  */
+  /* -------------------------------------------------------------------------- */
   {
-    title: "Health Data & Plans",
+    title: "Health Planning & Tracking",
     items: [
       {
         name: "Doctor Instructions",
@@ -158,16 +154,16 @@ export const adminNavigation: NavGroup[] = [
             permission: "onboarding.forms.view",
           },
           {
-            name: "Submissions",
+            name: "Intakes",
             path: "/admin/onboarding/responses",
             params: {},
             active: false,
-            permission: "onboarding.submissions.view",
+            permission: "",
           },
         ],
       },
       {
-        name: "Health Data",
+        name: "Health Logs",
         icon: Activity,
         path: "#",
         params: {},
@@ -175,43 +171,54 @@ export const adminNavigation: NavGroup[] = [
         permission: "",
         subitems: [
           {
-            name: "Sleep Tracking",
+            name: "Sleep",
             path: "/admin/health-data/sleep",
             params: {},
             active: false,
-            permission: "",
+            permission: "health.logs.view",
           },
           {
-            name: "Meal Logs",
+            name: "Meals",
             path: "/admin/health-data/meals",
             params: {},
             active: false,
-            permission: "",
+            permission: "health.logs.view",
           },
           {
-            name: "Workout Logs",
+            name: "Workouts",
             path: "/admin/health-data/workouts",
             params: {},
             active: false,
-            permission: "",
+            permission: "health.logs.view",
           },
         ],
       },
+    ],
+  },
+
+  /* -------------------------------------------------------------------------- */
+  /* Nutrition & Training Library                                                  */
+  /* -------------------------------------------------------------------------- */
+  {
+    title: "Nutrition & Training Library",
+    items: [
       {
-        name: "Food & Nutrition",
-        icon: Stethoscope,
+        name: "Measurement Units",
+        icon: Scale,
+        path: PATHS.ADMIN.UNITS.LIST,
+        params: {},
+        active: false,
+        permission: "units.view",
+        subitems: [],
+      },
+      {
+        name: "Nutrition",
+        icon: Apple,
         path: "#",
         params: {},
         active: false,
         permission: "",
         subitems: [
-          {
-            name: "Units",
-            path: PATHS.ADMIN.UNITS.LIST,
-            params: {},
-            active: false,
-            permission: "units.view",
-          },
           {
             name: "Food Categories",
             path: PATHS.ADMIN.FOOD_CATEGORIES.LIST,
@@ -229,22 +236,22 @@ export const adminNavigation: NavGroup[] = [
         ],
       },
       {
-        name: "Workout Library",
-        icon: BarChart3,
+        name: "Workouts",
+        icon: Dumbbell,
         path: "#",
         params: {},
         active: false,
         permission: "",
         subitems: [
           {
-            name: "Workout Categories",
+            name: "Categories",
             path: PATHS.ADMIN.WORKOUT_CATEGORIES.LIST,
             params: {},
             active: false,
             permission: "workout.categories.view",
           },
           {
-            name: "Workout Items",
+            name: "Exercises",
             path: "/admin/workouts",
             params: {},
             active: false,
@@ -254,16 +261,20 @@ export const adminNavigation: NavGroup[] = [
       },
     ],
   },
+
+  /* -------------------------------------------------------------------------- */
+  /* Billing & Payments                                                          */
+  /* -------------------------------------------------------------------------- */
   {
-    title: "Finance",
+    title: "Billing & Payments",
     items: [
       {
         name: "Payment Methods",
         icon: CreditCard,
-        path: "/admin/payment-methods",
+        path: PATHS.ADMIN.PAYMENT_METHODS.LIST,
         params: {},
         active: false,
-        permission: "payment-methods.view",
+        permission: "payment.methods.view",
         subitems: [],
       },
       {
@@ -272,14 +283,17 @@ export const adminNavigation: NavGroup[] = [
         path: PATHS.ADMIN.INVOICES.LIST,
         params: {},
         active: false,
-        permission: "invoices.view",
+        permission: "payment.invoices.view",
         subitems: [],
       },
     ],
   },
 
+  /* -------------------------------------------------------------------------- */
+  /* Content & Engagement                                                  */
+  /* -------------------------------------------------------------------------- */
   {
-    title: "Content Management",
+    title: "Content & Engagement",
     items: [
       {
         name: "Blog",
@@ -290,14 +304,14 @@ export const adminNavigation: NavGroup[] = [
         permission: "",
         subitems: [
           {
-            name: "Blog Categories",
+            name: "Categories",
             path: PATHS.ADMIN.BLOG_CATEGORIES.LIST,
             params: {},
             active: false,
             permission: "blog.categories.view",
           },
           {
-            name: "Blog Posts",
+            name: "Posts",
             path: PATHS.ADMIN.BLOG_POSTS.LIST,
             params: {},
             active: false,
@@ -307,80 +321,21 @@ export const adminNavigation: NavGroup[] = [
       },
       {
         name: "Testimonials",
-        icon: ClipboardList,
+        icon: FileText,
         path: "/admin/testimonials",
         params: {},
         active: false,
         permission: "testimonials.view",
         subitems: [],
       },
-    ],
-  },
-
-  {
-    title: "System & Settings",
-    items: [
       {
-        name: "Monitoring",
-        icon: MonitorCog,
-        path: "#",
+        name: "Community Posts",
+        icon: BarChart3,
+        path: "/admin/community-posts",
         params: {},
         active: false,
-        permission: "",
-        subitems: [
-          {
-            name: "Health",
-            path: "/pulse",
-            params: {},
-            active: false,
-            permission: "",
-          },
-          {
-            name: "Queue",
-            path: "/horizon",
-            params: {},
-            active: false,
-            permission: "",
-          },
-          {
-            name: "Debugger",
-            path: "/telescope",
-            params: {},
-            active: false,
-            permission: "",
-          },
-        ],
-      },
-      {
-        name: "Platform Settings",
-        icon: Settings,
-        path: "#",
-        params: {},
-        active: false,
-        permission: "",
-        subitems: [
-          {
-            name: "General",
-            path: "/admin/settings/general",
-            params: {},
-            active: false,
-            permission: "",
-          },
-          {
-            name: "SEO",
-            path: "/admin/settings/seo",
-            params: {},
-            active: false,
-            permission: "",
-          },
-          {
-            name: "Integrations",
-            path: "/admin/settings/integrations",
-            params: {},
-            active: false,
-            permission: "",
-          },
-        ],
+        permission: "community.posts.view",
+        subitems: [],
       },
     ],
   },

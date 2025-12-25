@@ -1,5 +1,4 @@
 import { ApiResponse } from "@/types/shared/api";
-import { Pagination } from "@/types/shared/common";
 
 export interface ProgramIdeal {
   id: number;
@@ -31,11 +30,13 @@ export interface ProgramFAQ {
 
 export interface Program {
   id: number;
-  subtitle: string;
-  overview: string;
-  thumbnail_url: string;
+  code: string;
+  thumbnail: string;
+  background_image: string;
+  tagline: string;
   title: string;
   slug: string;
+  overview: string;
   description: string;
   duration_value: number;
   duration_unit: "days" | "weeks" | "months";
@@ -52,18 +53,15 @@ export interface Program {
     title: string;
   };
   faqs?: ProgramFAQ[];
-  actions?: {
-    editable: boolean;
-    deletable: boolean;
-  };
-}
-
-export interface ProgramsResponse {
-  status: string;
-  message: string;
-  data: Program[];
-  meta: {
-    pagination: Pagination;
+  actions: {
+    edit: {
+      allowed: boolean;
+      reasons: string[];
+    };
+    delete: {
+      allowed: boolean;
+      reasons: string[];
+    };
   };
 }
 

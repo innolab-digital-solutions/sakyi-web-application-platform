@@ -9,6 +9,7 @@ import DashboardSidebar from "@/components/admin/layout/dashboard-sidebar";
 import NoSSR from "@/components/shared/no-ssr";
 import PageTransition from "@/components/shared/page-transition";
 import QueryProvider from "@/components/shared/query-provider";
+import TopLoadingBar from "@/components/shared/top-loading-bar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { PATHS } from "@/config/paths";
 import { AuthProvider } from "@/context/auth-context";
@@ -29,6 +30,7 @@ export default function DashboardLayout({
       <AuthProvider>
         <TransitionProvider defaultTransition="scale">
           <AccessControl requireAuth={!isLoginPage} checkPermissions={!isLoginPage}>
+            <TopLoadingBar />
             {isLoginPage ? (
               children
             ) : (
@@ -40,7 +42,7 @@ export default function DashboardLayout({
                   {/* Main Content */}
                   <SidebarInset className="flex min-w-0 flex-1 flex-col">
                     <DashboardHeader />
-                    <div className="flex flex-1 flex-col p-6">
+                    <div className="flex flex-1 flex-col">
                       <PageTransition transitionType="scale">{children}</PageTransition>
                     </div>
                   </SidebarInset>

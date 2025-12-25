@@ -1,4 +1,4 @@
-import { ClipboardList, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import React from "react";
@@ -17,7 +17,6 @@ export const metadata: Metadata = {
 export default function InstructionsListPage() {
   return (
     <ResourceListPage
-      icon={ClipboardList}
       title="Instructions"
       description="Create comprehensive daily instructions with meals, workouts, activities, water intake, and sleep targets for enrolled clients."
       createTrigger={
