@@ -55,8 +55,8 @@ function ProgramCardLarge({ program }: { program: Program }) {
               {program.title}
             </h3>
 
-            <p className="text-slate-600" style={{ fontFamily: "Inter, sans-serif" }}>
-              {program.description}
+            <p className="text-slate-600 line-clamp-3" style={{ fontFamily: "Inter, sans-serif" }}>
+              {program.overview}
             </p>
 
             {/* CTA Link */}
@@ -122,10 +122,10 @@ function ProgramCardSmall({ program, index }: { program: Program; index: number 
           </h3>
 
           <p
-            className="text-sm text-slate-600"
+            className="text-sm text-slate-600 line-clamp-3"
             style={{ fontFamily: "Inter, sans-serif" }}
           >
-            {program.description}
+            {program.overview}
           </p>
 
           {/* CTA Link */}

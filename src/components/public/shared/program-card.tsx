@@ -55,8 +55,8 @@ export default function ProgramCard({ program, index = 0, className = "" }: Prog
             {program.title}
           </h3>
 
-          <p className="text-slate-600" style={{ fontFamily: "Inter, sans-serif" }}>
-            {program.description}
+          <p className="text-slate-600 line-clamp-3" style={{ fontFamily: "Inter, sans-serif" }}>
+            {program.overview}
           </p>
 
           {/* CTA Link */}
