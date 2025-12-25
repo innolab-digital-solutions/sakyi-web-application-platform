@@ -19,7 +19,6 @@ export default function UserStatusButton({ user, className }: UserStatusButtonPr
   const request = useRequest();
 
   const isActive = user.status === "active";
-  const isSuspended = user.status === "suspended";
   const isLoading = request.loading;
 
   const handleStatusToggle = () => {

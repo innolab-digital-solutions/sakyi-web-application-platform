@@ -94,7 +94,7 @@ export default function TestimonialDeletionDialog({
 
       <ConfirmationDialog
         title="Delete Testimonial"
-        description={`Permanently delete the testimonial from "${testimonial.enrollment?.client?.name ?? "Unknown client"}"? This action cannot be undone.`}
+        description={`Permanently delete the testimonial from "${testimonial.reviewer?.name ?? "Unknown reviewer"}"? This action cannot be undone.`}
         icon={TriangleAlert}
         variant="destructive"
         confirmText="Yes, Delete It"

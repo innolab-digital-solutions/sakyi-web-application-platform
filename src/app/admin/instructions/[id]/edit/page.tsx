@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeft, ClipboardList } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 
@@ -31,7 +31,6 @@ export default function EditInstructionPage({
   return (
     <div className="flex flex-col gap-2">
       <PageHeader
-        icon={ClipboardList}
         title="Edit Instruction"
         description="Update meals, workouts, activities, water, and sleep targets. Changes apply immediately to the instruction."
         actions={

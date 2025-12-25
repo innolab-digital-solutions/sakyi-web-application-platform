@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/select";
 import { ENDPOINTS } from "@/config/endpoints";
 import { useRequest } from "@/hooks/use-request";
-import { Enrollment } from "@/types/admin/testimonial";
+import { Enrollment } from "@/types/admin/enrollment";
 
 interface TestimonialFiltersDropdownProperties {
   isLoading?: boolean;

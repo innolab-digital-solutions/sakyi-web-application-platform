@@ -131,9 +131,4 @@ export const ADMIN_PATHS = {
   CLIENTS: {
     LIST: "/admin/clients",
   },
-
-  /** Enrollments routes */
-  ENROLLMENTS: {
-    LIST: "/admin/enrollments",
-  },
 } as const;

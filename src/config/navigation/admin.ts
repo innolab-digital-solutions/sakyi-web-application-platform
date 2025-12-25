@@ -158,7 +158,7 @@ export const adminNavigation: NavGroup[] = [
             path: "/admin/onboarding/responses",
             params: {},
             active: false,
-            permission: "onboarding.intakes.view",
+            permission: "",
           },
         ],
       },

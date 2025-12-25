@@ -43,7 +43,7 @@ export default function OnboardingFormStatusDialog({
 
   const handleStatusChange = (newStatus: "archived" | "draft" | "published") => {
     request.patch(
-      ENDPOINTS.ADMIN.ONBOARDING_FORMS.CHANGE_STATUS(onboardingForm.id),
+      ENDPOINTS.ADMIN.ONBOARDING_FORMS.STATUS(onboardingForm.id),
       { status: newStatus },
       {
         tanstack: {

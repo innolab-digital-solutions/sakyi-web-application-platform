@@ -69,7 +69,7 @@ export default function OnboardingFormArchiveButton({
 
                   return {
                     ...previous,
-                    data: { ...previous.data, status: newStatus },
+                    data: { ...previous.data, status: newStatus as OnboardingForm["status"] },
                   } as ApiResponse<OnboardingForm>;
                 },
                 { all: true },

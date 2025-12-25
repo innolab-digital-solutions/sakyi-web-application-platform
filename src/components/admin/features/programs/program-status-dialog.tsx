@@ -40,7 +40,7 @@ export default function ProgramStatusDialog({ program, className }: ProgramStatu
 
   const handleStatusChange = (newStatus: "archived" | "draft" | "published") => {
     request.patch(
-      ENDPOINTS.ADMIN.PROGRAMS.CHANGE_STATUS(program.id),
+      ENDPOINTS.ADMIN.PROGRAMS.STATUS(program.id),
       { status: newStatus },
       {
         tanstack: {

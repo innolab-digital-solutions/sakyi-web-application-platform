@@ -5,7 +5,7 @@ export interface OnboardingForm {
   slug: string;
   title: string;
   description: string;
-  status: "active" | "inactive";
+  status: "draft" | "published" | "archived";
   published_at: string | null;
   sections: OnboardingFormSection[];
   programs: {

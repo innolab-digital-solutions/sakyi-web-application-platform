@@ -1,4 +1,4 @@
-import { ArrowLeft, ClipboardList } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import React from "react";
@@ -18,7 +18,6 @@ export default function CreateInstructionPage() {
   return (
     <div className="flex flex-col gap-2">
       <PageHeader
-        icon={ClipboardList}
         title="Create Instruction"
         description="Set up a comprehensive daily instruction plan with meals, workouts, activities, water, and sleep targets for your client."
         actions={

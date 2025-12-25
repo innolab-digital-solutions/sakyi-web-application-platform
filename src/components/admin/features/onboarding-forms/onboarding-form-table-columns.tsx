@@ -41,14 +41,20 @@ const statusMeta: Record<
     iconClass: string;
   }
 > = {
-  active: {
-    label: "Active",
+  draft: {
+    label: "Draft",
+    badgeClass: "bg-yellow-100 text-yellow-700",
+    icon: ClipboardList,
+    iconClass: "text-yellow-700 h-3.5 w-3.5",
+  },
+  published: {
+    label: "Published",
     badgeClass: "bg-green-100 text-green-700",
     icon: CheckCircle,
     iconClass: "text-green-700 h-3.5 w-3.5",
   },
-  inactive: {
-    label: "Inactive",
+  archived: {
+    label: "Archived",
     badgeClass: "bg-red-100 text-red-700",
     icon: XCircle,
     iconClass: "text-red-700 h-3.5 w-3.5",
