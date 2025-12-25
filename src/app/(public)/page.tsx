@@ -7,6 +7,7 @@ import ArticleInsights from "@/components/public/sections/home/article-insights"
 import Hero from "@/components/public/sections/home/hero";
 import HowItWorks from "@/components/public/sections/home/how-it-works";
 import MobileApp from "@/components/public/sections/home/mobile-app";
+import OurPrograms from "@/components/public/sections/home/our-programs";
 import Testimonials from "@/components/public/sections/home/testimonials";
 
 export default function HomePage() {
@@ -15,6 +16,8 @@ export default function HomePage() {
       <Hero />
 
       <AboutPreview />
+
+      <OurPrograms />
 
       <HowItWorks />
 

@@ -1,71 +1,168 @@
+"use client";
+
 import { ArrowRight, Award } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 
-import ProgramCard from "@/components/public/shared/program-card";
+import { Skeleton } from "@/components/ui/skeleton";
+import { ENDPOINTS } from "@/config/endpoints";
+import { PATHS } from "@/config/paths";
+import { useRequest } from "@/hooks/use-request";
 import { Program } from "@/types/public/program";
 
+// Large Program Card Component (Left Column)
+function ProgramCardLarge({ program }: { program: Program }) {
+  const hasThumbnail = program.thumbnail && program.thumbnail.trim() !== "";
+  const [imageError, setImageError] = useState(false);
+  const thumbnailSource = hasThumbnail && !imageError ? program.thumbnail : "/images/no-image.png";
+
+  return (
+    <div
+      data-aos="flip-up"
+      data-aos-delay="400"
+      data-aos-duration="1000"
+      data-aos-easing="ease-out-cubic"
+    >
+      <div className="group relative rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-all duration-300 hover:shadow-md">
+        <div className="flex h-full flex-col gap-6">
+          {/* Image - Top (Full Width) */}
+          <div className="group/image relative w-full overflow-hidden rounded-xl bg-slate-100">
+            <Image
+              src={thumbnailSource}
+              alt={program.title}
+              width={1200}
+              height={800}
+              quality={95}
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
+              className={`h-auto w-full transition-transform duration-300 group-hover:scale-105 ${
+                hasThumbnail && !imageError ? "object-cover" : "object-contain bg-gray-100"
+              }`}
+              onError={() => setImageError(true)}
+            />
+            {/* Subtle dark overlay that disappears on hover */}
+            {hasThumbnail && !imageError && (
+              <div className="absolute inset-0 bg-gradient-to-br from-slate-900/20 to-slate-800/10 transition-opacity duration-300 group-hover:opacity-0"></div>
+            )}
+          </div>
+
+          {/* Content - Bottom (Full Width) */}
+          <div className="flex w-full flex-col justify-center space-y-4">
+            <h3
+              className="text-xl font-bold text-slate-900"
+              style={{ fontFamily: "Poppins, sans-serif" }}
+            >
+              {program.title}
+            </h3>
+
+            <p className="text-slate-600" style={{ fontFamily: "Inter, sans-serif" }}>
+              {program.description}
+            </p>
+
+            {/* CTA Link */}
+            <div className="pt-2">
+              <Link
+                href={program.slug ? PATHS.PUBLIC.PROGRAMS_DETAIL(program.slug) : "#"}
+                className="group/link inline-flex items-center text-sm font-medium text-[#35bec5] transition-all duration-300 hover:text-[#0c96c4]"
+                style={{ fontFamily: "Inter, sans-serif" }}
+              >
+                <span>Learn More</span>
+                <ArrowRight className="ml-2 h-3 w-3 transition-transform duration-300 group-hover/link:translate-x-1" />
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Small Program Card Component (Right Column)
+function ProgramCardSmall({ program, index }: { program: Program; index: number }) {
+  const hasThumbnail = program.thumbnail && program.thumbnail.trim() !== "";
+  const [imageError, setImageError] = useState(false);
+  const thumbnailSource = hasThumbnail && !imageError ? program.thumbnail : "/images/no-image.png";
+
+  return (
+    <div
+      className="group relative rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition-all duration-300 hover:shadow-md"
+      data-aos="slide-up"
+      data-aos-delay={`${index * 150 + 500}`}
+      data-aos-duration="1000"
+      data-aos-easing="ease-out-cubic"
+    >
+      <div className="flex h-full flex-col gap-4 lg:flex-row lg:gap-4">
+        {/* Image - Top on mobile, Left on desktop */}
+        <div className="relative w-full overflow-hidden rounded-xl bg-slate-100 lg:w-1/2 lg:h-full">
+          <Image
+            src={thumbnailSource}
+            alt={program.title}
+            width={400}
+            height={300}
+            quality={90}
+            sizes="(max-width: 768px) 100vw, 200px"
+            className={`h-full w-full transition-transform duration-300 group-hover:scale-105 ${
+              hasThumbnail && !imageError ? "object-cover" : "object-contain bg-gray-100"
+            }`}
+            onError={() => setImageError(true)}
+          />
+          {/* Subtle dark overlay that disappears on hover */}
+          {hasThumbnail && !imageError && (
+            <div className="absolute inset-0 bg-gradient-to-br from-slate-900/20 to-slate-800/10 transition-opacity duration-300 group-hover:opacity-0"></div>
+          )}
+        </div>
+
+        {/* Content - Bottom on mobile, Right on desktop */}
+        <div className="flex w-full flex-col justify-center space-y-3 lg:w-1/2">
+          <h3
+            className="text-lg font-bold text-slate-900"
+            style={{ fontFamily: "Poppins, sans-serif" }}
+          >
+            {program.title}
+          </h3>
+
+          <p
+            className="text-sm text-slate-600"
+            style={{ fontFamily: "Inter, sans-serif" }}
+          >
+            {program.description}
+          </p>
+
+          {/* CTA Link */}
+          <div className="pt-2">
+            <Link
+              href={program.slug ? PATHS.PUBLIC.PROGRAMS_DETAIL(program.slug) : "#"}
+              className="group/link inline-flex items-center text-sm font-medium text-[#35bec5] transition-all duration-300 hover:text-[#0c96c4]"
+              style={{ fontFamily: "Inter, sans-serif" }}
+            >
+              <span>Learn More</span>
+              <ArrowRight className="ml-2 h-3 w-3 transition-transform duration-300 group-hover/link:translate-x-1" />
+            </Link>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function OurPrograms() {
-  // Mock programs data - these should be replaced with actual API data
-  const programs: Program[] = [
-    {
-      id: 1,
-      code: "DIABETES-001",
-      thumbnail: "/images/program-1.jpg",
-      background_image: "/images/program-1.jpg",
-      tagline: "Comprehensive Diabetes Management",
-      title: "Integrated Diabetes Care Program",
-      slug: "integrated-diabetes-care-program",
-      overview: "A medically supervised program",
-      description:
-        "A medically supervised program offering personalized nutrition guidance, medication management, and lifestyle coaching to support effective blood sugar control and improved overall health.",
-      duration_value: 12,
-      duration_unit: "weeks",
-      price: "0",
-      status: "published",
-      currency: "USD",
-      avg_rating: 0,
-      participants: 0,
-    },
-    {
-      id: 2,
-      code: "CARDIAC-001",
-      thumbnail: "/images/program-2.jpg",
-      background_image: "/images/program-2.jpg",
-      tagline: "Heart Health Recovery",
-      title: "Cardiac Health & Rehab Program",
-      slug: "cardiac-health-rehab-program",
-      overview: "Comprehensive recovery plan",
-      description:
-        "Comprehensive recovery and prevention plan for individuals with heart disease, featuring monitored exercise sessions, heart-healthy nutrition counseling, and one-on-one support from cardiac specialists.",
-      duration_value: 16,
-      duration_unit: "weeks",
-      price: "0",
-      status: "published",
-      currency: "USD",
-      avg_rating: 0,
-      participants: 0,
-    },
-    {
-      id: 3,
-      code: "MINDFUL-001",
-      thumbnail: "/images/program-3.jpg",
-      background_image: "/images/program-3.jpg",
-      tagline: "Stress Reduction & Wellness",
-      title: "Mindfulness-Based Stress Reduction Program",
-      slug: "mindfulness-stress-reduction-program",
-      overview: "Evidence-based mindfulness program",
-      description:
-        "An evidence-based program using mindfulness practices, guided meditation, and counseling to reduce stress, improve sleep, and foster emotional wellbeing.",
-      duration_value: 8,
-      duration_unit: "weeks",
-      price: "0",
-      status: "published",
-      currency: "USD",
-      avg_rating: 0,
-      participants: 0,
-    },
-  ];
+  const {
+    data: programsResponse,
+    loading: programsLoading,
+    isFetching: programsFetching,
+  } = useRequest({
+    url: ENDPOINTS.PUBLIC.HOME_PROGRAMS,
+    queryKey: ["home-programs"],
+  });
+
+  const programs = (programsResponse?.data as Program[]) ?? [];
+  const isProgramsLoading = programsLoading || programsFetching;
+  const hasPrograms = programs.length > 0;
+
+  // Hide section if no programs exist (after loading)
+  if (!isProgramsLoading && !hasPrograms) {
+    return;
+  }
 
   return (
        <section id="programs" className="relative overflow-hidden bg-slate-50 py-24">
@@ -132,71 +229,74 @@ export default function OurPrograms() {
          </div>
 
          {/* Asymmetric Program Cards Layout */}
-         <div className="grid gap-8 lg:grid-cols-2">
-           {/* Left Column - Single Large Card with Side-by-Side Layout */}
-     <div data-aos="flip-up" data-aos-delay="400" data-aos-duration="1000" data-aos-easing="ease-out-cubic">
-       <ProgramCard program={programs[0]} />
-     </div>
-
-           {/* Right Column - Two Cards with Side-by-Side Layout */}
-           <div className="grid gap-6">
-             {programs.slice(1).map((program, index) => (
-               <div
-                 key={index + 1}
-                 className="group relative rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition-all duration-300 hover:shadow-md"
-                 data-aos="slide-up"
-                 data-aos-delay={`${(index + 1) * 150 + 500}`}
-                 data-aos-duration="1000"
-                 data-aos-easing="ease-out-cubic"
-               >
-                 <div className="flex h-full flex-col gap-4 lg:flex-row lg:gap-4">
-                   {/* Image - Top on mobile, Left on desktop */}
-                   <div className="relative w-full overflow-hidden rounded-xl bg-slate-100 lg:w-1/2 lg:h-full">
-                     <Image
-                       src={program.thumbnail}
-                       alt={program.title}
-                       width={400}
-                       height={300}
-                       className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                       quality={90}
-                     />
-                     {/* Subtle dark overlay that disappears on hover */}
-                     <div className="absolute inset-0 bg-gradient-to-br from-slate-900/20 to-slate-800/10 transition-opacity duration-300 group-hover:opacity-0"></div>
+         {isProgramsLoading ? (
+           <div className="grid gap-8 lg:grid-cols-2">
+             {/* Left Column - Single Large Card Skeleton */}
+             <div data-aos="flip-up" data-aos-delay="400" data-aos-duration="1000" data-aos-easing="ease-out-cubic">
+               <div className="group relative rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+                 <div className="flex h-full flex-col gap-6">
+                   {/* Image Skeleton */}
+                   <div className="relative w-full overflow-hidden rounded-xl bg-slate-100">
+                     <Skeleton className="aspect-[3/2] w-full" />
                    </div>
-
-                   {/* Content - Bottom on mobile, Right on desktop */}
-                   <div className="flex w-full flex-col justify-center space-y-3 lg:w-1/2">
-                     <h3
-                       className="text-lg font-bold text-slate-900"
-                       style={{ fontFamily: "Poppins, sans-serif" }}
-                     >
-                       {program.title}
-                     </h3>
-
-                     <p
-                       className="text-sm text-slate-600"
-                       style={{ fontFamily: "Inter, sans-serif" }}
-                     >
-                       {program.description}
-                     </p>
-
-                     {/* CTA Link */}
+                   {/* Content Skeleton */}
+                   <div className="flex w-full flex-col justify-center space-y-4">
+                     <Skeleton className="h-7 w-3/4" />
+                     <Skeleton className="h-4 w-full" />
+                     <Skeleton className="h-4 w-5/6" />
                      <div className="pt-2">
-                       <Link
-                         href="/programs/example"
-                         className="group/link inline-flex items-center text-sm font-medium text-[#35bec5] transition-all duration-300 hover:text-[#0c96c4]"
-                         style={{ fontFamily: "Inter, sans-serif" }}
-                       >
-                         <span>Learn More</span>
-                         <ArrowRight className="ml-2 h-3 w-3 transition-transform duration-300 group-hover/link:translate-x-1" />
-                       </Link>
+                       <Skeleton className="h-5 w-24" />
                      </div>
                    </div>
                  </div>
                </div>
-             ))}
+             </div>
+
+             {/* Right Column - Two Cards Skeleton */}
+             <div className="grid gap-6">
+               {Array.from({ length: 2 }).map((_, index) => (
+                 <div
+                   key={index}
+                   className="group relative rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
+                   data-aos="slide-up"
+                   data-aos-delay={`${(index + 1) * 150 + 500}`}
+                   data-aos-duration="1000"
+                   data-aos-easing="ease-out-cubic"
+                 >
+                   <div className="flex h-full flex-col gap-4 lg:flex-row lg:gap-4">
+                     {/* Image Skeleton */}
+                     <div className="relative w-full overflow-hidden rounded-xl bg-slate-100 lg:w-1/2 lg:h-full">
+                       <Skeleton className="h-full w-full" />
+                     </div>
+                     {/* Content Skeleton */}
+                     <div className="flex w-full flex-col justify-center space-y-3 lg:w-1/2">
+                       <Skeleton className="h-6 w-3/4" />
+                       <Skeleton className="h-4 w-full" />
+                       <Skeleton className="h-4 w-5/6" />
+                       <div className="pt-2">
+                         <Skeleton className="h-5 w-24" />
+                       </div>
+                     </div>
+                   </div>
+                 </div>
+               ))}
+             </div>
            </div>
-         </div>
+         ) : (
+           <div className="grid gap-8 lg:grid-cols-2">
+             {/* Left Column - Single Large Card with Side-by-Side Layout */}
+             {programs[0] && (
+               <ProgramCardLarge program={programs[0]} />
+             )}
+
+             {/* Right Column - Two Cards with Side-by-Side Layout */}
+             <div className="grid gap-6">
+               {programs.slice(1).map((program, index) => (
+                 <ProgramCardSmall key={program.id} program={program} index={index + 1} />
+               ))}
+             </div>
+           </div>
+         )}
 
          {/* Clean CTA */}
          <div className="mt-12 text-center" data-aos="fade-up" data-aos-delay="800">
