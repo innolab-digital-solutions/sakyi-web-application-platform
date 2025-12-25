@@ -242,7 +242,7 @@ export default function Testimonials() {
                                 <AvatarImage
                                   src={testimonial.reviewer?.picture ?? undefined}
                                   alt={testimonial.reviewer?.name ?? "Reviewer avatar"}
-                                />
+                                  />
                                 <AvatarFallback className="bg-gradient-to-r from-[#35bec5] to-[#0c96c4] text-white">
                                   {getUserInitials(testimonial.reviewer?.name ?? "U")}
                                 </AvatarFallback>
@@ -303,7 +303,7 @@ export default function Testimonials() {
                                 <AvatarImage
                                   src={testimonial.reviewer?.picture ?? undefined}
                                   alt={testimonial.reviewer?.name ?? "Reviewer avatar"}
-                                />
+                                  />
                                 <AvatarFallback className="bg-gradient-to-r from-[#35bec5] to-[#0c96c4] text-white">
                                   {getUserInitials(testimonial.reviewer?.name ?? "U")}
                                 </AvatarFallback>
