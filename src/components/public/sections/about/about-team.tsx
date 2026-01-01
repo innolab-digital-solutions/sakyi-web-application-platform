@@ -3,9 +3,14 @@ import Image from "next/image";
 
 const teamMembers = [
   {
-    name: "Dr. Sarah Johnson",
-    role: "Chief Medical Officer",
-    description: "Leads our medical team with expertise in preventive medicine and holistic health approaches.",
+    name: "Dr. Swam Htet",
+    role: "Technical Director",
+    description: `Leads and mentors our interdisciplinary medical team, ensuring a cohesive approach to preventive and integrative health care.
+Supervises the creation of evidence-based wellness initiatives, encompassing novel mobility and recovery strategies, and formulates program roadmaps that correspond with contemporary lifestyle medicine methodologies.
+<br />
+Collaborates with specialists in nutrition, movement therapy, and community engagement to integrate their expertise into cohesive, holistic plans.
+<br />
+Establishes clinical standards and guidelines, assesses program outcomes, and promotes ongoing enhancement in client care.`,
     image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=300&q=80",
     socials: {
       linkedin: "https://linkedin.com/in/sarah-johnson",
@@ -14,9 +19,13 @@ const teamMembers = [
     }
   },
   {
-    name: "Dr. Michael Chen",
-    role: "Director of Nutrition",
-    description: "Specializes in personalized nutrition plans and sustainable lifestyle modifications for optimal health.",
+    name: "Dr. Pyae Sone Aung",
+    role: "Assistance lifestyle medical doctor",
+    description: `Supports the Technical Director in implementing wellness initiatives and contributes to program development.
+<br />
+Manages health data and analytics to ensure all programs remain evidence-based and up to date.
+<br />
+Provides clinical support as needed and liaises with other team members to facilitate program execution.`,
     image: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=300&q=80",
     socials: {
       linkedin: "https://linkedin.com/in/michael-chen",
@@ -24,47 +33,18 @@ const teamMembers = [
     }
   },
   {
-    name: "Emily Rodriguez",
-    role: "Client Success Coordinator",
-    description: "Ensures every client receives personalized support and guidance throughout their wellness journey.",
+    name: "Dr. Yune Nadar Hlaing",
+    role: "Lifestyle medical doctor",
+    description: `Provides client consultations in alignment with the most recent lifestyle medicine principles, guaranteeing superior, individualized care.
+<br />
+Operates under the supervision of the Technical Director to execute designated wellness strategies and assess client advancement.
+Complies with established standard operating procedures and communicates with the wider wellness team to ensure consistency in program implementation.`,
     image: "https://images.unsplash.com/photo-1665779912168-c6d48ec98dcb?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8cGVyc29uJTIwaW1hZ2V8ZW58MHx8MHx8fDI%3D&auto=format&fit=crop&q=60&w=500",
     socials: {
       linkedin: "https://linkedin.com/in/emily-rodriguez",
       email: "emily@sakyi.com"
     }
-  },
-  {
-    name: "Dr. James Wilson",
-    role: "Director of Movement Therapy",
-    description: "Develops personalized movement programs for optimal physical health and recovery.",
-    image: "https://images.unsplash.com/photo-1582750433449-648ed127bb54?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=300&q=80",
-    socials: {
-      linkedin: "https://linkedin.com/in/james-wilson",
-      twitter: "https://twitter.com/jameswilson",
-      email: "james@sakyi.com"
-    }
-  },
-  {
-    name: "Lisa Park",
-    role: "Data & Analytics Coordinator",
-    description: "Manages health data insights and ensures our programs are backed by comprehensive analytics.",
-    image: "https://images.unsplash.com/photo-1579865346865-9223701ba92e?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cGVyc29uJTIwaW1hZ2V8ZW58MHx8MHx8fDI%3D&auto=format&fit=crop&q=60&w=500",
-    socials: {
-      linkedin: "https://linkedin.com/in/lisa-park",
-      email: "lisa@sakyi.com"
-    }
-  },
-  {
-    name: "Marcus Thompson",
-    role: "Community Engagement Manager",
-    description: "Builds and nurtures our wellness community, creating meaningful connections and support networks.",
-    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=300&q=80",
-    socials: {
-      linkedin: "https://linkedin.com/in/marcus-thompson",
-      twitter: "https://twitter.com/marcusthompson",
-      email: "marcus@sakyi.com"
-    }
-  },
+  }
 ];
 
 export default function AboutTeam() {
@@ -108,9 +88,7 @@ export default function AboutTeam() {
             className="mx-auto mt-4 max-w-3xl text-lg leading-relaxed text-slate-600"
             style={{ fontFamily: "Inter, sans-serif" }}
           >
-            Our team of certified healthcare professionals brings together decades of experience 
-            in medicine, nutrition, psychology, and wellness to provide you with comprehensive, 
-            evidence-based care.
+     We are pleased to present the professionals who will lead your journey because we know that consumers want to see the faces behind a brand. Our group brings together decades of expertise in wellness, psychology, nutrition, and medicine:
           </p>
         </div>
 
@@ -119,7 +97,7 @@ export default function AboutTeam() {
           {teamMembers.map((member, index) => (
             <div
               key={index}
-              className="group text-center"
+              className="group"
               data-aos="fade-up"
               data-aos-delay={`${index * 100}`}
             >
@@ -141,7 +119,7 @@ export default function AboutTeam() {
 
               {/* Content */}
               <div className="space-y-4">
-                <div>
+                <div className="text-center">
                   <h3
                     className="text-xl font-bold text-slate-900"
                     style={{ fontFamily: "Poppins, sans-serif" }}
@@ -156,12 +134,11 @@ export default function AboutTeam() {
                   </p>
                 </div>
 
-                <p
-                  className="text-sm leading-relaxed text-slate-600"
+                <div
+                  className="text-sm leading-relaxed text-left text-slate-600"
                   style={{ fontFamily: "Inter, sans-serif" }}
-                >
-                  {member.description}
-                </p>
+                  dangerouslySetInnerHTML={{ __html: member.description }}
+                />
 
                 {/* Social Links */}
                 <div className="flex justify-center space-x-3">

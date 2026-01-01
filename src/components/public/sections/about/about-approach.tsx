@@ -1,26 +1,26 @@
-import { CheckCircle, Heart, Shield, Target, Zap } from "lucide-react";
+import { CheckCircle,HandHeart, ListChecks, Puzzle, Stethoscope, Target, Zap } from "lucide-react";
 import Image from "next/image";
 
 const approachSteps = [
   {
-    icon: <Target className="h-6 w-6 text-white" />,
-    title: "Comprehensive Assessment",
-    description: "We begin with a thorough evaluation of your health history, lifestyle, goals, and current challenges to create a complete picture of your wellness needs.",
+    icon: <Stethoscope className="h-6 w-6 text-white" />,
+    title: "Thorough Evaluation",
+    description: "We initiate with an extensive assessment of your medical history, lifestyle, objectives, and obstacles. This provides a comprehensive overview of your wellness requirements.",
   },
   {
-    icon: <Heart className="h-6 w-6 text-white" />,
-    title: "Personalized Planning",
-    description: "Based on your assessment, our team designs a customized wellness plan that addresses your unique needs and aligns with your personal goals and preferences.",
+    icon: <ListChecks className="h-6 w-6 text-white" />,
+    title: "Tailored Planning",
+    description: "Our staff formulates a bespoke plan that corresponds with your individual objectives and preferences. Plans incorporate nutrition, physical activity, mindfulness, and medical care for comprehensive outcomes.",
   },
   {
-    icon: <Shield className="h-6 w-6 text-white" />,
-    title: "Expert Guidance",
-    description: "You'll work with certified healthcare professionals who provide ongoing support, monitor your progress, and adjust your plan as needed.",
+    icon: <HandHeart className="h-6 w-6 text-white" />,
+    title: "Professional Assistance",
+    description: "You collaborate directly with certified healthcare practitioners who offer continuous assistance, track progress, and modify your plan as necessary.",
   },
   {
-    icon: <CheckCircle className="h-6 w-6 text-white" />,
-    title: "Holistic Integration",
-    description: "We integrate nutrition, movement, mindfulness, and medical care to address all aspects of your health for comprehensive, lasting results.",
+    icon: <Puzzle className="h-6 w-6 text-white" />,
+    title: "Comprehensive Integration",
+    description: "Genuine wellbeing entails considering the entire individual. We integrate physical exercise, dietary therapy, psychological assistance, and spiritual development to facilitate enduring health.",
   },
 ];
 
@@ -65,7 +65,7 @@ export default function AboutApproach() {
                     className="text-brand-gradient bg-clip-text text-transparent"
                     style={{ fontFamily: "Poppins, sans-serif" }}
                   >
-                    Methodology
+             Evidence‑Based Approach
                   </span>
                 </span>
               </h2>
@@ -74,8 +74,7 @@ export default function AboutApproach() {
                 className="max-w-2xl text-lg leading-relaxed text-slate-600"
                 style={{ fontFamily: "Inter, sans-serif" }}
               >
-                Our evidence-based methodology combines the latest medical research with personalized care 
-                to deliver transformative results. Here&apos;s how we work with you to achieve optimal wellness.
+            Research indicates that an About page should elucidate your operational methods and highlight the distinguishing features of your service. At Sa Kyi, our approach integrates <strong>cutting-edge medical research with individualized care</strong> to achieve tangible outcomes. We collaborate with you on your wellness journey:
               </p>
             </div>
 

@@ -39,8 +39,7 @@ export default function Footer() {
               className="mb-6 max-w-2xl text-base leading-relaxed text-slate-600"
               style={{ fontFamily: "Inter, sans-serif" }}
             >
-              Transforming lives through personalized wellness programs designed by certified
-              doctors and wellness experts. Your journey to optimal health starts here.
+          Sa Kyi Health & Wellness - Enhancing lives via individualized wellness programs crafted by licensed physicians and wellness specialists. Your path to good health commences here.
             </p>
 
             {/* Social Icons */}
@@ -74,7 +73,7 @@ export default function Footer() {
             data-aos-delay="200"
           >
             <p className="text-sm text-slate-600" style={{ fontFamily: "Inter, sans-serif" }}>
-              © 2025 SaKyi Health & Wellness. All rights reserved.
+            © 2026 Sa Kyi Health & Wellness. All rights reserved.
             </p>
           </div>
         </div>

@@ -90,8 +90,8 @@ export default function AboutPage() {
       <AboutImpact />
 
       <CallToAction
-        title="Ready to Work With Our Expert Team?"
-        description="Now that you know our story, mission, and approach, let's discuss how we can help you achieve your wellness goals. Our certified doctors are ready to create your personalized plan."
+        title="Ready to Start Your Wellness Journey?"
+        description="You should seek professional advice for your health and well-being. We invite you to discover the Sa Kyi difference now that you are aware of our staff, mission, and technique. Our licensed physicians and wellness specialists are prepared to create a customized strategy that will enable you to lead the healthiest possible life."
         actions={
           <>
             <Link
@@ -110,7 +110,7 @@ export default function AboutPage() {
               style={{ fontFamily: "Inter, sans-serif" }}
             >
               <Phone className="mr-2 h-5 w-5" />
-              <span>Schedule Consultation</span>
+              <span>Arrange a Consultation</span>
               <ChevronRight className="ml-2 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
             </Link>
           </>

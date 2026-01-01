@@ -6,25 +6,25 @@ const impactStats = [
     icon: <Users className="h-6 w-6 text-white" />,
     value: "10,000+",
     label: "Lives Transformed",
-    description: "People who have achieved their wellness goals with our programs",
+    description: "Numerous individuals have attained their wellbeing objectives with our services.",
   },
   {
     icon: <Star className="h-6 w-6 text-white" />,
     value: "4.9★",
-    label: "Average Rating",
-    description: "Client satisfaction rating across all our programs",
+    label: "Average Client Rating",
+    description: "Clients consistently rate our programs highly for satisfaction and effectiveness.",
   },
   {
     icon: <Heart className="h-6 w-6 text-white" />,
     value: "95%",
     label: "Success Rate",
-    description: "Clients who achieve their primary wellness objectives",
+    description: "Most customers achieve or surpass their primary wellness goals.",
   },
   {
     icon: <Shield className="h-6 w-6 text-white" />,
     value: "98%",
     label: "Would Recommend",
-    description: "Clients who would recommend SaKyi to friends and family",
+    description: "Almost all clients would endorse Sa Kyi to their friends and family.",
   },
 ];
 
@@ -159,8 +159,7 @@ export default function AboutImpact() {
                 className="max-w-2xl text-lg leading-relaxed text-slate-600"
                 style={{ fontFamily: "Inter, sans-serif" }}
               >
-                The numbers speak for themselves. Our evidence-based approach and personalized care 
-                have helped thousands of people achieve lasting wellness and transform their lives.
+              The evidence is in our outcomes. Health customers seek favorable results and common ideals; hence, we confidently present our effect metrics:
               </p>
             </div>
 
