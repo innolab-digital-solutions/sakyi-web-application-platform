@@ -137,8 +137,7 @@ export default function AboutMission() {
                 className="max-w-2xl text-lg leading-relaxed text-slate-600"
                 style={{ fontFamily: "Inter, sans-serif" }}
               >
-                At SaKyi, we&apos;re driven by a deep commitment to holistic wellness and personalized care. 
-                Our mission, vision, and philosophy guide everything we do.
+    Our goal is straightforward: to improve lives by offering individualized, research-based health programs. We create care that addresses all aspects of wellness—physical, mental, emotional, and spiritual—to improve your health and quality of life. Research on efficient medical treatment Since brand transparency and shared values are important, we make it obvious what motivates us in our About pages: 
               </p>
             </div>
 
@@ -147,18 +146,18 @@ export default function AboutMission() {
               {[
                 {
                   icon: Target,
-                  title: "Our Mission",
-                  description: "To empower individuals with personalized, evidence-based wellness programs that transform their health and enhance their quality of life through holistic care.",
+                  title: "Mission",
+                  description: "To inspire people to achieve long-lasting health through comprehensive treatment by offering individualized, evidence-based wellness programs.",
                 },
                 {
                   icon: Heart,
-                  title: "Our Vision", 
-                  description: "A world where everyone has access to comprehensive wellness care that addresses the whole person—mind, body, and spirit—for lasting health and happiness.",
+                  title: "Vision", 
+                  description: "A society in which all people have access to compassionate, all-encompassing wellness programs that support the mind, body, and spirit.",
                 },
                 {
                   icon: Lightbulb,
-                  title: "Our Philosophy",
-                  description: "We believe that true wellness comes from understanding the interconnectedness of physical, mental, and emotional health, and treating each person as a unique individual.",
+                  title: "Philosophy",
+                  description: "We recognize the connection between mental, emotional, and physical well-being. We assist you in thriving by addressing each person as an individual and combining medical knowledge with lifestyle advice.",
                 },
               ].map((item, index) => (
                 <div

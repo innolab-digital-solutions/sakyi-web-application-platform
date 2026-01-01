@@ -60,56 +60,8 @@ export default function AboutHero() {
               data-aos-duration="1000"
               data-aos-easing="ease-out-cubic"
             >
-              At SaKyi, we believe that true wellness comes from addressing the whole person—mind, body, and spirit. 
-              Our mission is to empower you with personalized, evidence-based programs that transform your health 
-              and enhance your quality of life.
+     At Sa Kyi Health & Wellness, we assert that genuine wellbeing arises from nurturing the entire individual—mind, body, and spirit. Well-constructed About pages for healthcare organizations should narrate the organization&apos;s history, articulate its mission or vision, introduce the team, and foster trust. They must also delineate your identity, demonstrate how you fulfill your clients&apos; needs, and justify why you are the optimal selection. This page accomplishes all of that while encouraging your participation in a flourishing wellness community.
             </p>
-
-            {/* Key Stats */}
-            <div className="grid grid-cols-3 gap-8">
-              <div className="text-center">
-                <div
-                  className="mb-2 text-3xl font-bold text-slate-900"
-                  style={{ fontFamily: "Poppins, sans-serif" }}
-                >
-                  10K+
-                </div>
-                <div
-                  className="text-sm text-slate-600"
-                  style={{ fontFamily: "Inter, sans-serif" }}
-                >
-                  Lives Transformed
-                </div>
-              </div>
-              <div className="text-center">
-                <div
-                  className="mb-2 text-3xl font-bold text-slate-900"
-                  style={{ fontFamily: "Poppins, sans-serif" }}
-                >
-                  95%
-                </div>
-                <div
-                  className="text-sm text-slate-600"
-                  style={{ fontFamily: "Inter, sans-serif" }}
-                >
-                  Success Rate
-                </div>
-              </div>
-              <div className="text-center">
-                <div
-                  className="mb-2 text-3xl font-bold text-slate-900"
-                  style={{ fontFamily: "Poppins, sans-serif" }}
-                >
-                  4.9★
-                </div>
-                <div
-                  className="text-sm text-slate-600"
-                  style={{ fontFamily: "Inter, sans-serif" }}
-                >
-                  Client Rating
-                </div>
-              </div>
-            </div>
           </div>
 
           {/* Right Column - Creative Multi-Image Layout */}
