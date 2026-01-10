@@ -1,48 +1,61 @@
-import { Linkedin, Mail, Twitter, Users } from "lucide-react";
+import { Facebook, Linkedin, Mail, Music, Music2, Twitter, Users, Youtube } from "lucide-react";
 import Image from "next/image";
 
 const teamMembers = [
   {
-    name: "Dr. Swam Htet",
-    role: "Technical Director",
-    description: `Leads and mentors our interdisciplinary medical team, ensuring a cohesive approach to preventive and integrative health care.
-Supervises the creation of evidence-based wellness initiatives, encompassing novel mobility and recovery strategies, and formulates program roadmaps that correspond with contemporary lifestyle medicine methodologies.
-<br />
-Collaborates with specialists in nutrition, movement therapy, and community engagement to integrate their expertise into cohesive, holistic plans.
-<br />
-Establishes clinical standards and guidelines, assesses program outcomes, and promotes ongoing enhancement in client care.`,
-    image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=300&q=80",
-    socials: {
-      linkedin: "https://linkedin.com/in/sarah-johnson",
-      twitter: "https://twitter.com/sarahjohnson",
-      email: "sarah@sakyi.com"
-    }
-  },
-  {
-    name: "Dr. Pyae Sone Aung",
-    role: "Assistance lifestyle medical doctor",
-    description: `Supports the Technical Director in implementing wellness initiatives and contributes to program development.
-<br />
-Manages health data and analytics to ensure all programs remain evidence-based and up to date.
-<br />
-Provides clinical support as needed and liaises with other team members to facilitate program execution.`,
+    name: "Dr. Kyaw Htin",
+    role: "Founder, Sa Kyi",
+    description: `Dr. Kyaw Htin is a Medical Doctor with advanced training in Health Sciences, specializing in health behaviour and behaviour change. His work focuses on understanding why unhealthy habits persist and how sustainable change can truly happen. Through Sa Kyi—meaning “Let’s Start”—he helps people build healthier lifestyles through small, realistic, and achievable behaviour changes designed for real life.
+    <br />
+    <br />
+    <strong>
+      <i>
+      “Healthy living is not about perfection. It starts with understanding ourselves and taking small, realistic steps that we can sustain.”
+      </i>
+    </strong>
+    `,
     image: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=300&q=80",
     socials: {
-      linkedin: "https://linkedin.com/in/michael-chen",
+      linkedin: "https://www.linkedin.com/in/kyaw-htin-86b0ba144/",
       email: "michael@sakyi.com"
     }
   },
-  {
-    name: "Dr. Yune Nadar Hlaing",
-    role: "Lifestyle medical doctor",
-    description: `Provides client consultations in alignment with the most recent lifestyle medicine principles, guaranteeing superior, individualized care.
-<br />
-Operates under the supervision of the Technical Director to execute designated wellness strategies and assess client advancement.
-Complies with established standard operating procedures and communicates with the wider wellness team to ensure consistency in program implementation.`,
-    image: "https://images.unsplash.com/photo-1665779912168-c6d48ec98dcb?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8cGVyc29uJTIwaW1hZ2V8ZW58MHx8MHx8fDI%3D&auto=format&fit=crop&q=60&w=500",
+    {
+    name: "Dr. Swam Htet",
+    role: "Co-Founder & Technical Director",
+    description: `Dr. Swam Htet is a Medical Doctor and lifestyle health specialist with expertise in exercise physiology and evidence-based health optimisation. As Co-Founder and Technical Director of Sa Kyi Health and Wellness, he leads the scientific and technical development of Sa Kyi’s programs, translating research into practical, sustainable strategies that support long-term behaviour change and overall well-being.
+    <br />
+    
+    <br />
+    <strong>
+      <i>
+      “Lasting health is built through consistent habits, guided by science and designed for real life.”
+      </i>
+    </strong>
+    `,
+    image: "/images/founder_swam.jpg",
     socials: {
-      linkedin: "https://linkedin.com/in/emily-rodriguez",
-      email: "emily@sakyi.com"
+      linkedin: "www.linkedin.com/in/swam-htet-830b71129",
+      email: "drswamhtet@sakyihealthandwellness.com "
+    }
+  },
+  {
+    name: "Pho Thit Nwe",
+    role: "Co-Founder & Operations Director",
+    description: `Pho Thit Nwe is the Co-Founder and Operations Director of Sa Kyi Health and Wellness, with a strong passion for behaviour change and sustainable lifestyle transformation. Drawing from both professional work and personal experience, she also works as a lifestyle vlogger and content creator, sharing real-life journeys that bridge science-based health concepts with everyday living.
+    <br />
+    <br />
+    <strong>
+      <i>
+        “Real change becomes possible when science meets everyday life—and when we allow ourselves to start, learn, and grow step by step.”
+      </i>
+    </strong>
+    `,
+    image: "/images/founder_pho.jpg",
+    socials: {
+      facebook: "https://www.facebook.com/share/1CfUg3DzMW/?mibextid=wwXIfr",
+      tiktok: "https://www.tiktok.com/@phothitnwe7?_r=1&_t=ZS-92poyHOmwwy",
+      youtube: "https://www.youtube.com/@phothitnwe4467",
     }
   }
 ];
@@ -65,7 +78,7 @@ export default function AboutTeam() {
               className="text-sm font-medium text-[#35bec5]"
               style={{ fontFamily: "Inter, sans-serif" }}
             >
-              Meet Our Team
+              Meet Our Founder
             </span>
           </div>
 
@@ -152,16 +165,6 @@ export default function AboutTeam() {
                       <Linkedin className="h-4 w-4" />
                     </a>
                   )}
-                  {member.socials.twitter && (
-                    <a
-                      href={member.socials.twitter}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-slate-600 transition-all duration-300 hover:bg-[#35bec5] hover:text-white hover:scale-110"
-                    >
-                      <Twitter className="h-4 w-4" />
-                    </a>
-                  )}
                   {member.socials.email && (
                     <a
                       href={`mailto:${member.socials.email}`}
@@ -170,6 +173,42 @@ export default function AboutTeam() {
                       <Mail className="h-4 w-4" />
                     </a>
                   )}
+                  {
+                    member.socials.facebook && (
+                      <a 
+                      href={member.socials.facebook}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-slate-600 transition-all duration-300 hover:bg-[#35bec5] hover:text-white hover:scale-110"
+                      >
+                        <Facebook className="h-4 w-4" />
+                      </a>
+                    )
+                  }
+                  {
+                    member.socials.youtube && (
+                      <a 
+                      href={member.socials.youtube}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-slate-600 transition-all duration-300 hover:bg-[#35bec5] hover:text-white hover:scale-110"
+                      >
+                        <Youtube className="h-4 w-4" />
+                      </a>
+                    )
+                  }
+                  {
+                    member.socials.tiktok && (
+                      <a href={member.socials.tiktok}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-slate-600 transition-all duration-300 hover:bg-[#35bec5] hover:text-white hover:scale-110"
+                      >
+                        <Music2 className="h-4 w-4" />
+
+                      </a>
+                    )
+                  }
                 </div>
               </div>
             </div>

@@ -76,7 +76,7 @@ export default function MobileApp() {
               style={{ fontFamily: "Inter, sans-serif" }}
         >
           <span className="relative z-10">Coming Soon</span>
-          <Clock className="ml-2 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
+          <Clock className="ml-2 h-5 w-5 transition-transform duration-300" />
 
         </Link>
           </div>
