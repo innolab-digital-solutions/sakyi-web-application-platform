@@ -2,7 +2,6 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import { SquarePen, Star, StarHalf } from "lucide-react";
-import Image from "next/image";
 import React from "react";
 
 import TestimonialDeletionDialog from "@/components/admin/features/testimonials/testimonial-deletion-dialog";
@@ -53,35 +52,6 @@ export const testimonialsTableColumns: ColumnDef<Testimonial>[] = [
           <div className="flex items-center gap-2">
             <div className="text-sm font-medium text-neutral-800">
               {reviewer?.name ?? "Unknown reviewer"}
-            </div>
-          </div>
-        </div>
-      );
-    },
-  },
-  {
-    accessorKey: "reviewed program",
-    header: () => "Reviewed Program",
-    cell: ({ row }) => {
-      const program = row.original.program;
-
-      return (
-        <div className="flex items-center gap-2">
-          <div>
-            <Avatar className="size-12 rounded-md">
-              <AvatarImage
-                src={program?.thumbnail ?? undefined}
-                alt={program?.title ?? "Program thumbnail"}
-                className="object-cover"
-              />
-              <AvatarFallback className="border-muted size-12 rounded-md border bg-gray-100">
-                <Image src="/images/no-image.png" alt="No image" width={32} height={32} />
-              </AvatarFallback>
-            </Avatar>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="text-sm font-medium text-neutral-800">
-              {program?.title ?? "Unknown program"}
             </div>
           </div>
         </div>

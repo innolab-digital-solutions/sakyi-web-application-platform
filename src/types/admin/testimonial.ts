@@ -8,11 +8,6 @@ export interface Testimonial {
     name: string;
     picture: string;
   };
-  program: {
-    id: number;
-    title: string;
-    thumbnail: string;
-  };
 
   actions: {
     edit: {

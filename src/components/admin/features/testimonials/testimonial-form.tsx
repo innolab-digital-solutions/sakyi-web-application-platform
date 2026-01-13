@@ -5,7 +5,6 @@ import React, { useEffect } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
 
-import ComboBoxField from "@/components/shared/forms/combo-box-field";
 import FileUploadField from "@/components/shared/forms/file-upload-field";
 import FormDialog from "@/components/shared/forms/form-dialog";
 import InputField from "@/components/shared/forms/input-field";
@@ -13,12 +12,10 @@ import SelectField from "@/components/shared/forms/select-field";
 import TextareaField from "@/components/shared/forms/textarea-field";
 import { ENDPOINTS } from "@/config/endpoints";
 import { useForm } from "@/hooks/use-form";
-import { useRequest } from "@/hooks/use-request";
 import {
   CreateTestimonialSchema,
   UpdateTestimonialSchema,
 } from "@/lib/validations/admin/testimonial-schema";
-import { Program } from "@/types/admin/program";
 import {
   Testimonial,
   TestimonialApiResponse,
@@ -42,14 +39,7 @@ export default function TestimonialForm({
   const dialogOpen = isControlled ? open : uncontrolledOpen;
   const isEdit = mode === "edit";
 
-  const { data: programs } = useRequest({
-    url: ENDPOINTS.LOOKUP.PROGRAMS,
-    queryKey: ["lookup-programs"],
-    staleTime: 1000 * 60 * 5,
-  });
-
   const initialValues: z.infer<typeof CreateTestimonialSchema> = {
-    program_id: 0,
     name: "",
     picture: undefined,
     rating: 5,
@@ -59,7 +49,7 @@ export default function TestimonialForm({
   const form = useForm<typeof CreateTestimonialSchema>(initialValues, {
     validate: isEdit ? UpdateTestimonialSchema : CreateTestimonialSchema,
     tanstack: {
-      invalidateQueries: ["admin-testimonials", "lookup-programs"],
+      invalidateQueries: ["admin-testimonials"],
       mutationOptions: {
         onSuccess: (response) => {
           // Update cache optimistically
@@ -139,7 +129,6 @@ export default function TestimonialForm({
 
   const buildFormData = (payload: typeof form.data) => {
     const fd = new FormData();
-    fd.append("program_id", String(payload.program_id ?? ""));
     fd.append("name", String(payload.name ?? ""));
     fd.append("rating", String(payload.rating ?? ""));
     fd.append("comment", String(payload.comment ?? ""));
@@ -170,7 +159,6 @@ export default function TestimonialForm({
   useEffect(() => {
     if (isEdit && defaultValues) {
       const newData = {
-        program_id: defaultValues.program?.id ?? 0,
         name: defaultValues.reviewer?.name ?? "",
         picture: defaultValues.reviewer?.picture ?? undefined,
         rating: defaultValues.rating ?? 5,
@@ -179,7 +167,6 @@ export default function TestimonialForm({
       form.setDataAndDefaults(newData);
     } else {
       const newData = {
-        program_id: 0,
         name: "",
         picture: undefined,
         rating: 5,
@@ -191,21 +178,11 @@ export default function TestimonialForm({
   }, [
     isEdit,
     defaultValues?.id,
-    defaultValues?.program?.id,
     defaultValues?.reviewer?.name,
     defaultValues?.reviewer?.picture,
     defaultValues?.rating,
     defaultValues?.comment,
   ]);
-
-  const programOptions =
-    (Array.isArray(programs?.data) ? (programs?.data as unknown as Program[]) : [])?.map(
-      (program: Program) => ({
-        value: String(program.id),
-        label: program.title,
-        searchValue: `${program.title} ${program.code}`,
-      }),
-    ) ?? [];
 
   return (
     <FormDialog
@@ -216,8 +193,8 @@ export default function TestimonialForm({
       title={isEdit ? "Edit Testimonial" : "Create New Testimonial"}
       description={
         isEdit
-          ? "Update this testimonial's program, reviewer information, rating, or comment to keep client feedback accurate and up-to-date."
-          : "Add a new testimonial by selecting a program, entering reviewer details, rating, and comment to showcase authentic client experiences."
+          ? "Update this testimonial's reviewer information, rating, or comment to keep client feedback accurate and up-to-date."
+          : "Add a new testimonial by entering reviewer details, rating, and comment to showcase authentic client experiences."
       }
       onSubmit={handleSubmit}
       processing={form.processing}
@@ -225,21 +202,15 @@ export default function TestimonialForm({
       submitLabel={isEdit ? "Save Changes" : "Create Testimonial"}
       submittingLabel={isEdit ? "Saving Changes..." : "Creating Testimonial..."}
     >
-      {/* Program */}
-      <ComboBoxField
-        id="program_id"
-        name="program_id"
-        label="Program"
-        placeholder="Select a program..."
-        searchPlaceholder="Search programs..."
-        emptyMessage="No programs found."
-        options={programOptions}
-        value={form.data.program_id ? String(form.data.program_id) : ""}
-        onChange={(value: string) => form.setData("program_id", value === "" ? 0 : Number(value))}
-        error={form.errors.program_id as string}
-        required
-        disabled={form.processing || !programs}
-        allowClear
+      {/* Reviewer Picture */}
+      <FileUploadField
+        id="picture"
+        label="Reviewer Picture"
+        value={form.data.picture as File | string | null | undefined}
+        onChange={(file) => form.setData("picture", file as File | undefined)}
+        maxSize={2 * 1024 * 1024}
+        accept="image/jpg,image/jpeg,image/png,image/webp"
+        error={form.errors.picture as string}
       />
 
       {/* Reviewer Name */}
@@ -254,17 +225,6 @@ export default function TestimonialForm({
         error={form.errors.name as string}
         required
         disabled={form.processing}
-      />
-
-      {/* Reviewer Picture */}
-      <FileUploadField
-        id="picture"
-        label="Reviewer Picture"
-        value={form.data.picture as File | string | null | undefined}
-        onChange={(file) => form.setData("picture", file as File | undefined)}
-        maxSize={2 * 1024 * 1024}
-        accept="image/jpg,image/jpeg,image/png,image/webp"
-        error={form.errors.picture as string}
       />
 
       {/* Rating */}
