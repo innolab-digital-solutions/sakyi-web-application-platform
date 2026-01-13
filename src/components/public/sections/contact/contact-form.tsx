@@ -1,11 +1,14 @@
 "use client";
 
-import { MessageCircle,Send } from "lucide-react";
+import { MessageCircle, Send } from "lucide-react";
 import { toast } from "sonner";
 
 import { InputField } from "@/components/shared/forms/input-field";
 import { TextareaField } from "@/components/shared/forms/textarea-field";
+import { ENDPOINTS } from "@/config/endpoints";
 import { useForm } from "@/hooks/use-form";
+import { http } from "@/lib/api/client";
+import { ContactFormSchema } from "@/lib/validations/public/contact";
 
 export default function ContactForm() {
   const form = useForm(
@@ -15,34 +18,40 @@ export default function ContactForm() {
       phone: "",
       subject: "",
       message: "",
-    }
+    },
+    {
+      validate: ContactFormSchema,
+    },
   );
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-form.post("/api/contact", {
-  onSuccess: () => {
-    toast.success("Message sent successfully! We'll get back to you within 24 hours.");
-    form.reset();
-  },
-  onError: (error) => {
-    toast.error(error.message || "Failed to send message. Please try again.");
-  },
-});
+
+      await http.get<void>(ENDPOINTS.AUTH.CSRF_COOKIE, { throwOnError: false });
+
+      form.post(ENDPOINTS.PUBLIC.CONTACT, {
+        onSuccess: () => {
+          toast.success("Message sent successfully! We'll get back to you within 24 hours.");
+          form.reset();
+        },
+        onError: (error) => {
+          toast.error(error.message || "Failed to send message. Please try again.");
+        },
+      });
   };
 
   return (
     <section id="contact-form" className="relative overflow-hidden bg-slate-50 py-24">
       {/* Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-1/4 -right-32 h-64 w-64 rounded-full bg-gradient-to-br from-[#35bec5]/5 to-[#0c96c4]/5 blur-3xl"></div>
-        <div className="absolute bottom-1/4 -left-32 h-64 w-64 rounded-full bg-gradient-to-br from-[#4bc4db]/5 to-[#35bec5]/5 blur-3xl"></div>
+        <div className="absolute top-1/4 -right-32 h-64 w-64 rounded-full bg-linear-to-br from-[#35bec5]/5 to-[#0c96c4]/5 blur-3xl"></div>
+        <div className="absolute bottom-1/4 -left-32 h-64 w-64 rounded-full bg-linear-to-br from-[#4bc4db]/5 to-[#35bec5]/5 blur-3xl"></div>
       </div>
 
       <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
         {/* Section Header */}
         <div className="mb-16 text-center">
-          <div className="mb-6 inline-flex items-center space-x-2 rounded-full bg-gradient-to-r from-[#35bec5]/10 to-[#0c96c4]/10 px-4 py-2">
+          <div className="mb-6 inline-flex items-center space-x-2 rounded-full bg-linear-to-r from-[#35bec5]/10 to-[#0c96c4]/10 px-4 py-2">
             <MessageCircle className="h-4 w-4 text-[#35bec5]" />
             <span
               className="text-sm font-medium text-[#35bec5]"
@@ -59,7 +68,7 @@ form.post("/api/contact", {
           >
             Send Us a{" "}
             <span
-              className="bg-gradient-to-r from-[#35bec5] via-[#4bc4db] to-[#0c96c4] bg-clip-text text-transparent"
+              className="bg-linear-to-r from-[#35bec5] via-[#4bc4db] to-[#0c96c4] bg-clip-text text-transparent"
               style={{ fontFamily: "Poppins, sans-serif" }}
             >
               Message
@@ -84,7 +93,7 @@ form.post("/api/contact", {
               <div className="space-y-8">
                 {/* Form Header */}
                 <div className="text-center">
-                  <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-r from-[#35bec5]/10 to-[#0c96c4]/10">
+                  <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-linear-to-r from-[#35bec5]/10 to-[#0c96c4]/10">
                     <Send className="h-8 w-8 text-[#35bec5]" />
                   </div>
                   <h3
@@ -124,7 +133,7 @@ form.post("/api/contact", {
                       type="text"
                       value={String(form.data.phone ?? "")}
                       onChange={(event) => form.setData("phone", event.target.value)}
-                      error={form.errors.name as string}
+                      error={form.errors.phone as string}
                       label="Phone Number"
                       placeholder="Enter your phone number"
                       required
