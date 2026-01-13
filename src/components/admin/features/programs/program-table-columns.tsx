@@ -66,13 +66,6 @@ const statusMeta: Record<
     iconClass: "text-slate-700 h-3.5 w-3.5",
   },
 };
-
-const durationUnitLabel: Record<Program["duration_unit"], string> = {
-  days: "day(s)",
-  weeks: "week(s)",
-  months: "month(s)",
-};
-
 export const programsTableColumns: ColumnDef<Program>[] = [
   {
     accessorKey: "code",
@@ -131,13 +124,8 @@ export const programsTableColumns: ColumnDef<Program>[] = [
     accessorKey: "duration",
     header: () => "Duration",
     cell: ({ row }) => {
-      const { duration_value, duration_unit } = row.original;
-      if (!duration_value || !duration_unit) return <span>-</span>;
-      return (
-        <span className="text-sm font-medium text-neutral-800">
-          {duration_value} {durationUnitLabel[duration_unit]}
-        </span>
-      );
+      const duration = row.getValue("duration") as string;
+      return <span className="text-sm font-medium text-neutral-800">{duration}</span>;
     },
   },
   {

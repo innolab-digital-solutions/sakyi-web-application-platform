@@ -35,14 +35,12 @@ const BaseProgramSchema = z.object({
     .refine((value) => value.length > 0, "Tagline cannot be empty or contain only spaces"),
   overview: z.string("Overview is required").min(1, "Overview is required").trim(),
   description: z.string("Description is required").min(1, "Description is required").trim(),
-  duration_value: z
-    .number("Duration value must be a number")
-    .int("Duration value must be an integer")
-    .min(1, "Duration value must be at least 1")
-    .max(365, "Duration value must not exceed 365"),
-  duration_unit: z.enum(["days", "weeks", "months"], {
-    message: "Duration unit must be days, weeks, or months",
-  }),
+  duration: z
+    .string("Duration is required")
+    .min(1, "Duration is required")
+    .max(255, "Duration must not exceed 255 characters")
+    .trim()
+    .refine((value) => value.length > 0, "Duration cannot be empty or contain only spaces"),
   price: z
     .number("Price must be a number")
     .min(0, "Price must be at least 0")
@@ -50,10 +48,6 @@ const BaseProgramSchema = z.object({
   status: z.enum(["draft", "published"], {
     message: "Status must be draft or published",
   }),
-  onboarding_form_id: z
-    .number("Onboarding form is required")
-    .int("Onboarding form ID must be an integer")
-    .positive("Onboarding form is required"),
 
   // Relationship arrays (nullable)
   ideals: z
@@ -101,17 +95,6 @@ const BaseProgramSchema = z.object({
       }),
     )
     .min(1, "At least one structure is required"),
-  faqs: z
-    .array(
-      z.object({
-        question: z
-          .string("Question is required")
-          .min(1, "Question is required")
-          .max(255, "Question must not exceed 255 characters"),
-        answer: z.string("Answer is required").min(1, "Answer is required"),
-      }),
-    )
-    .min(1, "At least one FAQ is required"),
 });
 
 const ThumbnailSchema = z
@@ -196,18 +179,6 @@ export const EditProgramSchema = BaseProgramSchema.extend({
       }),
     )
     .min(1, "At least one structure is required"),
-  faqs: z
-    .array(
-      z.object({
-        id: z.number().int().positive().optional().nullable(),
-        question: z
-          .string("Question is required")
-          .min(1, "Question is required")
-          .max(255, "Question must not exceed 255 characters"),
-        answer: z.string("Answer is required").min(1, "Answer is required"),
-      }),
-    )
-    .min(1, "At least one FAQ is required"),
 });
 
 // Default schema

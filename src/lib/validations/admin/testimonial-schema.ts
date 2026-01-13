@@ -1,7 +1,6 @@
 import { z } from "zod";
 
 const BaseTestimonialSchema = z.object({
-  program_id: z.coerce.number().int().min(1, "Program is required"),
   name: z.string().min(1, "Name is required").max(255, "Name must be at most 255 characters"),
   picture: z.any().optional(),
   rating: z.coerce

@@ -48,24 +48,17 @@ export interface ProgramIdeal {
     slug: string;
     overview: string;
     description: string;
-    duration_value: number;
-    duration_unit: "days" | "weeks" | "months";
+    duration: string;
     price: string;
     status: "draft" | "published" | "archived";
     currency: string;
     published_at?: string;
-    avg_rating: number;
-participants: number;
+  participants: number;
     ideals?: ProgramIdeal[];
     key_features?: ProgramKeyFeature[];
     expected_outcomes?: ProgramExpectedOutcome[];
     structures?: ProgramStructure[];
-    attached_onboarding_form?: {
-      id: number;
-      title: string;
-    };
     faqs?: ProgramFAQ[];
-    testimonials?: ProgramTestimonial[];
   }
   
   export type ProgramApiResponse = ApiResponse<Program[]> | undefined;
