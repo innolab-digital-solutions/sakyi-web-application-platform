@@ -5,10 +5,8 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 
-import ComboBoxField from "@/components/shared/forms/combo-box-field";
 import FileUploadField from "@/components/shared/forms/file-upload-field";
 import InputField from "@/components/shared/forms/input-field";
-import SelectField from "@/components/shared/forms/select-field";
 import TextareaField from "@/components/shared/forms/textarea-field";
 import { Button } from "@/components/ui/button";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
@@ -19,9 +17,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { ENDPOINTS } from "@/config/endpoints";
 import { PATHS } from "@/config/paths";
 import { useForm } from "@/hooks/use-form";
-import { useRequest } from "@/hooks/use-request";
 import { CreateProgramSchema, EditProgramSchema } from "@/lib/validations/admin/program-schema";
-import { OnboardingForm } from "@/types/admin/onboarding-form";
 import { Program, ProgramApiResponse } from "@/types/admin/program";
 import { ApiResponse } from "@/types/shared/api";
 
@@ -52,7 +48,6 @@ type StructureInput = {
   title: string;
   description?: string | null;
 };
-type FaqInput = { id?: number | null; question: string; answer: string };
 
 export default function ProgramFormPage({ program }: ProgramFormPageProperties) {
   const isEdit = Boolean(program);
@@ -61,21 +56,6 @@ export default function ProgramFormPage({ program }: ProgramFormPageProperties) 
   const [keyFeaturesOpen, setKeyFeaturesOpen] = useState(true);
   const [expectedOutcomesOpen, setExpectedOutcomesOpen] = useState(true);
   const [structuresOpen, setStructuresOpen] = useState(true);
-  const [faqsOpen, setFaqsOpen] = useState(true);
-
-  // Fetch onboarding forms for dropdown
-  const { data: onboardingFormsData } = useRequest<OnboardingForm>({
-    url: ENDPOINTS.LOOKUP.ONBOARDING_FORMS,
-    queryKey: ["lookup-onboarding-forms"],
-    data: { status: "active" },
-    staleTime: 1000 * 60 * 5,
-  });
-
-  const onboardingForms = (onboardingFormsData?.data ?? []) as OnboardingForm[];
-  const onboardingFormOptions = onboardingForms.map((form) => ({
-    value: String(form.id),
-    label: form.title,
-  }));
 
   const form = useForm(
     {
@@ -86,21 +66,18 @@ export default function ProgramFormPage({ program }: ProgramFormPageProperties) 
       description: "",
       thumbnail: undefined as File | string | undefined,
       background_image: undefined as File | string | undefined,
-      duration_value: 1,
-      duration_unit: program?.duration_unit ?? ("days" as "days" | "weeks" | "months"),
+      duration: "",
       price: 0,
       status: "draft" as "draft" | "published",
-      onboarding_form_id: program?.attached_onboarding_form?.id ?? (0 as number),
       ideals: [{ description: "" }] as Array<IdealInput>,
       key_features: [{ feature: "" }] as Array<KeyFeatureInput>,
       expected_outcomes: [{ outcome: "" }] as Array<ExpectedOutcomeInput>,
       structures: [{ week: "", title: "", description: "" }] as Array<StructureInput>,
-      faqs: [{ question: "", answer: "" }] as Array<FaqInput>,
     },
     {
       validate: isEdit ? EditProgramSchema : CreateProgramSchema,
       tanstack: {
-        invalidateQueries: ["admin-programs", "admin-program", "admin-onboarding-forms"],
+        invalidateQueries: ["admin-programs", "admin-program"],
         mutationOptions: {
           onSuccess: (response) => {
             // Optimistically update list cache like role-form
@@ -134,11 +111,7 @@ export default function ProgramFormPage({ program }: ProgramFormPageProperties) 
                           title: String(form.data.title ?? ""),
                           tagline: String(form.data.tagline ?? ""),
                           description: String(form.data.description ?? ""),
-                          duration_value: Number(form.data.duration_value ?? 0),
-                          duration_unit: String(form.data.duration_unit ?? "days") as
-                            | "days"
-                            | "weeks"
-                            | "months",
+                          duration: String(form.data.duration ?? ""),
                           price: String(form.data.price ?? 0),
                           status: String(form.data.status ?? "draft") as "draft" | "published",
                           thumbnail:
@@ -224,13 +197,11 @@ export default function ProgramFormPage({ program }: ProgramFormPageProperties) 
         description: program.description ?? "",
         thumbnail: program.thumbnail || undefined,
         background_image: program.background_image || undefined,
-        duration_value: parseNumber(program.duration_value, 1),
-        duration_unit: (program?.duration_unit ?? "days") as "days" | "weeks" | "months",
+        duration: program.duration ?? "",
         price: parseNumber(program.price, 0),
         status: ((program?.status === "archived" ? "draft" : program?.status) ?? "draft") as
           | "draft"
           | "published",
-        onboarding_form_id: program.attached_onboarding_form?.id ?? 0,
         ideals: (program.ideals?.map((ideal) => ({
           id: ideal.id,
           description: ideal.description,
@@ -249,11 +220,6 @@ export default function ProgramFormPage({ program }: ProgramFormPageProperties) 
           title: s.title,
           description: s.description,
         })) ?? [{ week: "", title: "", description: "" }]) as Array<StructureInput>,
-        faqs: (program.faqs?.map((faq) => ({
-          id: faq.id,
-          question: faq.question,
-          answer: faq.answer,
-        })) ?? [{ question: "", answer: "" }]) as Array<FaqInput>,
       };
       form.setDataAndDefaults(newData);
     } else {
@@ -277,11 +243,9 @@ export default function ProgramFormPage({ program }: ProgramFormPageProperties) 
     if (payload.background_image instanceof File) {
       fd.append("background_image", payload.background_image);
     }
-    fd.append("duration_value", String(payload.duration_value ?? 1));
-    fd.append("duration_unit", String(payload.duration_unit ?? "days"));
+    fd.append("duration", String(payload.duration ?? ""));
     fd.append("price", String(payload.price ?? 0));
     fd.append("status", String(payload.status ?? "draft"));
-    fd.append("onboarding_form_id", String(payload.onboarding_form_id ?? 0));
 
     for (const [index, item] of ((payload.ideals ?? []) as IdealInput[]).entries()) {
       fd.append(`ideals[${index}][description]`, String(item.description ?? ""));
@@ -300,10 +264,6 @@ export default function ProgramFormPage({ program }: ProgramFormPageProperties) 
       if (item.description !== undefined) {
         fd.append(`structures[${index}][description]`, String(item.description ?? ""));
       }
-    }
-    for (const [index, item] of ((payload.faqs ?? []) as FaqInput[]).entries()) {
-      fd.append(`faqs[${index}][question]`, String(item.question ?? ""));
-      fd.append(`faqs[${index}][answer]`, String(item.answer ?? ""));
     }
     return fd;
   };
@@ -363,42 +323,18 @@ export default function ProgramFormPage({ program }: ProgramFormPageProperties) 
               <Separator />
 
               <div className="space-y-4">
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                  <InputField
-                    id="duration_value"
-                    name="duration_value"
-                    type="number"
-                    inputMode="numeric"
-                    min={1}
-                    max={365}
-                    step={1}
-                    value={String(form.data.duration_value ?? 1)}
-                    onChange={(event) => form.setData("duration_value", Number(event.target.value))}
-                    error={form.errors.duration_value as string}
-                    label="Duration"
-                    placeholder="e.g., 30, 12, 90"
-                    required
-                    disabled={form.processing}
-                  />
-
-                  <SelectField
-                    id="duration_unit"
-                    name="duration_unit"
-                    label="Unit"
-                    value={String(form.data.duration_unit)}
-                    onChange={(v) =>
-                      form.setData("duration_unit", v as "days" | "weeks" | "months")
-                    }
-                    error={form.errors.duration_unit as string}
-                    options={[
-                      { value: "days", label: "Days" },
-                      { value: "weeks", label: "Weeks" },
-                      { value: "months", label: "Months" },
-                    ]}
-                    required
-                    disabled={form.processing}
-                  />
-                </div>
+                <InputField
+                  id="duration"
+                  name="duration"
+                  type="text"
+                  value={String(form.data.duration ?? "")}
+                  onChange={(event) => form.setData("duration", event.target.value)}
+                  error={form.errors.duration as string}
+                  label="Duration"
+                  placeholder="e.g., 30 days, 12 weeks, 3 months"
+                  required
+                  disabled={form.processing}
+                />
 
                 <InputField
                   id="price"
@@ -413,26 +349,6 @@ export default function ProgramFormPage({ program }: ProgramFormPageProperties) 
                   error={form.errors.price as string}
                   label="Price"
                   placeholder="e.g., 299.99, 1500.00, 499"
-                  required
-                  disabled={form.processing}
-                />
-
-                <ComboBoxField
-                  id="onboarding_form_id"
-                  name="onboarding_form_id"
-                  label="Onboarding Form"
-                  placeholder="Select an onboarding form..."
-                  options={onboardingFormOptions}
-                  value={
-                    form.data.onboarding_form_id && form.data.onboarding_form_id > 0
-                      ? String(form.data.onboarding_form_id)
-                      : ""
-                  }
-                  onChange={(value) =>
-                    form.setData("onboarding_form_id", value ? Number(value) : 0)
-                  }
-                  error={form.errors.onboarding_form_id as string}
-                  required
                   disabled={form.processing}
                 />
 
@@ -935,109 +851,6 @@ export default function ProgramFormPage({ program }: ProgramFormPageProperties) 
                           </div>
                         </div>
                         {index !== (form.data.structures as StructureInput[]).length - 1 && (
-                          <Separator className="my-5" />
-                        )}
-                      </React.Fragment>
-                    ))}
-                  </CollapsibleContent>
-                </div>
-              </Collapsible>
-
-              {/* FAQs */}
-              <Collapsible open={faqsOpen} onOpenChange={setFaqsOpen}>
-                <div className="overflow-hidden rounded-md border border-gray-200">
-                  <div className="flex flex-col gap-2 bg-gray-50 px-4 py-3 md:flex-row md:items-center md:justify-between">
-                    <SectionHeader
-                      title="Frequently Asked Questions"
-                      description="Address common questions participants may have. Provide clear, comprehensive answers to improve understanding and reduce inquiries."
-                    />
-                    <div className="order-2 flex items-center gap-2 md:order-0 md:shrink-0">
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => {
-                          setFaqsOpen(true);
-                          form.setData("faqs", [
-                            ...(((form.data.faqs ?? []) as FaqInput[]) ?? []),
-                            { question: "", answer: "" },
-                          ]);
-                        }}
-                        className="text-accent hover:text-accent/80 hover:bg-accent/10 flex cursor-pointer items-center gap-2"
-                      >
-                        <Plus className="h-3.5 w-3.5" /> Add FAQ
-                      </Button>
-                      <CollapsibleTrigger asChild>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon"
-                          aria-label="Toggle FAQs"
-                          className="transition hover:bg-gray-200! hover:text-gray-600 data-[state=open]:[&_svg]:rotate-180"
-                        >
-                          <ChevronDown className="h-4 w-4 transition-transform" />
-                        </Button>
-                      </CollapsibleTrigger>
-                    </div>
-                  </div>
-                  <CollapsibleContent className="space-y-4 px-4 py-5">
-                    {(form.data.faqs as FaqInput[]).map((item, index) => (
-                      <React.Fragment key={`faq-${index}`}>
-                        <div className="flex w-full items-start justify-between gap-3">
-                          <div className="w-full space-y-4">
-                            <div>
-                              <InputField
-                                id={`faq-${index}-question`}
-                                label="Question"
-                                placeholder="e.g., Who is this program for?, How long does the program take?, What results can I expect?"
-                                value={String(item.question ?? "")}
-                                onChange={(event) => {
-                                  const items = [...((form.data.faqs ?? []) as FaqInput[])];
-                                  items[index].question = event.target.value;
-                                  form.setData("faqs", items);
-                                }}
-                                error={form.errors[`faqs.${index}.question`] as string}
-                                required
-                              />
-                            </div>
-                            <div>
-                              <TextareaField
-                                id={`faq-${index}-answer`}
-                                className="min-h-[64px] w-full"
-                                label="Answer"
-                                placeholder="Provide a clear and helpful answer to address the question. Be specific and include relevant details that will help participants understand the program better..."
-                                value={String(item.answer ?? "")}
-                                onChange={(event) => {
-                                  const items = [...((form.data.faqs ?? []) as FaqInput[])];
-                                  items[index].answer = event.target.value;
-                                  form.setData("faqs", items);
-                                }}
-                                error={form.errors[`faqs.${index}.answer`] as string}
-                                required
-                              />
-                            </div>
-                          </div>
-
-                          <div className="flex items-start justify-end md:pl-2">
-                            <Button
-                              type="button"
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => {
-                                const items = [...((form.data.faqs ?? []) as FaqInput[])];
-                                if (items.length <= 1) return;
-                                items.splice(index, 1);
-                                form.setData("faqs", items);
-                              }}
-                              disabled={(form.data.faqs as FaqInput[]).length <= 1}
-                              className="hover:bg-destructive/10 hover:text-destructive"
-                              aria-label="Remove FAQ"
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        </div>
-                        {index !== (form.data.faqs as FaqInput[]).length - 1 && (
                           <Separator className="my-5" />
                         )}
                       </React.Fragment>

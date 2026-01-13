@@ -38,8 +38,7 @@ export interface Program {
   slug: string;
   overview: string;
   description: string;
-  duration_value: number;
-  duration_unit: "days" | "weeks" | "months";
+  duration: string;
   price: string;
   status: "draft" | "published" | "archived";
   currency: string;
@@ -48,10 +47,6 @@ export interface Program {
   key_features?: ProgramKeyFeature[];
   expected_outcomes?: ProgramExpectedOutcome[];
   structures?: ProgramStructure[];
-  attached_onboarding_form?: {
-    id: number;
-    title: string;
-  };
   faqs?: ProgramFAQ[];
   actions: {
     edit: {
