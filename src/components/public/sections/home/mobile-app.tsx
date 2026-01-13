@@ -70,8 +70,8 @@ export default function MobileApp() {
 
           {/* App Store Buttons */}
           <div className="flex flex-col gap-4 sm:flex-row sm:gap-6">
- <Link
-          href="/contact"
+        <Link
+          href="#"
           className="group inline-flex items-center justify-center rounded-full bg-brand-gradient px-6 py-3 text-base font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
               style={{ fontFamily: "Inter, sans-serif" }}
         >

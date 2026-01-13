@@ -10,29 +10,39 @@ import {
 // Dummy FAQs data
 const DUMMY_FAQS = [
   {
-    question: "What types of wellness programs do you offer?",
+    question: "Program ကာလအတွင်းမှာ စားရမှာတွေ limit လုပ်ပီး အဲအတိုင်းစားရမှာလား",
     answer:
-      "We offer a variety of wellness programs including weight management, stress reduction, chronic disease management, and holistic wellness. Each program is crafted by certified professionals and tailored to your needs."
+      "မဟုတ်ပါဘူး Sa Kyi Health & Wellness က တစ်ယောက်ချင်းဆီရဲ့ Lifestyle ပေါ်မူတည်ပီး ဆရာက စားတဲ့ pattern ကိုဖြည်းဖြည်းချင်းပြောင်းလဲပေးသွားမှာမလို့ မလိုပါဘူး"
   },
   {
-    question: "How do I know which program is right for me?",
+    question: "Gym သွားရမှာလား ",
     answer:
-      "Our team offers free consultations to help you find the best program based on your personal health goals and lifestyle. Simply contact us to schedule a session."
+      "အကယ်လို့ သင်က gym သွားနေကြသူမဟုတ်ရင် သွားစရာမလိုပါဘူး အိမ်မှာဘဲ လုပ်နိုင်ဖို့အတွက် ကို Home Workout တွေ ပေးမှာ ဖြစ်ပါတယ်"
   },
   {
-    question: "Are your programs supervised by healthcare professionals?",
+    question: "Program က ဘာလုပ်ပေးမှာလဲ Gym Instruction ပေးမှာလား Diet ပေးမှာလား",
     answer:
-      "Yes! All our programs are designed and overseen by qualified doctors and wellness experts to ensure your safety and optimal results."
+      "Sa Kyi Health & Wellness Program တွေက မိမိ lifestyle ကိုပြောင်းဖို့အတွက် စနစ်တကျ ဖွဲံစည်းပေးထားတဲ့ team တွေရှိတဲ့အပြင် မိမိနဲ့အပတ်စဉ် ဆွေးနွေးသွားမယ့်  Technical Doctor က အပတ်စဉ် စားရမယ့် Pattern လေ့ကျင့်ခန်း Sleep Pattern အစရှိတာတွေပါ instruction ပေးသွားမှာ ဖြစ်ပါတယ်။"
   },
   {
-    question: "Can I join a program online?",
+    question: "Which program should I join?",
     answer:
-      "Absolutely. Most of our programs offer both in-person and virtual participation, making it easy for you to join from anywhere."
+      "Before starting any program, you will need to consult with a Technical Doctor to find the program that best fits you. You can then join the program recommended by the doctor. "
   },
   {
-    question: "What is the duration of a typical program?",
+    question: "Program Join ဖို့ဘာတွေလိုအပ်လဲ",
     answer:
-      "Program durations vary. They typically run from 4 to 12 weeks. Specific durations are listed in each program’s details."
+      "Program join ဖို့အတွက် တစ်ပတ်တာ doctor နဲ့ဆွေးနွေးဖို့ အချိန် ၁နာရီခွဲ 2025 နောက်ပိုင်း Smart Watch တစ်ခုရယ် Program မစခင် inbody စစ်ဆေးပေးရန် လိုအပ်ပါတယ်။"
+  },
+   {
+    question: "အရမ်းအလုပ်များတော့ တစ်ရက်တာမှာ လေ့ကျင့်ခန်းတွေသေချာလုပ်ဖို့အတွက် အချိန်မရဘူးဖြစ်နေတာ join လို့ရလား",
+    answer:
+      "Sa Kyi Health & Wellness မှာ ရှိတဲ့ program တွေက မိမိ ရှိပီးသား lifestyle ကို ပြောင်းလဲပေးပီး သေချာ ထိန်းညှိပေးသွားတဲ့ Program တွေမလို့ မိမိအနေနဲ့ စိတ်ပူစရာ မလိုပါဘူး"
+  },
+   {
+    question: "How long do I need to join the program? Do I have to join continuously?",
+    answer:
+      "Each individual program lasts for a maximum of three months, so you can stop once you have completed one program. However, if you have not yet reached your desired results and wish to continue, you can consult with a technical doctor to select and join subsequent programs."
   }
 ];
 
