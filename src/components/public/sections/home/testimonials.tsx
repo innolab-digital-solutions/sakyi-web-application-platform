@@ -254,12 +254,7 @@ export default function Testimonials() {
                                 >
                                   {testimonial.reviewer?.name ?? "Unknown"}
                                 </h4>
-                                <p
-                                  className="text-sm text-slate-600"
-                                  style={{ fontFamily: "Inter, sans-serif" }}
-                                >
-                                  {testimonial.program?.title ?? "Program"}
-                                </p>
+                             
                               </div>
                             </div>
                           </div>
@@ -315,12 +310,7 @@ export default function Testimonials() {
                                 >
                                   {testimonial.reviewer?.name ?? "Unknown"}
                                 </h4>
-                                <p
-                                  className="text-sm text-slate-600"
-                                  style={{ fontFamily: "Inter, sans-serif" }}
-                                >
-                                  {testimonial.program?.title ?? "Program"}
-                                </p>
+                               
                               </div>
                             </div>
                           </div>

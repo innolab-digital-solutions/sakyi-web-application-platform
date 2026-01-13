@@ -1,3 +1,4 @@
+/* eslint-disable no-commented-code/no-commented-code */
 "use client";
 
 import {
@@ -157,7 +158,7 @@ export default function ProgramPage({ params }: { params: Promise<{ slug: string
                       className="font-semibold text-slate-900"
                       style={{ fontFamily: "Poppins, sans-serif" }}
                     >
-                      {program.duration_value} {program.duration_unit}
+                      {program.duration}
                     </div>
                   </div>
                 </div>
@@ -182,7 +183,7 @@ export default function ProgramPage({ params }: { params: Promise<{ slug: string
                   </div>
                 </div>
 
-                <div className="group flex items-center gap-3">
+                {/* <div className="group flex items-center gap-3">
                   <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-linear-to-r from-[#35bec5]/10 to-[#0c96c4]/10 transition-all duration-300 group-hover:scale-110">
                     <Star className="h-5 w-5 text-[#35bec5]" />
                   </div>
@@ -220,7 +221,7 @@ export default function ProgramPage({ params }: { params: Promise<{ slug: string
                       {program.price}
                     </div>
                   </div>
-                </div>
+                </div> */}
               </div>
 
               {/* Clean CTA Buttons */}
@@ -563,10 +564,10 @@ export default function ProgramPage({ params }: { params: Promise<{ slug: string
         </div>
       </section>
 
-      {/* Success Stories */}
-      {program.testimonials && program.testimonials.length > 0 && (
+      {/* FAQ Section */}
+      {program.faqs && program.faqs?.length && program.faqs?.length > 0 && (
         <section className="relative overflow-hidden bg-slate-50 py-24">
-          <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
+          <div className="relative mx-auto max-w-4xl px-6 lg:px-8">
             <div
               className="mb-16 text-center"
               data-aos="zoom-in"
@@ -581,12 +582,12 @@ export default function ProgramPage({ params }: { params: Promise<{ slug: string
                 data-aos-duration="1000"
                 data-aos-easing="ease-out-cubic"
               >
-                Success{" "}
+                Frequently Asked{" "}
                 <span
                   className="text-brand-gradient bg-clip-text text-transparent"
                   style={{ fontFamily: "Poppins, sans-serif" }}
                 >
-                  Stories
+                  Questions
                 </span>
               </h2>
               <p
@@ -597,211 +598,35 @@ export default function ProgramPage({ params }: { params: Promise<{ slug: string
                 data-aos-duration="1000"
                 data-aos-easing="ease-out-cubic"
               >
-                Real results from real people who transformed their lives with this program
+                Everything you need to know about this program
               </p>
             </div>
 
-            {programLoading ? (
-              // Loading Skeletons
-              <>
-                <div className="block lg:hidden">
-                  <TestimonialSkeleton index={0} />
+            <div className="space-y-6">
+              {program.faqs?.map((item, index) => (
+                <div
+                  key={index}
+                  className="group rounded-2xl border border-slate-200 bg-white p-8 shadow-sm transition-all duration-300 hover:border-[#35bec5]/50 hover:shadow-lg"
+                  data-aos="slide-up"
+                  data-aos-delay={`${index * 100 + 400}`}
+                  data-aos-duration="1000"
+                  data-aos-easing="ease-out-cubic"
+                >
+                  <h3
+                    className="mb-4 text-lg font-semibold text-slate-900"
+                    style={{ fontFamily: "Poppins, sans-serif" }}
+                  >
+                    {item.question}
+                  </h3>
+                  <p className="text-slate-600" style={{ fontFamily: "Inter, sans-serif" }}>
+                    {item.answer}
+                  </p>
                 </div>
-                <div className="hidden lg:grid lg:grid-cols-2 lg:gap-8">
-                  <TestimonialSkeleton index={0} />
-                  <TestimonialSkeleton index={1} />
-                </div>
-              </>
-            ) : (
-              <>
-                {/* Mobile/Tablet: Single Column */}
-                <div className="block lg:hidden">
-                  <div className="relative overflow-hidden">
-                    <div className="flex flex-wrap transition-transform duration-700 ease-in-out">
-                      {program.testimonials.map((testimonial, index) => (
-                        <div key={testimonial.id || index} className="w-full px-4">
-                          <div className="flex h-80 flex-col justify-between text-center">
-                            {/* Quote */}
-                            <div className="flex flex-1 items-center justify-center px-2">
-                              <div className="text-center">
-                                {/* Star Rating */}
-                                <div className="mb-4 flex justify-center">
-                                  {renderStars(testimonial.rating)}
-                                </div>
-                                <blockquote
-                                  className="text-base leading-relaxed text-slate-700"
-                                  style={{ fontFamily: "Inter, sans-serif" }}
-                                >
-                                  &quot;{testimonial.comment}&quot;
-                                </blockquote>
-                              </div>
-                            </div>
-
-                            {/* Client Info */}
-                            <div className="flex flex-col items-center space-y-3">
-                              {testimonial.reviewer?.picture ? (
-                                <div className="relative h-12 w-12 overflow-hidden rounded-full">
-                                  <Image
-                                    src={testimonial.reviewer.picture}
-                                    alt={testimonial.reviewer.name}
-                                    fill
-                                    className="object-cover"
-                                  />
-                                </div>
-                              ) : (
-                                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-r from-[#35bec5] to-[#0c96c4]">
-                                  <span className="text-sm font-bold text-white">
-                                    {getUserInitials(testimonial.reviewer?.name ?? "U")}
-                                  </span>
-                                </div>
-                              )}
-                              <div className="text-center">
-                                <h4
-                                  className="text-base font-semibold text-slate-900"
-                                  style={{ fontFamily: "Poppins, sans-serif" }}
-                                >
-                                  {testimonial.reviewer?.name ?? "Unknown"}
-                                </h4>
-                                <p
-                                  className="text-sm text-slate-600"
-                                  style={{ fontFamily: "Inter, sans-serif" }}
-                                >
-                                  {program.title}
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Desktop: Two Columns */}
-                <div className="hidden lg:grid lg:grid-cols-2 lg:gap-8">
-                  {program.testimonials?.map((testimonial, index) => (
-                    <div key={testimonial.id || index} className="w-full">
-                      <div className="flex h-80 flex-col justify-between text-center">
-                        {/* Quote */}
-                        <div className="flex flex-1 items-center justify-center px-2">
-                          <div className="text-center">
-                            <div className="mb-4 flex justify-center">
-                              {renderStars(testimonial.rating)}
-                            </div>
-                            <blockquote
-                              className="text-base leading-relaxed text-slate-700"
-                              style={{ fontFamily: "Inter, sans-serif" }}
-                            >
-                              &quot;{testimonial.comment}&quot;
-                            </blockquote>
-                          </div>
-                        </div>
-
-                        {/* Client Info */}
-                        <div className="flex flex-col items-center space-y-3">
-                          {testimonial.reviewer?.picture ? (
-                            <div className="relative h-12 w-12 overflow-hidden rounded-full">
-                              <Image
-                                src={testimonial.reviewer.picture}
-                                alt={testimonial.reviewer.name}
-                                fill
-                                className="object-cover"
-                              />
-                            </div>
-                          ) : (
-                            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-r from-[#35bec5] to-[#0c96c4]">
-                              <span className="text-sm font-bold text-white">
-                                {getUserInitials(testimonial.reviewer?.name ?? "U")}
-                              </span>
-                            </div>
-                          )}
-                          <div className="text-center">
-                            <h4
-                              className="text-base font-semibold text-slate-900"
-                              style={{ fontFamily: "Poppins, sans-serif" }}
-                            >
-                              {testimonial.reviewer?.name ?? "Unknown"}
-                            </h4>
-                            <p
-                              className="text-sm text-slate-600"
-                              style={{ fontFamily: "Inter, sans-serif" }}
-                            >
-                              {program.title}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </>
-            )}
+              ))}
+            </div>
           </div>
         </section>
       )}
-
-      {/* FAQ Section */}
-      <section className="relative overflow-hidden bg-white py-24">
-        <div className="relative mx-auto max-w-4xl px-6 lg:px-8">
-          <div
-            className="mb-16 text-center"
-            data-aos="zoom-in"
-            data-aos-duration="1200"
-            data-aos-easing="ease-out-cubic"
-          >
-            <h2
-              className="text-3xl font-bold text-slate-900 sm:text-4xl lg:text-5xl"
-              style={{ fontFamily: "Poppins, sans-serif" }}
-              data-aos="fade-up"
-              data-aos-delay="200"
-              data-aos-duration="1000"
-              data-aos-easing="ease-out-cubic"
-            >
-              Frequently Asked{" "}
-              <span
-                className="text-brand-gradient bg-clip-text text-transparent"
-                style={{ fontFamily: "Poppins, sans-serif" }}
-              >
-                Questions
-              </span>
-            </h2>
-            <p
-              className="mx-auto mt-6 max-w-3xl text-lg leading-relaxed text-slate-600"
-              style={{ fontFamily: "Inter, sans-serif" }}
-              data-aos="slide-up"
-              data-aos-delay="400"
-              data-aos-duration="1000"
-              data-aos-easing="ease-out-cubic"
-            >
-              Everything you need to know about this program
-            </p>
-          </div>
-
-          <div className="space-y-6">
-            {program.faqs?.map((item, index) => (
-              <div
-                key={index}
-                className="group rounded-2xl border border-slate-200 bg-white p-8 shadow-sm transition-all duration-300 hover:border-[#35bec5]/50 hover:shadow-lg"
-                data-aos="slide-up"
-                data-aos-delay={`${index * 100 + 400}`}
-                data-aos-duration="1000"
-                data-aos-easing="ease-out-cubic"
-              >
-                <h3
-                  className="mb-4 text-lg font-semibold text-slate-900"
-                  style={{ fontFamily: "Poppins, sans-serif" }}
-                >
-                  {item.question}
-                </h3>
-                <p className="text-slate-600" style={{ fontFamily: "Inter, sans-serif" }}>
-                  {item.answer}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* CTA Section */}
       <CallToAction
         title="Ready to Transform Your Body?"
