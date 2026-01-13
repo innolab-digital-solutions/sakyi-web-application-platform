@@ -10,7 +10,6 @@ import {
   Grid3X3,
   Heart,
   Play,
-  Star,
   Users,
   Zap,
 } from "lucide-react";
@@ -20,37 +19,9 @@ import React, { useState } from "react";
 
 import CallToAction from "@/components/public/sections/call-to-action";
 import ProgramDetailSkeleton from "@/components/public/shared/program-detail-skeleton";
-import TestimonialSkeleton from "@/components/public/shared/testimonial-skeleton";
 import { ENDPOINTS } from "@/config/endpoints";
 import { useRequest } from "@/hooks/use-request";
 import { Program } from "@/types/public/program";
-
-function renderStars(rating: number) {
-  const fullStars = Math.floor(rating);
-  const hasHalfStar = rating % 1 >= 0.5;
-  const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
-
-  return (
-    <div className="flex space-x-1">
-      {Array.from({ length: fullStars }).map((_, index) => (
-        <Star key={`full-${index}`} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-      ))}
-      {hasHalfStar && <Star key="half" className="h-4 w-4 fill-yellow-400/50 text-yellow-400" />}
-      {Array.from({ length: emptyStars }).map((_, index) => (
-        <Star key={`empty-${index}`} className="h-4 w-4 text-yellow-400" />
-      ))}
-    </div>
-  );
-}
-
-function getUserInitials(name: string) {
-  return name
-    .split(" ")
-    .map((n) => n.charAt(0))
-    .join("")
-    .toUpperCase()
-    .slice(0, 2);
-}
 
 export default function ProgramPage({ params }: { params: Promise<{ slug: string }> }) {
   // unwrap params safely
