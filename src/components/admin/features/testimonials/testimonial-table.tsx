@@ -22,12 +22,6 @@ export default function TestimonialTable() {
               <Skeleton className="h-4 w-32 animate-pulse rounded" />
             </div>
           ),
-          "reviewed program": (
-            <div className="flex items-center gap-2">
-              <Skeleton className="size-12 shrink-0 animate-pulse rounded-md" />
-              <Skeleton className="h-4 w-40 animate-pulse rounded" />
-            </div>
-          ),
           rating: (
             <div className="flex items-center gap-1">
               {Array.from({ length: 5 }).map((_, index) => (

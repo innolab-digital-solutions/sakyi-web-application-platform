@@ -59,7 +59,6 @@ export default function ProgramFormPage({ program }: ProgramFormPageProperties) 
 
   const form = useForm(
     {
-      code: "",
       title: "",
       tagline: "",
       overview: "",
@@ -107,7 +106,6 @@ export default function ProgramFormPage({ program }: ProgramFormPageProperties) 
                     (existing
                       ? {
                           ...existing,
-                          code: `SKP-${String(form.data.code ?? "")}`,
                           title: String(form.data.title ?? ""),
                           tagline: String(form.data.tagline ?? ""),
                           description: String(form.data.description ?? ""),
@@ -180,17 +178,7 @@ export default function ProgramFormPage({ program }: ProgramFormPageProperties) 
         return fallback;
       };
 
-      // Extract code without SKP- prefix for editing and ensure uppercase with dashes
-      const extractCode = (fullCode: string | undefined): string => {
-        if (!fullCode) return "";
-        let code = fullCode.startsWith("SKP-") ? fullCode.slice(4) : fullCode;
-        // Ensure uppercase and replace spaces with dashes
-        code = code.toUpperCase().replaceAll(/\s+/g, "-");
-        return code;
-      };
-
       const newData = {
-        code: extractCode(program.code),
         title: program.title ?? "",
         tagline: program.tagline ?? "",
         overview: program.overview ?? "",
@@ -214,12 +202,15 @@ export default function ProgramFormPage({ program }: ProgramFormPageProperties) 
           id: outcome.id,
           outcome: outcome.outcome,
         })) ?? [{ outcome: "" }]) as Array<ExpectedOutcomeInput>,
-        structures: (program.structures?.map((s) => ({
-          id: s.id,
-          week: String(s.week),
-          title: s.title,
-          description: s.description,
-        })) ?? [{ week: "", title: "", description: "" }]) as Array<StructureInput>,
+        structures:
+          program.structures && program.structures.length > 0
+            ? (program.structures.map((s) => ({
+                id: s.id,
+                week: String(s.week),
+                title: s.title,
+                description: s.description,
+              })) as Array<StructureInput>)
+            : ([{ week: "", title: "", description: "" }] as Array<StructureInput>),
       };
       form.setDataAndDefaults(newData);
     } else {
@@ -232,7 +223,6 @@ export default function ProgramFormPage({ program }: ProgramFormPageProperties) 
   // Build FormData payload matching Laravel array expectations
   const buildFormData = (payload: typeof form.data) => {
     const fd = new FormData();
-    fd.append("code", String(payload.code ?? ""));
     fd.append("title", String(payload.title ?? ""));
     fd.append("tagline", String(payload.tagline ?? ""));
     fd.append("overview", String(payload.overview ?? ""));
@@ -417,31 +407,6 @@ export default function ProgramFormPage({ program }: ProgramFormPageProperties) 
               description="Enter program details, content, and structure."
             />
             <div className="space-y-6">
-              <InputField
-                id="code"
-                name="code"
-                type="text"
-                value={String(form.data.code ?? "")}
-                onChange={(event) => {
-                  // Transform: uppercase and replace spaces with dashes
-                  const transformed = event.target.value
-                    .toUpperCase()
-                    .replaceAll(/\s+/g, "-")
-                    .replaceAll(/[^A-Z0-9-]/g, ""); // Only allow letters, numbers, and dashes
-                  form.setData("code", transformed);
-                }}
-                error={form.errors.code as string}
-                label="Code"
-                placeholder="e.g., FIT-01, WELL-02, NUTR-10"
-                description={
-                  form.data.code
-                    ? `Full code: SKP-${form.data.code}`
-                    : "Enter the program code (without SKP- prefix). Spaces will be converted to dashes and text will be automatically converted to uppercase. The full code will be generated as SKP-{your-code}."
-                }
-                required
-                disabled={form.processing}
-              />
-
               <InputField
                 id="tagline"
                 name="tagline"
@@ -792,7 +757,6 @@ export default function ProgramFormPage({ program }: ProgramFormPageProperties) 
                                   form.setData("structures", items);
                                 }}
                                 error={form.errors[`structures.${index}.week`] as string}
-                                required
                               />
                               <InputField
                                 id={`structure-${index}-title`}
@@ -807,7 +771,6 @@ export default function ProgramFormPage({ program }: ProgramFormPageProperties) 
                                   form.setData("structures", items);
                                 }}
                                 error={form.errors[`structures.${index}.title`] as string}
-                                required
                               />
                             </div>
                             <div>
@@ -838,7 +801,7 @@ export default function ProgramFormPage({ program }: ProgramFormPageProperties) 
                                 const items = [
                                   ...((form.data.structures ?? []) as StructureInput[]),
                                 ];
-                                if (items.length <= 1) return;
+                                if (items.length <= 1) return; // Keep at least one structure visible
                                 items.splice(index, 1);
                                 form.setData("structures", items);
                               }}
