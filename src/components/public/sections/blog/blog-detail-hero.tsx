@@ -1,8 +1,10 @@
+/* eslint-disable @next/next/no-img-element */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable no-commented-code/no-commented-code */
 "use client";
 
 import dayjs from "dayjs";
 import { Calendar, Clock, Share2 } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
@@ -15,7 +17,7 @@ export default function BlogDetailHero({ post }: { post: BlogPost }) {
   const pathname = usePathname();
   const hideBackButton = pathname?.startsWith("/admin/");
   const hasThumbnail = post.thumbnail && post.thumbnail.trim() !== "";
-  const [imageError, setImageError] = useState(false);
+  const [imageError] = useState(false);
   const thumbnailSource = hasThumbnail && !imageError ? post.thumbnail : "/images/no-image.png";
 
   const handleShare = async () => {
@@ -116,7 +118,7 @@ export default function BlogDetailHero({ post }: { post: BlogPost }) {
         {/* Featured Image */}
         <div className="relative overflow-hidden rounded-2xl shadow-xl" data-aos="fade-up" data-aos-delay="400">
           <div className="aspect-[16/9] w-full">
-            <Image
+            {/* <Image
               src={thumbnailSource}
               alt={post.title}
               width={1600}
@@ -127,7 +129,12 @@ export default function BlogDetailHero({ post }: { post: BlogPost }) {
                 hasThumbnail && !imageError ? "object-cover" : "object-contain bg-gray-100"
               }`}
               priority
-              onError={() => setImageError(true)}
+              onError={() =(true)}
+            /> */}
+            <img
+              src={post.thumbnail}
+              alt={post.title}
+              className={`h-full w-full object-cover`}
             />
           </div>
         </div>
