@@ -125,7 +125,7 @@ export default function Hero() {
             <div className="group relative overflow-hidden rounded-3xl shadow-2xl">
               <div className="aspect-[4/5] w-full sm:aspect-[3/4]">
                 <Image
-                  src="/images/hero-image.jpg"
+                  src="/images/home/hero-image.jpg"
                   alt="Woman doing yoga meditation for wellness and mental health"
                   width={600}
                   height={600}

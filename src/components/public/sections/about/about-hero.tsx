@@ -72,7 +72,7 @@ export default function AboutHero() {
               <div className="group relative col-span-2 row-span-2 overflow-hidden rounded-2xl shadow-xl">
                 <div className="aspect-4/3 w-full sm:aspect-3/2 lg:aspect-4/3">
                   <Image
-                    src="/images/team.jpg"
+                    src="/images/about/about-image1.jpg"
                     alt="SaKyi Wellness Team - Holistic Health Approach"
                     width={800}
                     height={600}
@@ -108,7 +108,7 @@ export default function AboutHero() {
               <div className="group relative overflow-hidden rounded-2xl shadow-lg">
                 <div className="aspect-square w-full sm:aspect-4/3 lg:aspect-square">
                   <Image
-                    src="/images/consultation.jpg"
+                    src="/images/about/about-image2.png"
                     alt="Wellness Consultation - Personalized Care"
                     width={400}
                     height={400}
@@ -143,7 +143,7 @@ export default function AboutHero() {
               <div className="group relative overflow-hidden rounded-2xl shadow-lg">
                 <div className="aspect-square w-full sm:aspect-4/3 lg:aspect-square">
                   <Image
-                    src="/images/holistic.jpg"
+                    src="/images/about/about-image3.jpg"
                     alt="Holistic Wellness Approach - Mind, Body, Spirit"
                     width={400}
                     height={400}

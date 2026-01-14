@@ -25,7 +25,7 @@ export default function AboutPreview() {
             <div className="aspect-[3/4] w-full">
               <div className="group relative h-full overflow-hidden rounded-3xl shadow-2xl">
                 <Image
-                  src="/images/about-image.jpg"
+                  src="/images/home/about-image.jpg"
                   alt="Diverse group of people doing wellness activities together"
                   width={600}
                   height={600}

@@ -74,7 +74,7 @@ export default function ContactHero() {
             <div className="group relative overflow-hidden rounded-2xl shadow-2xl">
               <div className="aspect-[4/5] w-full sm:aspect-[3/4]">
                 <Image
-                  src="/images/contact-hero.jpg"
+                  src="/images/contact/hero.jpg"
                   alt="SaKyi Wellness Team - Ready to Help"
                   width={800}
                   height={1000}
