@@ -237,7 +237,7 @@ export default function ProgramPage({ params }: { params: Promise<{ slug: string
             >
               <div className="group relative overflow-hidden rounded-3xl shadow-2xl">
                 <div className="aspect-4/5 w-full sm:aspect-3/4">
-                  <Image
+                  {/* <Image
                     src={
                       imageError || !program.thumbnail ? "/images/no-image.png" : program.thumbnail
                     }
@@ -253,6 +253,11 @@ export default function ProgramPage({ params }: { params: Promise<{ slug: string
                         : "object-cover"
                     }`}
                     onError={() => setImageError(true)}
+                  /> */}
+                  <img
+                    src={program.thumbnail}
+                    alt={program.title}
+                    className={`} h-full w-full object-cover transition-transform duration-300 group-hover:scale-105`}
                   />
                 </div>
                 {/* Subtle dark overlay that disappears on hover */}
