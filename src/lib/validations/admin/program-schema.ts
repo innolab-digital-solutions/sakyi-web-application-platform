@@ -7,20 +7,6 @@ import { z } from "zod";
  * file upload constraints, numeric ranges, and enum values.
  */
 const BaseProgramSchema = z.object({
-  code: z
-    .string("Program code is required")
-    .min(1, "Program code is required")
-    .max(50, "Program code must not exceed 50 characters")
-    .trim()
-    .refine((value) => value.length > 0, "Program code cannot be empty or contain only spaces")
-    .refine(
-      (value) => !value.startsWith("SKP-"),
-      "Do not include the SKP- prefix. Enter only the code part (e.g., FIT-01).",
-    )
-    .refine(
-      (value) => /^[A-Z0-9\-]+$/.test(value),
-      "Program code can only contain uppercase letters, numbers, and dashes.",
-    ),
   title: z
     .string("Title is required")
     .min(1, "Title is required")
@@ -83,18 +69,13 @@ const BaseProgramSchema = z.object({
   structures: z
     .array(
       z.object({
-        week: z
-          .string("Week is required")
-          .min(1, "Week is required")
-          .max(50, "Week must not exceed 50 characters"),
-        title: z
-          .string("Title is required")
-          .min(1, "Title is required")
-          .max(255, "Title must not exceed 255 characters"),
+        week: z.string().max(50, "Week must not exceed 50 characters").optional().default(""),
+        title: z.string().max(255, "Title must not exceed 255 characters").optional().default(""),
         description: z.string().optional().nullable(),
       }),
     )
-    .min(1, "At least one structure is required"),
+    .min(1, "At least one structure input is required")
+    .default([{ week: "", title: "", description: "" }]),
 });
 
 const ThumbnailSchema = z
@@ -167,18 +148,13 @@ export const EditProgramSchema = BaseProgramSchema.extend({
     .array(
       z.object({
         id: z.number().int().positive().optional().nullable(),
-        week: z
-          .string("Week is required")
-          .min(1, "Week is required")
-          .max(50, "Week must not exceed 50 characters"),
-        title: z
-          .string("Title is required")
-          .min(1, "Title is required")
-          .max(255, "Title must not exceed 255 characters"),
+        week: z.string().max(50, "Week must not exceed 50 characters").optional().default(""),
+        title: z.string().max(255, "Title must not exceed 255 characters").optional().default(""),
         description: z.string().optional().nullable(),
       }),
     )
-    .min(1, "At least one structure is required"),
+    .min(1, "At least one structure input is required")
+    .default([{ week: "", title: "", description: "" }]),
 });
 
 // Default schema

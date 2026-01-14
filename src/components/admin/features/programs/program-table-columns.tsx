@@ -68,16 +68,6 @@ const statusMeta: Record<
 };
 export const programsTableColumns: ColumnDef<Program>[] = [
   {
-    accessorKey: "code",
-    header: () => "Code",
-    cell: ({ row }) => (
-      <div className="text-foreground flex items-center gap-1 text-[13px] font-semibold">
-        {row.original.code ?? "-"}
-      </div>
-    ),
-    enableHiding: false,
-  },
-  {
     accessorKey: "title",
     header: ({ column }) => <SortableHeader column={column}>Program</SortableHeader>,
     cell: ({ row }) => {
