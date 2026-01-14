@@ -1,7 +1,7 @@
+/* eslint-disable no-commented-code/no-commented-code */
 "use client";
 
 import { ArrowRight } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -16,7 +16,7 @@ interface BlogCardProperties {
 
 export default function BlogCard({ blog, index = 0, className = "" }: BlogCardProperties) {
   const hasThumbnail = blog.thumbnail && blog.thumbnail.trim() !== "";
-  const [imageError, setImageError] = useState(false);
+  const [imageError] = useState(false);
   const thumbnailSource = hasThumbnail && !imageError ? blog.thumbnail : "/images/no-image.png";
 
   return (
@@ -28,7 +28,7 @@ export default function BlogCard({ blog, index = 0, className = "" }: BlogCardPr
       {/* Image */}
       <div className="mb-6 overflow-hidden rounded-xl">
         <div className="group/image relative aspect-[16/10] w-full">
-          <Image
+          {/* <Image
             src={thumbnailSource}
             alt={blog.title}
             width={1200}
@@ -39,7 +39,13 @@ export default function BlogCard({ blog, index = 0, className = "" }: BlogCardPr
               hasThumbnail && !imageError ? "object-cover" : "object-contain bg-gray-100"
             }`}
             onError={() => setImageError(true)}
+          /> */}
+          <img
+            src={blog.thumbnail}
+            alt={blog.title}
+              className={`h-full w-full transition-transform duration-300 group-hover:scale-105 object-cover`}
           />
+
           {/* Subtle dark overlay that disappears on hover */}
           {hasThumbnail && !imageError && (
             <div className="absolute inset-0 bg-gradient-to-br from-slate-900/20 to-slate-800/10 transition-opacity duration-300 group-hover:opacity-0"></div>
