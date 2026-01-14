@@ -50,7 +50,7 @@ export default function AboutImpact() {
               <div className="aspect-[3/4] w-full">
                 <div className="group relative h-full overflow-hidden rounded-3xl shadow-2xl">
                   <Image
-                    src="https://images.unsplash.com/photo-1607962837359-5e7e89f86776?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1170"
+                    src="/images/about/our-impact.jpg"
                     alt="SaKyi Impact - Lives Transformed Through Wellness"
                     width={600}
                     height={600}

@@ -27,6 +27,7 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "staging-api.sakyihealthandwellness.com",
+        pathname: "**",
       },
     ],
   },
