@@ -1,4 +1,4 @@
-import { ArrowRight, Award, CheckCircle, Clock, Heart, Smartphone, Target,TrendingUp } from "lucide-react";
+import {Award, CheckCircle, Clock, Heart, Smartphone, Target,TrendingUp } from "lucide-react";
 import Link from "next/link";
 
 export default function MobileApp() {

@@ -1,4 +1,4 @@
-import { Facebook, Linkedin, Mail, Music, Music2, Twitter, Users, Youtube } from "lucide-react";
+import { Facebook, Linkedin, Mail, Music2, Users, Youtube } from "lucide-react";
 import Image from "next/image";
 
 const teamMembers = [
