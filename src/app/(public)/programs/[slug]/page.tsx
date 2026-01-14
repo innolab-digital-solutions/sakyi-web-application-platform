@@ -538,7 +538,7 @@ export default function ProgramPage({ params }: { params: Promise<{ slug: string
       </section>
 
       {/* FAQ Section */}
-      {program.faqs && program.faqs?.length && program.faqs?.length > 0 && (
+      {/* {program.faqs && program.faqs?.length && program.faqs?.length > 0 && (
         <section className="relative overflow-hidden bg-slate-50 py-24">
           <div className="relative mx-auto max-w-4xl px-6 lg:px-8">
             <div
@@ -599,7 +599,7 @@ export default function ProgramPage({ params }: { params: Promise<{ slug: string
             </div>
           </div>
         </section>
-      )}
+      )} */}
       {/* CTA Section */}
       <CallToAction
         title="Ready to Transform Your Body?"

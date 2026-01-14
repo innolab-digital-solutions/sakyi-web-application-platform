@@ -27,12 +27,8 @@ export default function ProgramFormSkeleton() {
               </div>
               {/* Separator */}
               <Skeleton className="h-px w-full" />
-              {/* Duration & Unit, Price, Onboarding Form */}
+              {/* Duration, Price */}
               <div className="space-y-4">
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-1">
-                  <Skeleton className="h-10 w-full" />
-                  <Skeleton className="h-10 w-full" />
-                </div>
                 <Skeleton className="h-10 w-full" />
                 <Skeleton className="h-10 w-full" />
               </div>
@@ -46,12 +42,6 @@ export default function ProgramFormSkeleton() {
               <Skeleton className="h-4 w-full" />
             </div>
             <div className="space-y-6">
-              {/* Program Code */}
-              <div className="space-y-2">
-                <Skeleton className="h-4 w-24" />
-                <Skeleton className="h-10 w-full" />
-                <Skeleton className="h-4 w-64" />
-              </div>
               {/* Tagline */}
               <div className="space-y-2">
                 <Skeleton className="h-4 w-16" />
@@ -145,26 +135,6 @@ export default function ProgramFormSkeleton() {
                       <Skeleton className="h-10 w-full" />
                       <Skeleton className="h-10 w-full" />
                     </div>
-                    <Skeleton className="h-20 w-full" />
-                  </div>
-                </div>
-              </div>
-
-              {/* FAQs Section */}
-              <div className="overflow-hidden rounded-md border border-gray-200">
-                <div className="flex flex-col gap-2 bg-gray-50 px-4 py-3 md:flex-row md:items-center md:justify-between">
-                  <div className="space-y-2">
-                    <Skeleton className="h-5 w-48" />
-                    <Skeleton className="h-4 w-full" />
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Skeleton className="h-8 w-24" />
-                    <Skeleton className="h-8 w-8" />
-                  </div>
-                </div>
-                <div className="space-y-4 px-4 py-5">
-                  <div className="space-y-4">
-                    <Skeleton className="h-10 w-full" />
                     <Skeleton className="h-20 w-full" />
                   </div>
                 </div>
