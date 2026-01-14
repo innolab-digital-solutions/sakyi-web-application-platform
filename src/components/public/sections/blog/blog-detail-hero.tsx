@@ -6,6 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import { toast } from "sonner";
 
 import { PATHS } from "@/config/paths";
 import { BlogPost } from "@/types/public/blog";
@@ -16,6 +17,25 @@ export default function BlogDetailHero({ post }: { post: BlogPost }) {
   const hasThumbnail = post.thumbnail && post.thumbnail.trim() !== "";
   const [imageError, setImageError] = useState(false);
   const thumbnailSource = hasThumbnail && !imageError ? post.thumbnail : "/images/no-image.png";
+
+  const handleShare = async () => {
+  const url = globalThis.location.href;
+
+  if (navigator.share) {
+    try {
+      await navigator.share({
+        title: post.title,
+        text: post.description,
+        url,
+      });
+    } catch {
+    }
+  } else {
+    await navigator.clipboard.writeText(url);
+    toast.success("Link copied to clipboard");
+  }
+};
+
   return (
     <section className="relative overflow-hidden bg-slate-50 py-16">
       {/* Background Elements */}
@@ -82,10 +102,14 @@ export default function BlogDetailHero({ post }: { post: BlogPost }) {
               <Clock className="h-4 w-4" />
               <span style={{ fontFamily: "Inter, sans-serif" }}>{post?.reading_time}</span>
             </div>
-            <button className="flex items-center gap-2 transition-colors duration-300 hover:text-[#35bec5]">
-              <Share2 className="h-4 w-4" />
-              <span style={{ fontFamily: "Inter, sans-serif" }}>Share</span>
-            </button>
+        <button
+  onClick={handleShare}
+  className="flex items-center gap-2 transition-colors duration-300 hover:text-[#35bec5] cursor-pointer"
+>
+  <Share2 className="h-4 w-4" />
+  <span style={{ fontFamily: "Inter, sans-serif" }}>Share</span>
+</button>
+
           </div>
         </div>
 

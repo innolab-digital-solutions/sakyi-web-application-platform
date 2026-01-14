@@ -71,9 +71,9 @@ export default function HowItWorks() {
         {[
           {
             step: "01",
-            title: "Choose Your Program",
+            title: "Talk with Our Experts",
             description:
-              "Select the wellness plan that fits your goals — from mental focus to healthy living.",
+              "Get professional guidance through an initial health consultation.",
             color: "from-[#35bec5] to-[#4bc4db]",
             illustration: (
               <div className="relative mb-6">
@@ -88,9 +88,9 @@ export default function HowItWorks() {
           },
           {
             step: "02", 
-            title: "Complete Your Profile",
+            title: "Find Your Best-Fit Program",
             description:
-              "Share your personal details and preferences so our doctors can customize your plan.",
+              "Choose a program tailored to your body and lifestyle needs.",
             color: "from-[#4bc4db] to-[#0c96c4]",
             illustration: (
               <div className="relative mb-6">
@@ -107,9 +107,9 @@ export default function HowItWorks() {
           },
           {
             step: "03",
-            title: "Start Your Weekly Guidance", 
+            title: "See Your Results & Begin Your Journey", 
             description:
-              "Receive personalized weekly plans, feedback, and lifestyle recommendations directly from your doctor.",
+              "Review your InBody analysis and start your personalized wellness plan.",
             color: "from-[#0c96c4] to-[#35bec5]",
             illustration: (
               <div className="relative mb-6">

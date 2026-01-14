@@ -120,7 +120,7 @@ export default function AboutApproach() {
               <div className="aspect-[3/4] w-full">
                 <div className="group relative h-full overflow-hidden rounded-3xl shadow-2xl">
                   <Image
-                    src="/images/methodology.jpg"
+                    src="/images/about/our-approach.jpg"
                     alt="SaKyi Wellness Approach - Holistic Health Methodology"
                     width={600}
                     height={600}

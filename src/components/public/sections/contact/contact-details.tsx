@@ -1,4 +1,4 @@
-import { Clock, Mail, MapPin, Phone, Users } from "lucide-react";
+import { Clock, Facebook, Instagram, Mail, MapPin, Music2, Phone, Users, Youtube } from "lucide-react";
 
 export default function ContactDetails() {
   const contactInfo = [
@@ -6,31 +6,64 @@ export default function ContactDetails() {
       icon: Mail,
       title: "Email Support",
       description: "Get personalized assistance from our wellness experts",
-      value: "hello@sakyi.com",
-      href: "mailto:hello@sakyi.com",
+      value: "customerservice@sakyihealthandwellness.com",
+      href: "mailto:customerservice@sakyihealthandwellness.com",
     },
     {
       icon: Phone,
-      title: "Phone Consultation",
-      description: "Speak directly with our certified doctors",
-      value: "+1 (555) 123-4567",
-      href: "tel:+15551234567",
+      title: "Phone Support",
+      description: "For program-related inquiries and client support",
+      value: "+959 250357339",
+      href: "tel:+959250357339",
     },
-    {
-      icon: MapPin,
-      title: "Wellness Center",
-      description: "Visit our state-of-the-art facility",
-      value: "123 Wellness Street, Health City, HC 12345",
-      href: "https://maps.google.com",
-    },
+   {
+    icon: MapPin,
+    title: "Online & Remote Care",
+    description: "Access our services from anywhere",
+    value: "Available worldwide",
+    href: undefined,
+  },
     {
       icon: Clock,
-      title: "Available Hours",
+      title: "Support Hours (Online Service)",
       description: "24/7 support for your wellness journey",
       value: "Mon - Fri: 9AM - 6PM",
       href: undefined,
     },
   ];
+
+  const socialLinks = [
+  {
+    icon: Instagram,
+    name: "Instagram",
+    value: "@SaKyiHealth&Wellness",
+    href: "https://www.instagram.com/sakyihealthandwellness",
+  },
+  {
+    icon: Facebook,
+    name: "Facebook",
+    value: "Sa Kyi Health & Wellness",
+    href: "https://www.facebook.com/sakyihealthandwellness",
+  },
+  {
+    icon: Youtube,
+    name: "YouTube",
+    value: "Sa Kyi Health & Wellness",
+    href: "https://www.youtube.com/@sakyihealthandwellness",
+  },
+  {
+    icon: "tiktok",
+    name: "TikTok",
+    value: "@SaKyiHealth&Wellness",
+    href: "https://www.tiktok.com/@sakyihealthandwellness",
+  },
+];
+
+const TikTokIcon = ({ className }: { className?: string }) => (
+ <Music2 className={className} />
+);
+
+
 
   return (
     <section id="contact-details" className="relative overflow-hidden bg-white py-24">
@@ -73,8 +106,7 @@ export default function ContactDetails() {
             data-aos="fade-up"
             data-aos-delay="200"
           >
-            Connect with our wellness experts through multiple channels. Whether you prefer 
-            email, phone, or visiting our center, we&apos;re here to support your health journey.
+            Reach our wellness team anytime through our official online channels. We’re here to support your lifestyle transformation journey.
           </p>
         </div>
 
@@ -132,6 +164,71 @@ export default function ContactDetails() {
             </div>
           ))}
         </div>
+
+ <section className="relative bg-white py-24">
+      <div className="mx-auto max-w-7xl px-6 lg:px-8 text-center">
+
+        {/* Title */}
+        <h2
+          className="mb-4 text-3xl font-bold text-slate-900 sm:text-4xl"
+          style={{ fontFamily: "Poppins, sans-serif" }}
+          data-aos="fade-up"
+          data-aos-delay="100"
+          data-aos-duration="800"
+        >
+          Connect with Us on{" "}
+          <span className="bg-gradient-to-r from-[#35bec5] to-[#0c96c4] bg-clip-text text-transparent">
+            Social Media
+          </span>
+        </h2>
+
+        {/* Description */}
+        <p
+          className="mx-auto mb-16 max-w-3xl text-lg text-slate-600"
+          style={{ fontFamily: "Inter, sans-serif" }}
+          data-aos="fade-up"
+          data-aos-delay="200"
+          data-aos-duration="800"
+        >
+          Follow Sa Kyi for daily wellness tips, lifestyle education, client success stories, and program updates.
+        </p>
+
+        {/* Social Cards */}
+        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+          {socialLinks.map((item, index) => {
+            const Icon =
+              item.icon === "tiktok" ? TikTokIcon : item.icon;
+
+            return (
+              <a
+                key={index}
+                href={item.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                data-aos="fade-up"
+                data-aos-delay={300 + index * 150}
+                data-aos-duration="800"
+                className="group rounded-2xl border border-slate-200 bg-white p-8 text-center transition-all hover:border-[#35bec5]/50 hover:shadow-lg"
+              >
+                <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[#35bec5]/10 to-[#0c96c4]/10 transition-transform duration-300 group-hover:scale-105">
+                  <Icon className="h-8 w-8 text-[#35bec5]" />
+                </div>
+
+                <h3 className="text-lg font-semibold text-slate-900">
+                  {item.name}
+                </h3>
+
+                <p className="mt-2 text-sm text-slate-600">
+                  {item.value}
+                </p>
+              </a>
+            );
+          })}
+        </div>
+
+      </div>
+    </section>
+
       </div>
     </section>
   );

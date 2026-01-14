@@ -108,7 +108,7 @@ export default function ProgramPage({ params }: { params: Promise<{ slug: string
 
               {/* Program Stats */}
               <div
-                className="grid grid-cols-2 gap-4"
+                className={`${program.participants > 0 ? "grid grid-cols-2 gap-4" : "grid grid-cols-1"}`}
                 data-aos="fade-up"
                 data-aos-delay="700"
                 data-aos-duration="1000"
@@ -134,25 +134,27 @@ export default function ProgramPage({ params }: { params: Promise<{ slug: string
                   </div>
                 </div>
 
-                <div className="group flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-linear-to-r from-[#35bec5]/10 to-[#0c96c4]/10 transition-all duration-300 group-hover:scale-110">
-                    <Users className="h-5 w-5 text-[#35bec5]" />
-                  </div>
-                  <div>
-                    <div
-                      className="text-sm text-slate-600"
-                      style={{ fontFamily: "Inter, sans-serif" }}
-                    >
-                      Participants
+                {program.participants > 0 && (
+                  <div className="group flex items-center gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-linear-to-r from-[#35bec5]/10 to-[#0c96c4]/10 transition-all duration-300 group-hover:scale-110">
+                      <Users className="h-5 w-5 text-[#35bec5]" />
                     </div>
-                    <div
-                      className="font-semibold text-slate-900"
-                      style={{ fontFamily: "Poppins, sans-serif" }}
-                    >
-                      {program.participants.toLocaleString()}+
+                    <div>
+                      <div
+                        className="text-sm text-slate-600"
+                        style={{ fontFamily: "Inter, sans-serif" }}
+                      >
+                        Participants
+                      </div>
+                      <div
+                        className="font-semibold text-slate-900"
+                        style={{ fontFamily: "Poppins, sans-serif" }}
+                      >
+                        {program.participants.toLocaleString()}+
+                      </div>
                     </div>
                   </div>
-                </div>
+                )}
 
                 {/* <div className="group flex items-center gap-3">
                   <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-linear-to-r from-[#35bec5]/10 to-[#0c96c4]/10 transition-all duration-300 group-hover:scale-110">
@@ -316,7 +318,7 @@ export default function ProgramPage({ params }: { params: Promise<{ slug: string
               </h3>
               <div className="space-y-4">
                 {program.key_features?.map((feature, index) => (
-                  <div key={index} className="flex items-start gap-4">
+                  <div key={index} className="flex items-center gap-4">
                     <div className="mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-linear-to-r from-[#35bec5]/10 to-[#0c96c4]/10">
                       <CheckCircle className="h-5 w-5 text-[#35bec5]" />
                     </div>
@@ -343,7 +345,7 @@ export default function ProgramPage({ params }: { params: Promise<{ slug: string
               </h3>
               <div className="space-y-4">
                 {program.ideals?.map((item, index) => (
-                  <div key={index} className="flex items-start gap-4">
+                  <div key={index} className="flex items-center gap-4">
                     <div className="mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-linear-to-r from-[#35bec5]/10 to-[#0c96c4]/10">
                       <CheckCircle className="h-5 w-5 text-[#35bec5]" />
                     </div>

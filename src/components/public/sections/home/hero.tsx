@@ -125,7 +125,7 @@ export default function Hero() {
             <div className="group relative overflow-hidden rounded-3xl shadow-2xl">
               <div className="aspect-[4/5] w-full sm:aspect-[3/4]">
                 <Image
-                  src="/images/hero-image.jpg"
+                  src="/images/home/hero-image.jpg"
                   alt="Woman doing yoga meditation for wellness and mental health"
                   width={600}
                   height={600}
@@ -133,7 +133,7 @@ export default function Hero() {
                 />
               </div>
               {/* Subtle dark overlay that disappears on hover */}
-              <div className="absolute inset-0 bg-gradient-to-br from-slate-900/20 to-slate-800/10 transition-opacity duration-300 group-hover:opacity-0"></div>
+              <div className="absolute inset-0 bg-gradient-to-br from-slate-800/20 to-slate-700/10 transition-opacity duration-300 group-hover:opacity-0"></div>
               {/* Brand gradient overlay */}
               <div className="absolute inset-0 bg-gradient-to-br from-[#35bec5]/5 to-[#0c96c4]/5"></div>
             </div>

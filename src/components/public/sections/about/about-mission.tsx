@@ -24,7 +24,7 @@ export default function AboutMission() {
               <div className="aspect-[3/4] w-full">
                 <div className="group relative h-full overflow-hidden rounded-3xl shadow-2xl">
                   <Image
-                    src="/images/mission.jpg"
+                    src="/images/about/core-values.jpg"
                     alt="SaKyi Mission & Philosophy - Holistic Wellness Approach"
                     width={600}
                     height={600}
