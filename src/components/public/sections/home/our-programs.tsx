@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @next/next/no-img-element */
-/* eslint-disable no-commented-code/no-commented-code */
 "use client";
 
 import { ArrowRight, Award } from "lucide-react";
@@ -31,7 +28,7 @@ function ProgramCardLarge({ program }: { program: Program }) {
         <div className="flex h-full flex-col gap-6">
           {/* Image - Top (Full Width) */}
           <div className="group/image relative w-full overflow-hidden rounded-xl bg-slate-100">
-            {/* <Image
+            <Image
               src={thumbnailSource}
               alt={program.title}
               width={1200}
@@ -42,12 +39,8 @@ function ProgramCardLarge({ program }: { program: Program }) {
                 hasThumbnail && !imageError ? "object-cover" : "object-contain bg-gray-100"
               }`}
               onError={() => setImageError(true)}
-            /> */}
-            <img
-              src={program.thumbnail}
-              alt={program.title}
-              className="h-auto w-full transition-transform duration-300 group-hover:scale-105 object-cover"
             />
+        
             {/* Subtle dark overlay that disappears on hover */}
             {hasThumbnail && !imageError && (
               <div className="absolute inset-0 bg-gradient-to-br from-slate-900/20 to-slate-800/10 transition-opacity duration-300 group-hover:opacity-0"></div>
@@ -102,7 +95,7 @@ function ProgramCardSmall({ program, index }: { program: Program; index: number 
       <div className="flex h-full flex-col gap-4 lg:flex-row lg:gap-4">
         {/* Image - Top on mobile, Left on desktop */}
         <div className="relative w-full overflow-hidden rounded-xl bg-slate-100 lg:w-1/2 lg:h-full">
-          {/* <Image
+          <Image
             src={thumbnailSource}
             alt={program.title}
             width={400}
@@ -113,12 +106,8 @@ function ProgramCardSmall({ program, index }: { program: Program; index: number 
               hasThumbnail && !imageError ? "object-cover" : "object-contain bg-gray-100"
             }`}
             onError={() => setImageError(true)}
-          /> */}
-          <img
-            src={program.thumbnail}
-            alt={program.title}
-            className="h-full w-full transition-transform duration-300 group-hover:scale-105 object-cover"
           />
+     
           {/* Subtle dark overlay that disappears on hover */}
           {hasThumbnail && !imageError && (
             <div className="absolute inset-0 bg-gradient-to-br from-slate-900/20 to-slate-800/10 transition-opacity duration-300 group-hover:opacity-0"></div>
