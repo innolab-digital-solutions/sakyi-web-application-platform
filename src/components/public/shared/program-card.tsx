@@ -1,9 +1,7 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @next/next/no-img-element */
-/* eslint-disable no-commented-code/no-commented-code */
 "use client";
 
 import { ArrowRight } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -30,28 +28,32 @@ export default function ProgramCard({ program, index = 0, className = "" }: Prog
       <div className="flex h-full flex-col gap-6">
         {/* Image - Top (Full Width) */}
 <div className="group/image relative w-full overflow-hidden rounded-xl bg-slate-100 aspect-[3/2]">
-          {/* <Image
-  src={thumbnailSource}
-  alt={program.title}
-  fill
-  quality={90}
-  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
-  className={`object-cover transition-transform duration-300 group-hover:scale-105 ${
-    hasThumbnail && !imageError ? "" : "object-contain bg-gray-100 p-6"
-  }`}
-  onError={() => setImageError(true)}
-/> */}
-<img
-  src={program.thumbnail}
-  alt={program.title}
-  className={`object-cover transition-transform duration-300 group-hover:scale-105 ${
-    hasThumbnail && !imageError ? "" : "object-contain bg-gray-100 p-6"
-  }`}
-/>
+          <Image
+            src={thumbnailSource}
+            alt={program.title}
+            fill
+            quality={90}
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
+            className={`object-cover transition-transform duration-300 group-hover:scale-105 ${
+              hasThumbnail && !imageError ? "" : "object-contain bg-gray-100 p-6"
+            }`}
+            onLoad={() => {
+              // Reset error state if image loads successfully
+              if (hasThumbnail && imageError) {
+                setImageError(false);
+              }
+            }}
+            onError={() => {
+              // Only set error if we actually tried to load the thumbnail
+              if (hasThumbnail) {
+                setImageError(true);
+              }
+            }}
+          />
 
           {/* Subtle dark overlay that disappears on hover */}
           {hasThumbnail && !imageError && (
-          <div className="absolute inset-0 bg-gradient-to-br from-slate-900/20 to-slate-800/10 transition-opacity duration-300 group-hover:opacity-0"></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-slate-900/10 to-slate-800/5 transition-opacity duration-300 group-hover:opacity-0"></div>
           )}
         </div>
 

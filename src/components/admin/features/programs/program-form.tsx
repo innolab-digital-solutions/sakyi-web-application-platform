@@ -220,6 +220,38 @@ export default function ProgramFormPage({ program }: ProgramFormPageProperties) 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [program?.id]);
 
+  // Auto-open collapsibles when errors exist in their sections
+  useEffect(() => {
+    const errors = form.errors;
+    if (!errors) return;
+
+    // Check for ideals errors
+    const hasIdealsErrors = Object.keys(errors).some((key) => key.startsWith("ideals."));
+    if (hasIdealsErrors && !idealsOpen) {
+      setIdealsOpen(true);
+    }
+
+    // Check for key_features errors
+    const hasKeyFeaturesErrors = Object.keys(errors).some((key) => key.startsWith("key_features."));
+    if (hasKeyFeaturesErrors && !keyFeaturesOpen) {
+      setKeyFeaturesOpen(true);
+    }
+
+    // Check for expected_outcomes errors
+    const hasExpectedOutcomesErrors = Object.keys(errors).some((key) =>
+      key.startsWith("expected_outcomes."),
+    );
+    if (hasExpectedOutcomesErrors && !expectedOutcomesOpen) {
+      setExpectedOutcomesOpen(true);
+    }
+
+    // Check for structures errors
+    const hasStructuresErrors = Object.keys(errors).some((key) => key.startsWith("structures."));
+    if (hasStructuresErrors && !structuresOpen) {
+      setStructuresOpen(true);
+    }
+  }, [form.errors, idealsOpen, keyFeaturesOpen, expectedOutcomesOpen, structuresOpen]);
+
   // Build FormData payload matching Laravel array expectations
   const buildFormData = (payload: typeof form.data) => {
     const fd = new FormData();

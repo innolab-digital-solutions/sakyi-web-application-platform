@@ -1,6 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable no-commented-code/no-commented-code */
 "use client";
 
 import {
@@ -15,6 +12,7 @@ import {
   Users,
   Zap,
 } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import React, { useState } from "react";
 
@@ -156,46 +154,6 @@ export default function ProgramPage({ params }: { params: Promise<{ slug: string
                     </div>
                   </div>
                 )}
-
-                {/* <div className="group flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-linear-to-r from-[#35bec5]/10 to-[#0c96c4]/10 transition-all duration-300 group-hover:scale-110">
-                    <Star className="h-5 w-5 text-[#35bec5]" />
-                  </div>
-                  <div>
-                    <div
-                      className="text-sm text-slate-600"
-                      style={{ fontFamily: "Inter, sans-serif" }}
-                    >
-                      Rating
-                    </div>
-                    <div
-                      className="font-semibold text-slate-900"
-                      style={{ fontFamily: "Poppins, sans-serif" }}
-                    >
-                      {program.avg_rating?.toFixed(1) ?? "0.0"}/5.0
-                    </div>
-                  </div>
-                </div>
-
-                <div className="group flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-linear-to-r from-[#35bec5]/10 to-[#0c96c4]/10 transition-all duration-300 group-hover:scale-110">
-                    <Heart className="h-5 w-5 text-[#35bec5]" />
-                  </div>
-                  <div>
-                    <div
-                      className="text-sm text-slate-600"
-                      style={{ fontFamily: "Inter, sans-serif" }}
-                    >
-                      Price
-                    </div>
-                    <div
-                      className="font-semibold text-slate-900"
-                      style={{ fontFamily: "Poppins, sans-serif" }}
-                    >
-                      {program.price}
-                    </div>
-                  </div>
-                </div> */}
               </div>
 
               {/* Clean CTA Buttons */}
@@ -238,7 +196,7 @@ export default function ProgramPage({ params }: { params: Promise<{ slug: string
             >
               <div className="group relative overflow-hidden rounded-3xl shadow-2xl">
                 <div className="aspect-4/5 w-full sm:aspect-3/4">
-                  {/* <Image
+                  <Image
                     src={
                       imageError || !program.thumbnail ? "/images/no-image.png" : program.thumbnail
                     }
@@ -253,12 +211,18 @@ export default function ProgramPage({ params }: { params: Promise<{ slug: string
                         ? "bg-gray-100 object-contain"
                         : "object-cover"
                     }`}
-                    onError={() => setImageError(true)}
-                  /> */}
-                  <img
-                    src={program.thumbnail}
-                    alt={program.title}
-                    className={`} h-full w-full object-cover transition-transform duration-300 group-hover:scale-105`}
+                    onLoad={() => {
+                      // Reset error state if image loads successfully
+                      if (program.thumbnail && imageError) {
+                        setImageError(false);
+                      }
+                    }}
+                    onError={() => {
+                      // Only set error if we actually tried to load the thumbnail
+                      if (program.thumbnail) {
+                        setImageError(true);
+                      }
+                    }}
                   />
                 </div>
                 {/* Subtle dark overlay that disappears on hover */}
@@ -542,70 +506,6 @@ export default function ProgramPage({ params }: { params: Promise<{ slug: string
           </div>
         </div>
       </section>
-
-      {/* FAQ Section */}
-      {/* {program.faqs && program.faqs?.length && program.faqs?.length > 0 && (
-        <section className="relative overflow-hidden bg-slate-50 py-24">
-          <div className="relative mx-auto max-w-4xl px-6 lg:px-8">
-            <div
-              className="mb-16 text-center"
-              data-aos="zoom-in"
-              data-aos-duration="1200"
-              data-aos-easing="ease-out-cubic"
-            >
-              <h2
-                className="text-3xl font-bold text-slate-900 sm:text-4xl lg:text-5xl"
-                style={{ fontFamily: "Poppins, sans-serif" }}
-                data-aos="fade-up"
-                data-aos-delay="200"
-                data-aos-duration="1000"
-                data-aos-easing="ease-out-cubic"
-              >
-                Frequently Asked{" "}
-                <span
-                  className="text-brand-gradient bg-clip-text text-transparent"
-                  style={{ fontFamily: "Poppins, sans-serif" }}
-                >
-                  Questions
-                </span>
-              </h2>
-              <p
-                className="mx-auto mt-6 max-w-3xl text-lg leading-relaxed text-slate-600"
-                style={{ fontFamily: "Inter, sans-serif" }}
-                data-aos="slide-up"
-                data-aos-delay="400"
-                data-aos-duration="1000"
-                data-aos-easing="ease-out-cubic"
-              >
-                Everything you need to know about this program
-              </p>
-            </div>
-
-            <div className="space-y-6">
-              {program.faqs?.map((item, index) => (
-                <div
-                  key={index}
-                  className="group rounded-2xl border border-slate-200 bg-white p-8 shadow-sm transition-all duration-300 hover:border-[#35bec5]/50 hover:shadow-lg"
-                  data-aos="slide-up"
-                  data-aos-delay={`${index * 100 + 400}`}
-                  data-aos-duration="1000"
-                  data-aos-easing="ease-out-cubic"
-                >
-                  <h3
-                    className="mb-4 text-lg font-semibold text-slate-900"
-                    style={{ fontFamily: "Poppins, sans-serif" }}
-                  >
-                    {item.question}
-                  </h3>
-                  <p className="text-slate-600" style={{ fontFamily: "Inter, sans-serif" }}>
-                    {item.answer}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-      )} */}
       {/* CTA Section */}
       <CallToAction
         title="Ready to Transform Your Body?"

@@ -133,7 +133,7 @@ export default function Hero() {
                 />
               </div>
               {/* Subtle dark overlay that disappears on hover */}
-              <div className="absolute inset-0 bg-gradient-to-br from-slate-800/20 to-slate-700/10 transition-opacity duration-300 group-hover:opacity-0"></div>
+              <div className="absolute inset-0 bg-gradient-to-br from-slate-800/10 to-slate-700/5 transition-opacity duration-300 group-hover:opacity-0"></div>
               {/* Brand gradient overlay */}
               <div className="absolute inset-0 bg-gradient-to-br from-[#35bec5]/5 to-[#0c96c4]/5"></div>
             </div>

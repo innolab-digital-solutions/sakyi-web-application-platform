@@ -44,7 +44,7 @@ export default function BlogEditorsPick() {
                 priority
               />
               {/* Subtle dark overlay that disappears on hover */}
-              <div className="absolute inset-0 bg-gradient-to-br from-slate-900/20 to-slate-800/10 transition-opacity duration-300 group-hover:opacity-0"></div>
+              <div className="absolute inset-0 bg-gradient-to-br from-slate-900/10 to-slate-800/5 transition-opacity duration-300 group-hover:opacity-0"></div>
               <div className="absolute top-6 left-6">
                 <span className="inline-flex items-center rounded-full bg-brand-gradient px-4 py-2 text-sm font-medium text-white">
                   Editor&apos;s Choice
