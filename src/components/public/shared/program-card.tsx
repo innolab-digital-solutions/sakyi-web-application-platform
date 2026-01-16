@@ -29,16 +29,27 @@ export default function ProgramCard({ program, index = 0, className = "" }: Prog
         {/* Image - Top (Full Width) */}
 <div className="group/image relative w-full overflow-hidden rounded-xl bg-slate-100 aspect-[3/2]">
           <Image
-  src={thumbnailSource}
-  alt={program.title}
-  fill
-  quality={90}
-  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
-  className={`object-cover transition-transform duration-300 group-hover:scale-105 ${
-    hasThumbnail && !imageError ? "" : "object-contain bg-gray-100 p-6"
-  }`}
-  onError={() => setImageError(true)}
-/>
+            src={thumbnailSource}
+            alt={program.title}
+            fill
+            quality={90}
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
+            className={`object-cover transition-transform duration-300 group-hover:scale-105 ${
+              hasThumbnail && !imageError ? "" : "object-contain bg-gray-100 p-6"
+            }`}
+            onLoad={() => {
+              // Reset error state if image loads successfully
+              if (hasThumbnail && imageError) {
+                setImageError(false);
+              }
+            }}
+            onError={() => {
+              // Only set error if we actually tried to load the thumbnail
+              if (hasThumbnail) {
+                setImageError(true);
+              }
+            }}
+          />
 
           {/* Subtle dark overlay that disappears on hover */}
           {hasThumbnail && !imageError && (

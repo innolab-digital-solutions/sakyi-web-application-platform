@@ -211,7 +211,18 @@ export default function ProgramPage({ params }: { params: Promise<{ slug: string
                         ? "bg-gray-100 object-contain"
                         : "object-cover"
                     }`}
-                    onError={() => setImageError(true)}
+                    onLoad={() => {
+                      // Reset error state if image loads successfully
+                      if (program.thumbnail && imageError) {
+                        setImageError(false);
+                      }
+                    }}
+                    onError={() => {
+                      // Only set error if we actually tried to load the thumbnail
+                      if (program.thumbnail) {
+                        setImageError(true);
+                      }
+                    }}
                   />
                 </div>
                 {/* Subtle dark overlay that disappears on hover */}

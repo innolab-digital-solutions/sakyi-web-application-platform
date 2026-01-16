@@ -128,7 +128,18 @@ export default function BlogDetailHero({ post }: { post: BlogPost }) {
                 hasThumbnail && !imageError ? "object-cover" : "object-contain bg-gray-100"
               }`}
               priority
-              onError={() => setImageError(true)}
+              onLoad={() => {
+                // Reset error state if image loads successfully
+                if (hasThumbnail && imageError) {
+                  setImageError(false);
+                }
+              }}
+              onError={() => {
+                // Only set error if we actually tried to load the thumbnail
+                if (hasThumbnail) {
+                  setImageError(true);
+                }
+              }}
             />
           </div>
         </div>

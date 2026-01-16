@@ -38,7 +38,18 @@ function ProgramCardLarge({ program }: { program: Program }) {
               className={`h-auto w-full transition-transform duration-300 group-hover:scale-105 ${
                 hasThumbnail && !imageError ? "object-cover" : "object-contain bg-gray-100"
               }`}
-              onError={() => setImageError(true)}
+              onLoad={() => {
+                // Reset error state if image loads successfully
+                if (hasThumbnail && imageError) {
+                  setImageError(false);
+                }
+              }}
+              onError={() => {
+                // Only set error if we actually tried to load the thumbnail
+                if (hasThumbnail) {
+                  setImageError(true);
+                }
+              }}
             />
         
             {/* Subtle dark overlay that disappears on hover */}
@@ -105,7 +116,18 @@ function ProgramCardSmall({ program, index }: { program: Program; index: number 
             className={`h-full w-full transition-transform duration-300 group-hover:scale-105 ${
               hasThumbnail && !imageError ? "object-cover" : "object-contain bg-gray-100"
             }`}
-            onError={() => setImageError(true)}
+            onLoad={() => {
+              // Reset error state if image loads successfully
+              if (hasThumbnail && imageError) {
+                setImageError(false);
+              }
+            }}
+            onError={() => {
+              // Only set error if we actually tried to load the thumbnail
+              if (hasThumbnail) {
+                setImageError(true);
+              }
+            }}
           />
      
           {/* Subtle dark overlay that disappears on hover */}
