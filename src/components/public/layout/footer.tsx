@@ -47,19 +47,19 @@ export default function Footer() {
               <a
                 target="_blank"
                 href="https://www.facebook.com/share/1AZkhgRBMS/?mibextid=wwXIfr"
-                className="group rounded-full border border-slate-300 bg-white p-3 shadow-sm transition-all duration-300 hover:border-[#35bec5] hover:bg-[#35bec5] hover:shadow-md"
+                className="group rounded-full border border-slate-300 bg-white p-3 shadow-sm transition-all duration-300 hover:border-[#4bc4db] hover:bg-[#4bc4db] hover:shadow-md"
               >
                 <Facebook className="h-4 w-4 text-slate-600 transition-colors group-hover:text-white" />
               </a>
               <Link
                 href="#"
-                className="group rounded-full border border-slate-300 bg-white p-3 shadow-sm transition-all duration-300 hover:border-[#35bec5] hover:bg-[#35bec5] hover:shadow-md"
+                className="group rounded-full border border-slate-300 bg-white p-3 shadow-sm transition-all duration-300 hover:border-[#4bc4db] hover:bg-[#4bc4db] hover:shadow-md"
               >
                 <Instagram className="h-4 w-4 text-slate-600 transition-colors group-hover:text-white" />
               </Link>
               <a
                 href={`mailto:customerservice@sakyihealthandwellness.com`}
-                className="group rounded-full border border-slate-300 bg-white p-3 shadow-sm transition-all duration-300 hover:border-[#35bec5] hover:bg-[#35bec5] hover:shadow-md"
+                className="group rounded-full border border-slate-300 bg-white p-3 shadow-sm transition-all duration-300 hover:border-[#4bc4db] hover:bg-[#4bc4db] hover:shadow-md"
               >
                 <Mail className="h-4 w-4 text-slate-600 transition-colors group-hover:text-white" />
               </a>

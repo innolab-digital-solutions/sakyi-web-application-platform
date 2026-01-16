@@ -57,7 +57,7 @@ export default function BlogCard({ blog, index = 0, className = "" }: BlogCardPr
 
           {/* Subtle dark overlay that disappears on hover */}
           {hasThumbnail && !imageError && (
-            <div className="absolute inset-0 bg-gradient-to-br from-slate-900/20 to-slate-800/10 transition-opacity duration-300 group-hover:opacity-0"></div>
+            <div className="absolute inset-0 bg-gradient-to-br from-slate-900/10 to-slate-800/5 transition-opacity duration-300 group-hover:opacity-0"></div>
           )}
         </div>
       </div>
