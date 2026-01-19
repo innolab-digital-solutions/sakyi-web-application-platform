@@ -31,6 +31,11 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
+        hostname: "sakyi-staging.sgp1.digitaloceanspaces.com",
+        pathname: "**",
+      },
+      {
+        protocol: "https",
         hostname: "api.sakyihealthandwellness.com",
         pathname: "**",
       },
